@@ -6,7 +6,7 @@ import os
 app = Flask(__name__)
 
 # Configuração robusta do CORS para aceitar o seu Netlify
-CORS(app, resources={r"/*": {"origins": "*"}}) 
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 from metadados import verificar_ia_nos_metadados
 from fft import executar_analise_completa_fft

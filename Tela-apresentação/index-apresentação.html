@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="stylea.css">
+    <link rel="icon" type="image/png" href="../img/AIDABranco.ico">
+    <title>AIDA - Principal</title>
+</head>
+
+<body>
+    <header class="cabecalho" style="background-color: #10403b;">
+        <div class="headcontent">
+            <img src="../img/LogoBranca.png" alt="" class="logoaida">
+            <nav class="navbar">
+                <a href="#sobre" class="ancoranav">Sobre</a>
+                <a href="#funcionamento" class="ancoranav">Funcionamento</a>
+                <a href="#ferramentaaida" class="ancoranav">Ferramenta</a>
+                <a href="#equipe" class="ancoranav">Equipe</a>
+                <div class="dropdown mobile-only">
+                    <button class="dropbtn" id="nome-usuario"></button>
+                    <div class="dropdown-content">
+                        <a href="../testes/index-perfil.html" class="dropa" id="btn-sair">
+                            <img src="../img/circle-user-regular-full.svg" alt="" class="logout">
+                            My account
+                        </a>
+                    </div>
+                </div>
+            </nav>
+            <div class="header-right">
+                <div class="dropdown desktop-only">
+                    <button class="dropbtn" id="nome-usuario2"></button>
+                    <div class="dropdown-content">
+                        <a href="../testes/index-perfil.html" class="dropa" id="btn-sair">
+                            <img src="../img/circle-user-regular-full.svg" alt="" class="logout">
+                            My account
+                        </a>
+                    
+                    </div>
+                </div>
+                <button class="menu-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+
+        </div>
+    </header>
+    <div class="menu-overlay"></div>
+    <main>
+        <div class="content" id="sobre">
+            <h1 class="text">O que é a AIDA?
+            </h1>
+            <p class="subtitle">O AIDA utiliza metodologias em Python para detectar padrões e anomalias em imagens,
+                diferenciando
+                registros reais de conteúdos gerados por IA para garantir a integridade visual e combater a
+                desinformação.</p>
+            <div class="cards-sobre">
+                <div class="sobre-card">
+                    <div class="info-sobre">
+                        <img src="../img/bullseye-solid-full.svg" alt="" class="imgsobre">
+                        <h3>Precisão</h3>
+                        <p>Algoritmos que analisam padrões linguísticos com alta confiabilidade.</p>
+                    </div>
+                </div>
+                <div class="sobre-card">
+                    <div class="info-sobre">
+                        <img src="../img/magnifying-glass-solid-full.svg" alt="" class="imgsobre">
+                        <h3>Detecção Profunda</h3>
+                        <p>Identifica detalhes que diferem de conteudos humanos dos gerados por IA.</p>
+                    </div>
+                </div>
+                <div class="sobre-card">
+                    <div class="info-sobre">
+                        <img src="../img/eye-solid-full.svg" alt="" class="imgsobre">
+                        <h3>Analise</h3>
+                        <p>Algoritmos que analisam padrões linguísticos com alta confiabilidade.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="rolarpg">
+            <img src="../img/Frame 9.png" alt="" class="imgrpg">
+            <span class="seta"><img src="../img/Arrow 2.png" alt=""></span>
+
+        </div>
+
+    </main>
+    <h1 class="title-tech">Nossas Tecnologias</h1>
+    <section class="icons-section">
+        <div class="cards">
+            <div class="card-content">
+                <img src="../img/code-solid-full.svg" alt="" class="imgtech">
+                <h3>Tecnologias</h3>
+                <p>Utilizamos as HTML, CSS, JS, React, Python, Git, GSAP e o banco de dados Firebase para criar a nossa
+                    ferramenta.</p>
+            </div>
+            <div class="card-content">
+                <img src="../img/file-code-solid-full.svg" alt="" class="imgtech">
+                <h3>Métodos</h3>
+                <p>Para a detecção de inteligencia artificial nas fotos, utilizamos alguns metodos de IA forense como
+                    FFT e PSEM.</p>
+            </div>
+        </div>
+        <div class="icons-grid">
+            <div class="icon-wrapper"><img src="../img/html5-brands-solid-full.svg" alt="HTML" class="imgico"></div>
+            <div class="icon-wrapper"><img src="../img/css-brands-solid-full.svg" alt="CSS" class="imgico"></div>
+            <div class="icon-wrapper"><img src="../img/js-brands-solid-full.svg" alt="JS" class="imgico"></div>
+            <div class="icon-wrapper"><img src="../img/gsap.svg" alt="GSAP" class="imgico"></div>
+            <div class="icon-wrapper"><img src="../img/react-brands-solid-full.svg" alt="REACT" class="imgico"></div>
+            <div class="icon-wrapper"><img src="../img/php-brands-solid-full.svg" alt="FIGMA" class="imgico"></div>
+            <div class="icon-wrapper"><img src="../img/mysql-svgrepo-com.svg" alt="FIREBASE" class="imgico"></div>
+            <div class="icon-wrapper"><img src="../img/python-brands-solid-full.svg" alt="PYTHON" class="imgico"></div>
+            <div class="icon-wrapper"><img src="../img/square-github-brands-solid-full.svg" alt="GITHUB" class="imgico">
+            </div>
+        </div>
+    </section>
+    <section class="secfunc" id="funcionamento">
+        <h1 class="title-func">Funcionamento</h1>
+        <p class="subtitle-func">Como funciona a nossa ferramenta?</p>
+        <div class="card-func">
+            <div class="func-card">
+                <div class="info-func">
+                    <img src="../img/file-arrow-up-solid-full.svg" alt="" class="imgsobre">
+                    <h3>Upload</h3>
+                    <p>Usuário faz upload da imagem desejada.</p>
+                    <p class="number">#01</p>
+                </div>
+            </div>
+            <div class="func-card">
+                <div class="info-func">
+                    <img src="../img/gears-solid-full.svg" alt="" class="imgsobre">
+                    <h3>Processamento</h3>
+                    <p>A imagem é subjetida a diversos testes em metodos de detecção.</p>
+                    <p class="number2">#02</p>
+                </div>
+            </div>
+            <div class="func-card">
+                <div class="info-func">
+                    <img src="../img/circle-nodes-solid-full.svg" alt="" class="imgsobre">
+                    <h3>Analise</h3>
+                    <p>É analisado o score da imagem em diferentes métodos.</p>
+                    <p class="number2">#03</p>
+                </div>
+            </div>
+            <div class="func-card">
+                <div class="info-func">
+                    <img src="../img/square-poll-vertical-solid-full.svg" alt="" class="imgsobre">
+                    <h3>Resultado</h3>
+                    <p>É exibido a chance de manipulação da imagem.</p>
+                    <p class="number2">#04</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="equipe" id="equipe">
+        <div class="title-equipe">Nossa Equipe</div>
+        <div class="team-grid">
+            <div class="team-card">
+                <img src="../img/alex-exec.png"
+                    alt="Alex ">
+                <div class="overlay"></div>
+                <div class="info">
+                    <h3>Alexandre</h3>
+                    <p>Teoria e pesquisa</p>
+                </div>
+            </div>
+
+            <div class="team-card">
+                <img src="../img/thur-exec.png" alt="Arthur ">
+                <div class="overlay"></div>
+                <div class="info">
+                    <h3>Arthur</h3>
+                    <p>Métodos de detecção</p>
+                </div>
+            </div>
+
+            <div class="team-card">
+                <img src="../img/nidu-exec.png" alt="Nidulu">
+                <div class="overlay"></div>
+                <div class="info">
+                    <h3>Eduardo P.</h3>
+                    <p>Teoria e pesquisa</p>
+                </div>
+            </div>
+
+            <div class="team-card">
+                <img src="../img/iago-exec.png" alt="Jago">
+                <div class="overlay"></div>
+                <div class="info">
+                    <h3>Iago</h3>
+                    <p>Back e Front end</p>
+                </div>
+            </div>
+
+            <div class="team-card">
+                <img src="../img/pedrao-exec.png" alt="Gordao ">
+                <div class="overlay"></div>
+                <div class="info">
+                    <h3>Pedro H.</h3>
+                    <p>Web Design</p>
+                </div>
+            </div>
+        </div>
+        </div>
+    </section>
+    <section class="ferramenta" id="ferramentaaida">
+        <div class="contentferr">
+            <h1 class="titleferr">Experimente o AIDA agora</h1>
+            <p class="subtitleferr">Faça o upload de qualquer imagem e descubra em segundos se ela foi gerada por
+                inteligência artificial.</p>
+        </div>
+        <div class="btnferr">
+            <a href="../Ferramenta/index-seleciona.html" class="ancoraferr"><button class="btnferra">Acessar a
+                    ferramenta <img src="../img/Vector 5(2).svg" alt="" class="setabtn"></button></a>
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="foot-column">
+                <img src="../img/LogoBranca.png" class="logo-footer" alt="Logo AIDA">
+            </div>
+
+            <div class="foot-column">
+                <span class="foot-title">Apoiadores</span>
+                <ul class="foot-list">
+                    <li><a href="https://progrid.net.br/home.html" target="_blank">ProgrID</a></li>
+                    <li>Empresa 2</li>
+                </ul>
+            </div>
+
+            <div class="foot-column">
+                <span class="foot-title">Alunos</span>
+                <ul class="foot-list">
+                    <li>Alexandre</li>
+                    <li>Arthur</li>
+                    <li>Eduardo P.</li>
+                    <li>Iago</li>
+                    <li>Pedro H.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-rights">
+            <p>&copy; 2026 AIDA — Todos os direitos reservados.</p>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/SplitText.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="script.js"></script>
+</body>
+
+
+</html>

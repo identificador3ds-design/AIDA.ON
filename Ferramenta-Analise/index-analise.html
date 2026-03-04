@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIDA - Análise da Imagem</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="../img/AIDABranco.ico">
+</head>
+
+<body>
+
+    <div class="main-wrapper">
+
+        <header class="top-header">
+            <a href="../index.html"><img src="../img/LogoBranca.png" alt="AIDA Logo" class="logo-aida"></a>
+        </header>
+
+        <main class="center-stage" style="flex-direction: column; gap: 30px; align-items: center;">
+            <section class="card-analise">
+                
+                <div class="container-imagem">
+                    <img id="imagemPreview" src="#" alt="Sua imagem selecionada" class="imagem-preview" hidden>
+                    <div id="placeholderImagem" class="placeholder-visual"></div>
+                </div>
+
+                <div class="container-controles">
+                    
+                    <div class="grupo-input">
+                        <label for="tipoImagem" class="rotulo-input">Tipo de Imagem:</label>
+                        <input type="text" id="tipoImagem" class="campo-estilizado" placeholder="Ex: Fotografia, Arte Digital...">
+                    </div>
+
+                    <div class="grupo-input">
+                        <label for="metodoAnalise" class="rotulo-input">Método:</label>
+                        <select id="metodoAnalise" class="campo-estilizado campo-select">
+                            <option value="" disabled selected>Selecione um método...</option>
+                            <option value="FFT">FFT</option>
+                            <option value="PSEM">PSEM</option>
+                            <option value="consistencia">Consistência Visual</option>
+                        </select>
+                    </div>
+
+                    <div class="grupo-botoes">
+                        <button id="btnVerificar" class="btn-estilizado btn-primario">VERIFICAR</button>
+                        <a href="../Ferramenta/index-seleciona.html" class="ancora-botao">
+                            <button id="btnTrocar" class="btn-estilizado btn-secundario">TROCAR</button>
+                        </a>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <div id="loading" style="display: none; text-align: center; margin: 20px 0;">
+                <div class="spinner"></div>
+                <p style="margin-top: 15px; color: #c5dddb; font-weight: 600;">Analisando imagem...</p>
+            </div>
+
+            <section id="areaResultado" class="card-resultado" style="display: none;">
+                <div class="resultado-header">
+                    <h2 class="titulo-resultado">Resultado da Análise</h2>
+                    <div class="badge-ia">Probabilidade IA: <span id="porcentagemIA">0%</span></div>
+                </div>
+
+                <div class="resultado-corpo-vertical">
+                    <div class="container-imagem-processada">
+                        <p class="rotulo-input">Imagem Processada:</p>
+                        <img id="imagemProcessada" src="#" alt="Resultado" class="imagem-preview">
+                    </div>
+
+                    <div class="container-explicacao">
+                        <h3 id="tituloMetodo" style="color: #c5dddb; margin-bottom: 10px;">Sobre o Método</h3>
+                        <p id="textoMetodo" style="margin-bottom: 20px;">Aguardando processamento...</p>
+                        
+                        <div class="exemplos-metodo">
+                            <div class="placeholder-exemplo">Exemplo 1</div>
+                            <div class="placeholder-exemplo">Exemplo 2</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+        </main>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>

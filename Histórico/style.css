@@ -1,0 +1,98 @@
+/* --- Grade de Cards --- */
+.grid-historico {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+    width: 100%;
+}
+
+/* --- Estilo de cada Card --- */
+.card-historico-item {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px dashed rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    transition: all 0.3s ease;
+    animation: surgindo 0.5s ease-out;
+}
+
+.card-historico-item:hover {
+    border: 1px solid #127369;
+    background-color: rgba(18, 115, 105, 0.1); /* Brilho verde-água */
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+}
+
+.thumb-container {
+    width: 100%;
+    height: 160px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.thumb-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: 0.3s ease;
+}
+
+.card-historico-item:hover .thumb-container img {
+    transform: scale(1.05);
+}
+
+/* --- Textos Internos --- */
+.info-historico {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.data-badge {
+    font-size: 0.75rem;
+    color: #127369;
+    font-weight: 700;
+}
+
+.info-historico h4 {
+    color: white;
+    font-size: 1rem;
+}
+
+/* --- Botão Ver Detalhes --- */
+.btn-detalhes {
+    background: rgba(18, 115, 105, 0.2);
+    color: #c5dddb;
+    border: 1px solid #127369;
+    padding: 10px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: auto;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.btn-detalhes:hover {
+    background: #127369;
+    color: white;
+}
+
+/* --- Estilo do Fundo do Modal --- */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}

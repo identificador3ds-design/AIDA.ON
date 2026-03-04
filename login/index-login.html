@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AIDA - Login</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" href="../img/AIDABranco.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet" />
+</head>
+
+<body>
+  <a href="../index.html"><img src="./img/Vector 5.svg" alt="" class="volta"></a>
+  
+  <div class="card">
+    <div class="card-bg card-bg-1 signin"></div>
+    <div class="card-bg card-bg-2"></div>
+
+    <img class="logo logo-1" src="./img/Group 1.png" alt="">
+    <img class="logo logo-2" src="./img/Group 1.png" alt="">
+
+    <div class="form signin">
+      <form id="loginForm">
+        <h2>Login</h2>
+        <input type="email" id="loginEmail" placeholder="Email" required />
+        <input type="password" id="loginPassword" placeholder="Password" required />
+        <button type="submit" class="btn">ENTRAR</button>
+        <a onclick="toggleView()">Ainda não tem uma conta? <em>Registrar</em></a>
+      </form>
+    </div>
+
+    <div class="form signup active">
+      <form id="registerForm">
+        <h2>Registro</h2>
+        <input type="text" id="regName" placeholder="Name" required />
+        <input type="email" id="regEmail" placeholder="Email" required />
+        <input type="password" id="regPassword" placeholder="Password" required />
+        <button type="submit" class="btn">REGISTRAR</button>
+        <a onclick="toggleView()">Já possui uma conta? <em>Entrar</em></a>
+      </form>
+    </div>
+
+    <div id="toast-container"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="script.js"></script>
+</body>

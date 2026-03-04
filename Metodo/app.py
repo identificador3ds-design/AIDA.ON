@@ -2,6 +2,9 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import base64
 
+app = Flask(__name__)
+CORS(app)
+
 from metadados import verificar_ia_nos_metadados
 from fft import executar_analise_completa_fft
 from marca_dagua import verificar_marca_dagua # <-- NOVO IMPORT AQUI
@@ -55,4 +58,5 @@ def analisar():
         return jsonify({"status": "erro", "mensagem": str(e)}), 500
 
 if __name__ == '__main__':
+
     app.run(debug=True, port=5000)

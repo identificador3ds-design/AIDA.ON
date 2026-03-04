@@ -1,23 +1,32 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS
 import base64
 import os
 
 app = Flask(__name__)
 
-# Configuração robusta do CORS para aceitar o seu Netlify
+# Configuração agressiva de CORS
 CORS(app, resources={r"/*": {"origins": "*"}})
 
+@app.before_request
+def handle_preflight():
+    if request.method == "OPTIONS":
+        response = make_response()
+        response.headers.add("Access-Control-Allow-Origin", "*")
+        response.headers.add("Access-Control-Allow-Headers", "*")
+        response.headers.add("Access-Control-Allow-Methods", "*")
+        return response, 200
+
+# Importe suas funções (mantenha como está)
 from metadados import verificar_ia_nos_metadados
 from fft import executar_analise_completa_fft
 from marca_dagua import verificar_marca_dagua
 
-# ROTA DE TESTE (Para evitar o erro que apareceu no seu print)
 @app.route('/', methods=['GET'])
 def home():
-    return "Servidor AIDA.ON está online!", 200
+    return "Servidor AIDA.ON online", 200
 
-@app.route('/analisar', methods=['POST', 'OPTIONS']) # Adicionado OPTIONS aqui
+@app.route('/analisar', methods=['POST'])
 def analisar():
     # O CORS(app) já trata o OPTIONS, mas manteremos o fluxo
     try:

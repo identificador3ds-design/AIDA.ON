@@ -1,21 +1,30 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import base64
+import os
 
 app = Flask(__name__)
-CORS(app)
+
+# Configuração robusta do CORS para aceitar o seu Netlify
+CORS(app, resources={r"/*": {"origins": "*"}}) 
 
 from metadados import verificar_ia_nos_metadados
 from fft import executar_analise_completa_fft
-from marca_dagua import verificar_marca_dagua # <-- NOVO IMPORT AQUI
+from marca_dagua import verificar_marca_dagua
 
-app = Flask(__name__)
-CORS(app)
+# ROTA DE TESTE (Para evitar o erro que apareceu no seu print)
+@app.route('/', methods=['GET'])
+def home():
+    return "Servidor AIDA.ON está online!", 200
 
-@app.route('/analisar', methods=['POST'])
+@app.route('/analisar', methods=['POST', 'OPTIONS']) # Adicionado OPTIONS aqui
 def analisar():
+    # O CORS(app) já trata o OPTIONS, mas manteremos o fluxo
     try:
         data = request.json
+        if not data or 'imagem' not in data:
+            return jsonify({"status": "erro", "mensagem": "Nenhuma imagem enviada"}), 400
+            
         image_full_b64 = data.get('imagem')
         image_b64_data = image_full_b64.split(",")[1]
         img_bytes = base64.b64decode(image_b64_data)
@@ -61,4 +70,5 @@ if __name__ == "__main__":
     import os
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
+
 

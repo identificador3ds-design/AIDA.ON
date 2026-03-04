@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
             loading.style.display = 'block';
 
             try {
-                const response = await fetch('https://aida-on.onrender.com', {
+                const response = await fetch('https://aida-on.onrender.com/analisar', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ imagem: imagemBase64, metodo: metodoSelecionado })
@@ -141,3 +141,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 });
+

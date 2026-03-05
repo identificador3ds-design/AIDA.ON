@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Afacad:ital,wght@0,400..700;1,400..700&display=swap');
 * {
     margin: 0;
     padding: 0;
@@ -28,6 +29,77 @@ body::before {
   z-index: -1; 
   transform: scale(1.1); 
 }
+.dropdown {
+    position: relative;
+    display: block;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+    z-index: 5;
+}
+
+.dropbtn {
+    padding: 8px 14px;
+    background: transparent;
+    color: #fff;
+    transition: 0.25s;
+    font-size: 1.2rem;
+    border: none;
+    min-width: 80px;
+    min-height: 36px;
+    font-weight: bold;
+    font-family: afacad;
+    margin-left: 450px;
+}
+
+
+
+.dropdown-content {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+    position: absolute;
+    background-color: #0c312e;
+    height: 45px;
+    width: 130px;
+    padding: 10px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    border-radius: 0 0 16px 16px;
+    margin-left: 450px;
+    
+    
+}
+
+.logout {
+    filter:
+        invert(100);
+    width: 25px;
+    height: 25px;
+}
+
+.dropa {
+    text-decoration: none;
+    color: #ffffff;
+    font-size: 1.14rem;
+    font-family: afacad;
+    font-weight: bold;
+    position: absolute;
+    display: flex;
+    gap: 5px;
+    
+}
+
+.dropdown:hover .dropdown-content {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0)
+}
 
 .main-wrapper {
     display: flex;
@@ -50,6 +122,8 @@ body::before {
     width: 280px; 
     height: auto;
     filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2));
+    margin-right: 450px;
+    margin-left: 450px;
 }
 
 .center-stage {

@@ -22,12 +22,16 @@
 
 header {
     position: fixed;
-    top: 0;
-    width: 100%;
-    height: 80px;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(0);
+    width: 70%;
+    height: 60px;
     background: #10403b;
     z-index: 100;
     transition: all 0.3s ease;
+    margin: 5px;
+    border-radius: 46px;
 }
 header.scrolled {
     padding: 8px 0;
@@ -44,15 +48,16 @@ header.scrolled {
     display: flex;
     align-items: center;
     justify-content: space-between;
-
-    padding: 0 20px;
+    padding-top: 10px;
+    padding: 0px 50px;
     position: relative;
 }
 
 .header-hidden {
-    transform: translateY(-100%);
-
+    transform: translateX(-50%) translateY(-150%);
 }
+
+
 html {
     scroll-behavior: smooth;
 }
@@ -62,8 +67,9 @@ html {
     transform: translateX(-50%);
     transition: transform 0.35s cubic-bezier(0.77, 0, 0.175, 1);
     display: flex;
-    gap: 40px;
+    gap: 35px;
     z-index: 1;
+    margin: 0 30px 0 30px;
 }
 
 .ancoranav {
@@ -174,7 +180,7 @@ html {
 }
 
 .logoaida {
-    height: 40px;
+    height: 30px;
     width: auto;
 }
 

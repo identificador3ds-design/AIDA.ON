@@ -38,6 +38,127 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 });
+// =========================
+// equipe card 
+//----------------------------
+
+gsap.registerPlugin(ScrollTrigger);
+
+const members = [
+{
+name:"Alexandre",
+role:"Head of Documentation",
+description:"Responsável pela documentação técnica do projeto.",
+image:"../img/Alex 1.png"
+},
+{
+name:"Eduardo",
+role:"Data Acquisition Lead",
+description:"Responsável pela coleta e organização dos dados.",
+image:"../img/Nidulu 1.png"
+},
+{
+name:"Arthur",
+role:"Head of Detection Methodologies",
+description:"Responsável pelo desenvolvimento das metodologias.",
+image:"../img/Arthur 1.png"
+},
+{
+name:"Pedro",
+role:"UX/UI Designer & Lead Frontend",
+description:"Responsável pela experiência do usuário e frontend.",
+image:"../img/Pedro 1.png"
+},
+{
+name:"Iago",
+role:"Project Manager & Lead Backend",
+description:"Responsável pela gestão do projeto e backend.",
+image:"../img/Iago 2.png"
+}
+];
+
+const photo = document.getElementById("memberPhoto");
+const bigName = document.getElementById("memberBigName");
+const name = document.getElementById("memberName");
+const role = document.getElementById("memberRole");
+const description = document.getElementById("memberDescription");
+
+let currentIndex = -1;
+
+function changeMember(index){
+
+if(index === currentIndex) return;
+
+currentIndex = index;
+
+const member = members[index];
+
+const tl = gsap.timeline();
+
+tl.to("#memberPhoto",{
+x:-150,
+opacity:0,
+duration:0.35,
+ease:"power2.out"
+})
+
+.to(".team-card",{
+y:40,
+opacity:0,
+duration:0.25
+},"<")
+
+.add(()=>{
+
+photo.src = member.image;
+
+bigName.textContent = member.name.toUpperCase();
+name.textContent = member.name;
+role.textContent = member.role;
+description.textContent = member.description;
+
+document.querySelectorAll(".icon").forEach(i=>{
+i.classList.remove("active");
+});
+
+document.getElementById("icon"+index).classList.add("active");
+
+})
+
+.fromTo("#memberPhoto",
+{ x:150, opacity:0 },
+{ x:0, opacity:1, duration:0.5, ease:"power3.out" }
+)
+
+.fromTo(".team-card",
+{ y:40, opacity:0 },
+{ y:0, opacity:1, duration:0.45 },
+"<");
+
+}
+
+ScrollTrigger.create({
+
+trigger:".team-section",
+start:"top top",
+end:"+=5000",
+scrub:1,
+pin:true,
+
+onUpdate:(self)=>{
+
+const progress = self.progress;
+
+let index = Math.floor(progress * members.length);
+
+if(index >= members.length) index = members.length - 1;
+
+changeMember(index);
+
+}
+
+});
+
 
 
 // =============================
@@ -168,44 +289,44 @@ document.querySelectorAll('.navbar a').forEach(link => {
 // =============================
 // HEADER INTELIGENTE
 // =============================
+// =============================
+// HEADER INTELIGENTE
+// =============================
+
+// =============================
+// HEADER INTELIGENTE (estável com GSAP)
+// =============================
+
+// =============================
+// HEADER INTELIGENTE (compatível com GSAP)
+// =============================
+
 const header = document.querySelector("header");
-let lastScroll = 0;
+const hero = document.querySelector(".hero");
 
 window.addEventListener("scroll", () => {
 
-    const currentScroll = window.scrollY;
+    const heroBottom = hero.getBoundingClientRect().bottom;
 
-    // mostrar quando voltar para a HERO (topo da página)
-    if(currentScroll < 100){
+    // enquanto estiver na hero
+    if(heroBottom > 0){
+
         header.classList.remove("header-hidden");
-    }
 
-    // esconder apenas quando descer
-    else if (currentScroll > lastScroll && currentScroll > 120) {
-        header.classList.add("header-hidden");
-    }
-
-    // efeito glass
-    if(currentScroll > 20){
-        header.classList.add("scrolled");
     }else{
-        header.classList.remove("scrolled");
-    }
 
-    lastScroll = currentScroll;
+        header.classList.add("header-hidden");
+
+    }
 
 });
 
 
-// =============================
-// MOSTRAR NAVBAR COM MOUSE NO TOPO
-// =============================
+// mostrar header com mouse no topo
 document.addEventListener("mousemove",(e)=>{
 
     if(e.clientY < 60){
-
         header.classList.remove("header-hidden");
-
     }
 
 });

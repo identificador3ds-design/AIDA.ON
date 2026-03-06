@@ -33,10 +33,11 @@ header {
     margin: 5px;
     border-radius: 46px;
 }
+
 header.scrolled {
     padding: 8px 0;
     background: rgba(16, 64, 59, 0.95);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
 /* container interno */
@@ -61,6 +62,7 @@ header.scrolled {
 html {
     scroll-behavior: smooth;
 }
+
 .navbar {
     position: absolute;
     left: 50%;
@@ -151,7 +153,7 @@ html {
     border-radius: 0 0 16px 16px;
     margin-left: 4px;
     margin-top: 30px;
-    
+
 }
 
 .logout {
@@ -170,7 +172,7 @@ html {
     position: absolute;
     display: flex;
     gap: 5px;
-    
+
 }
 
 .dropdown:hover .dropdown-content {
@@ -300,13 +302,16 @@ a,
     text-align: center;
     padding: 15px;
 }
+
 .info-func p {
     font-size: 0.85rem;
     line-height: 1.2;
 }
+
 .info-func h3 {
     font-size: 1rem;
 }
+
 .title-func {
     display: flex;
     justify-content: center;
@@ -587,7 +592,12 @@ a,
     pointer-events: none;
 }
 
-.title-equipe {
+.equipe {
+    background-image: url(../img/Group\ 7.png);
+    width: 99.5vw;
+}
+
+/*.title-equipe {
     font-size: 3rem;
     width: 100%;
     left: 5%;
@@ -680,6 +690,130 @@ a,
     font-size: 1.05rem;
     opacity: 0.9;
     font-weight: 400;
+} */
+.team-section{
+    width:100%;
+    height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#0e5f57;
+    background-image: url(../img/Group\ 7.png);
+    position:relative;
+    overflow:hidden;
+}
+
+.team-section img {
+    width: 100%;
+}
+
+.team-wrapper {
+
+    display: flex;
+    align-items: center;
+    gap: 90px;
+    width: 100%;
+    max-width: 90%;
+
+}
+
+
+/* ICONES */
+
+.team-icons {
+
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+
+}
+
+.icon {
+
+    font-size: 28px;
+    color: #a0a0a0;
+    transition: .35s;
+
+}
+
+.icon.active {
+
+    color: white;
+    transform: scale(1.2);
+
+}
+
+
+/* FOTO */
+
+.team-photo {
+
+    width: 380px;
+    overflow: hidden;
+
+}
+
+.team-photo img {
+
+    width: 100%;
+    transform: translateX(-60px);
+    transition: all 0.35s ease;
+
+}
+
+
+/* INFO */
+
+.team-info {
+
+    position: relative;
+    transition: all 0.35s ease;
+}
+
+.team-big-name {
+
+    position: absolute;
+    bottom: -120px;
+    left: -40px;
+
+    font-size: 130px;
+    font-weight: 900;
+
+    color: rgba(255, 255, 255, 0.07);
+
+    pointer-events: none;
+
+}
+
+
+/* CARD */
+
+.team-card {
+
+    background: #145c55;
+
+    padding: 40px;
+
+    border-radius: 20px;
+
+    width: 360px;
+
+    color: white;
+
+}
+
+.team-card h3 {
+
+    font-size: 26px;
+    margin-bottom: 6px;
+
+}
+
+.team-card p {
+
+    opacity: .9;
+    line-height: 1.6;
+
 }
 
 .titleferr {
@@ -782,7 +916,6 @@ li a {
 .logo-footer {
     width: 250px;
     height: auto;
-    filter: brightness(0) saturate(100%) invert(74%) sepia(4%) saturate(12%) hue-rotate(175deg) brightness(94%) contrast(89%);
     transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     cursor: pointer;
 }
@@ -847,7 +980,7 @@ li a {
     justify-content: center;
 
     border-radius: 8px;
-    border: 1px solid rgba(255,255,255,0.2);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     background: transparent;
 
     cursor: pointer;
@@ -856,7 +989,7 @@ li a {
 
 /* hover discreto */
 .menu-toggle:hover {
-    background: rgba(255,255,255,0.08);
+    background: rgba(255, 255, 255, 0.08);
 }
 
 /* linhas */
@@ -868,24 +1001,35 @@ li a {
     transition: 0.3s;
 }
 
-.menu-toggle span:nth-child(1) { transform: translateY(-6px); }
-.menu-toggle span:nth-child(2) { transform: translateY(0); }
-.menu-toggle span:nth-child(3) { transform: translateY(6px); }
+.menu-toggle span:nth-child(1) {
+    transform: translateY(-6px);
+}
+
+.menu-toggle span:nth-child(2) {
+    transform: translateY(0);
+}
+
+.menu-toggle span:nth-child(3) {
+    transform: translateY(6px);
+}
 
 /* animação X */
 .menu-toggle.active span:nth-child(1) {
     transform: rotate(45deg);
 }
+
 .menu-toggle.active span:nth-child(2) {
     opacity: 0;
 }
+
 .menu-toggle.active span:nth-child(3) {
     transform: rotate(-45deg);
 }
+
 .menu-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.4);
+    background: rgba(0, 0, 0, 0.4);
     opacity: 0;
     visibility: hidden;
     transition: 0.3s;
@@ -896,6 +1040,7 @@ li a {
     opacity: 1;
     visibility: visible;
 }
+
 .desktop-only {
     display: flex;
 }
@@ -903,6 +1048,7 @@ li a {
 .mobile-only {
     display: none;
 }
+
 /* só esconder no mobile */
 @media (max-width: 768px) {
 
@@ -934,7 +1080,7 @@ li a {
         transform: translateX(100%);
         transition: transform 0.3s ease;
 
-        box-shadow: -10px 0 30px rgba(0,0,0,0.3);
+        box-shadow: -10px 0 30px rgba(0, 0, 0, 0.3);
         z-index: 180;
     }
 

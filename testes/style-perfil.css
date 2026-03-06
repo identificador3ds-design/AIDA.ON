@@ -41,11 +41,6 @@ body {
   translate: -50% -50%;
   height: 150px;
   width: 200%;
-  background-image: linear-gradient(
-    180deg,
-    #10403b,
-    #127369
-  );
   animation: rotate 3s linear infinite;
 }
 

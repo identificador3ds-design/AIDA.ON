@@ -102,7 +102,7 @@ duration:0.35,
 ease:"power2.out"
 })
 
-.to(".team-card",{
+.to(".card-team",{
 y:40,
 opacity:0,
 duration:0.25
@@ -130,7 +130,7 @@ document.getElementById("icon"+index).classList.add("active");
 { x:0, opacity:1, duration:0.5, ease:"power3.out" }
 )
 
-.fromTo(".team-card",
+.fromTo(".card-team",
 { y:40, opacity:0 },
 { y:0, opacity:1, duration:0.45 },
 "<");

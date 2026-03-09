@@ -84,10 +84,13 @@ def analisar():
                 "veredito": "IA DETECTADA"
             })
         
-        # --- PASSO 3: Análise Física/Estatística (O novo método) ---
+# --- PASSO 3: Análise Física/Estatística ---
         stats = analisar_fisica_imagem(img_bytes)
+        
         if stats:
-            score = stats['score']
+            # Desempacotando a tupla de 5 valores que vem do seu teste_qse.py
+            luz, geo, cont, fourier, score = stats
+            
             # Lógica: Se o score fugir do padrão humano [0.4 a 0.8], é suspeito
             if score < 0.4 or score > 0.8:
                 return jsonify({
@@ -97,7 +100,12 @@ def analisar():
                     "energia": f"Score Físico: {score:.4f}",
                     "metodo": "Análise de Consistência Física",
                     "veredito": "IA DETECTADA (Anomalia)",
-                    "detalhes": stats
+                    "detalhes": {
+                        "luz": float(luz), 
+                        "geo": float(geo), 
+                        "cont": float(cont), 
+                        "fourier": float(fourier)
+                    }
                 })
 
         # --- PASSO 4: Análise de Frequência (FFT) ---

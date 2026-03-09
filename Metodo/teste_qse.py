@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 def analisar_fisica_imagem(img_bytes):
     # Converte bytes para formato que o OpenCV entende
     nparr = np.frombuffer(img_bytes, np.uint8)
-    img = cv2.imdecode(nparr, cv2.CV_16U if img_bytes is None else cv2.IMREAD_COLOR)
+    img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
     
     if img is None:
         return None

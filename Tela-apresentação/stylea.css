@@ -27,11 +27,12 @@ header {
   transform: translateX(-50%) translateY(0);
   width: 70%;
   height: 60px;
-  background: #10403b;
+  background: #19675f;
   z-index: 100;
   transition: all 0.3s ease;
   margin: 5px;
   border-radius: 46px;
+
 }
 
 header.scrolled {
@@ -69,7 +70,7 @@ html {
   transition: transform 0.35s cubic-bezier(0.77, 0, 0.175, 1);
   display: flex;
   gap: 35px;
-  z-index: 1;
+  z-index: 100;
   margin: 0 30px 0 30px;
 }
 
@@ -186,8 +187,8 @@ html {
 body {
   font-family: Afacad, arial, sans-serif;
   color: #4c5958;
-  background: radial-gradient(#bfbfbf, #504f4f);
-  background-image: url(..//img/FUNDO.png);
+  background: radial-gradient( #2DAFA1, #134943);
+  background: url(..//img/FUNDO.png);
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
@@ -203,7 +204,7 @@ section {
   width: 90vw;
   min-height: 100vh;
   height: auto;
-  margin: 100px auto;
+  margin: 0 auto;
 }
 
 .content {
@@ -215,7 +216,57 @@ section {
   padding: 20px;
   gap: 40px;
 }
-
+.hero {
+  z-index: 10; 
+  width: 100%; 
+  margin-left: calc(-50vw + 50%);
+  min-height: 100vh;
+  background: radial-gradient(
+    circle at 50% 50%, 
+    #144944 0%,  
+    #0f3833 70%, 
+    #0d312d 100% 
+  );
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  
+}
+.contenthero{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-top: 0;
+  color: #fff;
+}
+.contenthero h2{
+  margin-left: 150px;
+  margin-top: -100px;
+}
+.contenthero img {
+  width: 84%;         
+  max-width: 600px;   
+  height: auto;       
+  display: block;
+  margin: 0 auto;    
+}
+.imghero {
+  max-width: 100%;
+  height: auto;
+  z-index: 1000;
+}
+.herotitle{
+  position: relative;
+  top: 120px;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  color: #ffffff;
+}
+.herotitle span{
+  color: #2DAFA1;
+}
 .text,
 .title-func,
 .title-tech,
@@ -235,12 +286,75 @@ a,
 .team-card:hover {
   transform: translateY(-6px);
 }
+.content img{
+  width: 30%;
+  height: auto;
+}
+.content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  width: 90%;
+  gap: 50px;
 
+}
+.sobre{
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  padding: 100px 5%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background-image: url('../img/FUNDO2.png'); 
+  background-color: #0c312e;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
+.sobre .content {
+  display: flex;
+  flex-direction: row; 
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1300px;
+  width: 100%;
+  gap: 50px;
+  background: transparent; 
+  min-height: auto;
+}
+.sobre .content > img {
+  flex: 1;
+  max-width: 500px; /* Ajuste conforme o tamanho da sua imagem 'Group 11.png' */
+  height: auto;
+  filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
+}
+.sobre .subtitle {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.25); /* Fundo escurecido do card */
+  color: #ffffff;
+  padding: 50px;
+  border-radius: 40px; /* Bordas bem arredondadas como na foto */
+  backdrop-filter: blur(10px); /* Efeito suave de vidro */
+  font-size: 1.25rem;
+  line-height: 1.7;
+  text-align: left;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  margin: 0; /* Reseta o width: 45% anterior */
+  width: auto;
+}
 .imgsobre {
-  filter: invert(12%) sepia(94%) saturate(1234%) hue-rotate(140deg)
-    brightness(95%) contrast(92%);
-  width: 15%;
-  height: 15%;
+  filter: invert(100);
+  width: 2%;
+  height: 2%;
+}
+.imgsobre2{
+  filter: invert(100);
+  width: 10px;
+  height: 10px;
 }
 
 .text {
@@ -254,34 +368,60 @@ a,
 }
 
 .cards-sobre {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  width: 100%;
+  margin-top: 50px;
 }
 
 .sobre-card {
-  background: linear-gradient(135deg #e2dfdf, #dbd8d8);
-  border-radius: 16px;
-  padding: 50px;
-  color: #081f1c;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 30px;
+  border-radius: 24px;
+  transition: transform 0.3s ease;
+  color: #ffffff;
   box-shadow: 0 10px 30px #504f4f44;
   text-shadow: 0 10px 30px #01010144;
-  transition: transform 0.5s ease;
   backdrop-filter: blur(10px);
+  width: 300px;
+  height: 210px;
+}
+.sobreaidacard {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 30px;
+  border-radius: 24px;
+  transition: transform 0.3s ease;
+  color: #ffffff;
+  box-shadow: 0 10px 30px #504f4f44;
+  text-shadow: 0 10px 30px #01010144;
+  backdrop-filter: blur(10px);
+  width: 300px;
+  height: 210px;
 }
 
 .sobre-card:hover {
   transform: scale(1.02);
 }
-
+.secfunc {
+  width: 100%;
+  margin: 0;
+  padding: 100px 5%;
+  min-height: 100vh;
+  background-image: url('../img/FUNDO2.png'); 
+  background-color: #0c312e;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
 .func-card {
   background: linear-gradient(145deg, #ffffff22, #ffffff10);
   backdrop-filter: blur(12px);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
   transition: all 0.35s ease;
   padding: 50px;
-  color: #081f1c;
+  color: #ffffff;
   text-shadow: 0 10px 30px #01010144;
   width: 220px;
   height: 220px;
@@ -297,10 +437,12 @@ a,
 .info-func p {
   font-size: 0.85rem;
   line-height: 1.2;
+  color: #ffffff;
 }
 
 .info-func h3 {
   font-size: 1rem;
+  color: #ffffff;
 }
 
 .title-func {
@@ -312,6 +454,7 @@ a,
   transform: translateX(-50%);
   font-size: 3rem;
   margin-top: 9%;
+  color: #ffffff;
 }
 
 .subtitle-func {
@@ -323,6 +466,7 @@ a,
   transform: translateX(-50%);
   margin-top: 5%;
   font-size: 2rem;
+  color: #ffffff;
 }
 
 .info-func img {

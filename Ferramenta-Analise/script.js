@@ -103,7 +103,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     document.getElementById('tituloMetodo').innerText = dados.metodo;
 
                     const textoElement = document.getElementById('textoMetodo');
-                    if (dados.energia === "N/A (Assinatura Digital)") {
+                    if (dados.metodo.includes("Estatística")) {
+                        textoElement.innerText = `Análise de consistência física concluída. ${dados.energia}. Um score fora da faixa [0.4 - 0.8] indica manipulação sintética.`;
+                    } else if (dados.energia === "N/A (Assinatura Digital)") {
                         textoElement.innerText = `Identificado via metadados: ${dados.metodo}. Esta imagem possui assinaturas digitais explícitas de IA.`;
                     } else if (dados.energia === "N/A (Marca Visual)") {
                         textoElement.innerText = `Identificado visualmente: ${dados.metodo}. Foi detectada a logomarca padrão de IA no canto da imagem.`;

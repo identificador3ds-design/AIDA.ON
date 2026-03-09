@@ -3,6 +3,9 @@ from flask_cors import CORS
 import base64
 import io
 import os
+import matplotlib
+matplotlib.use('Agg')  # OBRIGATÓRIO para servidores como o Render
+import matplotlib.pyplot as plt
 
 # Importação dos seus módulos de detecção
 # Certifique-se que estes arquivos (.py) estão na mesma pasta
@@ -107,5 +110,6 @@ def analisar():
         return jsonify({"status": "erro", "mensagem": str(e)}), 500
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port, debug=True)
+    import os
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host='0.0.0.0', port=port)

@@ -9,7 +9,7 @@ import os
 from metadados import verificar_ia_nos_metadados
 from fft import executar_analise_completa_fft
 from marca_dagua import verificar_marca_dagua
-from Metodo.teste_qse import analisar_fisica_imagem
+from teste_qse import analisar_fisica_imagem
 
 app = Flask(__name__)
 

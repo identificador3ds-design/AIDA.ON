@@ -546,6 +546,7 @@ a,
   position: relative;
   width: 100%;
   min-height: 100vh;
+  height: auto;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-evenly;
@@ -739,6 +740,7 @@ a,
 
 .team-section img {
   width: 100%;
+  height: auto;
 }
 
 .team-wrapper {

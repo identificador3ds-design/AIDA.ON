@@ -317,7 +317,7 @@ a,
   align-items: center;
   justify-content: center;
   position: relative;
-  background-image: url('../img/FUNDO2.png');
+  background-image: url(../img/Frame\ 18.png);
   background-color: #0c312e;
   background-size: cover;
   background-position: center;
@@ -429,8 +429,10 @@ a,
   margin: 0;
   padding: 100px 5%;
   min-height: 100vh;
-  background-image: url('../img/FUNDO2.png');
-  background-color: #0c312e;
+  background: radial-gradient(circle at 50% 50%,
+      #144944 0%,
+      #0f3833 70%,
+      #0d312d 100%);
   background-size: cover;
   background-position: center;
   background-attachment: fixed;

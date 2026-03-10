@@ -121,6 +121,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     else if (metodoRetornado.includes("lsb")) {
                         textoElement.innerText = `🔍 ANÁLISE LSB (PLANO DE BITS)\n\nO plano de bits menos significativos apresenta ${dados.energia} pixels ativos. Uma alta concentração de bits alterados pode indicar a presença de marcas d'água digitais ou esteganografia.`;
                     }
+                    else if (metodoRetornado.includes("gradiente") || metodoRetornado.includes("laplaciano") || metodoRetornado.includes("neon")) {
+                        textoElement.innerText = `🔍 ANÁLISE DE GRADIENTE LAPLACIANO (EFEITO NEON)\n\nO filtro Laplaciano detectou bordas com intensidade média de ${dados.energia}. O efeito neon (colormap TURBO) realça as regiões de maior variação na imagem, que podem corresponder a texturas sintéticas ou artefatos característicos de imagens geradas por IA.`;
+                    }
                     else if (metodoRetornado.includes("frequência") || metodoRetornado.includes("fft") || metodoRetornado.includes("consistência")) {
                         textoElement.innerText = `🔍 ANÁLISE DE FREQUÊNCIA (FFT)\n\nA análise técnica de frequências detectou uma energia de ${dados.energia}. Valores fora da faixa típica podem indicar manipulação sintética.`;
                     }

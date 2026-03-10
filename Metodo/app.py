@@ -28,6 +28,7 @@ def handle_preflight():
 METODOS_PRINCIPAIS = {
     "FFT": executar_analise_completa_fft,
     "M4": executar_analise_m4,
+    "GRAD": executar_analise_gradiente, 
     # "PSEM": executar_analise_psem,  # quando implementar
 }
 

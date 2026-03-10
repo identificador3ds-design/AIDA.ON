@@ -9,6 +9,7 @@ from metadados import verificar_ia_nos_metadados
 from fft import executar_analise_completa_fft
 from marca_dagua import verificar_marca_dagua
 from m4 import executar_analise_m4  # ← IMPORTANTE: importar a função do m4.py
+from grad import executar_analise_gradiente
 
 app = Flask(__name__)
 
@@ -52,7 +53,7 @@ def analisar():
         image_full_b64 = data.get('imagem')
         image_b64_data = image_full_b64.split(",")[1] if "," in image_full_b64 else image_full_b64
         img_bytes = base64.b64decode(image_b64_data)
-        """
+        
         # --- PASSO 1: Marcas d'Água Visuais (automático) ---
         print("[DEBUG] Verificando marca d'água...")
         foi_detectado_marca, nome_ia_marca = verificar_marca_dagua(img_bytes)
@@ -80,7 +81,7 @@ def analisar():
                 "metodo": f"Metadados ({nome_ia_meta})",
                 "veredito": "IA DETECTADA"
             })
-        """
+        
 
         # --- PASSO 3: Executa o método escolhido pelo usuário ---
         print(f"[DEBUG] Métodos disponíveis: {list(METODOS_PRINCIPAIS.keys())}")

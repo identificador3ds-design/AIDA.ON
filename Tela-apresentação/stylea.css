@@ -546,6 +546,7 @@ a,
   position: relative;
   width: 100%;
   min-height: 100vh;
+  height: auto;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-evenly;
@@ -553,7 +554,7 @@ a,
   padding: 60px 5%; 
   overflow: hidden;
   z-index: 1;
-  background: url(../img/Group\ 7.png);
+  background: url(../img/bg.png);
 }
 
 .title-tech {
@@ -648,7 +649,7 @@ a,
 }
 
 .icon-wrapper.active {
-  background: #0d3430;
+  background: #072421;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.18);
   transform: scale(1.18) translateY(-8px);
   z-index: 10;
@@ -720,7 +721,7 @@ a,
 }
 
 .equipe {
-  background-image: url(../img/Group\ 7.png);
+  background-image: url(../img/bg.png);
   width: 99.5vw;
 }
 
@@ -732,13 +733,14 @@ a,
   align-items: center;
   justify-content: center;
   background: #0e5f57;
-  background-image: url(../img/Group\ 7.png);
+  background-image: url(../img/bg.png);
   position: relative;
   overflow: hidden;
 }
 
 .team-section img {
   width: 100%;
+  height: auto;
 }
 
 .team-wrapper {
@@ -761,7 +763,7 @@ a,
 
 .icon {
   font-size: 28px;
-  color: #a0a0a0;
+  color: #818181;
   transition: 0.35s;
 }
 
@@ -813,7 +815,7 @@ a,
 
 /* CARD */
 .card-team {
-  background: linear-gradient(to right, #145c55, #10403b);
+  background: linear-gradient(to right, #104e48, #041211);
   padding: 50px;
   border-radius: 20px;
   color: white;

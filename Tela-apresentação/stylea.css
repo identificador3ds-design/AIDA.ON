@@ -145,7 +145,7 @@ html {
     transform 0.3s ease,
     visibility 0.3s;
   position: absolute;
-  background-color: #0c312e;
+  background-color: #155751;
   height: 45px;
   width: 130px;
   padding: 10px;
@@ -324,7 +324,9 @@ a,
   background-attachment: fixed;
   background-repeat: no-repeat;
 }
-
+.info-sobre h3{
+  font-size: 1.5rem;
+}
 .sobre .content {
   display: flex;
   flex-direction: row;
@@ -348,32 +350,28 @@ a,
 .sobre .subtitle {
   flex: 1;
   background: rgba(0, 0, 0, 0.25);
-  /* Fundo escurecido do card */
   color: #ffffff;
   padding: 50px;
   border-radius: 40px;
-  /* Bordas bem arredondadas como na foto */
   backdrop-filter: blur(10px);
-  /* Efeito suave de vidro */
-  font-size: 1.25rem;
+  font-size: 1.35rem;
   line-height: 1.7;
   text-align: left;
   border: 1px solid rgba(255, 255, 255, 0.05);
   margin: 0;
-  /* Reseta o width: 45% anterior */
   width: auto;
 }
 
 .imgsobre {
   filter: invert(100);
-  width: 2%;
-  height: 2%;
+  max-width: 15%;
+  max-height: 15%;
 }
 
 .imgsobre2 {
   filter: invert(100);
-  width: 10px;
-  height: 10px;
+  max-width: 15%;
+  max-height: 15%;
 }
 
 .text {
@@ -418,6 +416,15 @@ a,
   backdrop-filter: blur(10px);
   width: 300px;
   height: 210px;
+}
+.sobreaidacard h3{
+  font-size: 1.5rem;
+}
+.sobreaidacard p{
+  font-size: 1.15rem;
+}
+.info-sobre p {
+  font-size: 1.15rem;
 }
 
 .sobre-card:hover {

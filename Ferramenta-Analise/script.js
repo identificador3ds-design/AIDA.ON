@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const imagemSalva = localStorage.getItem('AIDA_ImagemSelecionada');
 
     if (!imagemSalva) {
-        window.location.href = "../Selecionar-Imagem/index-seleciona.html";
+        window.location.href = "../Ferramenta/index-seleciona.html";
         return;
     }
 
@@ -76,6 +76,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const imagemBase64 = localStorage.getItem('AIDA_ImagemSelecionada');
             const loading = document.getElementById('loading');
             const areaResultado = document.getElementById('areaResultado');
+
+            // DEBUG - verificar o valor do método
+            console.log("Método selecionado:", metodoSelecionado);
 
             if (!metodoSelecionado || !imagemBase64) {
                 mostrarAlerta("Selecione o método e uma imagem!");
@@ -103,14 +106,26 @@ document.addEventListener('DOMContentLoaded', () => {
                     document.getElementById('tituloMetodo').innerText = dados.metodo;
 
                     const textoElement = document.getElementById('textoMetodo');
-                    if (dados.metodo.includes("Estatística")) {
-                        textoElement.innerText = `Análise de consistência física concluída. ${dados.energia}. Um score fora da faixa [0.4 - 0.8] indica manipulação sintética.`;
-                    } else if (dados.energia === "N/A (Assinatura Digital)") {
-                        textoElement.innerText = `Identificado via metadados: ${dados.metodo}. Esta imagem possui assinaturas digitais explícitas de IA.`;
-                    } else if (dados.energia === "N/A (Marca Visual)") {
-                        textoElement.innerText = `Identificado visualmente: ${dados.metodo}. Foi detectada a logomarca padrão de IA no canto da imagem.`;
-                    } else {
-                        textoElement.innerText = `A análise técnica de frequências detectou uma energia de ${dados.energia}.`;
+                    const metodoRetornado = dados.metodo.toLowerCase();
+
+                    console.log("Método retornado do backend:", dados.metodo); // DEBUG
+
+                    if (metodoRetornado.includes("marca visual")) {
+                        const iaNome = dados.metodo.replace("Marca Visual (", "").replace(")", "");
+                        textoElement.innerText = `🔍 DETECÇÃO POR MARCA VISUAL\n\nFoi identificada uma marca d'água visual no canto inferior direito da imagem, característica da ferramenta ${iaNome}. Esta é uma assinatura visual explícita inserida por geradores de imagem.`;
+                    } 
+                    else if (metodoRetornado.includes("metadados")) {
+                        const iaNome = dados.metodo.replace("Metadados (", "").replace(")", "");
+                        textoElement.innerText = `🔍 DETECÇÃO POR METADADOS\n\nOs metadados da imagem contêm assinaturas digitais características da ferramenta ${iaNome}.`;
+                    }
+                    else if (metodoRetornado.includes("lsb")) {
+                        textoElement.innerText = `🔍 ANÁLISE LSB (PLANO DE BITS)\n\nO plano de bits menos significativos apresenta ${dados.energia} pixels ativos. Uma alta concentração de bits alterados pode indicar a presença de marcas d'água digitais ou esteganografia.`;
+                    }
+                    else if (metodoRetornado.includes("frequência") || metodoRetornado.includes("fft") || metodoRetornado.includes("consistência")) {
+                        textoElement.innerText = `🔍 ANÁLISE DE FREQUÊNCIA (FFT)\n\nA análise técnica de frequências detectou uma energia de ${dados.energia}. Valores fora da faixa típica podem indicar manipulação sintética.`;
+                    }
+                    else {
+                        textoElement.innerText = `🔍 RESULTADO DA ANÁLISE\n\nMétodo utilizado: ${dados.metodo}\nProbabilidade: ${dados.probabilidade}\nEnergia detectada: ${dados.energia}`;
                     }
 
                     mostrarAlerta("Análise concluída!");

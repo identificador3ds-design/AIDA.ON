@@ -2,7 +2,31 @@ import cv2
 import numpy as np
 import base64
 import matplotlib.pyplot as plt
+from matplotlib.colors import LinearSegmentedColormap
 import io
+
+PALETA_FRIA_NEON = LinearSegmentedColormap.from_list(
+    "paleta_fria_neon",
+    [
+        (0.00, "#120a2f"),
+        (0.20, "#27176b"),
+        (0.45, "#1e3ec0"),
+        (0.72, "#1388ff"),
+        (1.00, "#8ffcff"),
+    ],
+    N=256,
+)
+
+
+def aplicar_paleta_fria(mapa_intensidade):
+    """
+    Converte o mapa de intensidade para uma paleta fria fixa.
+    Isso evita amarelo/laranja e mantem o visual em roxo, azul e ciano.
+    """
+    intensidade = mapa_intensidade.astype(np.float32) / 255.0
+    intensidade = np.power(intensidade, 1.15)
+    rgba = PALETA_FRIA_NEON(intensidade)
+    return (rgba[:, :, :3] * 255).astype(np.uint8)
 
 def executar_analise_gradiente(img_bytes):
     """
@@ -41,13 +65,7 @@ def executar_analise_gradiente(img_bytes):
         )
         
         # Aplicar colormap (efeito neon) – retorna imagem BGR
-        gradiente_colorido = cv2.applyColorMap(
-            laplaciano_norm,
-            cv2.COLORMAP_TURBO
-        )
-        
-        # Converter BGR para RGB para uso no matplotlib
-        gradiente_rgb = cv2.cvtColor(gradiente_colorido, cv2.COLOR_BGR2RGB)
+        gradiente_rgb = aplicar_paleta_fria(laplaciano_norm)
         
         # --- Gerar a figura usando matplotlib (igual ao código original) ---
         plt.figure(figsize=(8, 8))  # Tamanho quadrado, semelhante à visualização
@@ -81,7 +99,7 @@ def executar_analise_gradiente(img_bytes):
             "imagem_fft": imagem_resultado,
             "probabilidade": f"{prob:.1f}%",
             "energia": energia,
-            "metodo": "Gradiente Laplaciano (Efeito Neon)"
+            "metodo": "Gradiente Laplaciano (Paleta Fria)"
         }
         
     except Exception as e:

@@ -6,6 +6,7 @@ body {
   background: #121519;
   color: #f9f9f9;
   font-family: "Euclid Circular B", "Poppins";
+  background-image: url(../img/Frame\ 18.png);
 }
 
 :root {
@@ -18,7 +19,7 @@ body {
 }
 
 .card {
-  background: #121519;
+  background-color: #10403b;
   position: relative;
   overflow: hidden;
   border-radius: 20px;

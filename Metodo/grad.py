@@ -1,17 +1,14 @@
-# grad.py (ou gradiente.py)
 import cv2
 import numpy as np
 import base64
+import matplotlib.pyplot as plt
 import io
-
-def extract_lsb_plane(image):
-    """Mantida para compatibilidade, mas não usada neste método"""
-    pass
 
 def executar_analise_gradiente(img_bytes):
     """
     Aplica o filtro Laplaciano estilizado (efeito neon)
-    e retorna um dicionário compatível com o frontend.
+    e retorna um dicionário compatível com o frontend,
+    utilizando matplotlib para gerar a imagem com a mesma aparência do código original.
     """
     try:
         print("[GRAD] Iniciando análise Gradiente Laplaciano...")
@@ -43,18 +40,31 @@ def executar_analise_gradiente(img_bytes):
             cv2.NORM_MINMAX
         )
         
-        # Aplicar colormap (efeito neon)
+        # Aplicar colormap (efeito neon) – retorna imagem BGR
         gradiente_colorido = cv2.applyColorMap(
             laplaciano_norm,
             cv2.COLORMAP_TURBO
         )
         
-        # Converter para RGB (para exibição correta)
+        # Converter BGR para RGB para uso no matplotlib
         gradiente_rgb = cv2.cvtColor(gradiente_colorido, cv2.COLOR_BGR2RGB)
         
-        # Codificar como PNG em base64
-        _, buffer = cv2.imencode('.png', gradiente_rgb)
-        gradiente_base64 = base64.b64encode(buffer).decode('utf-8')
+        # --- Gerar a figura usando matplotlib (igual ao código original) ---
+        plt.figure(figsize=(8, 8))  # Tamanho quadrado, semelhante à visualização
+        plt.imshow(gradiente_rgb)
+        plt.axis('off')
+        
+        # Remover bordas brancas
+        plt.subplots_adjust(left=0, right=1, top=1, bottom=0)
+        
+        # Salvar em buffer
+        buf = io.BytesIO()
+        plt.savefig(buf, format='png', bbox_inches='tight', pad_inches=0)
+        buf.seek(0)
+        plt.close()  # Fecha a figura para liberar memória
+        
+        # Codificar em base64
+        gradiente_base64 = base64.b64encode(buf.read()).decode('utf-8')
         imagem_resultado = f"data:image/png;base64,{gradiente_base64}"
         
         # Calcular "probabilidade" baseada na intensidade das bordas

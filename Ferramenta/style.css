@@ -29,7 +29,6 @@ body {
     width: 100%;
 }
 
-/* --- Área do Logo (Topo) --- */
 .top-header {
     width: 100%;
     display: flex;
@@ -45,7 +44,6 @@ body {
 
 }
 
-/* --- Área Central (Card) --- */
 .center-stage {
     flex-grow: 1;
     display: flex;
@@ -55,7 +53,6 @@ body {
 
 }
 
-/* Estilo do Card */
 .card-selecao {
     background-color: rgba(0, 0, 0, 0.18);
     padding: 60px 80px; 
@@ -75,7 +72,6 @@ body {
     letter-spacing: 0.5px;
 }
 
-/* Estilo do Botão */
 .btn-estilizado {
     background: linear-gradient(135deg, #134943, #127369);
     color: #c5dddb;
@@ -91,7 +87,6 @@ body {
     border: 0.1px solid #127369;
 }
 
-/* Efeitos de interação no botão */
 .btn-estilizado:hover {
     transform: translateY(-3px);
 }
@@ -100,7 +95,6 @@ body {
     transform: translateY(0);
 }
 
-/* --- Responsividade (Celulares e Tablets pequenos) --- */
 @media (max-width: 768px) {
     .top-header {
         padding-top: 30px;

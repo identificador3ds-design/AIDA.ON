@@ -10,12 +10,10 @@ body {
   place-items: center;
   overflow: hidden;
   font-family: "Euclid Circular B", "Poppins";
-  /* Importante: define o contexto de posicionamento para o fundo */
   position: relative; 
   background: #0c2f2b; 
 }
 
-/* Esta camada cuidará apenas do fundo borrado */
 body::before {
   content: "";
   position: fixed;
@@ -304,13 +302,13 @@ form button {
   top: 15px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 9999; /* Garante que fica acima de tudo */
+  z-index: 9999;
   width: 80%;
   pointer-events: none;
 }
 
 .toast-msg {
-  background: #10403b; /* Cor verde do seu projeto */
+  background: #10403b;
   color: #ffffff;
   padding: 10px 15px;
   border-radius: 8px;
@@ -323,7 +321,7 @@ form button {
 }
 
 .toast-msg.erro {
-  background: #8b2525; /* Vermelho escuro para erros */
+  background: #8b2525;
   border-color: #ff4d4d;
   color: wheat;
 }

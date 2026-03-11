@@ -10,4 +10,3 @@ gsap.from(split.chars, {
     autoAlpha: 0,
     stagger: 0.009,
 });
-

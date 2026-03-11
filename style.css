@@ -36,19 +36,15 @@ body::before {
     width: 100%;
     height: 100%;
     
-    /* Sua imagem original */
     background-image: url(./img/FundoAlternativo.png);
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
     
-    /* O efeito de desfoque */
     filter: blur(5px); 
     
-    /* Aumenta a escala levemente para evitar bordas brancas causadas pelo blur */
     transform: scale(1.1);
     
-    /* Garante que o fundo fique atrás do conteúdo */
     z-index: -1; 
 }   
 
@@ -178,4 +174,3 @@ section {
         font-size: 1.2rem;
     }
 }
-

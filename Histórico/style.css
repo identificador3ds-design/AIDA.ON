@@ -1,98 +1,114 @@
-/* --- Grade de Cards --- */
+.history-main {
+  padding-bottom: 42px;
+}
+
+.history-panel {
+  padding: 34px;
+}
+
+.history-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
 .grid-historico {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 25px;
-    width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
 }
 
-/* --- Estilo de cada Card --- */
 .card-historico-item {
-    background-color: rgba(255, 255, 255, 0.05);
-    border: 1px dashed rgba(255, 255, 255, 0.2);
-    border-radius: 15px;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    transition: all 0.3s ease;
-    animation: surgindo 0.5s ease-out;
-}
-
-.card-historico-item:hover {
-    border: 1px solid #127369;
-    background-color: rgba(18, 115, 105, 0.1); /* Brilho verde-água */
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
 .thumb-container {
-    width: 100%;
-    height: 160px;
-    border-radius: 10px;
-    overflow: hidden;
-    background: rgba(0,0,0,0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .thumb-container img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: 0.3s ease;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-.card-historico-item:hover .thumb-container img {
-    transform: scale(1.05);
-}
-
-/* --- Textos Internos --- */
 .info-historico {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .data-badge {
-    font-size: 0.75rem;
-    color: #127369;
-    font-weight: 700;
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--highlight);
 }
 
 .info-historico h4 {
-    color: white;
-    font-size: 1rem;
+  margin: 0;
+  font-size: 1.18rem;
+  color: #fff;
 }
 
-/* --- Botão Ver Detalhes --- */
 .btn-detalhes {
-    background: rgba(18, 115, 105, 0.2);
-    color: #c5dddb;
-    border: 1px solid #127369;
-    padding: 10px;
-    border-radius: 8px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.3s;
-    margin-top: auto;
-    font-family: 'Montserrat', sans-serif;
+  width: 100%;
+  margin-top: auto;
 }
 
-.btn-detalhes:hover {
-    background: #127369;
-    color: white;
+.mensagem-vazia {
+  grid-column: 1 / -1;
+  padding: 30px 0;
+  text-align: center;
+  color: var(--text-soft);
 }
 
-/* --- Estilo do Fundo do Modal --- */
-.modal-overlay {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(8px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
+.modal-shell {
+  width: min(560px, 100%);
+  padding: 26px;
+  position: relative;
+}
+
+.modal-shell h3 {
+  margin: 0 0 18px;
+  padding-right: 28px;
+  color: var(--highlight);
+}
+
+.modal-shell img {
+  width: 100%;
+  border-radius: 18px;
+  object-fit: contain;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.btn-fechar-modal {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+
+@media (max-width: 760px) {
+  .history-panel {
+    padding: 24px 18px;
+  }
+
+  .history-header {
+    flex-direction: column;
+  }
 }

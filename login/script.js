@@ -3,14 +3,13 @@ const supabaseUrl = 'https://nwzijdudhemuibsyzpub.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im53emlqZHVkaGVtdWlic3l6cHViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwMjk5MTAsImV4cCI6MjA4NzYwNTkxMH0.aDHymYEKtyY5m2eaOHoBy4QRpaAvtafi_PVDtrL9gQc';
 const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-// FUNÇÃO PARA MENSAGENS CUSTOMIZADAS
 const mostrarAviso = (texto, tipo = "sucesso") => {
     const container = document.getElementById('toast-container');
     const toast = document.createElement('div');
     toast.className = `toast-msg ${tipo === "erro" ? "erro" : ""}`;
     toast.innerText = texto;
     
-    container.innerHTML = ""; // Limpa anterior
+    container.innerHTML = "";
     container.appendChild(toast);
 
     setTimeout(() => {
@@ -19,7 +18,6 @@ const mostrarAviso = (texto, tipo = "sucesso") => {
     }, 3000);
 };
 
-// --- REGISTRO ---
 document.getElementById('registerForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const email = document.getElementById('regEmail').value;
@@ -37,12 +35,10 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
         await _supabase.from('usuarios').insert([{ nome, email }]);
         mostrarAviso("Cadastro finalizado! Faça seu login.");
         
-        // REDIRECIONA PARA O LOGIN (Troca a aba)
         setTimeout(() => { toggleView(); }, 2000); 
     }
 });
 
-// --- LOGIN ---
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const email = document.getElementById('loginEmail').value;
@@ -59,15 +55,11 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
         
         mostrarAviso(`Bem-vindo, ${nomeUsuario}!`);
         
-        // REDIRECIONA PARA A TELA DE APRESENTAÇÃO
         setTimeout(() => {
             window.location.href = "../Tela-apresentação/index-apresentação.html";
         }, 1250);
     }
 });
-
-
-
 
 const signinForm = document.querySelector(".form.signin");
 const signupForm = document.querySelector(".form.signup");

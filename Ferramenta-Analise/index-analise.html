@@ -56,11 +56,27 @@
                         </select>
                     </div>
 
+                    <div class="grupo-input">
+                        <span class="rotulo-input">Verificacoes automaticas:</span>
+                        <div class="painel-opcoes-analise">
+                            <label class="opcao-analise">
+                                <input type="checkbox" id="checkMarcaDagua" checked>
+                                <span>Detectar marca d'agua do Gemini antes do metodo principal</span>
+                            </label>
+                            <label class="opcao-analise">
+                                <input type="checkbox" id="checkMetadados" checked>
+                                <span>Analisar metadados antes do metodo principal</span>
+                            </label>
+                            <p class="texto-ajuda-opcoes">
+                                Essas verificacoes sao atalhos que podem encerrar a analise assim que encontrarem evidencias explicitas. Desative se quiser forcar a imagem a passar apenas pelo metodo escolhido.
+                            </p>
+                        </div>
+                    </div>
+
                     <div class="grupo-botoes">
-                        <button id="btnVerificar" class="btn-estilizado btn-primario">VERIFICAR</button>
-                        <a href="../Ferramenta/index-seleciona.html" class="ancora-botao">
-                            <button id="btnTrocar" class="btn-estilizado btn-secundario">TROCAR</button>
-                        </a>
+                        <button id="btnVerificar" type="button" class="btn-estilizado btn-primario">VERIFICAR</button>
+                        <button id="btnTrocar" type="button" class="btn-estilizado btn-secundario">TROCAR</button>
+                        <input type="file" id="inputTrocarImagem" accept="image/*" hidden>
                     </div>
 
                 </div>
@@ -96,7 +112,6 @@
                 </div>
             </section>
 
-        </main>
         </main>
 
     </div>

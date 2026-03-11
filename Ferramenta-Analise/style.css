@@ -230,6 +230,41 @@ body::before {
 }
 
 /* --- Área dos Botões --- */
+.painel-opcoes-analise {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    border-radius: 12px;
+    background-color: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.opcao-analise {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    color: #f2fbfa;
+    line-height: 1.4;
+    cursor: pointer;
+}
+
+.opcao-analise input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin-top: 2px;
+    accent-color: #127369;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.texto-ajuda-opcoes {
+    margin: 0;
+    color: #c5dddb;
+    font-size: 0.88rem;
+    line-height: 1.5;
+}
+
 .grupo-botoes {
     display: flex;
     flex-direction: column;

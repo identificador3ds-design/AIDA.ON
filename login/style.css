@@ -5,13 +5,15 @@
 body {
   margin: 0;
   color: #4b5679;
-  height: 100vh;
-  display: grid;
-  place-items: center;
-  overflow: hidden;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-x: hidden;
   font-family: "Euclid Circular B", "Poppins";
-  position: relative; 
-  background: #0c2f2b; 
+  position: relative;
+  padding: 24px;
+  background: #0c2f2b;
 }
 
 body::before {
@@ -21,22 +23,37 @@ body::before {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url(../img/FundoAlternativo.png);
+  background:
+  linear-gradient(180deg, rgba(7, 29, 27, 0.74), rgba(6, 26, 24, 0.88)),
+    url("../img/FundoAlternativo.png") center/cover no-repeat;
+  opacity: 0.82;
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
-  filter: blur(5px); 
-  z-index: -1; 
-  transform: scale(1.1); 
+  filter: blur(5px);
+  transform: scale(1.1);
+  z-index: -2;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: auto -10vw -22vh 46%;
+  width: 520px;
+  height: 520px;
+  border-radius: 999px;
+  filter: blur(24px);
+  pointer-events: none;
+  z-index: -1;
 }
 
 :root {
   --color-primary: #10403b;
 }
 .volta {
-  position: absolute;
-  top: 10%;
-  left: 25%;
+  position: fixed;
+  top: 24px;
+  left: 24px;
   z-index: 1000;
   width: 30px;
   height: 30px;
@@ -51,12 +68,12 @@ body::before {
   contrast(89%);
   cursor: pointer;
 }
+
 .card {
   position: relative;
   overflow: hidden;
-  margin-top: 2%;
-  width: 660px;
-  height: 440px;
+  width: min(100%, 660px);
+  min-height: 440px;
   border-radius: 32px;
   background: #bfbfbf;
   box-shadow: 0 12px 80px rgba(0, 0, 0, 0.12);
@@ -69,7 +86,7 @@ body::before {
   bottom: 0;
   left: 0;
   width: 860px;
-  height: 440px;
+  height: 100%;
   rotate: -45deg;
   transform-origin: 0% 100%;
   background: #10403b;
@@ -219,6 +236,7 @@ body::before {
   gap: 12px;
   opacity: 0;
   transition: 0.3s;
+  width: min(100%, 260px);
 }
 
 .form a {
@@ -265,7 +283,7 @@ body::before {
 }
 
 form input {
-  width: 260px;
+  width: 100%;
   padding: 0 12px;
   font-size: 14px;
   background: #f4f4f7;
@@ -329,4 +347,135 @@ form button {
 @keyframes slideDown {
   from { opacity: 0; transform: translateY(-20px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 900px) {
+  body {
+    padding: 88px 20px 24px;
+  }
+
+  .volta {
+    top: 20px;
+    left: 20px;
+  }
+
+  .card {
+    width: min(100%, 580px);
+    min-height: 420px;
+  }
+
+  .card-bg {
+    width: 760px;
+  }
+
+  .logo {
+    top: 54px;
+    height: 42px;
+  }
+
+  .logo-1 {
+    left: 34px;
+  }
+
+  .logo-2 {
+    right: 34px;
+  }
+}
+
+@media (max-width: 680px) {
+  body {
+    display: block;
+    padding: 88px 16px 24px;
+  }
+
+  .card {
+    min-height: auto;
+    margin: 0 auto;
+    border-radius: 28px;
+    display: grid;
+    grid-template-columns: 1fr;
+    background:
+      linear-gradient(180deg, rgba(229, 231, 235, 0.98), rgba(209, 213, 219, 0.96));
+  }
+
+  .card-bg,
+  .card-bg-2,
+  .logo {
+    display: none;
+  }
+
+  .form {
+    position: relative;
+    inset: auto;
+    width: 100%;
+    min-height: auto;
+    padding: 28px 22px;
+    display: none;
+  }
+
+  .form.signup,
+  .form.signin {
+    translate: 0 0;
+  }
+
+  .form.signup form,
+  .form.signin form {
+    translate: 0 0;
+  }
+
+  .form.active {
+    display: grid;
+  }
+
+  .form form {
+    width: 100%;
+    max-width: none;
+  }
+
+  .form h2 {
+    margin: 0 0 6px;
+  }
+
+  input,
+  button {
+    height: 46px;
+  }
+
+  .btn:hover {
+    transform: none;
+  }
+
+  #toast-container {
+    width: calc(100% - 32px);
+    top: 12px;
+  }
+}
+
+@media (max-width: 420px) {
+  body {
+    padding: 76px 12px 18px;
+  }
+
+  .volta {
+    top: 16px;
+    left: 16px;
+    width: 26px;
+    height: 26px;
+  }
+
+  .card {
+    border-radius: 24px;
+  }
+
+  .form {
+    padding: 24px 16px;
+  }
+
+  .form a {
+    font-size: 13px;
+  }
+
+  .form a em {
+    font-size: 14px;
+  }
 }

@@ -404,7 +404,6 @@ section {
 .func-eyebrow {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
   margin-bottom: 18px;
   font-size: 0.86rem;
   font-weight: 700;
@@ -416,12 +415,7 @@ section {
 .hero-badge::before,
 .section-label::before,
 .func-eyebrow::before {
-  content: "";
-  width: 9px;
-  height: 9px;
-  border-radius: 999px;
-  background: var(--highlight);
-  box-shadow: 0 0 0 6px var(--highlight-soft);
+  content: none;
 }
 
 .hero-title,
@@ -506,10 +500,6 @@ section {
 .sobre {
   padding: 100px 0;
   background:
-    linear-gradient(to bottom, #0d312d 0%, rgba(13, 49, 45, 0) 16%),
-    linear-gradient(to top, #0f3833 0%, rgba(15, 56, 51, 0) 16%),
-    linear-gradient(180deg, rgba(15, 31, 34, 0.66), rgba(16, 64, 59, 0.56)),
-    radial-gradient(circle at 78% 18%, rgba(209, 213, 219, 0.1), transparent 22%),
     url("../img/Frame 18.png") center/cover no-repeat;
   background-attachment: fixed;
 }
@@ -519,8 +509,7 @@ section {
 }
 
 .sobre .section-label::before {
-  background: #ffffff;
-  box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.12);
+  content: none;
 }
 
 .content {
@@ -1260,6 +1249,9 @@ section {
 
   .team-mobile-card img {
     height: 280px;
+  }
+  .fototeam {
+    border-radius: 32px;
   }
 
   .rolarpg {

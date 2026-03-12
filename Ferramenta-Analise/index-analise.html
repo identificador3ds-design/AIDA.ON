@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -17,90 +15,151 @@
         </a>
 
         <div class="analysis-header-actions">
-            <a href="../Histórico/index-historico.html" class="top-link">Historico</a>
+            <a href="../Hist%C3%B3rico/index-historico.html" class="top-link">Historico</a>
 
             <div class="dropdown">
                 <button class="dropbtn" id="nome-usuario2" type="button">Minha conta</button>
                 <div class="dropdown-content">
                     <a href="../testes/index-perfil.html" class="dropa">Perfil</a>
-                    <a href="../login/index-login.html" class="dropa" id="btn-sair">Sair</a>
+                    <a href="../login/index-login.html" class="dropa dropa-danger" id="btn-sair">Sair</a>
                 </div>
             </div>
         </div>
     </header>
 
     <main class="page-frame analysis-main">
-        <section class="card-analise glass-panel">
-            <div class="analysis-copy">
-                <span class="page-kicker">Centro de verificacao</span>
-                <h1 class="page-title">Analise tecnica da imagem selecionada.</h1>
-                <p class="page-copy">
-                    Escolha o metodo de leitura, informe o tipo de imagem se desejar e siga para o processamento.
-                </p>
-            </div>
+        <section class="analysis-copy">
 
-            <div class="analysis-content">
-                <div class="container-imagem glass-card">
-                    <img id="imagemPreview" src="#" alt="Sua imagem selecionada" class="imagem-preview" hidden>
-                    <div id="placeholderImagem" class="placeholder-visual">
-                        <span>Preview da imagem</span>
-                    </div>
+            <div class="analysis-steps" aria-label="Passos da analise">
+                <div class="analysis-step">
+                    <span>1</span>
+                    <strong>Veja a imagem</strong>
                 </div>
-
-                <div class="container-controles glass-card">
-                    <div class="field-group">
-                        <label for="tipoImagem" class="field-label">Tipo de imagem</label>
-                        <input type="text" id="tipoImagem" class="field" placeholder="Ex: fotografia, arte digital">
-                    </div>
-
-                    <div class="field-group">
-                        <label for="metodoAnalise" class="field-label">Metodo</label>
-                        <select id="metodoAnalise" class="field-select">
-                            <option value="" disabled selected>Selecione um metodo</option>
-                            <option value="FFT">FFT</option>
-                            <option value="PSEM">PSEM</option>
-                            <option value="M4">LSB</option>
-                            <option value="GRAD">Gradiente Laplaciano (Neon)</option>
-                        </select>
-                    </div>
-
-                    <div class="grupo-botoes">
-                        <button id="btnVerificar" class="aida-button">Verificar</button>
-                        <a href="../Ferramenta/index-seleciona.html" class="aida-button secondary">Trocar imagem</a>
-                    </div>
+                <div class="analysis-step">
+                    <span>2</span>
+                    <strong>Escolha o metodo</strong>
+                </div>
+                <div class="analysis-step">
+                    <span>3</span>
+                    <strong>Leia o resultado</strong>
                 </div>
             </div>
         </section>
 
-        <div id="loading" class="loading-state" style="display: none;">
-            <div class="spinner"></div>
-            <p>Analisando imagem...</p>
+        <section class="analysis-content">
+            <section class="container-imagem glass-card">
+                <div class="visual-header">
+                    <span class="preview-state" id="previewStatus">Sem imagem</span>
+                </div>
+
+                <div class="preview-stage">
+                    <img id="imagemPreview" src="#" alt="Sua imagem selecionada" class="imagem-preview" hidden>
+                </div>
+            </section>
+
+            <section class="container-controles glass-card">
+                <div class="controls-header">
+                    <p>Preencha apenas o necessario e clique em analisar.</p>
+                </div>
+
+                <div class="field-group">
+                    <label for="tipoImagem" class="field-label">Tipo de imagem (opcional)</label>
+                    <input type="text" id="tipoImagem" class="field" placeholder="Ex: fotografia, arte digital">
+                </div>
+
+                <div class="field-group">
+                    <label for="metodoAnalise" class="field-label">Metodo de analise</label>
+                    <select id="metodoAnalise" class="field-select">
+                        <option value="" disabled selected>Escolha uma opcao</option>
+                        <option value="FFT">FFT</option>
+                        <option value="PSEM">PSEM</option>
+                        <option value="M4">LSB</option>
+                        <option value="GRAD">Gradiente Laplaciano (Neon)</option>
+                    </select>
+                </div>
+
+                <div class="field-group">
+                    <span class="field-label">Ajudas automaticas</span>
+
+                    <div class="analysis-checks">
+                        <label class="analysis-check">
+                            <input type="checkbox" id="checkMarcaDagua" checked>
+                            <div>
+                                <strong>Procurar marca visivel</strong>
+                                <span>Busca sinais claros, como logos inseridos por ferramentas de IA.</span>
+                            </div>
+                        </label>
+
+                        <label class="analysis-check">
+                            <input type="checkbox" id="checkMetadados" checked>
+                            <div>
+                                <strong>Ler metadados</strong>
+                                <span>Procura informacoes escondidas no arquivo que podem indicar origem artificial.</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="analysis-note">
+                    Dica: se voce nao souber o que escolher, deixe as duas opcoes ligadas.
+                </div>
+
+                <div class="grupo-botoes">
+                    <button id="btnVerificar" type="button" class="aida-button">Analisar imagem</button>
+                    <button id="btnTrocar" type="button" class="aida-button secondary">Trocar imagem</button>
+                    <input type="file" id="inputTrocarImagem" accept="image/*" hidden>
+                </div>
+
+                <a href="../Ferramenta/index-seleciona.html" class="inline-link">Voltar para escolher outra imagem</a>
+            </section>
+        </section>
+
+        <div id="loading" class="loading-state glass-card" style="display: none;">
+            <div class="spinner" aria-hidden="true"></div>
+            <div class="loading-copy">
+                <strong>Analisando imagem...</strong>
+                <p>Estamos preparando um resumo simples para voce entender o resultado.</p>
+            </div>
         </div>
 
         <section id="areaResultado" class="card-resultado glass-panel" style="display: none;">
             <div class="resultado-header">
                 <div>
                     <span class="page-kicker">Resultado</span>
-                    <h2 class="titulo-resultado">Resultado da analise</h2>
+                    <h2 class="titulo-resultado">Veja o que encontramos na imagem.</h2>
                 </div>
-                <div class="status-badge">Probabilidade IA: <span id="porcentagemIA">0%</span></div>
+
+                <div class="resultado-badges">
+                    <div class="status-badge">Chance de ser IA: <span id="porcentagemIA">0%</span></div>
+                </div>
             </div>
 
             <div class="resultado-corpo-vertical">
-                <div class="container-imagem-processada glass-card">
-                    <p class="field-label">Imagem processada</p>
-                    <img id="imagemProcessada" src="#" alt="Resultado da analise" class="imagem-preview">
-                </div>
+                <section class="container-imagem-processada glass-card">
+                    <span class="section-tag">Imagem analisada</span>
+                    <p class="result-copy">Esta e a visualizacao gerada pelo metodo escolhido.</p>
 
-                <div class="container-explicacao glass-card">
-                    <h3 id="tituloMetodo">Sobre o metodo</h3>
-                    <p id="textoMetodo">Aguardando processamento...</p>
-
-                    <div class="exemplos-metodo">
-                        <div class="placeholder-exemplo">Evidencia 1</div>
-                        <div class="placeholder-exemplo">Evidencia 2</div>
+                    <div class="result-visual">
+                        <img id="imagemProcessada" src="#" alt="Resultado da analise" class="imagem-preview">
                     </div>
-                </div>
+                </section>
+
+                <section class="container-explicacao glass-card">
+                    <div class="method-copy">
+                        <span class="section-tag">Explicacao</span>
+                        <h3 id="tituloMetodo">Sobre o resultado</h3>
+                        <p id="textoMetodo">Aguardando processamento...</p>
+                    </div>
+
+                    <div id="blocoExemplosMetodo" class="bloco-exemplos" hidden>
+                        <div class="cabecalho-exemplos">
+                            <h4 id="tituloExemplosMetodo" class="titulo-exemplos">Referencias para comparacao</h4>
+                            <p id="descricaoExemplosMetodo" class="descricao-exemplos"></p>
+                        </div>
+
+                        <div id="exemplosMetodo" class="exemplos-metodo"></div>
+                    </div>
+                </section>
             </div>
         </section>
     </main>
@@ -109,260 +168,4 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="script.js"></script>
 </body>
-=======
-<!DOCTYPE html>
-<html lang="pt-br">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AIDA - Análise da Imagem</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-    <link rel="icon" type="image/png" href="../img/AIDABranco.ico">
-</head>
-
-<body>
-
-    <div class="main-wrapper">
-
-        <header class="top-header">
-            <a href="../index.html"><img src="../img/LogoBranca.png" alt="AIDA Logo" class="logo-aida"></a>
-            <div class="header-right">
-                <div class="dropdown desktop-only">
-                    <button class="dropbtn" id="nome-usuario2"></button>
-                    <div class="dropdown-content">
-                        <a href="../testes/index-perfil.html" class="dropa" id="btn-sair">
-                            <img src="../img/circle-user-regular-full.svg" alt="" class="logout">
-                            My account
-                        </a>
-                    
-                    </div>
-                </div>
-            </div>
-        </header>
-
-        <main class="center-stage" style="flex-direction: column; gap: 30px; align-items: center;">
-            <section class="card-analise">
-                
-                <div class="container-imagem">
-                    <img id="imagemPreview" src="#" alt="Sua imagem selecionada" class="imagem-preview" hidden>
-                    <div id="placeholderImagem" class="placeholder-visual"></div>
-                </div>
-
-                <div class="container-controles">
-                    
-                    <div class="grupo-input">
-                        <label for="tipoImagem" class="rotulo-input">Tipo de Imagem:</label>
-                        <input type="text" id="tipoImagem" class="campo-estilizado" placeholder="Ex: Fotografia, Arte Digital...">
-                    </div>
-
-                    <div class="grupo-input">
-                        <label for="metodoAnalise" class="rotulo-input">Método:</label>
-                        <select id="metodoAnalise" class="campo-estilizado campo-select">
-                            <option value="" disabled selected>Selecione um método...</option>
-                            <option value="FFT">FFT</option>
-                            <option value="PSEM">PSEM</option>
-                            <option value="M4">LSB</option>
-                            <option value="GRAD">Gradiente Laplaciano (Neon)</option>
-                        </select>
-                    </div>
-
-                    <div class="grupo-input">
-                        <span class="rotulo-input">Verificacoes automaticas:</span>
-                        <div class="painel-opcoes-analise">
-                            <label class="opcao-analise">
-                                <input type="checkbox" id="checkMarcaDagua" checked>
-                                <span>Detectar marca d'agua do Gemini antes do metodo principal</span>
-                            </label>
-                            <label class="opcao-analise">
-                                <input type="checkbox" id="checkMetadados" checked>
-                                <span>Analisar metadados antes do metodo principal</span>
-                            </label>
-                            <p class="texto-ajuda-opcoes">
-                                Essas verificacoes sao atalhos que podem encerrar a analise assim que encontrarem evidencias explicitas. Desative se quiser forcar a imagem a passar apenas pelo metodo escolhido.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="grupo-botoes">
-                        <button id="btnVerificar" type="button" class="btn-estilizado btn-primario">VERIFICAR</button>
-                        <button id="btnTrocar" type="button" class="btn-estilizado btn-secundario">TROCAR</button>
-                        <input type="file" id="inputTrocarImagem" accept="image/*" hidden>
-                    </div>
-
-                </div>
-
-            </section>
-
-            <div id="loading" style="display: none; text-align: center; margin: 20px 0;">
-                <div class="spinner"></div>
-                <p style="margin-top: 15px; color: #c5dddb; font-weight: 600;">Analisando imagem...</p>
-            </div>
-
-            <section id="areaResultado" class="card-resultado" style="display: none;">
-                <div class="resultado-header">
-                    <h2 class="titulo-resultado">Resultado da Análise</h2>
-                    <div class="badge-ia">Probabilidade IA: <span id="porcentagemIA">0%</span></div>
-                </div>
-
-                <div class="resultado-corpo-vertical">
-                    <div class="container-imagem-processada">
-                        <p class="rotulo-input">Imagem Processada:</p>
-                        <img id="imagemProcessada" src="#" alt="Resultado" class="imagem-preview">
-                    </div>
-
-                    <div class="container-explicacao">
-                        <h3 id="tituloMetodo" style="color: #c5dddb; margin-bottom: 10px;">Sobre o Método</h3>
-                        <p id="textoMetodo" style="margin-bottom: 20px;">Aguardando processamento...</p>
-                        
-                        <div class="exemplos-metodo">
-                            <div class="placeholder-exemplo">Exemplo 1</div>
-                            <div class="placeholder-exemplo">Exemplo 2</div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-        </main>
-
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script src="script.js"></script>
-
-</body>
-
->>>>>>> 6559e8415324a091ca70dcdfcff5f3b200a9e64d
 </html>
-=======
-<!DOCTYPE html>
-<html lang="pt-br">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AIDA - Análise da Imagem</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-    <link rel="icon" type="image/png" href="../img/AIDABranco.ico">
-</head>
-
-<body>
-
-    <div class="main-wrapper">
-
-        <header class="top-header">
-            <a href="../index.html"><img src="../img/LogoBranca.png" alt="AIDA Logo" class="logo-aida"></a>
-            <div class="header-right">
-                <div class="dropdown desktop-only">
-                    <button class="dropbtn" id="nome-usuario2"></button>
-                    <div class="dropdown-content">
-                        <a href="../testes/index-perfil.html" class="dropa" id="btn-sair">
-                            <img src="../img/circle-user-regular-full.svg" alt="" class="logout">
-                            My account
-                        </a>
-                    
-                    </div>
-                </div>
-            </div>
-        </header>
-
-        <main class="center-stage" style="flex-direction: column; gap: 30px; align-items: center;">
-            <section class="card-analise">
-                
-                <div class="container-imagem">
-                    <img id="imagemPreview" src="#" alt="Sua imagem selecionada" class="imagem-preview" hidden>
-                    <div id="placeholderImagem" class="placeholder-visual"></div>
-                </div>
-
-                <div class="container-controles">
-                    
-                    <div class="grupo-input">
-                        <label for="tipoImagem" class="rotulo-input">Tipo de Imagem:</label>
-                        <input type="text" id="tipoImagem" class="campo-estilizado" placeholder="Ex: Fotografia, Arte Digital...">
-                    </div>
-
-                    <div class="grupo-input">
-                        <label for="metodoAnalise" class="rotulo-input">Método:</label>
-                        <select id="metodoAnalise" class="campo-estilizado campo-select">
-                            <option value="" disabled selected>Selecione um método...</option>
-                            <option value="FFT">FFT</option>
-                            <option value="PSEM">PSEM</option>
-                            <option value="M4">LSB</option>
-                            <option value="GRAD">Gradiente Laplaciano (Neon)</option>
-                        </select>
-                    </div>
-
-                    <div class="grupo-input">
-                        <span class="rotulo-input">Verificações automaticas:</span>
-                        <div class="painel-opcoes-analise">
-                            <label class="opcao-analise">
-                                <input type="checkbox" id="checkMarcaDagua" checked>
-                                <span>Detectar marca d'agua antes do metodo principal</span>
-                            </label>
-                            <label class="opcao-analise">
-                                <input type="checkbox" id="checkMetadados" checked>
-                                <span>Analisar metadados antes do metodo principal</span>
-                            </label>
-                            <p class="texto-ajuda-opcoes">
-                                Essas verificacoes sao atalhos que podem acelerar a analise assim que encontrarem evidencias explicitas. Desative se quiser forçar a imagem a passar apenas pelo método escolhido.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="grupo-botoes">
-                        <button id="btnVerificar" type="button" class="btn-estilizado btn-primario">VERIFICAR</button>
-                        <button id="btnTrocar" type="button" class="btn-estilizado btn-secundario">TROCAR</button>
-                        <input type="file" id="inputTrocarImagem" accept="image/*" hidden>
-                    </div>
-
-                </div>
-
-            </section>
-
-            <div id="loading" style="display: none; text-align: center; margin: 20px 0;">
-                <div class="spinner"></div>
-                <p style="margin-top: 15px; color: #c5dddb; font-weight: 600;">Analisando imagem...</p>
-            </div>
-
-            <section id="areaResultado" class="card-resultado" style="display: none;">
-                <div class="resultado-header">
-                    <h2 class="titulo-resultado">Resultado da Análise</h2>
-                    <div class="badge-ia">Probabilidade IA: <span id="porcentagemIA">0%</span></div>
-                </div>
-
-                <div class="resultado-corpo-vertical">
-                    <div class="container-imagem-processada">
-                        <p class="rotulo-input">Imagem Processada:</p>
-                        <img id="imagemProcessada" src="#" alt="Resultado" class="imagem-preview">
-                    </div>
-
-                    <div class="container-explicacao">
-                        <h3 id="tituloMetodo" style="color: #c5dddb; margin-bottom: 10px;">Sobre o Método</h3>
-                        <p id="textoMetodo" style="margin-bottom: 20px;">Aguardando processamento...</p>
-                        
-                        <div id="blocoExemplosMetodo" class="bloco-exemplos" hidden>
-                            <div class="cabecalho-exemplos">
-                                <h4 id="tituloExemplosMetodo" class="titulo-exemplos">Referencias para comparacao</h4>
-                                <p id="descricaoExemplosMetodo" class="descricao-exemplos"></p>
-                            </div>
-                            <div id="exemplosMetodo" class="exemplos-metodo"></div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-        </main>
-
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script src="script.js"></script>
-
-</body>
-
-</html>
->>>>>>> 2eaa73e8bc113d7b0d272038073f849c04b7eb9d

@@ -326,9 +326,10 @@ section {
   display: flex;
   align-items: center;
   background:
-    linear-gradient(135deg, rgba(13, 27, 31, 0.86) 0%, rgba(15, 56, 51, 0.72) 56%, rgba(20, 73, 68, 0.64) 100%),
-    radial-gradient(circle at 14% 20%, rgba(209, 213, 219, 0.14), transparent 28%),
-    radial-gradient(circle at 85% 38%, rgba(143, 216, 183, 0.1), transparent 24%),
+    linear-gradient(to bottom, #0d312d 0%, rgba(13, 49, 45, 0) 16%),
+    linear-gradient(to top, #0f3833 0%, rgba(15, 56, 51, 0) 16%),
+    linear-gradient(180deg, rgba(15, 31, 34, 0.66), rgba(16, 64, 59, 0.56)),
+    radial-gradient(circle at 78% 18%, rgba(209, 213, 219, 0.1), transparent 22%),
     url("../img/FUNDO2.png") center/cover no-repeat;
 }
 
@@ -509,8 +510,7 @@ section {
     linear-gradient(to top, #0f3833 0%, rgba(15, 56, 51, 0) 16%),
     linear-gradient(180deg, rgba(15, 31, 34, 0.66), rgba(16, 64, 59, 0.56)),
     radial-gradient(circle at 78% 18%, rgba(209, 213, 219, 0.1), transparent 22%),
-    url("../img/Frame 18.png") center/cover no-repeat,
-    url("../img/bg.png") center/cover no-repeat;
+    url("../img/Frame 18.png") center/cover no-repeat;
   background-attachment: fixed;
 }
 
@@ -625,10 +625,10 @@ section {
 .secfunc {
   padding: 100px 0;
   background:
-    linear-gradient(to bottom, #10403b 0%, rgba(16, 64, 59, 0) 14%),
-    linear-gradient(to top, #0c312e 0%, rgba(12, 49, 46, 0) 14%),
-    linear-gradient(180deg, rgba(14, 32, 35, 0.9), rgba(12, 49, 46, 0.88)),
-    radial-gradient(circle at left top, rgba(209, 213, 219, 0.08), transparent 30%),
+    linear-gradient(to bottom, #0d312d 0%, rgba(13, 49, 45, 0) 16%),
+    linear-gradient(to top, #0f3833 0%, rgba(15, 56, 51, 0) 16%),
+    linear-gradient(180deg, rgba(15, 31, 34, 0.66), rgba(16, 64, 59, 0.56)),
+    radial-gradient(circle at 78% 18%, rgba(209, 213, 219, 0.1), transparent 22%),
     url("../img/FUNDO2.png") center/cover no-repeat;
 }
 
@@ -717,10 +717,10 @@ section {
 .icons-section {
   padding: 100px 0;
   background:
-    linear-gradient(to bottom, #0c312e 0%, rgba(12, 49, 46, 0) 14%),
-    linear-gradient(to top, #0e5f57 0%, rgba(14, 95, 87, 0) 16%),
-    linear-gradient(180deg, rgba(14, 31, 34, 0.62), rgba(14, 95, 87, 0.58)),
-    radial-gradient(circle at 20% 24%, rgba(209, 213, 219, 0.08), transparent 26%),
+    linear-gradient(to bottom, #0d312d 0%, rgba(13, 49, 45, 0) 16%),
+    linear-gradient(to top, #0f3833 0%, rgba(15, 56, 51, 0) 16%),
+    linear-gradient(180deg, rgba(15, 31, 34, 0.66), rgba(16, 64, 59, 0.56)),
+    radial-gradient(circle at 78% 18%, rgba(209, 213, 219, 0.1), transparent 22%),
     url("../img/Frame 18.png") center/cover no-repeat,
     url("../img/FUNDO.png") center/cover no-repeat;
   background-attachment: fixed;

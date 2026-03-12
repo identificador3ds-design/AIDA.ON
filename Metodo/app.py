@@ -76,7 +76,7 @@ def analisar():
 
         if analisar_marca_dagua:
             print("[DEBUG] Verificando marca d'agua...")
-            foi_detectado_marca, nome_ia_marca = verificar_marca_dagua(img_bytes)
+            foi_detectado_marca, nome_ia_marca, dados_marca = verificar_marca_dagua(img_bytes)
             if foi_detectado_marca:
                 print("[DEBUG] Detectado por MARCA D'AGUA")
                 return jsonify({
@@ -85,6 +85,7 @@ def analisar():
                     "probabilidade": "100%",
                     "energia": "N/A",
                     "metodo": f"Marca Visual ({nome_ia_marca})",
+                    "marca_visual": dados_marca,
                     "veredito": "IA DETECTADA"
                 })
         else:

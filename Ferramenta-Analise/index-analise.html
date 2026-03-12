@@ -57,18 +57,18 @@
                     </div>
 
                     <div class="grupo-input">
-                        <span class="rotulo-input">Verificacoes automaticas:</span>
+                        <span class="rotulo-input">Verificações automaticas:</span>
                         <div class="painel-opcoes-analise">
                             <label class="opcao-analise">
                                 <input type="checkbox" id="checkMarcaDagua" checked>
-                                <span>Detectar marca d'agua do Gemini antes do metodo principal</span>
+                                <span>Detectar marca d'agua antes do metodo principal</span>
                             </label>
                             <label class="opcao-analise">
                                 <input type="checkbox" id="checkMetadados" checked>
                                 <span>Analisar metadados antes do metodo principal</span>
                             </label>
                             <p class="texto-ajuda-opcoes">
-                                Essas verificacoes sao atalhos que podem encerrar a analise assim que encontrarem evidencias explicitas. Desative se quiser forcar a imagem a passar apenas pelo metodo escolhido.
+                                Essas verificacoes sao atalhos que podem acelerar a analise assim que encontrarem evidencias explicitas. Desative se quiser forçar a imagem a passar apenas pelo método escolhido.
                             </p>
                         </div>
                     </div>
@@ -104,9 +104,12 @@
                         <h3 id="tituloMetodo" style="color: #c5dddb; margin-bottom: 10px;">Sobre o Método</h3>
                         <p id="textoMetodo" style="margin-bottom: 20px;">Aguardando processamento...</p>
                         
-                        <div class="exemplos-metodo">
-                            <div class="placeholder-exemplo">Exemplo 1</div>
-                            <div class="placeholder-exemplo">Exemplo 2</div>
+                        <div id="blocoExemplosMetodo" class="bloco-exemplos" hidden>
+                            <div class="cabecalho-exemplos">
+                                <h4 id="tituloExemplosMetodo" class="titulo-exemplos">Referencias para comparacao</h4>
+                                <p id="descricaoExemplosMetodo" class="descricao-exemplos"></p>
+                            </div>
+                            <div id="exemplosMetodo" class="exemplos-metodo"></div>
                         </div>
                     </div>
                 </div>

@@ -394,20 +394,105 @@ body::before {
     text-align: left;
 }
 
-.exemplos-metodo {
+.bloco-exemplos {
+    margin-top: 8px;
     display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.cabecalho-exemplos {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.titulo-exemplos {
+    color: #f2fbfa;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.descricao-exemplos {
+    color: #c5dddb;
+    font-size: 0.94rem;
+    line-height: 1.6;
+}
+
+.exemplos-metodo {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 20px;
 }
 
-.placeholder-exemplo {
-    flex: 1;
-    height: 120px;
+.card-exemplo {
     background: rgba(255, 255, 255, 0.05);
-    border: 1px dashed rgba(255, 255, 255, 0.2);
-    border-radius: 10px;
-    display: grid;
-    place-items: center;
-    color: rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.18);
+}
+
+.visual-exemplo {
+    position: relative;
+    min-height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(180deg, rgba(8, 31, 29, 0.95), rgba(13, 53, 49, 0.95));
+}
+
+.imagem-exemplo {
+    width: 100%;
+    height: 220px;
+    object-fit: contain;
+    display: block;
+    padding: 10px;
+}
+
+.etiqueta-exemplo {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #f7fffe;
+    backdrop-filter: blur(10px);
+}
+
+.etiqueta-exemplo.ia {
+    background: rgba(193, 75, 92, 0.9);
+}
+
+.etiqueta-exemplo.real {
+    background: rgba(27, 132, 103, 0.9);
+}
+
+.etiqueta-exemplo.recorte {
+    background: rgba(18, 115, 105, 0.9);
+}
+
+.corpo-exemplo {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 18px;
+}
+
+.titulo-card-exemplo {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #f2fbfa;
+}
+
+.descricao-card-exemplo {
+    color: #d7e7e5;
+    font-size: 0.92rem;
+    line-height: 1.6;
 }
 
 /* Animação de Carregamento */
@@ -475,5 +560,9 @@ body::before {
 
     .btn-estilizado {
         font-size: 0.9rem;
+    }
+
+    .exemplos-metodo {
+        grid-template-columns: 1fr;
     }
 }

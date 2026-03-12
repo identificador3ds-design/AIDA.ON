@@ -383,7 +383,7 @@ section {
 }
 
 .ferramenta::after {
-  background: linear-gradient(to bottom, rgba(14, 37, 36, 0) 0%, #10403b 100%);
+  display: none;
 }
 
 .hero-inner {
@@ -971,9 +971,6 @@ section {
 .ferramenta {
   padding: 100px 0;
   background:
-    linear-gradient(to bottom, #0c312e 0%, rgba(12, 49, 46, 0) 14%),
-    linear-gradient(180deg, rgba(13, 30, 32, 0.82), rgba(7, 27, 25, 0.92)),
-    radial-gradient(circle at 18% 26%, rgba(209, 213, 219, 0.09), transparent 24%),
     url("../img/Frame 18.png") center/cover no-repeat,
     url("../img/FUNDO.png") center/cover no-repeat;
 }

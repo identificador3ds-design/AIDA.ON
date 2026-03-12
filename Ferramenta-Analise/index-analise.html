@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -235,3 +236,133 @@
 
 >>>>>>> 6559e8415324a091ca70dcdfcff5f3b200a9e64d
 </html>
+=======
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIDA - Análise da Imagem</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="../img/AIDABranco.ico">
+</head>
+
+<body>
+
+    <div class="main-wrapper">
+
+        <header class="top-header">
+            <a href="../index.html"><img src="../img/LogoBranca.png" alt="AIDA Logo" class="logo-aida"></a>
+            <div class="header-right">
+                <div class="dropdown desktop-only">
+                    <button class="dropbtn" id="nome-usuario2"></button>
+                    <div class="dropdown-content">
+                        <a href="../testes/index-perfil.html" class="dropa" id="btn-sair">
+                            <img src="../img/circle-user-regular-full.svg" alt="" class="logout">
+                            My account
+                        </a>
+                    
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="center-stage" style="flex-direction: column; gap: 30px; align-items: center;">
+            <section class="card-analise">
+                
+                <div class="container-imagem">
+                    <img id="imagemPreview" src="#" alt="Sua imagem selecionada" class="imagem-preview" hidden>
+                    <div id="placeholderImagem" class="placeholder-visual"></div>
+                </div>
+
+                <div class="container-controles">
+                    
+                    <div class="grupo-input">
+                        <label for="tipoImagem" class="rotulo-input">Tipo de Imagem:</label>
+                        <input type="text" id="tipoImagem" class="campo-estilizado" placeholder="Ex: Fotografia, Arte Digital...">
+                    </div>
+
+                    <div class="grupo-input">
+                        <label for="metodoAnalise" class="rotulo-input">Método:</label>
+                        <select id="metodoAnalise" class="campo-estilizado campo-select">
+                            <option value="" disabled selected>Selecione um método...</option>
+                            <option value="FFT">FFT</option>
+                            <option value="PSEM">PSEM</option>
+                            <option value="M4">LSB</option>
+                            <option value="GRAD">Gradiente Laplaciano (Neon)</option>
+                        </select>
+                    </div>
+
+                    <div class="grupo-input">
+                        <span class="rotulo-input">Verificações automaticas:</span>
+                        <div class="painel-opcoes-analise">
+                            <label class="opcao-analise">
+                                <input type="checkbox" id="checkMarcaDagua" checked>
+                                <span>Detectar marca d'agua antes do metodo principal</span>
+                            </label>
+                            <label class="opcao-analise">
+                                <input type="checkbox" id="checkMetadados" checked>
+                                <span>Analisar metadados antes do metodo principal</span>
+                            </label>
+                            <p class="texto-ajuda-opcoes">
+                                Essas verificacoes sao atalhos que podem acelerar a analise assim que encontrarem evidencias explicitas. Desative se quiser forçar a imagem a passar apenas pelo método escolhido.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="grupo-botoes">
+                        <button id="btnVerificar" type="button" class="btn-estilizado btn-primario">VERIFICAR</button>
+                        <button id="btnTrocar" type="button" class="btn-estilizado btn-secundario">TROCAR</button>
+                        <input type="file" id="inputTrocarImagem" accept="image/*" hidden>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <div id="loading" style="display: none; text-align: center; margin: 20px 0;">
+                <div class="spinner"></div>
+                <p style="margin-top: 15px; color: #c5dddb; font-weight: 600;">Analisando imagem...</p>
+            </div>
+
+            <section id="areaResultado" class="card-resultado" style="display: none;">
+                <div class="resultado-header">
+                    <h2 class="titulo-resultado">Resultado da Análise</h2>
+                    <div class="badge-ia">Probabilidade IA: <span id="porcentagemIA">0%</span></div>
+                </div>
+
+                <div class="resultado-corpo-vertical">
+                    <div class="container-imagem-processada">
+                        <p class="rotulo-input">Imagem Processada:</p>
+                        <img id="imagemProcessada" src="#" alt="Resultado" class="imagem-preview">
+                    </div>
+
+                    <div class="container-explicacao">
+                        <h3 id="tituloMetodo" style="color: #c5dddb; margin-bottom: 10px;">Sobre o Método</h3>
+                        <p id="textoMetodo" style="margin-bottom: 20px;">Aguardando processamento...</p>
+                        
+                        <div id="blocoExemplosMetodo" class="bloco-exemplos" hidden>
+                            <div class="cabecalho-exemplos">
+                                <h4 id="tituloExemplosMetodo" class="titulo-exemplos">Referencias para comparacao</h4>
+                                <p id="descricaoExemplosMetodo" class="descricao-exemplos"></p>
+                            </div>
+                            <div id="exemplosMetodo" class="exemplos-metodo"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="script.js"></script>
+
+</body>
+
+</html>
+>>>>>>> 2eaa73e8bc113d7b0d272038073f849c04b7eb9d

@@ -576,6 +576,7 @@ body::before {
 }
 
 .grupo-botoes {
+<<<<<<< HEAD
     display: flex;
     flex-direction: column;
     gap: 15px;
@@ -699,11 +700,137 @@ body::before {
     text-align: center;
 }
 
+=======
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.btn-estilizado {
+    width: 100%; 
+    border: none;
+    padding: 15px 20px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.1);
+}
+
+/* Botão Primário (VERIFICAR) */
+.btn-primario {
+    background: linear-gradient(135deg, #134943, #127369);
+    color: #c5dddb;
+    border: 0.1px solid #127369;
+}
+
+.btn-primario:hover {
+    transform: translateY(-3px);
+    filter: brightness(1.1);
+}
+
+/* Botão Secundário (TROCAR)*/
+.btn-secundario {
+    background: rgba(255, 255, 255, 0.08);
+    color: #c5dddb;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn-secundario:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.ancora-botao {
+    text-decoration: none;
+    width: 100%;
+}
+
+.btn-estilizado:active {
+    transform: translateY(0);
+}
+
+#toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Estilo de cada alerta individual */
+.toast-card {
+    background: rgba(18, 115, 105, 0.9); 
+    color: white;
+    padding: 16px 25px;
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    border-left: 5px solid #c5dddb;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+    font-weight: 600;
+    min-width: 250px;
+    animation: slideIn 0.5s ease forwards;
+    cursor: pointer;
+}
+
+/* Animação de saída (quando removermos via JS) */
+.toast-card.fadeOut {
+    animation: slideOut 0.5s ease forwards;
+}
+
+.card-resultado {
+    background-color: rgba(0, 0, 0, 0.25);
+    padding: 40px;
+    border-radius: 25px;
+    width: 900px;
+    max-width: 95%;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    animation: surgindo 0.5s ease-out;
+}
+
+.resultado-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 15px;
+}
+
+.badge-ia {
+    background: #127369;
+    padding: 10px 20px;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: #c5dddb;
+}
+
+.resultado-corpo-vertical {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+}
+
+.container-imagem-processada {
+    width: 70%;
+    text-align: center;
+}
+
+>>>>>>> 2eaa73e8bc113d7b0d272038073f849c04b7eb9d
 .container-explicacao {
     width: 100%;
     text-align: left;
 }
 
+<<<<<<< HEAD
 .exemplos-metodo {
     display: flex;
     gap: 20px;
@@ -770,11 +897,165 @@ body::before {
     }
 }
 
+=======
+.bloco-exemplos {
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.cabecalho-exemplos {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.titulo-exemplos {
+    color: #f2fbfa;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.descricao-exemplos {
+    color: #c5dddb;
+    font-size: 0.94rem;
+    line-height: 1.6;
+}
+
+.exemplos-metodo {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.card-exemplo {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.18);
+}
+
+.visual-exemplo {
+    position: relative;
+    min-height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(180deg, rgba(8, 31, 29, 0.95), rgba(13, 53, 49, 0.95));
+}
+
+.imagem-exemplo {
+    width: 100%;
+    height: 220px;
+    object-fit: contain;
+    display: block;
+    padding: 10px;
+}
+
+.etiqueta-exemplo {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #f7fffe;
+    backdrop-filter: blur(10px);
+}
+
+.etiqueta-exemplo.ia {
+    background: rgba(193, 75, 92, 0.9);
+}
+
+.etiqueta-exemplo.real {
+    background: rgba(27, 132, 103, 0.9);
+}
+
+.etiqueta-exemplo.recorte {
+    background: rgba(18, 115, 105, 0.9);
+}
+
+.corpo-exemplo {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 18px;
+}
+
+.titulo-card-exemplo {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #f2fbfa;
+}
+
+.descricao-card-exemplo {
+    color: #d7e7e5;
+    font-size: 0.92rem;
+    line-height: 1.6;
+}
+
+/* Animação de Carregamento */
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid rgba(255, 255, 255, 0.1);
+    border-top: 5px solid #127369;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    display: inline-block;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes surgindo {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideOut {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(100%); opacity: 0; }
+}
+
+/* --- Responsividade (Celulares e Tablets) --- */
+@media (max-width: 900px) {
+    .card-analise {
+        flex-direction: column; 
+        padding: 40px;
+        width: 500px;
+        max-width: 90%;
+        gap: 40px;
+    }
+
+    .container-imagem {
+        width: 100%;
+        height: 300px; 
+    }
+
+    .container-controles {
+        width: 100%;
+    }
+}
+
+>>>>>>> 2eaa73e8bc113d7b0d272038073f849c04b7eb9d
 @media (max-width: 768px) {
     .logo-aida {
         max-width: 220px;
     }
 
+<<<<<<< HEAD
     .card-analise {
         padding: 30px 20px;
     }
@@ -787,4 +1068,21 @@ body::before {
         font-size: 0.9rem;
     }
 >>>>>>> 6559e8415324a091ca70dcdfcff5f3b200a9e64d
+=======
+    .card-analise {
+        padding: 30px 20px;
+    }
+
+    .campo-estilizado {
+        font-size: 0.9rem;
+    }
+
+    .btn-estilizado {
+        font-size: 0.9rem;
+    }
+
+    .exemplos-metodo {
+        grid-template-columns: 1fr;
+    }
+>>>>>>> 2eaa73e8bc113d7b0d272038073f849c04b7eb9d
 }

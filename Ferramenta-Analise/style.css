@@ -631,6 +631,22 @@
   line-height: 1.6;
 }
 
+.install-app-preference {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-soft);
+  font-size: 0.96rem;
+  cursor: pointer;
+}
+
+.install-app-preference input {
+  width: 18px;
+  height: 18px;
+  accent-color: rgba(199, 255, 231, 0.9);
+  cursor: pointer;
+}
+
 .install-app-actions {
   display: flex;
   justify-content: flex-end;

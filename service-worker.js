@@ -1,5 +1,5 @@
-const STATIC_CACHE = "aida-static-v1";
-const RUNTIME_CACHE = "aida-runtime-v1";
+const STATIC_CACHE = "aida-static-v2";
+const RUNTIME_CACHE = "aida-runtime-v2";
 
 const APP_SHELL = [
   "./",
@@ -29,15 +29,29 @@ self.addEventListener("install", (event) => {
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys().then((cacheNames) =>
-      Promise.all(
-        cacheNames
-          .filter((cacheName) => ![STATIC_CACHE, RUNTIME_CACHE].includes(cacheName))
-          .map((cacheName) => caches.delete(cacheName))
+    caches
+      .keys()
+      .then((cacheNames) =>
+        Promise.all(
+          cacheNames
+            .filter((cacheName) => ![STATIC_CACHE, RUNTIME_CACHE].includes(cacheName))
+            .map((cacheName) => caches.delete(cacheName))
+        )
       )
-    )
+      .then(() => self.clients.claim())
+      .then(() => self.clients.matchAll({ type: "window" }))
+      .then((clientList) =>
+        Promise.all(
+          clientList.map((client) => {
+            if ("navigate" in client) {
+              return client.navigate(client.url);
+            }
+
+            return Promise.resolve();
+          })
+        )
+      )
   );
-  self.clients.claim();
 });
 
 self.addEventListener("fetch", (event) => {
@@ -46,12 +60,16 @@ self.addEventListener("fetch", (event) => {
   }
 
   const requestUrl = new URL(event.request.url);
+  const usarRedePrimeiro =
+    event.request.mode === "navigate" ||
+    ["script", "style", "font"].includes(event.request.destination) ||
+    requestUrl.pathname.endsWith(".webmanifest");
 
   if (requestUrl.origin !== self.location.origin) {
     return;
   }
 
-  if (event.request.mode === "navigate") {
+  if (usarRedePrimeiro) {
     event.respondWith(
       fetch(event.request)
         .then((response) => {
@@ -62,8 +80,17 @@ self.addEventListener("fetch", (event) => {
           return response;
         })
         .catch(async () => {
-          const cachedPage = await caches.match(event.request);
-          return cachedPage || caches.match("./Ferramenta/index-seleciona.html");
+          const cachedResponse = await caches.match(event.request);
+
+          if (cachedResponse) {
+            return cachedResponse;
+          }
+
+          if (event.request.mode === "navigate") {
+            return caches.match("./Ferramenta/index-seleciona.html");
+          }
+
+          return Response.error();
         })
     );
     return;

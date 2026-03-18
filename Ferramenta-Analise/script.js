@@ -22,10 +22,8 @@ const EXEMPLOS_LSB = [
   },
 ];
 
-const PWA_INSTALL_VERSION = "2026-03-mobile-install";
-const CHAVE_PWA_PRONTO = "AIDA_PWA_INSTALL_READY";
+const PWA_INSTALL_VERSION = "2026-03-site-after-analysis";
 const CHAVE_PWA_DECISAO = "AIDA_PWA_INSTALL_DECISION";
-const CHAVE_PWA_SESSAO = "AIDA_PWA_INSTALL_SESSION";
 
 let deferredInstallPrompt = null;
 
@@ -47,23 +45,25 @@ function dispositivoMovel() {
 function appInstalado() {
   return (
     window.matchMedia("(display-mode: standalone)").matches ||
-    window.navigator.standalone === true
+    window.matchMedia("(display-mode: fullscreen)").matches ||
+    window.matchMedia("(display-mode: minimal-ui)").matches ||
+    window.matchMedia("(display-mode: window-controls-overlay)").matches ||
+    window.navigator.standalone === true ||
+    document.referrer.startsWith("android-app://")
   );
 }
 
-function conviteInstalacaoAtivo() {
-  return sessionStorage.getItem(CHAVE_PWA_SESSAO) === PWA_INSTALL_VERSION;
+function usuarioDispensouConviteInstalacao() {
+  return localStorage.getItem(CHAVE_PWA_DECISAO) === PWA_INSTALL_VERSION;
 }
 
 window.addEventListener("beforeinstallprompt", (event) => {
   event.preventDefault();
   deferredInstallPrompt = event;
-  window.dispatchEvent(new CustomEvent("aida:pwa-disponivel"));
 });
 
 window.addEventListener("appinstalled", () => {
   localStorage.setItem(CHAVE_PWA_DECISAO, PWA_INSTALL_VERSION);
-  sessionStorage.removeItem(CHAVE_PWA_SESSAO);
 });
 
 function base64ToBlob(base64, mime) {
@@ -493,23 +493,37 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnInstalarApp = document.getElementById("btnInstalarApp");
   const btnAgoraNao = document.getElementById("btnAgoraNao");
   const btnFecharInstalacao = document.getElementById("btnFecharInstalacao");
+  const checkNaoMostrarInstalacao = document.getElementById("checkNaoMostrarInstalacao");
 
   let imagemAtual = localStorage.getItem("AIDA_ImagemSelecionada") || "";
+
+  if (appInstalado()) {
+    localStorage.setItem(CHAVE_PWA_DECISAO, PWA_INSTALL_VERSION);
+  }
 
   function deveOferecerInstalacao() {
     if (!installAppPrompt) {
       return false;
     }
 
-    if (!dispositivoMovel() || appInstalado()) {
+    if (appInstalado()) {
       return false;
     }
 
-    if (localStorage.getItem(CHAVE_PWA_DECISAO) === PWA_INSTALL_VERSION) {
+    if (usuarioDispensouConviteInstalacao()) {
       return false;
     }
 
-    return conviteInstalacaoAtivo();
+    return true;
+  }
+
+  function salvarPreferenciaConviteInstalacao() {
+    if (checkNaoMostrarInstalacao && checkNaoMostrarInstalacao.checked) {
+      localStorage.setItem(CHAVE_PWA_DECISAO, PWA_INSTALL_VERSION);
+      return;
+    }
+
+    localStorage.removeItem(CHAVE_PWA_DECISAO);
   }
 
   function fecharConviteInstalacao(registrarDecisao = false) {
@@ -522,8 +536,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.classList.remove("install-sheet-open");
 
     if (registrarDecisao) {
-      localStorage.setItem(CHAVE_PWA_DECISAO, PWA_INSTALL_VERSION);
-      sessionStorage.removeItem(CHAVE_PWA_SESSAO);
+      salvarPreferenciaConviteInstalacao();
     }
   }
 
@@ -533,17 +546,31 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const emIOS = dispositivoIOS();
+    const emCelular = dispositivoMovel();
+    const promptDisponivel = !!deferredInstallPrompt;
 
     if (installPromptTitle) {
-      installPromptTitle.innerText = emIOS
-        ? "Adicione o AIDA.ON a tela inicial"
-        : "Instale o AIDA.ON no seu celular";
+      if (emIOS) {
+        installPromptTitle.innerText = "Adicione o AIDA.ON a tela inicial";
+      } else if (emCelular) {
+        installPromptTitle.innerText = "Instale o AIDA.ON no seu celular";
+      } else {
+        installPromptTitle.innerText = "Instale o AIDA.ON no seu computador";
+      }
     }
 
     if (installPromptText) {
-      installPromptText.innerText = emIOS
-        ? "No iPhone e no iPad a instalacao e feita pelo menu do navegador. Assim o AIDA.ON fica com icone, nome e abertura em tela cheia."
-        : "Deixe a ferramenta na tela inicial com cara de app e acesso mais rapido sempre que precisar analisar uma imagem.";
+      if (emIOS) {
+        installPromptText.innerText =
+          "No iPhone e no iPad a instalacao e feita pelo menu do navegador. Assim o AIDA.ON fica com icone, nome e abertura em tela cheia.";
+      } else if (promptDisponivel) {
+        installPromptText.innerText = emCelular
+          ? "Deixe a ferramenta na tela inicial com cara de app e acesso mais rapido sempre que precisar analisar uma imagem."
+          : "Deixe a ferramenta instalada no seu computador para abrir como app e acessar mais rapido sempre que precisar analisar uma imagem.";
+      } else {
+        installPromptText.innerText =
+          "Quando a instalacao estiver disponivel neste navegador, voce podera instalar o AIDA.ON para acessar a ferramenta com mais rapidez.";
+      }
     }
 
     if (installIosSteps) {
@@ -551,7 +578,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (btnInstalarApp) {
-      btnInstalarApp.innerText = emIOS ? "Entendi" : "Instalar";
+      btnInstalarApp.innerText = emIOS ? "Entendi" : promptDisponivel ? "Instalar" : "Entendi";
+    }
+
+    if (checkNaoMostrarInstalacao) {
+      checkNaoMostrarInstalacao.checked = false;
     }
 
     installAppPrompt.hidden = false;
@@ -566,7 +597,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (!deferredInstallPrompt) {
-      mostrarAlerta("O navegador ainda nao liberou a instalacao deste app.");
+      fecharConviteInstalacao(true);
       return;
     }
 
@@ -578,11 +609,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (escolha.outcome === "accepted") {
         localStorage.setItem(CHAVE_PWA_DECISAO, PWA_INSTALL_VERSION);
-        sessionStorage.removeItem(CHAVE_PWA_SESSAO);
         mostrarAlerta("AIDA.ON instalado com sucesso.");
-      } else {
+      } else if (checkNaoMostrarInstalacao && checkNaoMostrarInstalacao.checked) {
         localStorage.setItem(CHAVE_PWA_DECISAO, PWA_INSTALL_VERSION);
-        sessionStorage.removeItem(CHAVE_PWA_SESSAO);
+      } else {
+        localStorage.removeItem(CHAVE_PWA_DECISAO);
       }
 
       fecharConviteInstalacao(false);
@@ -592,17 +623,6 @@ document.addEventListener("DOMContentLoaded", () => {
     } finally {
       deferredInstallPrompt = null;
       btnInstalarApp.disabled = false;
-    }
-  }
-
-  function prepararConvitePrimeiraAnalise() {
-    if (!dispositivoMovel() || appInstalado()) {
-      return;
-    }
-
-    if (localStorage.getItem(CHAVE_PWA_PRONTO) !== PWA_INSTALL_VERSION) {
-      localStorage.setItem(CHAVE_PWA_PRONTO, PWA_INSTALL_VERSION);
-      sessionStorage.setItem(CHAVE_PWA_SESSAO, PWA_INSTALL_VERSION);
     }
   }
 
@@ -617,8 +637,6 @@ document.addEventListener("DOMContentLoaded", () => {
   if (btnInstalarApp) {
     btnInstalarApp.addEventListener("click", tratarInstalacaoApp);
   }
-
-  window.addEventListener("aida:pwa-disponivel", mostrarConviteInstalacao);
 
   if (nomeSalvo && botaoUsuario) {
     botaoUsuario.innerText = `Ola, ${nomeSalvo}`;
@@ -834,7 +852,6 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       await salvarHistorico(imagemAtual, dados);
-      prepararConvitePrimeiraAnalise();
       mostrarConviteInstalacao();
       mostrarAlerta("Analise concluida!");
     } catch (erro) {

@@ -1,7 +1,7 @@
 {
   "id": "./",
-  "name": "AIDA.ON",
-  "short_name": "AIDA.ON",
+  "name": "AIDA",
+  "short_name": "AIDA",
   "description": "Ferramenta web para analise de imagens com experiencia de app no celular.",
   "lang": "pt-BR",
   "start_url": "./Ferramenta/index-seleciona.html",

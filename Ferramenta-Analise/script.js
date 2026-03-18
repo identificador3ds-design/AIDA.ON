@@ -22,6 +22,50 @@ const EXEMPLOS_LSB = [
   },
 ];
 
+const PWA_INSTALL_VERSION = "2026-03-mobile-install";
+const CHAVE_PWA_PRONTO = "AIDA_PWA_INSTALL_READY";
+const CHAVE_PWA_DECISAO = "AIDA_PWA_INSTALL_DECISION";
+const CHAVE_PWA_SESSAO = "AIDA_PWA_INSTALL_SESSION";
+
+let deferredInstallPrompt = null;
+
+function dispositivoIOS() {
+  return (
+    /iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)
+  );
+}
+
+function dispositivoMovel() {
+  return (
+    /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+    dispositivoIOS() ||
+    window.matchMedia("(pointer: coarse) and (max-width: 1024px)").matches
+  );
+}
+
+function appInstalado() {
+  return (
+    window.matchMedia("(display-mode: standalone)").matches ||
+    window.navigator.standalone === true
+  );
+}
+
+function conviteInstalacaoAtivo() {
+  return sessionStorage.getItem(CHAVE_PWA_SESSAO) === PWA_INSTALL_VERSION;
+}
+
+window.addEventListener("beforeinstallprompt", (event) => {
+  event.preventDefault();
+  deferredInstallPrompt = event;
+  window.dispatchEvent(new CustomEvent("aida:pwa-disponivel"));
+});
+
+window.addEventListener("appinstalled", () => {
+  localStorage.setItem(CHAVE_PWA_DECISAO, PWA_INSTALL_VERSION);
+  sessionStorage.removeItem(CHAVE_PWA_SESSAO);
+});
+
 function base64ToBlob(base64, mime) {
   const byteString = atob(base64.split(",")[1]);
   const bytes = new Uint8Array(byteString.length);
@@ -442,8 +486,139 @@ document.addEventListener("DOMContentLoaded", () => {
   const tituloExemplosMetodo = document.getElementById("tituloExemplosMetodo");
   const descricaoExemplosMetodo = document.getElementById("descricaoExemplosMetodo");
   const exemplosMetodo = document.getElementById("exemplosMetodo");
+  const installAppPrompt = document.getElementById("installAppPrompt");
+  const installIosSteps = document.getElementById("installIosSteps");
+  const installPromptTitle = document.getElementById("installPromptTitle");
+  const installPromptText = document.getElementById("installPromptText");
+  const btnInstalarApp = document.getElementById("btnInstalarApp");
+  const btnAgoraNao = document.getElementById("btnAgoraNao");
+  const btnFecharInstalacao = document.getElementById("btnFecharInstalacao");
 
   let imagemAtual = localStorage.getItem("AIDA_ImagemSelecionada") || "";
+
+  function deveOferecerInstalacao() {
+    if (!installAppPrompt) {
+      return false;
+    }
+
+    if (!dispositivoMovel() || appInstalado()) {
+      return false;
+    }
+
+    if (localStorage.getItem(CHAVE_PWA_DECISAO) === PWA_INSTALL_VERSION) {
+      return false;
+    }
+
+    return conviteInstalacaoAtivo();
+  }
+
+  function fecharConviteInstalacao(registrarDecisao = false) {
+    if (!installAppPrompt) {
+      return;
+    }
+
+    installAppPrompt.hidden = true;
+    installAppPrompt.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("install-sheet-open");
+
+    if (registrarDecisao) {
+      localStorage.setItem(CHAVE_PWA_DECISAO, PWA_INSTALL_VERSION);
+      sessionStorage.removeItem(CHAVE_PWA_SESSAO);
+    }
+  }
+
+  function mostrarConviteInstalacao() {
+    if (!installAppPrompt || !deveOferecerInstalacao()) {
+      return;
+    }
+
+    const emIOS = dispositivoIOS();
+
+    if (installPromptTitle) {
+      installPromptTitle.innerText = emIOS
+        ? "Adicione o AIDA.ON a tela inicial"
+        : "Instale o AIDA.ON no seu celular";
+    }
+
+    if (installPromptText) {
+      installPromptText.innerText = emIOS
+        ? "No iPhone e no iPad a instalacao e feita pelo menu do navegador. Assim o AIDA.ON fica com icone, nome e abertura em tela cheia."
+        : "Deixe a ferramenta na tela inicial com cara de app e acesso mais rapido sempre que precisar analisar uma imagem.";
+    }
+
+    if (installIosSteps) {
+      installIosSteps.hidden = !emIOS;
+    }
+
+    if (btnInstalarApp) {
+      btnInstalarApp.innerText = emIOS ? "Entendi" : "Instalar";
+    }
+
+    installAppPrompt.hidden = false;
+    installAppPrompt.setAttribute("aria-hidden", "false");
+    document.body.classList.add("install-sheet-open");
+  }
+
+  async function tratarInstalacaoApp() {
+    if (dispositivoIOS()) {
+      fecharConviteInstalacao(true);
+      return;
+    }
+
+    if (!deferredInstallPrompt) {
+      mostrarAlerta("O navegador ainda nao liberou a instalacao deste app.");
+      return;
+    }
+
+    btnInstalarApp.disabled = true;
+
+    try {
+      deferredInstallPrompt.prompt();
+      const escolha = await deferredInstallPrompt.userChoice;
+
+      if (escolha.outcome === "accepted") {
+        localStorage.setItem(CHAVE_PWA_DECISAO, PWA_INSTALL_VERSION);
+        sessionStorage.removeItem(CHAVE_PWA_SESSAO);
+        mostrarAlerta("AIDA.ON instalado com sucesso.");
+      } else {
+        localStorage.setItem(CHAVE_PWA_DECISAO, PWA_INSTALL_VERSION);
+        sessionStorage.removeItem(CHAVE_PWA_SESSAO);
+      }
+
+      fecharConviteInstalacao(false);
+    } catch (erro) {
+      console.error("Nao foi possivel abrir o prompt de instalacao:", erro);
+      mostrarAlerta("Nao foi possivel iniciar a instalacao agora.");
+    } finally {
+      deferredInstallPrompt = null;
+      btnInstalarApp.disabled = false;
+    }
+  }
+
+  function prepararConvitePrimeiraAnalise() {
+    if (!dispositivoMovel() || appInstalado()) {
+      return;
+    }
+
+    if (localStorage.getItem(CHAVE_PWA_PRONTO) !== PWA_INSTALL_VERSION) {
+      localStorage.setItem(CHAVE_PWA_PRONTO, PWA_INSTALL_VERSION);
+      sessionStorage.setItem(CHAVE_PWA_SESSAO, PWA_INSTALL_VERSION);
+    }
+  }
+
+  if (btnAgoraNao) {
+    btnAgoraNao.addEventListener("click", () => fecharConviteInstalacao(true));
+  }
+
+  if (btnFecharInstalacao) {
+    btnFecharInstalacao.addEventListener("click", () => fecharConviteInstalacao(true));
+  }
+
+  if (btnInstalarApp) {
+    btnInstalarApp.addEventListener("click", tratarInstalacaoApp);
+  }
+
+  window.addEventListener("aida:pwa-disponivel", mostrarConviteInstalacao);
 
   if (nomeSalvo && botaoUsuario) {
     botaoUsuario.innerText = `Ola, ${nomeSalvo}`;
@@ -659,6 +834,8 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       await salvarHistorico(imagemAtual, dados);
+      prepararConvitePrimeiraAnalise();
+      mostrarConviteInstalacao();
       mostrarAlerta("Analise concluida!");
     } catch (erro) {
       console.error("Erro ao processar imagem:", erro);

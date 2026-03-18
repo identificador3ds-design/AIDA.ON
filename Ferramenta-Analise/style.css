@@ -551,6 +551,92 @@
   animation: slide-in 0.35s ease forwards;
 }
 
+.install-sheet-open {
+  overflow: hidden;
+}
+
+.install-app-sheet {
+  position: fixed;
+  inset: 0;
+  padding: 20px;
+  display: grid;
+  place-items: end center;
+  background: rgba(5, 14, 15, 0.56);
+  backdrop-filter: blur(8px);
+  z-index: 1200;
+}
+
+.install-app-card {
+  width: min(100%, 560px);
+  padding: 22px;
+  display: grid;
+  gap: 20px;
+  position: relative;
+  animation: install-sheet-in 0.28s ease both;
+}
+
+.install-app-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 38px;
+  height: 38px;
+  border: 0;
+  border-radius: 999px;
+  color: var(--neutral-strong);
+  background: rgba(229, 231, 235, 0.1);
+  cursor: pointer;
+}
+
+.install-app-head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-right: 36px;
+}
+
+.install-app-icon {
+  width: 74px;
+  height: 74px;
+  border-radius: 20px;
+  flex-shrink: 0;
+  box-shadow: 0 14px 28px rgba(4, 8, 20, 0.28);
+}
+
+.install-app-copy {
+  display: grid;
+  gap: 8px;
+}
+
+.install-app-copy h3,
+.install-app-copy p {
+  margin: 0;
+}
+
+.install-app-copy h3 {
+  font-size: clamp(1.35rem, 2vw, 1.8rem);
+}
+
+.install-app-copy p {
+  color: var(--text-soft);
+  line-height: 1.6;
+}
+
+.install-app-steps {
+  margin: 0;
+  padding-left: 22px;
+  display: grid;
+  gap: 10px;
+  color: var(--neutral);
+  line-height: 1.6;
+}
+
+.install-app-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
 .toast-card.fadeOut {
   animation: slide-out 0.35s ease forwards;
 }
@@ -606,6 +692,18 @@
   to {
     transform: translateX(100%);
     opacity: 0;
+  }
+}
+
+@keyframes install-sheet-in {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -698,6 +796,28 @@
   .toast-card {
     min-width: 0;
   }
+
+  .install-app-sheet {
+    padding: 14px;
+  }
+
+  .install-app-card {
+    padding: 18px;
+    gap: 18px;
+  }
+
+  .install-app-head {
+    align-items: flex-start;
+  }
+
+  .install-app-actions {
+    flex-direction: column-reverse;
+  }
+
+  .install-app-actions .aida-button,
+  .install-app-actions .aida-button.secondary {
+    width: 100%;
+  }
 }
 
 @media (max-width: 520px) {
@@ -757,6 +877,16 @@
 
   .analysis-note {
     padding: 12px 14px;
+  }
+
+  .install-app-head {
+    flex-direction: column;
+    padding-right: 28px;
+  }
+
+  .install-app-icon {
+    width: 68px;
+    height: 68px;
   }
 }
 

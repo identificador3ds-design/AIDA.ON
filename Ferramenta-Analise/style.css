@@ -656,6 +656,11 @@
 .toast-card.fadeOut {
   animation: slide-out 0.35s ease forwards;
 }
+.imagem-exemplo {
+  width: 350px;
+  height: 250px;
+  
+}
 
 @keyframes spin {
   to {

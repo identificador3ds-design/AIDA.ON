@@ -28,8 +28,13 @@ const modeContent = {
 const mostrarAviso = (texto, tipo = "sucesso") => {
   const container = document.getElementById("toast-container");
   const toast = document.createElement("div");
+  const tipoClasse = {
+    erro: "erro",
+    cadastro: "cadastro",
+    "cadastro-erro": "cadastro erro",
+  };
 
-  toast.className = `toast-msg ${tipo === "erro" ? "erro" : ""}`;
+  toast.className = `toast-msg ${tipoClasse[tipo] || ""}`.trim();
   toast.innerText = texto;
 
   container.innerHTML = "";
@@ -105,21 +110,21 @@ document.getElementById("registerForm").addEventListener("submit", async (event)
   });
 
   if (error) {
-    mostrarAviso("Erro no cadastro: " + error.message, "erro");
+    mostrarAviso("Erro no cadastro: " + error.message, "cadastro-erro");
     return;
   }
 
   const { error: insertError } = await _supabase.from("usuarios").insert([{ nome, email }]);
 
   if (insertError) {
-    mostrarAviso("Conta criada, mas houve um erro ao salvar seus dados complementares.", "erro");
+    mostrarAviso("Conta criada, mas houve um erro ao salvar seus dados complementares.", "cadastro-erro");
     setTimeout(() => {
       setMode("signin");
     }, 1800);
     return;
   }
 
-  mostrarAviso("Cadastro finalizado! Faca seu login.");
+  mostrarAviso("Cadastro finalizado! Faca seu login.", "cadastro");
 
   setTimeout(() => {
     setMode("signin");

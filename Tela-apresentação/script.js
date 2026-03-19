@@ -36,6 +36,16 @@ const members = [
   },
 ];
 
+const ADMIN_EMAIL = "admin@gmail.com";
+const CHAVE_ADMIN_CONFIG = "AIDA_ADMIN_CONFIG";
+const CONFIG_ADMIN_PADRAO = {
+  allowRegistrations: true,
+  enableInstallPrompt: true,
+  maintenanceMode: false,
+  supportEmail: ADMIN_EMAIL,
+  announcementMessage: "",
+};
+
 const menuToggle = document.querySelector(".menu-toggle");
 const navbar = document.querySelector(".navbar");
 const overlay = document.querySelector(".menu-overlay");
@@ -53,6 +63,120 @@ const teamMobileCarousel = document.getElementById("teamMobileCarousel");
 
 let currentIndex = -1;
 let teamTrigger = null;
+
+function obterAdminConfig() {
+  try {
+    const salvo = JSON.parse(localStorage.getItem(CHAVE_ADMIN_CONFIG) || "{}");
+    return { ...CONFIG_ADMIN_PADRAO, ...salvo };
+  } catch (erro) {
+    return { ...CONFIG_ADMIN_PADRAO };
+  }
+}
+
+function usuarioEhAdmin() {
+  const tipo = localStorage.getItem("usuarioTipo");
+  const email = (localStorage.getItem("usuarioEmail") || "").trim().toLowerCase();
+  return tipo === "admin" || email === ADMIN_EMAIL;
+}
+
+function abrirPainelAdmin(event) {
+  if (event) {
+    event.preventDefault();
+  }
+
+  window.location.href = "../Administrador/index-admin.html";
+}
+
+function renderizarAvisoSistema() {
+  const configuracao = obterAdminConfig();
+  const mensagem = String(configuracao.announcementMessage || "").trim();
+  const mensagens = [];
+  let possuiAvisoPrincipal = false;
+
+  if (configuracao.maintenanceMode) {
+    mensagens.push("Modo manutencao ativo.");
+    possuiAvisoPrincipal = true;
+  }
+
+  if (mensagem) {
+    mensagens.push(mensagem);
+    possuiAvisoPrincipal = true;
+  }
+
+  if (possuiAvisoPrincipal && configuracao.supportEmail) {
+    mensagens.push(`Contato: ${configuracao.supportEmail}.`);
+  }
+
+  if (!mensagens.length) {
+    return;
+  }
+
+  const main = document.querySelector("main");
+
+  if (!main || document.getElementById("systemNotice")) {
+    return;
+  }
+
+  const aviso = document.createElement("section");
+  aviso.id = "systemNotice";
+  aviso.className = "system-notice";
+  const conteudo = document.createElement("div");
+  conteudo.className = "system-notice-inner";
+
+  const etiqueta = document.createElement("span");
+  etiqueta.className = "system-notice-kicker";
+  etiqueta.textContent = "Aviso do sistema";
+
+  const texto = document.createElement("p");
+  texto.textContent = mensagens.join(" ");
+
+  conteudo.appendChild(etiqueta);
+  conteudo.appendChild(texto);
+  aviso.appendChild(conteudo);
+
+  main.insertBefore(aviso, main.firstChild);
+}
+
+function ajustarAcessoPrincipalFerramenta() {
+  const configuracao = obterAdminConfig();
+  const ctaPrincipal = document.querySelector('.btn-group-ferr .btn-main');
+  const badgeNovidade = document.querySelector(".new-feature-badge");
+  const admin = usuarioEhAdmin();
+
+  if (!ctaPrincipal) {
+    return;
+  }
+
+  if (!ctaPrincipal.dataset.defaultLabel) {
+    ctaPrincipal.dataset.defaultLabel = ctaPrincipal.textContent.trim();
+  }
+
+  const restaurarLabel = () => {
+    ctaPrincipal.textContent = ctaPrincipal.dataset.defaultLabel || "Experimentar ferramenta";
+  };
+
+  if (configuracao.allowUploadPage || admin) {
+    ctaPrincipal.href = "../Ferramenta/index-seleciona.html";
+    ctaPrincipal.classList.remove("is-disabled");
+    ctaPrincipal.removeAttribute("aria-disabled");
+    restaurarLabel();
+
+    if (badgeNovidade) {
+      badgeNovidade.hidden = false;
+    }
+
+    return;
+  }
+
+  ctaPrincipal.href = "#topo";
+  ctaPrincipal.classList.add("is-disabled");
+  ctaPrincipal.setAttribute("aria-disabled", "true");
+  ctaPrincipal.textContent = "Entrada temporariamente fechada";
+
+  if (badgeNovidade) {
+    badgeNovidade.hidden = true;
+  }
+}
 
 function registerGsapPlugins() {
   if (!window.gsap) {
@@ -84,7 +208,8 @@ function setMenuState(isOpen) {
 
 function setUserName() {
   const savedName = localStorage.getItem("usuarioNome");
-  const label = savedName ? `Ola, ${savedName}` : "Minha conta";
+  const admin = usuarioEhAdmin();
+  const label = admin ? "Admin" : savedName ? `Ola, ${savedName}` : "Minha conta";
   const mobileButton = document.getElementById("nome-usuario");
   const desktopButton = document.getElementById("nome-usuario2");
 
@@ -95,6 +220,23 @@ function setUserName() {
   if (desktopButton) {
     desktopButton.textContent = label;
   }
+
+  if (!admin) {
+    return;
+  }
+
+  [mobileButton, desktopButton].forEach((button) => {
+    if (!button) {
+      return;
+    }
+
+    button.addEventListener("click", abrirPainelAdmin);
+  });
+
+  document.querySelectorAll(".dropdown-content .dropa").forEach((link) => {
+    link.href = "../Administrador/index-admin.html";
+    link.textContent = "Painel admin";
+  });
 }
 
 function updateActiveNav() {
@@ -551,6 +693,8 @@ function setupParallax() {
 
 document.addEventListener("DOMContentLoaded", () => {
   registerGsapPlugins();
+  renderizarAvisoSistema();
+  ajustarAcessoPrincipalFerramenta();
   setUserName();
   setupNavigation();
   updateActiveNav();

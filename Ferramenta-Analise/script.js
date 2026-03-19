@@ -22,10 +22,174 @@ const EXEMPLOS_LSB = [
   },
 ];
 
+const ADMIN_EMAIL = "admin@gmail.com";
+const CHAVE_ADMIN_CONFIG = "AIDA_ADMIN_CONFIG";
+const CHAVE_LOGIN_FEEDBACK = "AIDA_LOGIN_FEEDBACK";
+const CONFIG_ADMIN_PADRAO = {
+  allowRegistrations: true,
+  enableInstallPrompt: true,
+  maintenanceMode: false,
+  allowUploadPage: true,
+  allowHistoryPage: true,
+  allowProfilePage: true,
+  lockAnalysisPage: false,
+  defaultWatermarkCheck: true,
+  defaultMetadataCheck: true,
+  supportEmail: ADMIN_EMAIL,
+  announcementMessage: "",
+  analysisButtonLabel: "Analisar imagem",
+  methods: {
+    FFT: { label: "FFT", enabled: true, backendReady: true },
+    PSEM: { label: "PSEM", enabled: false, backendReady: false },
+    M4: { label: "LSB", enabled: true, backendReady: true },
+    GRAD: { label: "Gradiente Laplaciano (Neon)", enabled: true, backendReady: true },
+  },
+  accountStates: {},
+};
 const PWA_INSTALL_VERSION = "2026-03-site-after-analysis";
 const CHAVE_PWA_DECISAO = "AIDA_PWA_INSTALL_DECISION";
 
 let deferredInstallPrompt = null;
+
+function obterAdminConfig() {
+  try {
+    const salvo = JSON.parse(localStorage.getItem(CHAVE_ADMIN_CONFIG) || "{}");
+    const metodos = {};
+    const accountStates = {};
+
+    Object.keys(CONFIG_ADMIN_PADRAO.methods).forEach((chave) => {
+      metodos[chave] = {
+        ...CONFIG_ADMIN_PADRAO.methods[chave],
+        ...(salvo.methods?.[chave] || {}),
+      };
+      metodos[chave].label =
+        String(metodos[chave].label || CONFIG_ADMIN_PADRAO.methods[chave].label).trim() ||
+        CONFIG_ADMIN_PADRAO.methods[chave].label;
+      metodos[chave].enabled = Boolean(metodos[chave].enabled);
+      metodos[chave].backendReady = Boolean(metodos[chave].backendReady);
+    });
+
+    if (salvo.accountStates && typeof salvo.accountStates === "object") {
+      Object.entries(salvo.accountStates).forEach(([email, dados]) => {
+        const emailNormalizado = String(email || "").trim().toLowerCase();
+
+        if (!emailNormalizado || emailNormalizado === ADMIN_EMAIL) {
+          return;
+        }
+
+        accountStates[emailNormalizado] = {
+          status: ["active", "blocked", "deleted"].includes(dados?.status)
+            ? dados.status
+            : "active",
+        };
+      });
+    }
+
+    return {
+      ...CONFIG_ADMIN_PADRAO,
+      ...salvo,
+      analysisButtonLabel:
+        String(salvo.analysisButtonLabel || CONFIG_ADMIN_PADRAO.analysisButtonLabel).trim() ||
+        CONFIG_ADMIN_PADRAO.analysisButtonLabel,
+      methods: metodos,
+      accountStates,
+    };
+  } catch (erro) {
+    return { ...CONFIG_ADMIN_PADRAO };
+  }
+}
+
+function usuarioEhAdmin() {
+  const tipo = localStorage.getItem("usuarioTipo");
+  const email = (localStorage.getItem("usuarioEmail") || "").trim().toLowerCase();
+  return tipo === "admin" || email === ADMIN_EMAIL;
+}
+
+function obterStatusConta(email) {
+  const emailNormalizado = String(email || "").trim().toLowerCase();
+
+  if (!emailNormalizado || emailNormalizado === ADMIN_EMAIL) {
+    return "active";
+  }
+
+  return obterAdminConfig().accountStates[emailNormalizado]?.status || "active";
+}
+
+function contaAtualSemAcesso() {
+  const email = localStorage.getItem("usuarioEmail");
+  return ["blocked", "deleted"].includes(obterStatusConta(email));
+}
+
+function renderizarAvisoSistema() {
+  const configuracao = obterAdminConfig();
+  const mensagem = String(configuracao.announcementMessage || "").trim();
+  const mensagens = [];
+  let possuiAvisoPrincipal = false;
+
+  if (configuracao.maintenanceMode) {
+    mensagens.push("Modo manutencao ativo.");
+    possuiAvisoPrincipal = true;
+  }
+
+  if (mensagem) {
+    mensagens.push(mensagem);
+    possuiAvisoPrincipal = true;
+  }
+
+  if (possuiAvisoPrincipal && configuracao.supportEmail) {
+    mensagens.push(`Contato: ${configuracao.supportEmail}.`);
+  }
+
+  if (!mensagens.length) {
+    return;
+  }
+
+  const main = document.querySelector("main");
+
+  if (!main || document.getElementById("systemNotice")) {
+    return;
+  }
+
+  const aviso = document.createElement("section");
+  aviso.id = "systemNotice";
+  aviso.className = "system-notice";
+  const conteudo = document.createElement("div");
+  conteudo.className = "system-notice-inner";
+
+  const etiqueta = document.createElement("span");
+  etiqueta.className = "system-notice-kicker";
+  etiqueta.textContent = "Aviso do sistema";
+
+  const texto = document.createElement("p");
+  texto.textContent = mensagens.join(" ");
+
+  conteudo.appendChild(etiqueta);
+  conteudo.appendChild(texto);
+  aviso.appendChild(conteudo);
+
+  main.insertBefore(aviso, main.firstChild);
+}
+
+function renderizarMetodosDisponiveis(select, configuracao) {
+  if (!select) {
+    return;
+  }
+
+  const placeholder = '<option value="" disabled selected>Escolha uma opcao</option>';
+  const opcoes = [placeholder];
+
+  Object.entries(configuracao.methods).forEach(([chave, metodo]) => {
+    if (!metodo.enabled) {
+      return;
+    }
+
+    const label = metodo.backendReady ? metodo.label : `${metodo.label} (em breve)`;
+    const disabled = metodo.backendReady ? "" : "disabled";
+    opcoes.push(`<option value="${chave}" ${disabled}>${label}</option>`);
+  });
+
+  select.innerHTML = opcoes.join("");
+}
 
 function dispositivoIOS() {
   return (
@@ -464,9 +628,13 @@ async function salvarHistorico(imagemBase64, dados) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  renderizarAvisoSistema();
   const nomeSalvo = localStorage.getItem("usuarioNome");
   const botaoUsuario = document.getElementById("nome-usuario2");
   const btnSair = document.getElementById("btn-sair");
+  const linkHistorico = document.querySelector(".analysis-header-actions .top-link");
+  const linkPerfilUsuario = document.querySelector(".dropdown-content .dropa");
+  const linkVoltarSelecao = document.querySelector(".inline-link");
   const imagemPreview = document.getElementById("imagemPreview");
   const previewStatus = document.getElementById("previewStatus");
   const btnVerificar = document.getElementById("btnVerificar");
@@ -494,8 +662,56 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnAgoraNao = document.getElementById("btnAgoraNao");
   const btnFecharInstalacao = document.getElementById("btnFecharInstalacao");
   const checkNaoMostrarInstalacao = document.getElementById("checkNaoMostrarInstalacao");
+  const configuracaoAdmin = obterAdminConfig();
 
   let imagemAtual = localStorage.getItem("AIDA_ImagemSelecionada") || "";
+
+  if (contaAtualSemAcesso()) {
+    localStorage.removeItem("usuarioNome");
+    localStorage.removeItem("usuarioEmail");
+    localStorage.removeItem("usuarioTipo");
+    localStorage.setItem(
+      CHAVE_LOGIN_FEEDBACK,
+      "Seu acesso foi bloqueado pelo administrador."
+    );
+    window.location.href = "../login/index-login.html";
+    return;
+  }
+
+  renderizarMetodosDisponiveis(metodoAnalise, configuracaoAdmin);
+
+  if (btnVerificar) {
+    btnVerificar.innerText = configuracaoAdmin.lockAnalysisPage
+      ? "Analise temporariamente indisponivel"
+      : configuracaoAdmin.analysisButtonLabel;
+    btnVerificar.disabled = Boolean(configuracaoAdmin.lockAnalysisPage);
+  }
+
+  if (checkMarcaDagua) {
+    checkMarcaDagua.checked = Boolean(configuracaoAdmin.defaultWatermarkCheck);
+  }
+
+  if (checkMetadados) {
+    checkMetadados.checked = Boolean(configuracaoAdmin.defaultMetadataCheck);
+  }
+
+  if (linkHistorico && !configuracaoAdmin.allowHistoryPage) {
+    linkHistorico.hidden = true;
+  }
+
+  if (linkPerfilUsuario && !usuarioEhAdmin() && !configuracaoAdmin.allowProfilePage) {
+    linkPerfilUsuario.hidden = true;
+  }
+
+  if (!configuracaoAdmin.allowUploadPage && !usuarioEhAdmin()) {
+    if (btnTrocar) {
+      btnTrocar.hidden = true;
+    }
+
+    if (linkVoltarSelecao) {
+      linkVoltarSelecao.hidden = true;
+    }
+  }
 
   if (appInstalado()) {
     localStorage.setItem(CHAVE_PWA_DECISAO, PWA_INSTALL_VERSION);
@@ -503,6 +719,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function deveOferecerInstalacao() {
     if (!installAppPrompt) {
+      return false;
+    }
+
+    if (!obterAdminConfig().enableInstallPrompt) {
       return false;
     }
 
@@ -638,8 +858,23 @@ document.addEventListener("DOMContentLoaded", () => {
     btnInstalarApp.addEventListener("click", tratarInstalacaoApp);
   }
 
-  if (nomeSalvo && botaoUsuario) {
-    botaoUsuario.innerText = `Ola, ${nomeSalvo}`;
+  if (botaoUsuario) {
+    if (usuarioEhAdmin()) {
+      botaoUsuario.innerText = "Admin";
+      botaoUsuario.addEventListener("click", (event) => {
+        event.preventDefault();
+        window.location.href = "../Administrador/index-admin.html";
+      });
+
+      const linkPerfil = document.querySelector(".dropdown-content .dropa");
+
+      if (linkPerfil) {
+        linkPerfil.href = "../Administrador/index-admin.html";
+        linkPerfil.innerText = "Painel admin";
+      }
+    } else if (nomeSalvo) {
+      botaoUsuario.innerText = `Ola, ${nomeSalvo}`;
+    }
   }
 
   if (window.gsap) {
@@ -652,6 +887,7 @@ document.addEventListener("DOMContentLoaded", () => {
       event.preventDefault();
       localStorage.removeItem("usuarioNome");
       localStorage.removeItem("usuarioEmail");
+      localStorage.removeItem("usuarioTipo");
       localStorage.removeItem("AIDA_ImagemSelecionada");
 
       try {
@@ -781,9 +1017,27 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   btnVerificar.addEventListener("click", async () => {
+    const configuracaoAtual = obterAdminConfig();
     const metodoSelecionado = metodoAnalise ? metodoAnalise.value : "";
     const analisarMarcaDagua = checkMarcaDagua ? checkMarcaDagua.checked : true;
     const analisarMetadados = checkMetadados ? checkMetadados.checked : true;
+
+    if (contaAtualSemAcesso()) {
+      localStorage.removeItem("usuarioNome");
+      localStorage.removeItem("usuarioEmail");
+      localStorage.removeItem("usuarioTipo");
+      localStorage.setItem(
+        CHAVE_LOGIN_FEEDBACK,
+        "Seu acesso foi bloqueado pelo administrador."
+      );
+      window.location.href = "../login/index-login.html";
+      return;
+    }
+
+    if (configuracaoAtual.lockAnalysisPage) {
+      mostrarAlerta("A analise foi travada temporariamente pelo administrador.");
+      return;
+    }
 
     if (!imagemAtual) {
       mostrarAlerta("Selecione uma imagem antes de analisar.");

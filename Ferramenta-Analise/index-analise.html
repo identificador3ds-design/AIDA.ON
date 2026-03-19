@@ -3,6 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#10403b">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="AIDA.ON">
+    <link rel="manifest" href="../manifest.webmanifest">
+    <link rel="apple-touch-icon" href="../img/pwa-icon-180.png">
     <title>AIDA.ON - Analise da Imagem</title>
     <link rel="icon" type="image/png" href="../img/AIDABranco.ico">
     <link rel="stylesheet" href="../shared-theme.css">
@@ -164,8 +170,45 @@
         </section>
     </main>
 
+    <div id="installAppPrompt" class="install-app-sheet" hidden aria-hidden="true">
+        <div class="install-app-card glass-panel" role="dialog" aria-modal="true" aria-labelledby="installPromptTitle">
+            <button id="btnFecharInstalacao" type="button" class="install-app-close" aria-label="Fechar convite de instalacao">
+                x
+            </button>
+
+            <div class="install-app-head">
+                <img src="../img/pwa-icon-192.png" alt="Icone do AIDA.ON" class="install-app-icon">
+
+                <div class="install-app-copy">
+                    <span class="section-tag">Acesso rapido</span>
+                    <h3 id="installPromptTitle">Instale o AIDA.ON no seu celular</h3>
+                    <p id="installPromptText">
+                        Deixe a ferramenta na tela inicial com cara de app e acesso mais rapido sempre que precisar analisar uma imagem.
+                    </p>
+                </div>
+            </div>
+
+            <ol id="installIosSteps" class="install-app-steps" hidden>
+                <li>Toque no botao de compartilhar do navegador.</li>
+                <li>Escolha "Adicionar a Tela de Inicio".</li>
+                <li>Confirme para deixar o AIDA.ON com icone e nome no celular.</li>
+            </ol>
+
+            <label class="install-app-preference" for="checkNaoMostrarInstalacao">
+                <input id="checkNaoMostrarInstalacao" type="checkbox">
+                <span>Nao aparecer novamente</span>
+            </label>
+
+            <div class="install-app-actions">
+                <button id="btnAgoraNao" type="button" class="aida-button secondary">Agora nao</button>
+                <button id="btnInstalarApp" type="button" class="aida-button">Instalar</button>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="../pwa-register.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

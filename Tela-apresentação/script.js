@@ -3,35 +3,35 @@ const members = [
     name: "Alexandre",
     role: "Head of Documentation",
     description:
-      "Responsavel pela estruturacao e manutencao da documentacao tecnica do projeto. Atua na organizacao das metodologias utilizadas, registro dos processos de desenvolvimento e elaboracao de relatorios e materiais explicativos. Seu trabalho garante que todas as etapas do projeto estejam bem documentadas, facilitando a compreensao, replicacao e evolucao da pesquisa.",
+      "Responsável pela documentação técnica do projeto, organizando metodologias, processos de desenvolvimento e relatórios para garantir clareza, replicação e evolução da pesquisa.",
     image: "../img/alex-exec.png",
   },
   {
     name: "Arthur",
     role: "Head of Detection Methodologies",
     description:
-      "Responsavel pelo estudo, desenvolvimento e implementacao das metodologias de deteccao de conteudo gerado ou manipulado por inteligencia artificial. Atua na analise de diferentes abordagens e algoritmos, avaliando sua eficacia e aplicabilidade no contexto do projeto. Seu foco e garantir precisao, confiabilidade e inovacao nas tecnicas utilizadas.",
+      "Responsável pelo desenvolvimento e aplicação de metodologias de detecção de conteúdo gerado ou manipulado por IA, buscando precisão, confiabilidade e inovação nas técnicas utilizadas.",
     image: "../img/thur-exec.png",
   },
   {
     name: "Eduardo",
     role: "Data Acquisition Lead",
     description:
-      "Responsavel pela coleta, selecao e organizacao dos conjuntos de dados utilizados no projeto. Atua na busca por bases confiaveis de imagens e videos, alem de realizar a curadoria e preparacao dos dados para testes e analises. Seu trabalho e fundamental para garantir qualidade, diversidade e consistencia nos dados utilizados pelos metodos de deteccao.",
+      "Responsável pela coleta, organização e preparação dos dados do projeto, garantindo qualidade, diversidade e consistência para testes e análises.",
     image: "../img/nidu-exec.png",
   },
   {
     name: "Iago",
     role: "Project Manager & Lead Backend",
     description:
-      "Responsavel pela coordenacao geral do projeto e pelo desenvolvimento da arquitetura backend da plataforma. Atua na organizacao das tarefas da equipe, integracao dos sistemas e implementacao das funcionalidades que processam e gerenciam os dados. Seu trabalho garante o funcionamento estrutural da aplicacao e a integracao entre todas as partes do sistema.",
+      "Responsável pela coordenação do projeto e pelo desenvolvimento do backend, garantindo organização, integração e funcionamento eficiente da plataforma.",
     image: "../img/iago-exec.png",
   },
   {
     name: "Pedro",
     role: "UX/UI Designer & Lead Frontend",
     description:
-      "Responsavel pelo design da interface e pela experiencia do usuario da plataforma. Atua no planejamento visual, prototipagem e desenvolvimento do frontend do site, garantindo uma navegacao intuitiva, moderna e funcional. Seu trabalho conecta a tecnologia desenvolvida no projeto com uma interface clara e acessivel para os usuarios.",
+      "Responsável pela coleta, seleção e organização dos dados do projeto, garantindo qualidade, diversidade e consistência para testes e análises.",
     image: "../img/pedrao-exec.png",
   },
 ];

@@ -22,6 +22,50 @@ const EXEMPLOS_LSB = [
   },
 ];
 
+const PWA_INSTALL_VERSION = "2026-03-site-after-analysis";
+const CHAVE_PWA_DECISAO = "AIDA_PWA_INSTALL_DECISION";
+
+let deferredInstallPrompt = null;
+
+function dispositivoIOS() {
+  return (
+    /iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)
+  );
+}
+
+function dispositivoMovel() {
+  return (
+    /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+    dispositivoIOS() ||
+    window.matchMedia("(pointer: coarse) and (max-width: 1024px)").matches
+  );
+}
+
+function appInstalado() {
+  return (
+    window.matchMedia("(display-mode: standalone)").matches ||
+    window.matchMedia("(display-mode: fullscreen)").matches ||
+    window.matchMedia("(display-mode: minimal-ui)").matches ||
+    window.matchMedia("(display-mode: window-controls-overlay)").matches ||
+    window.navigator.standalone === true ||
+    document.referrer.startsWith("android-app://")
+  );
+}
+
+function usuarioDispensouConviteInstalacao() {
+  return localStorage.getItem(CHAVE_PWA_DECISAO) === PWA_INSTALL_VERSION;
+}
+
+window.addEventListener("beforeinstallprompt", (event) => {
+  event.preventDefault();
+  deferredInstallPrompt = event;
+});
+
+window.addEventListener("appinstalled", () => {
+  localStorage.setItem(CHAVE_PWA_DECISAO, PWA_INSTALL_VERSION);
+});
+
 function base64ToBlob(base64, mime) {
   const byteString = atob(base64.split(",")[1]);
   const bytes = new Uint8Array(byteString.length);
@@ -442,8 +486,157 @@ document.addEventListener("DOMContentLoaded", () => {
   const tituloExemplosMetodo = document.getElementById("tituloExemplosMetodo");
   const descricaoExemplosMetodo = document.getElementById("descricaoExemplosMetodo");
   const exemplosMetodo = document.getElementById("exemplosMetodo");
+  const installAppPrompt = document.getElementById("installAppPrompt");
+  const installIosSteps = document.getElementById("installIosSteps");
+  const installPromptTitle = document.getElementById("installPromptTitle");
+  const installPromptText = document.getElementById("installPromptText");
+  const btnInstalarApp = document.getElementById("btnInstalarApp");
+  const btnAgoraNao = document.getElementById("btnAgoraNao");
+  const btnFecharInstalacao = document.getElementById("btnFecharInstalacao");
+  const checkNaoMostrarInstalacao = document.getElementById("checkNaoMostrarInstalacao");
 
   let imagemAtual = localStorage.getItem("AIDA_ImagemSelecionada") || "";
+
+  if (appInstalado()) {
+    localStorage.setItem(CHAVE_PWA_DECISAO, PWA_INSTALL_VERSION);
+  }
+
+  function deveOferecerInstalacao() {
+    if (!installAppPrompt) {
+      return false;
+    }
+
+    if (appInstalado()) {
+      return false;
+    }
+
+    if (usuarioDispensouConviteInstalacao()) {
+      return false;
+    }
+
+    return true;
+  }
+
+  function salvarPreferenciaConviteInstalacao() {
+    if (checkNaoMostrarInstalacao && checkNaoMostrarInstalacao.checked) {
+      localStorage.setItem(CHAVE_PWA_DECISAO, PWA_INSTALL_VERSION);
+      return;
+    }
+
+    localStorage.removeItem(CHAVE_PWA_DECISAO);
+  }
+
+  function fecharConviteInstalacao(registrarDecisao = false) {
+    if (!installAppPrompt) {
+      return;
+    }
+
+    installAppPrompt.hidden = true;
+    installAppPrompt.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("install-sheet-open");
+
+    if (registrarDecisao) {
+      salvarPreferenciaConviteInstalacao();
+    }
+  }
+
+  function mostrarConviteInstalacao() {
+    if (!installAppPrompt || !deveOferecerInstalacao()) {
+      return;
+    }
+
+    const emIOS = dispositivoIOS();
+    const emCelular = dispositivoMovel();
+    const promptDisponivel = !!deferredInstallPrompt;
+
+    if (installPromptTitle) {
+      if (emIOS) {
+        installPromptTitle.innerText = "Adicione o AIDA.ON a tela inicial";
+      } else if (emCelular) {
+        installPromptTitle.innerText = "Instale o AIDA.ON no seu celular";
+      } else {
+        installPromptTitle.innerText = "Instale o AIDA.ON no seu computador";
+      }
+    }
+
+    if (installPromptText) {
+      if (emIOS) {
+        installPromptText.innerText =
+          "No iPhone e no iPad a instalacao e feita pelo menu do navegador. Assim o AIDA.ON fica com icone, nome e abertura em tela cheia.";
+      } else if (promptDisponivel) {
+        installPromptText.innerText = emCelular
+          ? "Deixe a ferramenta na tela inicial com cara de app e acesso mais rapido sempre que precisar analisar uma imagem."
+          : "Deixe a ferramenta instalada no seu computador para abrir como app e acessar mais rapido sempre que precisar analisar uma imagem.";
+      } else {
+        installPromptText.innerText =
+          "Quando a instalacao estiver disponivel neste navegador, voce podera instalar o AIDA.ON para acessar a ferramenta com mais rapidez.";
+      }
+    }
+
+    if (installIosSteps) {
+      installIosSteps.hidden = !emIOS;
+    }
+
+    if (btnInstalarApp) {
+      btnInstalarApp.innerText = emIOS ? "Entendi" : promptDisponivel ? "Instalar" : "Entendi";
+    }
+
+    if (checkNaoMostrarInstalacao) {
+      checkNaoMostrarInstalacao.checked = false;
+    }
+
+    installAppPrompt.hidden = false;
+    installAppPrompt.setAttribute("aria-hidden", "false");
+    document.body.classList.add("install-sheet-open");
+  }
+
+  async function tratarInstalacaoApp() {
+    if (dispositivoIOS()) {
+      fecharConviteInstalacao(true);
+      return;
+    }
+
+    if (!deferredInstallPrompt) {
+      fecharConviteInstalacao(true);
+      return;
+    }
+
+    btnInstalarApp.disabled = true;
+
+    try {
+      deferredInstallPrompt.prompt();
+      const escolha = await deferredInstallPrompt.userChoice;
+
+      if (escolha.outcome === "accepted") {
+        localStorage.setItem(CHAVE_PWA_DECISAO, PWA_INSTALL_VERSION);
+        mostrarAlerta("AIDA.ON instalado com sucesso.");
+      } else if (checkNaoMostrarInstalacao && checkNaoMostrarInstalacao.checked) {
+        localStorage.setItem(CHAVE_PWA_DECISAO, PWA_INSTALL_VERSION);
+      } else {
+        localStorage.removeItem(CHAVE_PWA_DECISAO);
+      }
+
+      fecharConviteInstalacao(false);
+    } catch (erro) {
+      console.error("Nao foi possivel abrir o prompt de instalacao:", erro);
+      mostrarAlerta("Nao foi possivel iniciar a instalacao agora.");
+    } finally {
+      deferredInstallPrompt = null;
+      btnInstalarApp.disabled = false;
+    }
+  }
+
+  if (btnAgoraNao) {
+    btnAgoraNao.addEventListener("click", () => fecharConviteInstalacao(true));
+  }
+
+  if (btnFecharInstalacao) {
+    btnFecharInstalacao.addEventListener("click", () => fecharConviteInstalacao(true));
+  }
+
+  if (btnInstalarApp) {
+    btnInstalarApp.addEventListener("click", tratarInstalacaoApp);
+  }
 
   if (nomeSalvo && botaoUsuario) {
     botaoUsuario.innerText = `Ola, ${nomeSalvo}`;
@@ -659,6 +852,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       await salvarHistorico(imagemAtual, dados);
+      mostrarConviteInstalacao();
       mostrarAlerta("Analise concluida!");
     } catch (erro) {
       console.error("Erro ao processar imagem:", erro);

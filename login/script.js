@@ -3,6 +3,8 @@ const supabaseUrl = "https://nwzijdudhemuibsyzpub.supabase.co";
 const supabaseKey =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im53emlqZHVkaGVtdWlic3l6cHViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwMjk5MTAsImV4cCI6MjA4NzYwNTkxMH0.aDHymYEKtyY5m2eaOHoBy4QRpaAvtafi_PVDtrL9gQc";
 const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
+const ADMIN_EMAIL = "admin@gmail.com";
+const ADMIN_PASSWORD = "admin3ds";
 
 const signinForm = document.querySelector(".form.signin");
 const signupForm = document.querySelector(".form.signup");
@@ -23,6 +25,21 @@ const modeContent = {
     heading: "Criar conta no AIDA",
     description: "Configure seu acesso em poucos passos e entre na plataforma com seguranca e praticidade.",
   },
+};
+
+const loginAdmin = (email, password) =>
+  email.trim().toLowerCase() === ADMIN_EMAIL && password === ADMIN_PASSWORD;
+
+const salvarSessaoAdmin = () => {
+  localStorage.setItem("usuarioNome", "Admin");
+  localStorage.setItem("usuarioEmail", ADMIN_EMAIL);
+  localStorage.setItem("usuarioTipo", "admin");
+};
+
+const limparSessaoLocal = () => {
+  localStorage.removeItem("usuarioNome");
+  localStorage.removeItem("usuarioEmail");
+  localStorage.removeItem("usuarioTipo");
 };
 
 const mostrarAviso = (texto, tipo = "sucesso") => {
@@ -136,6 +153,24 @@ document.getElementById("loginForm").addEventListener("submit", async (event) =>
 
   const email = document.getElementById("loginEmail").value.trim();
   const password = document.getElementById("loginPassword").value;
+
+  if (loginAdmin(email, password)) {
+    limparSessaoLocal();
+
+    try {
+      await _supabase.auth.signOut();
+    } catch (erro) {
+      console.warn("Nao foi possivel encerrar a sessao anterior do Supabase:", erro);
+    }
+
+    salvarSessaoAdmin();
+    mostrarAviso("Bem-vindo, Admin!");
+
+    setTimeout(() => {
+      window.location.href = "../Tela-apresenta%C3%A7%C3%A3o/index-apresenta%C3%A7%C3%A3o.html";
+    }, 1250);
+    return;
+  }
 
   const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
 

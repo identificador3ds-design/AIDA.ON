@@ -153,6 +153,16 @@ button {
   font-weight: 700;
   letter-spacing: 0.04em;
 }
+.ghost-button:hover {
+  border-radius: 999px;
+  background: linear-gradient(135deg, #329288 0%, #2a7f75 100%);
+  color: #e8f5f2;
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  transition: all ease-in 0.3s;
+  border: none;
+}
 
 .panel--form {
   background: rgba(7, 88, 76, 0.34);
@@ -260,6 +270,15 @@ button {
   font-size: 0.88rem;
   font-weight: 700;
   letter-spacing: 0.04em;
+  transition: .5s;
+}
+.primary-button:hover {
+  border: 1px solid rgba(229, 246, 241, 0.88);
+  border-radius: 999px;
+  color: var(--white);
+  background: rgba(255, 255, 255, 0.04);
+  transition: 1.5s;
+  
 }
 
 .switch-link {

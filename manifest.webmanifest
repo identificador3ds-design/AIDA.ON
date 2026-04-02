@@ -1,10 +1,10 @@
-{
+﻿{
   "id": "./",
   "name": "AIDA",
   "short_name": "AIDA",
   "description": "Ferramenta web para analise de imagens com experiencia de app no celular.",
   "lang": "pt-BR",
-  "start_url": "./Ferramenta/index-seleciona.html",
+  "start_url": "pages/index-seleciona.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
@@ -13,16 +13,17 @@
   "categories": ["productivity", "utilities", "education"],
   "icons": [
     {
-      "src": "./img/pwa-icon-192.png",
+      "src": "./assets/images/pwa-icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "./img/pwa-icon-512.png",
+      "src": "./assets/images/pwa-icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
     }
   ]
 }
+

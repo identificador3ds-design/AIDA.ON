@@ -1,0 +1,124 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AIDA | Acesso</title>
+  <link rel="stylesheet" href="../styles/style-login.css">
+  <link rel="icon" type="image/png" href="../assets/images/AIDABranco.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <a href="../index.html" class="back-link" aria-label="Voltar para a pagina inicial">
+    <img src="../assets/images/login-Vector 5.svg" alt="">
+  </a>
+
+  <main class="auth-card" data-auth-mode="signup">
+    <section class="panel panel--brand">
+      <div class="panel__content panel__content--brand">
+        <img class="brand-logo" src="../assets/images/login-Group 1.png" alt="Logo AIDA">
+        <div class="brand-copy" data-copy-signin>
+          <h1>A porta da verdade esta aberta.</h1>
+          <p>Entre e descubra o que e real e o que so parece real na inteligencia artificial.</p>
+          <button type="button" class="ghost-button" data-mode-target="signin">ENTRAR</button>
+        </div>
+        <div class="brand-copy" data-copy-signup>
+          <h1>Voce consegue ver alem da resposta?</h1>
+          <p>Crie sua conta e abra a porta para investigar o que a IA mostra e o que ela esconde.</p>
+          <button type="button" class="ghost-button" data-mode-target="signup">REGISTRAR</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel panel--form">
+      <div class="panel__content panel__content--form">
+        <section class="form-view form signin">
+          <form id="loginForm" novalidate>
+            <h2>Entrar</h2>
+
+            <p class="subtitle">Use seu acesso para abrir a porta.</p>
+
+            <label class="input-wrap">
+              <span class="input-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+                  <path d="M3 8l9 6 9-6"></path>
+                </svg>
+              </span>
+              <input type="email" id="loginEmail" placeholder="Email" autocomplete="email" required>
+            </label>
+
+            <label class="input-wrap">
+              <span class="input-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <rect x="5" y="11" width="14" height="10" rx="2"></rect>
+                  <path d="M8 11V8a4 4 0 0 1 8 0v3"></path>
+                </svg>
+              </span>
+              <input type="password" id="loginPassword" placeholder="Password" autocomplete="current-password" required>
+            </label>
+
+            <button type="submit" class="primary-button">ENTRAR</button>
+
+            <button type="button" class="switch-link" data-mode-target="signup">Criar conta</button>
+          </form>
+        </section>
+
+        <section class="form-view form signup active">
+          <form id="registerForm" novalidate>
+            <h2>Crie sua conta</h2>
+
+            <p class="subtitle">Escolha sua chave e atravesse a porta.</p>
+
+            <label class="input-wrap">
+              <span class="input-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <circle cx="12" cy="8" r="4"></circle>
+                  <path d="M4 20a8 8 0 0 1 16 0"></path>
+                </svg>
+              </span>
+              <input type="text" id="regName" placeholder="Name" autocomplete="name" required>
+            </label>
+
+            <label class="input-wrap">
+              <span class="input-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+                  <path d="M3 8l9 6 9-6"></path>
+                </svg>
+              </span>
+              <input type="email" id="regEmail" placeholder="Email" autocomplete="email" required>
+            </label>
+
+            <label class="input-wrap">
+              <span class="input-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <rect x="5" y="11" width="14" height="10" rx="2"></rect>
+                  <path d="M8 11V8a4 4 0 0 1 8 0v3"></path>
+                </svg>
+              </span>
+              <input type="password" id="regPassword" placeholder="Password" autocomplete="new-password" required>
+            </label>
+
+            <button type="submit" class="primary-button">Registrar</button>
+
+            <button type="button" class="switch-link" data-mode-target="signin">JÃ¡ possui uma conta?</button>
+          </form>
+        </section>
+      </div>
+
+      <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../scripts/script-login.js"></script>
+</body>
+
+</html>
+
+

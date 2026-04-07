@@ -77,9 +77,7 @@ function renderizarAvisoSistema() {
     return;
   }
 
-  const main = document.querySelector("main");
-
-  if (!main || document.getElementById("systemNotice")) {
+  if (document.getElementById("systemNotice")) {
     return;
   }
 
@@ -100,7 +98,7 @@ function renderizarAvisoSistema() {
   conteudo.appendChild(texto);
   aviso.appendChild(conteudo);
 
-  main.insertBefore(aviso, main.firstChild);
+  document.body.appendChild(aviso);
 }
 
 async function obterQuantidadeAnalisesUsuario() {

@@ -11,77 +11,34 @@
   <link rel="stylesheet" href="../styles/style-manutencao.css">
 </head>
 <body class="aida-shell maintenance-page">
-  <header class="page-header maintenance-header">
-    <a href="../index.html" aria-label="Pagina inicial">
-      <img src="../assets/images/LogoBranca.png" alt="Logo AIDA.ON" class="brand-logo">
-    </a>
-    <a href="./index-apresentacao.html" class="top-link">Voltar ao site</a>
-  </header>
-
   <main class="page-frame maintenance-main">
-    <section class="glass-panel maintenance-hero">
-      <div class="maintenance-copy">
-        <span class="page-kicker">Operacao controlada</span>
-        <h1 class="page-title">Ferramenta em modo manutencao e desenvolvimento.</h1>
-        <p class="page-copy">
-          A area tecnica do AIDA.ON esta temporariamente protegida para ajustes internos,
-          validacoes e testes controlados.
-        </p>
+    <section class="glass-panel maintenance-card">
+      <img src="../assets/images/LogoBranca.png" alt="Logo AIDA.ON" class="brand-logo maintenance-logo">
 
-        <div class="maintenance-badges">
-          <span class="status-badge">Ferramenta protegida</span>
-          <span class="status-badge">Acesso por codigo</span>
-        </div>
-      </div>
+      <span class="page-kicker">Operacao controlada</span>
+      <h1 class="page-title">Ferramenta em fase de desenvolvimento.</h1>
 
-      <aside class="maintenance-aside">
-        <article class="maintenance-info">
-          <span class="maintenance-label">Destino solicitado</span>
-          <strong id="maintenanceTargetLabel">Ferramenta de analise</strong>
-          <p>Assim que o codigo for validado, voce sera levado para essa area.</p>
-        </article>
-
-        <article class="maintenance-info">
-          <span class="maintenance-label">Contato exibido</span>
-          <strong id="maintenanceSupportEmail">admin@gmail.com</strong>
-          <p>Use este canal caso precise confirmar a liberacao do acesso.</p>
-        </article>
-      </aside>
-    </section>
-
-    <section class="glass-panel maintenance-panel">
-      <div class="section-head maintenance-panel-head">
-        <div>
-          <span class="page-kicker">Liberacao temporaria</span>
-          <h2>Acessar a ferramenta com codigo</h2>
-        </div>
-      </div>
-
-      <p id="maintenanceMessage" class="admin-muted maintenance-message">
-        Se voce recebeu um codigo de acesso, informe abaixo para continuar.
+      <p id="maintenanceMessage" class="page-copy maintenance-message">
+        Esta etapa da ferramenta permanece temporariamente indisponivel enquanto passa por ajustes e evolucoes internas.
       </p>
 
-      <form id="maintenanceAccessForm" class="maintenance-form">
-        <div class="field-group">
-          <label for="maintenanceAccessCode" class="field-label">Codigo de acesso</label>
-          <input
-            id="maintenanceAccessCode"
-            type="password"
-            class="field"
-            placeholder="Digite o codigo recebido"
-            autocomplete="off"
-          >
-        </div>
+      <p id="maintenanceStatus" class="maintenance-status" aria-live="polite">
+        A ferramenta esta temporariamente bloqueada para usuarios comuns enquanto esta funcionalidade evolui.
+      </p>
 
-        <p id="maintenanceStatus" class="maintenance-status" aria-live="polite">
-          O acesso fica liberado nesta sessao do navegador.
-        </p>
+      <p class="maintenance-meta">
+        Destino solicitado:
+        <strong id="maintenanceTargetLabel">Ferramenta de analise</strong>
+      </p>
 
-        <div class="maintenance-actions">
-          <button type="submit" class="aida-button">Entrar na ferramenta</button>
-          <a href="./index-apresentacao.html" class="aida-button secondary">Cancelar</a>
-        </div>
-      </form>
+      <p class="maintenance-meta">
+        Contato:
+        <strong id="maintenanceSupportEmail">admin@gmail.com</strong>
+      </p>
+
+      <div class="maintenance-actions">
+        <a href="./index-apresentacao.html" class="aida-button">Voltar ao site</a>
+      </div>
     </section>
   </main>
 

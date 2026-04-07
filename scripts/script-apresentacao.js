@@ -38,7 +38,7 @@
 
 const ADMIN_EMAIL = "admin@gmail.com";
 const CHAVE_ADMIN_CONFIG = "AIDA_ADMIN_CONFIG";
-const CHAVE_MANUTENCAO_ACESSO = "AIDA_MAINTENANCE_ACCESS";
+const CHAVE_LOGIN_FEEDBACK = "AIDA_LOGIN_FEEDBACK";
 const CONFIG_ADMIN_PADRAO = {
   allowRegistrations: true,
   enableInstallPrompt: true,
@@ -46,6 +46,7 @@ const CONFIG_ADMIN_PADRAO = {
   allowUploadPage: true,
   supportEmail: ADMIN_EMAIL,
   announcementMessage: "",
+  accountStates: {},
 };
 
 const menuToggle = document.querySelector(".menu-toggle");
@@ -69,7 +70,25 @@ let teamTrigger = null;
 function obterAdminConfig() {
   try {
     const salvo = JSON.parse(localStorage.getItem(CHAVE_ADMIN_CONFIG) || "{}");
-    return { ...CONFIG_ADMIN_PADRAO, ...salvo };
+    const accountStates = {};
+
+    if (salvo.accountStates && typeof salvo.accountStates === "object") {
+      Object.entries(salvo.accountStates).forEach(([email, dados]) => {
+        const emailNormalizado = String(email || "").trim().toLowerCase();
+
+        if (!emailNormalizado || emailNormalizado === ADMIN_EMAIL) {
+          return;
+        }
+
+        accountStates[emailNormalizado] = {
+          status: ["active", "blocked", "deleted"].includes(dados?.status)
+            ? dados.status
+            : "active",
+        };
+      });
+    }
+
+    return { ...CONFIG_ADMIN_PADRAO, ...salvo, accountStates };
   } catch (erro) {
     return { ...CONFIG_ADMIN_PADRAO };
   }
@@ -81,8 +100,15 @@ function usuarioEhAdmin() {
   return tipo === "admin" || email === ADMIN_EMAIL;
 }
 
-function possuiAcessoManutencao() {
-  return sessionStorage.getItem(CHAVE_MANUTENCAO_ACESSO) === "granted";
+function contaAtualSemAcesso() {
+  const email = (localStorage.getItem("usuarioEmail") || "").trim().toLowerCase();
+
+  if (!email || email === ADMIN_EMAIL) {
+    return false;
+  }
+
+  const status = obterAdminConfig().accountStates[email]?.status || "active";
+  return ["blocked", "deleted"].includes(status);
 }
 
 function montarLinkManutencao(destino = "./index-seleciona.html") {
@@ -121,9 +147,7 @@ function renderizarAvisoSistema() {
     return;
   }
 
-  const main = document.querySelector("main");
-
-  if (!main || document.getElementById("systemNotice")) {
+  if (document.getElementById("systemNotice")) {
     return;
   }
 
@@ -144,7 +168,7 @@ function renderizarAvisoSistema() {
   conteudo.appendChild(texto);
   aviso.appendChild(conteudo);
 
-  main.insertBefore(aviso, main.firstChild);
+  document.body.appendChild(aviso);
 }
 
 function ajustarAcessoPrincipalFerramenta() {
@@ -152,7 +176,6 @@ function ajustarAcessoPrincipalFerramenta() {
   const ctaPrincipal = document.querySelector('.btn-group-ferr .btn-main');
   const badgeNovidade = document.querySelector(".new-feature-badge");
   const admin = usuarioEhAdmin();
-  const acessoManutencao = possuiAcessoManutencao();
   const destinoFerramenta = "./index-seleciona.html";
 
   if (!ctaPrincipal) {
@@ -167,7 +190,7 @@ function ajustarAcessoPrincipalFerramenta() {
     ctaPrincipal.textContent = ctaPrincipal.dataset.defaultLabel || "Experimentar ferramenta";
   };
 
-  if (configuracao.maintenanceMode && !admin && !acessoManutencao) {
+  if (configuracao.maintenanceMode && !admin) {
     ctaPrincipal.href = montarLinkManutencao(destinoFerramenta);
     ctaPrincipal.classList.remove("is-disabled");
     ctaPrincipal.removeAttribute("aria-disabled");
@@ -717,6 +740,18 @@ function setupParallax() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  if (contaAtualSemAcesso()) {
+    localStorage.removeItem("usuarioNome");
+    localStorage.removeItem("usuarioEmail");
+    localStorage.removeItem("usuarioTipo");
+    localStorage.setItem(
+      CHAVE_LOGIN_FEEDBACK,
+      "Seu acesso foi bloqueado pelo administrador."
+    );
+    window.location.href = "./index-login.html";
+    return;
+  }
+
   registerGsapPlugins();
   renderizarAvisoSistema();
   ajustarAcessoPrincipalFerramenta();

@@ -25,7 +25,6 @@ const EXEMPLOS_LSB = [
 const ADMIN_EMAIL = "admin@gmail.com";
 const CHAVE_ADMIN_CONFIG = "AIDA_ADMIN_CONFIG";
 const CHAVE_LOGIN_FEEDBACK = "AIDA_LOGIN_FEEDBACK";
-const CHAVE_MANUTENCAO_ACESSO = "AIDA_MAINTENANCE_ACCESS";
 const CONFIG_ADMIN_PADRAO = {
   allowRegistrations: true,
   enableInstallPrompt: true,
@@ -49,6 +48,58 @@ const CONFIG_ADMIN_PADRAO = {
 };
 const PWA_INSTALL_VERSION = "2026-03-site-after-analysis";
 const CHAVE_PWA_DECISAO = "AIDA_PWA_INSTALL_DECISION";
+const CHAVE_TUTORIAL_ANALISE = "AIDA_ANALYSIS_TUTORIAL_V1";
+const CHAVE_TUTORIAL_ANALISE_LEGADA = "AIDA_ANALYSIS_TUTORIAL";
+const TIPOS_IMAGEM_CONFIG = {
+  pessoa: {
+    label: "Pessoa",
+    preferredMethods: ["M4", "GRAD", "FFT"],
+    recommendation:
+      "Para imagens com pessoas, o LSB costuma ser o metodo mais indicado porque ajuda a revelar padroes sutis em pele, cabelo e transicoes finas.",
+  },
+  objeto: {
+    label: "Objeto",
+    preferredMethods: ["GRAD", "FFT", "M4"],
+    recommendation:
+      "Para objetos, o Gradiente costuma funcionar bem porque destaca bordas, recortes e texturas artificiais.",
+  },
+  paisagem: {
+    label: "Paisagem",
+    preferredMethods: ["FFT", "GRAD", "M4"],
+    recommendation:
+      "Para paisagens, a FFT costuma ser uma boa escolha para observar padroes amplos de frequencia e repeticao.",
+  },
+  documento: {
+    label: "Documento",
+    preferredMethods: ["FFT", "GRAD", "M4"],
+    recommendation:
+      "Para documentos, a FFT costuma ajudar mais a notar regularidades artificiais e blocos de compressao.",
+  },
+  ilustracao: {
+    label: "Ilustracao ou arte digital",
+    preferredMethods: ["FFT", "GRAD", "M4"],
+    recommendation:
+      "Para ilustracoes e artes digitais, a FFT costuma ser a recomendacao mais segura para capturar repeticoes e assinaturas artificiais.",
+  },
+  logo: {
+    label: "Logo ou identidade visual",
+    preferredMethods: ["GRAD", "FFT", "M4"],
+    recommendation:
+      "Para logos e marcas, o Gradiente costuma ajudar mais porque evidencia contornos fortes e composicoes muito limpas.",
+  },
+  tela: {
+    label: "Tela ou interface",
+    preferredMethods: ["FFT", "GRAD", "M4"],
+    recommendation:
+      "Para telas e interfaces, a FFT costuma ser a opcao mais indicada para observar padroes repetitivos e estruturas muito regulares.",
+  },
+  outro: {
+    label: "Outro",
+    preferredMethods: ["FFT", "GRAD", "M4"],
+    recommendation:
+      "Quando a imagem nao se encaixa bem em uma categoria, a FFT costuma ser uma boa recomendacao inicial.",
+  },
+};
 
 let deferredInstallPrompt = null;
 
@@ -106,8 +157,16 @@ function usuarioEhAdmin() {
   return tipo === "admin" || email === ADMIN_EMAIL;
 }
 
-function possuiAcessoManutencao() {
-  return sessionStorage.getItem(CHAVE_MANUTENCAO_ACESSO) === "granted";
+function obterIdentificadorTutorialConta() {
+  const email = (localStorage.getItem("usuarioEmail") || "").trim().toLowerCase();
+  const tipo = (localStorage.getItem("usuarioTipo") || "").trim().toLowerCase();
+  const nome = (localStorage.getItem("usuarioNome") || "").trim().toLowerCase();
+
+  return email || `${tipo || "usuario"}:${nome || "anonimo"}`;
+}
+
+function obterChaveTutorialConta() {
+  return `${CHAVE_TUTORIAL_ANALISE}:${obterIdentificadorTutorialConta()}`;
 }
 
 function redirecionarParaManutencao(destino = "./index-analise.html") {
@@ -153,9 +212,7 @@ function renderizarAvisoSistema() {
     return;
   }
 
-  const main = document.querySelector("main");
-
-  if (!main || document.getElementById("systemNotice")) {
+  if (document.getElementById("systemNotice")) {
     return;
   }
 
@@ -176,10 +233,67 @@ function renderizarAvisoSistema() {
   conteudo.appendChild(texto);
   aviso.appendChild(conteudo);
 
-  main.insertBefore(aviso, main.firstChild);
+  document.body.appendChild(aviso);
 }
 
-function renderizarMetodosDisponiveis(select, configuracao) {
+function obterMetodoDisponivel(configuracao, chavesPreferidas = []) {
+  const listaPreferida = Array.isArray(chavesPreferidas) ? chavesPreferidas : [];
+
+  for (const chave of listaPreferida) {
+    const metodo = configuracao.methods?.[chave];
+
+    if (metodo?.enabled && metodo?.backendReady) {
+      return chave;
+    }
+  }
+
+  for (const [chave, metodo] of Object.entries(configuracao.methods || {})) {
+    if (metodo?.enabled && metodo?.backendReady) {
+      return chave;
+    }
+  }
+
+  for (const [chave, metodo] of Object.entries(configuracao.methods || {})) {
+    if (metodo?.enabled) {
+      return chave;
+    }
+  }
+
+  return "";
+}
+
+function obterTipoImagemConfig(tipoImagem) {
+  const chave = String(tipoImagem || "").trim().toLowerCase();
+  return TIPOS_IMAGEM_CONFIG[chave] || null;
+}
+
+function obterMetodoRecomendadoParaTipo(tipoImagem, configuracao) {
+  const tipoConfig = obterTipoImagemConfig(tipoImagem);
+
+  if (!tipoConfig) {
+    return "";
+  }
+
+  return obterMetodoDisponivel(configuracao, tipoConfig.preferredMethods);
+}
+
+function montarRotuloMetodo(chave, metodo, recomendacaoChave) {
+  const pronto = Boolean(metodo?.backendReady);
+  let label = pronto ? metodo.label : `${metodo.label} (em breve)`;
+
+  if (pronto && chave === recomendacaoChave) {
+    label = `${label} (recomendado)`;
+  }
+
+  return label;
+}
+
+function renderizarMetodosDisponiveis(
+  select,
+  configuracao,
+  recomendacaoChave = "",
+  valorSelecionado = ""
+) {
   if (!select) {
     return;
   }
@@ -192,12 +306,17 @@ function renderizarMetodosDisponiveis(select, configuracao) {
       return;
     }
 
-    const label = metodo.backendReady ? metodo.label : `${metodo.label} (em breve)`;
+    const label = montarRotuloMetodo(chave, metodo, recomendacaoChave);
     const disabled = metodo.backendReady ? "" : "disabled";
-    opcoes.push(`<option value="${chave}" ${disabled}>${label}</option>`);
+    const selected = valorSelecionado && valorSelecionado === chave ? "selected" : "";
+    opcoes.push(`<option value="${chave}" ${disabled} ${selected}>${label}</option>`);
   });
 
   select.innerHTML = opcoes.join("");
+
+  if (!valorSelecionado) {
+    select.value = "";
+  }
 }
 
 function dispositivoIOS() {
@@ -670,9 +789,30 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnAgoraNao = document.getElementById("btnAgoraNao");
   const btnFecharInstalacao = document.getElementById("btnFecharInstalacao");
   const checkNaoMostrarInstalacao = document.getElementById("checkNaoMostrarInstalacao");
+  const tipoImagemGroup = document.getElementById("tipoImagemGroup");
+  const metodoAnaliseGroup = document.getElementById("metodoAnaliseGroup");
+  const ajudasAutomaticasGroup = document.getElementById("ajudasAutomaticasGroup");
+  const acoesAnaliseGroup = document.getElementById("acoesAnaliseGroup");
+  const tipoImagemHint = document.getElementById("tipoImagemHint");
+  const metodoRecomendadoHint = document.getElementById("metodoRecomendadoHint");
+  const analysisTutorial = document.getElementById("analysisTutorial");
+  const tutorialStepBadge = document.getElementById("tutorialStepBadge");
+  const tutorialTitle = document.getElementById("tutorialTitle");
+  const tutorialText = document.getElementById("tutorialText");
+  const tutorialTargetLabel = document.getElementById("tutorialTargetLabel");
+  const tutorialPrev = document.getElementById("tutorialPrev");
+  const tutorialNext = document.getElementById("tutorialNext");
+  const tutorialSkip = document.getElementById("tutorialSkip");
+  const tutorialCard = document.querySelector(".analysis-tutorial-card");
+  const btnReabrirTutorial = document.getElementById("btnReabrirTutorial");
+  const tutorialDots = Array.from(
+    document.querySelectorAll(".analysis-tutorial-progress .analysis-tutorial-dot")
+  );
   const configuracaoAdmin = obterAdminConfig();
 
   let imagemAtual = localStorage.getItem("AIDA_ImagemSelecionada") || "";
+  let tutorialIndiceAtual = 0;
+  let tutorialAtivo = false;
 
   if (contaAtualSemAcesso()) {
     localStorage.removeItem("usuarioNome");
@@ -688,8 +828,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (
     configuracaoAdmin.maintenanceMode &&
-    !usuarioEhAdmin() &&
-    !possuiAcessoManutencao()
+    !usuarioEhAdmin()
   ) {
     redirecionarParaManutencao("./index-analise.html");
     return;
@@ -697,7 +836,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   renderizarAvisoSistema();
 
-  renderizarMetodosDisponiveis(metodoAnalise, configuracaoAdmin);
+  atualizarRecomendacaoMetodo(tipoImagemInput ? tipoImagemInput.value : "", false);
 
   if (btnVerificar) {
     btnVerificar.innerText = configuracaoAdmin.lockAnalysisPage
@@ -738,6 +877,309 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (appInstalado()) {
     localStorage.setItem(CHAVE_PWA_DECISAO, PWA_INSTALL_VERSION);
+  }
+
+  if (localStorage.getItem(CHAVE_TUTORIAL_ANALISE_LEGADA)) {
+    localStorage.removeItem(CHAVE_TUTORIAL_ANALISE_LEGADA);
+  }
+
+  function atualizarTextoRecomendacao(tipoSelecionado, recomendacaoChave, configuracaoAtual) {
+    const tipoConfig = obterTipoImagemConfig(tipoSelecionado);
+    const metodoConfig = recomendacaoChave ? configuracaoAtual.methods?.[recomendacaoChave] : null;
+
+    if (tipoImagemHint) {
+      tipoImagemHint.innerText = tipoConfig
+        ? tipoConfig.recommendation
+        : "Escolha o que mais aparece na imagem para receber uma recomendacao de metodo.";
+    }
+
+    if (metodoRecomendadoHint) {
+      metodoRecomendadoHint.classList.toggle("is-recommended", Boolean(metodoConfig));
+      metodoRecomendadoHint.innerText = metodoConfig
+        ? `Recomendado para ${tipoConfig.label.toLowerCase()}: ${metodoConfig.label}. Se voce nao conhecer os metodos, deixe essa opcao selecionada.`
+        : "Se voce nao conhecer os metodos, deixe a opcao marcada como recomendada.";
+    }
+
+    if (metodoAnaliseGroup) {
+      metodoAnaliseGroup.classList.toggle("is-recommended", Boolean(metodoConfig));
+    }
+  }
+
+  function atualizarRecomendacaoMetodo(tipoSelecionado, forcarSelecao = false) {
+    const configuracaoAtual = obterAdminConfig();
+    const valorAtual = metodoAnalise ? metodoAnalise.value : "";
+    const recomendacaoChave = obterMetodoRecomendadoParaTipo(tipoSelecionado, configuracaoAtual);
+    const valorSelecionado = forcarSelecao && recomendacaoChave ? recomendacaoChave : valorAtual;
+
+    renderizarMetodosDisponiveis(
+      metodoAnalise,
+      configuracaoAtual,
+      recomendacaoChave,
+      valorSelecionado
+    );
+
+    if (metodoAnalise && forcarSelecao && recomendacaoChave) {
+      metodoAnalise.value = recomendacaoChave;
+    }
+
+    atualizarTextoRecomendacao(tipoSelecionado, recomendacaoChave, configuracaoAtual);
+  }
+
+  function obterPassosTutorial() {
+    return [
+      {
+        target: tipoImagemGroup,
+        title: "Escolha o que compoe a imagem",
+        text:
+          "Neste primeiro campo, selecione o tipo principal da imagem, como pessoa, objeto ou paisagem. Essa escolha ajuda a tela a sugerir o metodo mais indicado para a analise.",
+        targetLabel: "Campo destacado: Tipo de imagem.",
+      },
+      {
+        target: metodoAnaliseGroup,
+        title: "Deixe o metodo recomendado quando tiver duvida",
+        text:
+          "Aqui voce escolhe o metodo tecnico da leitura. Se voce nao tiver conhecimento sobre os metodos, mantenha a opcao marcada como recomendada, porque ela tende a trazer mais precisao para esse tipo de imagem.",
+        targetLabel: "Campo destacado: Metodo de analise.",
+      },
+      {
+        target: ajudasAutomaticasGroup,
+        title: "Metadados e logo ajudam bastante",
+        text:
+          "Esses dois checkboxes verificam pistas comuns em varias imagens: marcas visiveis e metadados escondidos no arquivo. Se voce nao souber exatamente quando desligar, deixe como esta para nao perder evidencias importantes.",
+        targetLabel: "Campo destacado: Procurar marca visivel e Ler metadados.",
+      },
+      {
+        target: acoesAnaliseGroup || btnVerificar,
+        title: "Agora e so analisar",
+        text:
+          "Depois disso, basta clicar em analisar imagem. O tempo da analise pode variar de acordo com o tamanho e a qualidade da imagem enviada.",
+        targetLabel: "Campo destacado: area de acoes da analise.",
+      },
+    ].filter((passo) => passo.target);
+  }
+
+  function limparDestaquesTutorial() {
+    document.querySelectorAll(".tutorial-target").forEach((elemento) => {
+      elemento.classList.remove("tutorial-target");
+    });
+
+    document.querySelectorAll(".tutorial-blur").forEach((elemento) => {
+      elemento.classList.remove("tutorial-blur");
+    });
+  }
+
+  function obterUnidadesDesfoqueTutorial() {
+    return Array.from(
+      document.querySelectorAll(
+        [
+          ".page-header > *",
+          ".analysis-main > *",
+          ".analysis-content > *",
+          ".container-controles > *",
+          ".container-imagem > *",
+          ".card-resultado > *",
+          ".resultado-corpo-vertical > *",
+          ".container-explicacao > *",
+          ".container-imagem-processada > *",
+        ].join(", ")
+      )
+    );
+  }
+
+  function limitarValor(valor, minimo, maximo) {
+    return Math.min(Math.max(valor, minimo), maximo);
+  }
+
+  function tutorialEmLayoutCompacto() {
+    return window.innerWidth <= 900;
+  }
+
+  function posicionarCardTutorial(target, opcoes = {}) {
+    if (!tutorialCard || !target || analysisTutorial?.hidden) {
+      return;
+    }
+
+    const layoutCompacto = tutorialEmLayoutCompacto();
+    const padding = layoutCompacto ? 14 : 24;
+    const gap = layoutCompacto ? 16 : 24;
+    const larguraMaxima = layoutCompacto
+      ? Math.min(480, window.innerWidth - padding * 2)
+      : Math.min(500, Math.round(window.innerWidth * 0.28), window.innerWidth - padding * 2);
+
+    tutorialCard.classList.toggle("is-docked-top", layoutCompacto);
+    tutorialCard.style.visibility = "hidden";
+    tutorialCard.style.width = `${Math.max(280, larguraMaxima)}px`;
+    tutorialCard.style.left = `${padding}px`;
+    tutorialCard.style.top = `${padding}px`;
+
+    const cardRect = tutorialCard.getBoundingClientRect();
+    const targetRect = target.getBoundingClientRect();
+
+    if (layoutCompacto) {
+      const left = Math.max(padding, (window.innerWidth - cardRect.width) / 2);
+      const top = padding;
+
+      tutorialCard.style.left = `${Math.round(left)}px`;
+      tutorialCard.style.top = `${Math.round(top)}px`;
+      tutorialCard.style.visibility = "visible";
+
+      if (!opcoes.skipScroll) {
+        const distanciaDesejada = top + cardRect.height + gap;
+        const diferencaScroll = targetRect.top - distanciaDesejada;
+
+        if (Math.abs(diferencaScroll) > 8) {
+          window.scrollBy({ top: diferencaScroll, behavior: "smooth" });
+          window.setTimeout(() => {
+            if (tutorialAtivo) {
+              posicionarCardTutorial(target, { skipScroll: true });
+            }
+          }, 260);
+        }
+      }
+
+      return;
+    }
+
+    const areaEsquerdaInicio = padding;
+    const larguraAreaEsquerda = Math.max(280, targetRect.left - gap - areaEsquerdaInicio);
+    const larguraCard = Math.min(
+      cardRect.width,
+      Math.max(280, Math.min(500, larguraAreaEsquerda - 32))
+    );
+
+    tutorialCard.style.width = `${Math.round(larguraCard)}px`;
+
+    const cardRectAtualizado = tutorialCard.getBoundingClientRect();
+    const left = limitarValor(
+      areaEsquerdaInicio + (larguraAreaEsquerda - cardRectAtualizado.width) / 2,
+      padding,
+      Math.max(padding, targetRect.left - cardRectAtualizado.width - gap)
+    );
+
+    const top = limitarValor(
+      window.innerHeight / 2 - cardRectAtualizado.height / 2,
+      padding,
+      Math.max(padding, window.innerHeight - cardRectAtualizado.height - padding)
+    );
+
+    tutorialCard.style.left = `${Math.round(left)}px`;
+    tutorialCard.style.top = `${Math.round(top)}px`;
+    tutorialCard.style.visibility = "visible";
+  }
+
+  function aplicarDesfoqueTutorial(target) {
+    const unidades = obterUnidadesDesfoqueTutorial();
+
+    unidades.forEach((elemento) => {
+      const contemTarget = elemento === target || elemento.contains(target) || target.contains(elemento);
+      elemento.classList.toggle("tutorial-blur", !contemTarget);
+    });
+  }
+
+  function encerrarTutorial(marcarComoVisto = true) {
+    tutorialAtivo = false;
+    limparDestaquesTutorial();
+
+    if (analysisTutorial) {
+      analysisTutorial.hidden = true;
+      analysisTutorial.setAttribute("aria-hidden", "true");
+    }
+
+    document.body.classList.remove("tutorial-active");
+
+    if (marcarComoVisto) {
+      localStorage.setItem(obterChaveTutorialConta(), "seen");
+    }
+  }
+
+  function mostrarPassoTutorial(indice) {
+    const passos = obterPassosTutorial();
+
+    if (!tutorialAtivo || !analysisTutorial || passos.length === 0) {
+      return;
+    }
+
+    const indiceLimitado = Math.max(0, Math.min(indice, passos.length - 1));
+    const passoAtual = passos[indiceLimitado];
+
+    tutorialIndiceAtual = indiceLimitado;
+    limparDestaquesTutorial();
+    aplicarDesfoqueTutorial(passoAtual.target);
+    passoAtual.target.classList.add("tutorial-target");
+
+    if (tutorialStepBadge) {
+      tutorialStepBadge.innerText = `Passo ${indiceLimitado + 1} de ${passos.length}`;
+    }
+
+    if (tutorialTitle) {
+      tutorialTitle.innerText = passoAtual.title;
+    }
+
+    if (tutorialText) {
+      tutorialText.innerText = passoAtual.text;
+    }
+
+    if (tutorialTargetLabel) {
+      tutorialTargetLabel.innerText = passoAtual.targetLabel;
+    }
+
+    if (tutorialPrev) {
+      tutorialPrev.hidden = indiceLimitado === 0;
+    }
+
+    if (tutorialNext) {
+      tutorialNext.innerText = indiceLimitado === passos.length - 1 ? "Concluir" : "Proximo";
+    }
+
+    tutorialDots.forEach((dot, dotIndex) => {
+      dot.classList.toggle("active", dotIndex === indiceLimitado);
+    });
+
+    if (!tutorialEmLayoutCompacto()) {
+      passoAtual.target.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+      window.setTimeout(() => {
+        if (tutorialAtivo && obterPassosTutorial()[tutorialIndiceAtual]?.target === passoAtual.target) {
+          posicionarCardTutorial(passoAtual.target, { skipScroll: true });
+        }
+      }, 120);
+      return;
+    }
+
+    posicionarCardTutorial(passoAtual.target);
+  }
+
+  function iniciarTutorialPrimeiroAcesso() {
+    const passos = obterPassosTutorial();
+
+    if (!analysisTutorial || passos.length === 0) {
+      return;
+    }
+
+    if (localStorage.getItem(obterChaveTutorialConta()) === "seen") {
+      return;
+    }
+
+    tutorialAtivo = true;
+    tutorialIndiceAtual = 0;
+    analysisTutorial.hidden = false;
+    analysisTutorial.setAttribute("aria-hidden", "false");
+    document.body.classList.add("tutorial-active");
+    mostrarPassoTutorial(0);
+  }
+
+  function iniciarTutorialManual() {
+    const passos = obterPassosTutorial();
+
+    if (!analysisTutorial || passos.length === 0) {
+      return;
+    }
+
+    tutorialAtivo = true;
+    tutorialIndiceAtual = 0;
+    analysisTutorial.hidden = false;
+    analysisTutorial.setAttribute("aria-hidden", "false");
+    document.body.classList.add("tutorial-active");
+    mostrarPassoTutorial(0);
   }
 
   function deveOferecerInstalacao() {
@@ -881,6 +1323,55 @@ document.addEventListener("DOMContentLoaded", () => {
     btnInstalarApp.addEventListener("click", tratarInstalacaoApp);
   }
 
+  if (tutorialSkip) {
+    tutorialSkip.addEventListener("click", () => encerrarTutorial(true));
+  }
+
+  if (btnReabrirTutorial) {
+    btnReabrirTutorial.addEventListener("click", () => iniciarTutorialManual());
+  }
+
+  if (tutorialPrev) {
+    tutorialPrev.addEventListener("click", () => mostrarPassoTutorial(tutorialIndiceAtual - 1));
+  }
+
+  if (tutorialNext) {
+    tutorialNext.addEventListener("click", () => {
+      const passos = obterPassosTutorial();
+
+      if (tutorialIndiceAtual >= passos.length - 1) {
+        encerrarTutorial(true);
+        return;
+      }
+
+      mostrarPassoTutorial(tutorialIndiceAtual + 1);
+    });
+  }
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && tutorialAtivo) {
+      encerrarTutorial(true);
+    }
+  });
+
+  window.addEventListener("resize", () => {
+    if (!tutorialAtivo) {
+      return;
+    }
+
+    const passoAtual = obterPassosTutorial()[tutorialIndiceAtual];
+
+    if (!passoAtual?.target) {
+      return;
+    }
+
+    window.setTimeout(() => {
+      if (tutorialAtivo) {
+        posicionarCardTutorial(passoAtual.target);
+      }
+    }, 80);
+  });
+
   if (botaoUsuario) {
     if (usuarioEhAdmin()) {
       botaoUsuario.innerText = "Admin";
@@ -1017,9 +1508,22 @@ document.addEventListener("DOMContentLoaded", () => {
           tipoImagemInput.value = "";
         }
 
+        if (metodoAnalise) {
+          metodoAnalise.value = "";
+        }
+
+        atualizarRecomendacaoMetodo("", false);
+
         mostrarAlerta("Imagem trocada. Escolha o metodo e analise novamente.");
       };
       reader.readAsDataURL(arquivo);
+    });
+  }
+
+  if (tipoImagemInput) {
+    tipoImagemInput.addEventListener("change", () => {
+      atualizarRecomendacaoMetodo(tipoImagemInput.value, true);
+      limparResultado();
     });
   }
 
@@ -1034,6 +1538,8 @@ document.addEventListener("DOMContentLoaded", () => {
   if (checkMetadados) {
     checkMetadados.addEventListener("change", limparResultado);
   }
+
+  window.setTimeout(iniciarTutorialPrimeiroAcesso, 450);
 
   if (!btnVerificar) {
     return;
@@ -1059,8 +1565,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (
       configuracaoAtual.maintenanceMode &&
-      !usuarioEhAdmin() &&
-      !possuiAcessoManutencao()
+      !usuarioEhAdmin()
     ) {
       redirecionarParaManutencao("./index-analise.html");
       return;

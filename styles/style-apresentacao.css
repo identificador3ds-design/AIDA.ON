@@ -1291,12 +1291,18 @@ section {
 
 .system-notice {
   width: min(1180px, calc(100% - 40px));
-  margin: 108px auto 0;
+  position: fixed;
+  top: 108px;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
   padding: 16px 20px;
   border: 1px solid rgba(143, 216, 183, 0.28);
   border-radius: 24px;
   background: rgba(7, 24, 22, 0.72);
   box-shadow: 0 18px 42px rgba(4, 8, 20, 0.24);
+  pointer-events: none;
+  z-index: 950;
 }
 
 .system-notice-inner {
@@ -1320,7 +1326,8 @@ section {
 
 @media (max-width: 900px) {
   .system-notice {
-    margin-top: 92px;
+    top: 92px;
+    width: min(1180px, calc(100% - 24px));
   }
 }
 

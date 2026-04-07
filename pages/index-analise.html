@@ -70,12 +70,25 @@
                     <p>Preencha apenas o necessário e clique em analisar.</p>
                 </div>
 
-                <div class="field-group">
-                    <label for="tipoImagem" class="field-label">Tipo de imagem (opcional)</label>
-                    <input type="text" id="tipoImagem" class="field" placeholder="Ex: fotografia, arte digital">
+                <div class="field-group" id="tipoImagemGroup">
+                    <label for="tipoImagem" class="field-label">Tipo de imagem</label>
+                    <select id="tipoImagem" class="field-select">
+                        <option value="" selected>Escolha o que mais combina com a imagem</option>
+                        <option value="pessoa">Pessoa</option>
+                        <option value="objeto">Objeto</option>
+                        <option value="paisagem">Paisagem</option>
+                        <option value="documento">Documento</option>
+                        <option value="ilustracao">Ilustracao ou arte digital</option>
+                        <option value="logo">Logo ou identidade visual</option>
+                        <option value="tela">Tela ou interface</option>
+                        <option value="outro">Outro</option>
+                    </select>
+                    <p id="tipoImagemHint" class="field-helper">
+                        Escolha o que mais aparece na imagem para receber uma recomendacao de metodo.
+                    </p>
                 </div>
 
-                <div class="field-group">
+                <div class="field-group" id="metodoAnaliseGroup">
                     <label for="metodoAnalise" class="field-label">Método de análise</label>
                     <select id="metodoAnalise" class="field-select">
                         <option value="" disabled selected>Escolha uma opção</option>
@@ -84,9 +97,12 @@
                         <option value="M4">LSB</option>
                         <option value="GRAD">Gradiente Laplaciano (Neon)</option>
                     </select>
+                    <p id="metodoRecomendadoHint" class="field-helper">
+                        Se voce nao conhecer os metodos, deixe a opcao marcada como recomendada.
+                    </p>
                 </div>
 
-                <div class="field-group">
+                <div class="field-group" id="ajudasAutomaticasGroup">
                     <span class="field-label">Ajudas automáticas</span>
 
                     <div class="analysis-checks">
@@ -112,7 +128,7 @@
                     Dica: se você não souber o que escolher, deixe as duas opções ligadas.
                 </div>
 
-                <div class="grupo-botoes">
+                <div class="grupo-botoes" id="acoesAnaliseGroup">
                     <button id="btnVerificar" type="button" class="aida-button">Analisar imagem</button>
                     <button id="btnTrocar" type="button" class="aida-button secondary">Trocar imagem</button>
                     <input type="file" id="inputTrocarImagem" accept="image/*" hidden>
@@ -207,6 +223,46 @@
             </div>
         </div>
     </div>
+
+    <div id="analysisTutorial" class="analysis-tutorial" hidden aria-hidden="true">
+        <div class="analysis-tutorial-backdrop"></div>
+
+        <div class="analysis-tutorial-card glass-panel" role="dialog" aria-modal="true" aria-labelledby="tutorialTitle">
+            <div class="analysis-tutorial-head">
+                <div>
+                    <span id="tutorialStepBadge" class="section-tag">Passo 1 de 4</span>
+                    <h3 id="tutorialTitle">Como usar a analise</h3>
+                </div>
+
+                <button id="tutorialSkip" type="button" class="analysis-tutorial-skip">Pular</button>
+            </div>
+
+            <p id="tutorialText" class="analysis-tutorial-text"></p>
+            <p id="tutorialTargetLabel" class="analysis-tutorial-target"></p>
+
+            <div class="analysis-tutorial-progress" aria-hidden="true">
+                <span class="analysis-tutorial-dot active"></span>
+                <span class="analysis-tutorial-dot"></span>
+                <span class="analysis-tutorial-dot"></span>
+                <span class="analysis-tutorial-dot"></span>
+            </div>
+
+            <div class="analysis-tutorial-actions">
+                <button id="tutorialPrev" type="button" class="aida-button secondary">Voltar</button>
+                <button id="tutorialNext" type="button" class="aida-button">Proximo</button>
+            </div>
+        </div>
+    </div>
+
+    <button
+        id="btnReabrirTutorial"
+        type="button"
+        class="tutorial-fab"
+        aria-label="Refazer tutorial da analise"
+        title="Refazer tutorial"
+    >
+        Tutorial
+    </button>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>

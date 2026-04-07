@@ -428,7 +428,7 @@ function renderizarResumoVivo(configuracao) {
     {
       titulo: "Modo manutencao",
       descricao: configuracao.maintenanceMode
-        ? "Tela de manutencao ativa com acesso temporario por codigo."
+        ? "Tela de manutencao ativa com aviso de fase de desenvolvimento."
         : "Ferramenta aberta sem barreira de manutencao.",
       selo: configuracao.maintenanceMode ? "Ativo" : "Livre",
     },
@@ -569,7 +569,7 @@ function obterSeloModulo(modulo, configuracao) {
     configuracao.maintenanceMode &&
     ["Selecao de imagem", "Analise forense"].includes(modulo.nome)
   ) {
-    return "Acesso por codigo";
+    return "Em manutencao";
   }
 
   if (modulo.nome === "Login e cadastro") {
@@ -626,7 +626,7 @@ function obterDescricaoModulo(modulo, configuracao) {
 
   if (modulo.nome === "Analise forense") {
     if (configuracao.maintenanceMode) {
-      return "A analise fica protegida por uma tela intermediaria com codigo temporario.";
+      return "A analise fica protegida por uma tela intermediaria informando fase de desenvolvimento.";
     }
 
     return configuracao.lockAnalysisPage
@@ -1152,7 +1152,7 @@ function aplicarPreset(modo) {
     defaultMetadataCheck: true,
     announcementMessage:
       modo === "restrito"
-        ? "A plataforma esta em operacao controlada. Algumas areas foram temporariamente restringidas."
+        ? "A ferramenta esta temporariamente em fase de desenvolvimento."
         : "",
   };
 
@@ -1171,7 +1171,6 @@ function aplicarPreset(modo) {
 function limparAviso() {
   const config = obterAdminConfig();
   config.announcementMessage = "";
-  config.maintenanceMode = false;
 
   const salvo = salvarAdminConfig(config);
   preencherFormulario(salvo);

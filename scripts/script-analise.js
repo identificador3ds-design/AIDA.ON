@@ -25,7 +25,6 @@ const EXEMPLOS_LSB = [
 const ADMIN_EMAIL = "admin@gmail.com";
 const CHAVE_ADMIN_CONFIG = "AIDA_ADMIN_CONFIG";
 const CHAVE_LOGIN_FEEDBACK = "AIDA_LOGIN_FEEDBACK";
-const CHAVE_MANUTENCAO_ACESSO = "AIDA_MAINTENANCE_ACCESS";
 const CONFIG_ADMIN_PADRAO = {
   allowRegistrations: true,
   enableInstallPrompt: true,
@@ -170,10 +169,6 @@ function obterChaveTutorialConta() {
   return `${CHAVE_TUTORIAL_ANALISE}:${obterIdentificadorTutorialConta()}`;
 }
 
-function possuiAcessoManutencao() {
-  return sessionStorage.getItem(CHAVE_MANUTENCAO_ACESSO) === "granted";
-}
-
 function redirecionarParaManutencao(destino = "./index-analise.html") {
   window.location.href = `./index-manutencao.html?redirect=${encodeURIComponent(destino)}`;
 }
@@ -217,9 +212,7 @@ function renderizarAvisoSistema() {
     return;
   }
 
-  const main = document.querySelector("main");
-
-  if (!main || document.getElementById("systemNotice")) {
+  if (document.getElementById("systemNotice")) {
     return;
   }
 
@@ -240,7 +233,7 @@ function renderizarAvisoSistema() {
   conteudo.appendChild(texto);
   aviso.appendChild(conteudo);
 
-  main.insertBefore(aviso, main.firstChild);
+  document.body.appendChild(aviso);
 }
 
 function obterMetodoDisponivel(configuracao, chavesPreferidas = []) {
@@ -835,8 +828,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (
     configuracaoAdmin.maintenanceMode &&
-    !usuarioEhAdmin() &&
-    !possuiAcessoManutencao()
+    !usuarioEhAdmin()
   ) {
     redirecionarParaManutencao("./index-analise.html");
     return;
@@ -1573,8 +1565,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (
       configuracaoAtual.maintenanceMode &&
-      !usuarioEhAdmin() &&
-      !possuiAcessoManutencao()
+      !usuarioEhAdmin()
     ) {
       redirecionarParaManutencao("./index-analise.html");
       return;

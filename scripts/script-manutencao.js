@@ -1,7 +1,5 @@
 const ADMIN_EMAIL = "admin@gmail.com";
 const CHAVE_ADMIN_CONFIG = "AIDA_ADMIN_CONFIG";
-const CHAVE_MANUTENCAO_ACESSO = "AIDA_MAINTENANCE_ACCESS";
-const CODIGO_ACESSO_MANUTENCAO = "admin3ds";
 const DESTINOS_LIBERADOS = new Set(["./index-seleciona.html", "./index-analise.html"]);
 const CONFIG_ADMIN_PADRAO = {
   maintenanceMode: false,
@@ -23,14 +21,6 @@ function usuarioEhAdmin() {
   const tipo = localStorage.getItem("usuarioTipo");
   const email = (localStorage.getItem("usuarioEmail") || "").trim().toLowerCase();
   return tipo === "admin" || email === ADMIN_EMAIL;
-}
-
-function possuiAcessoManutencao() {
-  return sessionStorage.getItem(CHAVE_MANUTENCAO_ACESSO) === "granted";
-}
-
-function concederAcessoManutencao() {
-  sessionStorage.setItem(CHAVE_MANUTENCAO_ACESSO, "granted");
 }
 
 function obterDestinoSeguro() {
@@ -57,8 +47,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const supportEmail = document.getElementById("maintenanceSupportEmail");
   const targetLabel = document.getElementById("maintenanceTargetLabel");
   const message = document.getElementById("maintenanceMessage");
-  const form = document.getElementById("maintenanceAccessForm");
-  const input = document.getElementById("maintenanceAccessCode");
   const status = document.getElementById("maintenanceStatus");
 
   if (supportEmail) {
@@ -69,36 +57,19 @@ document.addEventListener("DOMContentLoaded", () => {
     targetLabel.textContent = descreverDestino(destino);
   }
 
-  if (message && configuracao.announcementMessage) {
-    message.textContent = configuracao.announcementMessage;
+  if (message) {
+    message.textContent = configuracao.announcementMessage
+      ? configuracao.announcementMessage
+      : "Esta etapa da ferramenta permanece em fase de desenvolvimento e voltara a ficar disponivel em breve.";
   }
 
-  if (usuarioEhAdmin() || !configuracao.maintenanceMode || possuiAcessoManutencao()) {
+  if (status) {
+    status.textContent =
+      "A ferramenta esta temporariamente bloqueada para usuarios comuns enquanto esta funcionalidade evolui.";
+  }
+
+  if (usuarioEhAdmin() || !configuracao.maintenanceMode) {
     redirecionarParaDestino(destino);
     return;
   }
-
-  if (!form || !input || !status) {
-    return;
-  }
-
-  form.addEventListener("submit", (event) => {
-    event.preventDefault();
-    const codigo = String(input.value || "").trim();
-
-    status.classList.remove("is-error", "is-success");
-
-    if (codigo !== CODIGO_ACESSO_MANUTENCAO) {
-      status.textContent = "Codigo invalido. Verifique o acesso informado e tente novamente.";
-      status.classList.add("is-error");
-      input.focus();
-      input.select();
-      return;
-    }
-
-    concederAcessoManutencao();
-    status.textContent = "Codigo validado. Redirecionando para a ferramenta.";
-    status.classList.add("is-success");
-    window.setTimeout(() => redirecionarParaDestino(destino), 350);
-  });
 });

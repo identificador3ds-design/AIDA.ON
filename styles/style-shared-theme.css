@@ -279,13 +279,20 @@ body.aida-shell ::-webkit-scrollbar-thumb {
 }
 
 .system-notice {
-  margin-bottom: 24px;
+  position: fixed;
+  top: var(--system-notice-top, 106px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(var(--container), calc(100% - 24px));
+  margin: 0;
   border-radius: var(--radius-lg);
   border: 1px solid rgba(255, 213, 128, 0.22);
   background:
     linear-gradient(180deg, rgba(255, 214, 102, 0.12), rgba(255, 214, 102, 0.05)),
     linear-gradient(135deg, rgba(66, 49, 12, 0.2), rgba(16, 64, 59, 0.12));
   box-shadow: var(--shadow-md);
+  pointer-events: none;
+  z-index: 1100;
 }
 
 .system-notice-inner {
@@ -328,6 +335,10 @@ body.aida-shell ::-webkit-scrollbar-thumb {
 @media (max-width: 900px) {
   .page-header {
     padding-top: 18px;
+  }
+
+  .system-notice {
+    top: var(--system-notice-top-mobile, 92px);
   }
 }
 

@@ -1,0 +1,299 @@
+/* ============================================= */
+/* style-apoiadores.css - Sem rolagem horizontal + Verdes variados */
+/* ============================================= */
+
+.supporters-page {
+  background: #0a120f;           /* Verde escuro geral */
+  color: #e2e8f0;
+  font-family: 'Afacad', system-ui, sans-serif;
+  overflow-x: hidden;            /* Impede rolagem horizontal */
+  margin: 0;
+  padding: 0;
+}
+
+/* HEADER */
+.cabecalho {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(10, 18, 15, 0.96);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid #1e2a22;
+  z-index: 1000;
+  padding: 18px 5%;
+}
+
+.headcontent {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand {
+  flex-shrink: 0;
+}
+
+.logoaida {
+  height: 42px;
+}
+
+/* Links à direita */
+.navbar {
+  display: flex;
+  gap: 32px;
+  margin-left: auto;           /* Empurra os links para a direita */
+}
+
+.navbar .ancoranav {
+  color: #e2e8f0;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1.05rem;
+  transition: color 0.3s ease;
+}
+
+.navbar .ancoranav:hover {
+  color: #22ffaa;
+}
+
+/* Menu mobile */
+.menu-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.menu-toggle span {
+  width: 30px;
+  height: 3px;
+  background: #22ffaa;
+}
+
+/* Responsivo - Mobile */
+@media (max-width: 768px) {
+  .navbar {
+    position: fixed;
+    top: 72px;
+    left: 0;
+    width: 100%;
+    background: #0a120f;
+    flex-direction: column;
+    padding: 40px 0;
+    gap: 28px;
+    transform: translateY(-100%);
+    transition: transform 0.4s ease;
+    z-index: 998;
+  }
+
+  .navbar.active {
+    transform: translateY(0);
+  }
+
+  .menu-toggle {
+    display: flex;
+  }
+}
+/* HERO - Verde bem escuro e profundo */
+.section-hero.full-bleed {
+  width: 100vw;
+  min-height: 100vh;
+  background: #08100c;                    /* Verde escuro profundo */
+  display: flex;
+  align-items: center;
+  margin-left: calc(-50vw + 50%);
+  padding: 0 5%;
+  position: relative;
+  overflow: hidden;
+  margin-top: 72px;
+}
+
+.section-hero.full-bleed::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 4px,
+    rgba(34, 255, 170, 0.035) 4px,
+    rgba(34, 255, 170, 0.035) 8px
+  );
+}
+
+/* Seção Apoiadores - Verde médio escuro */
+.section-supporters {
+  background: #0f1a15;                    /* Verde escuro médio */
+  padding: 110px 5%;
+}
+
+/* Seção CTA - Verde escuro com leve variação */
+.section-cta {
+  background: #0c1612;                    /* Verde escuro diferente */
+  padding: 130px 5%;
+}
+
+/* Conteúdo centralizado */
+.content-wrapper {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.hero-content, .cta-box {
+  max-width: 820px;
+}
+
+/* Estilos do texto e botões (mantidos) */
+.kicker {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: monospace;
+  font-size: 1.1rem;
+  color: #22ffaa;
+  letter-spacing: 3px;
+  margin-bottom: 20px;
+}
+
+.green-line {
+  width: 5px;
+  height: 28px;
+  background: #22ffaa;
+}
+
+.page-title {
+  font-size: clamp(2.8rem, 7.5vw, 4.4rem);
+  line-height: 1.05;
+  font-weight: 700;
+  margin-bottom: 28px;
+}
+
+.highlight {
+  color: #22ffaa;
+}
+
+.page-copy {
+  font-size: 1.25rem;
+  line-height: 1.7;
+  color: #cbd5e1;
+  margin-bottom: 42px;
+}
+
+.cta-button {
+  background: #22ffaa;
+  color: #0a0f1a;
+  font-weight: 700;
+  padding: 16px 42px;
+  border-radius: 50px;
+  text-decoration: none;
+  font-size: 1.18rem;
+  box-shadow: 0 12px 35px rgba(34, 255, 170, 0.45);
+  transition: all 0.4s ease;
+}
+
+.cta-button:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 45px rgba(34, 255, 170, 0.6);
+}
+
+.cta-button.large {
+  padding: 20px 48px;
+  font-size: 1.25rem;
+}
+
+.section-title {
+  font-size: clamp(2.2rem, 5.5vw, 2.9rem);
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.section-subtitle {
+  text-align: center;
+  color: #94a3b8;
+  font-size: 1.2rem;
+  margin-bottom: 60px;
+}
+
+.supporters-list {
+  max-width: 640px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.supporter-item {
+  background: rgba(15, 26, 20, 0.75);
+  border-left: 6px solid #22ffaa;
+  padding: 28px 34px;
+  border-radius: 12px;
+}
+
+.supporter-name {
+  font-size: 1.45rem;
+  font-weight: 700;
+}
+
+.supporter-desc {
+  color: #94a3b8;
+  font-family: monospace;
+  margin-top: 8px;
+}
+
+.cta-box {
+  background: rgba(15, 26, 20, 0.9);
+  border: 1px solid #1e2a22;
+  border-radius: 24px;
+  padding: 70px 50px;
+  text-align: center;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.cta-box h2 {
+  font-size: 2.4rem;
+  margin-bottom: 24px;
+}
+
+.cta-box p {
+  font-size: 1.2rem;
+  line-height: 1.75;
+  color: #cbd5e1;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .navbar {
+    position: fixed;
+    top: 72px;
+    left: 0;
+    width: 100%;
+    background: #0a120f;
+    flex-direction: column;
+    padding: 40px 0;
+    gap: 24px;
+    transform: translateY(-100%);
+    transition: transform 0.4s;
+  }
+
+  .navbar.active {
+    transform: translateY(0);
+  }
+
+  .menu-toggle {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .menu-toggle span {
+    width: 30px;
+    height: 3px;
+    background: #22ffaa;
+  }
+}

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AIDA.ON | Apoiadores</title>
+  <link rel="icon" type="image/png" href="../assets/images/AIDABranco.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Afacad:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles/style-apoiadores.css">
+</head>
+<body class="aida-shell supporters-page">
+
+  <!-- HEADER - Logo à esquerda + Links à direita -->
+  <header class="cabecalho">
+    <div class="headcontent">
+      <!-- Logo à esquerda -->
+      <a href="../index.html" class="brand">
+        <img src="../assets/images/LogoBranca.png" alt="Logo AIDA.ON" class="logoaida">
+      </a>
+
+      <!-- Links à direita -->
+      <nav class="navbar" id="menu-principal">
+        <a href="./index-apresentacao.html" class="ancoranav">Apresentação</a>
+        <a href="#seja-apoiador" class="ancoranav">Seja Apoiador</a>
+      </nav>
+
+      <!-- Menu Hambúrguer (mobile) -->
+      <button class="menu-toggle" type="button" aria-label="Abrir menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </header>
+
+  <div class="menu-overlay"></div>
+
+  <main id="topo">
+
+    <!-- HERO FULL BLEED -->
+    <section class="section-hero full-bleed">
+      <div class="hero-content">
+        <div class="kicker">
+          <span class="green-line"></span>
+          PARCERIAS QUE IMPULSIONAM O FUTURO
+        </div>
+        
+        <h1 class="page-title">
+          Empresas que fortalecem o<br>projeto <span class="highlight">AIDA.ON</span>
+        </h1>
+        
+        <p class="page-copy">
+          Agradecemos aos nossos apoiadores por acreditarem na missão de construir 
+          uma plataforma inovadora, acessível e feita com ❤️ para o Brasil. 
+          Juntos transformamos código em impacto real.
+        </p>
+        
+        <a href="#seja-apoiador" class="cta-button">Seja um apoiador →</a>
+      </div>
+    </section>
+
+    <!-- Seção Apoiadores -->
+    <section class="section-supporters">
+      <div class="content-wrapper">
+        <h2 class="section-title">Nossos Apoiadores</h2>
+        <p class="section-subtitle">Empresas que já fazem parte dessa jornada.</p>
+
+        <div class="supporters-list">
+          <div class="supporter-item">
+            <span class="supporter-name">ProgrID</span>
+            <span class="supporter-desc">Tecnologia feita com café e ❤️</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section id="seja-apoiador" class="section-cta">
+      <div class="content-wrapper">
+        <div class="cta-box">
+          <h2>Quer fazer parte dessa jornada?</h2>
+          <p>
+            Sua empresa pode ajudar a construir o futuro da inteligência artificial acessível no Brasil.<br><br>
+            Patrocínio, mentoria, infraestrutura ou visibilidade — todas as formas de apoio são bem-vindas.
+          </p>
+          <a href="mailto:contato@aida.on" class="cta-button large">Fale conosco agora</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="../scripts/script-apresentacao.js"></script>
+
+</body>
+</html>

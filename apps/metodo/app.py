@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS
 import base64
@@ -135,7 +134,6 @@ def analisar():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=True)
-=======
 from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS
 import base64
@@ -273,4 +271,3 @@ def analisar():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=True)
->>>>>>> 2eaa73e8bc113d7b0d272038073f849c04b7eb9d

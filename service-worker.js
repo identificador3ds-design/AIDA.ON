@@ -1,5 +1,5 @@
-﻿const STATIC_CACHE = "aida-static-v5";
-const RUNTIME_CACHE = "aida-runtime-v5";
+const STATIC_CACHE = "aida-static-v6";
+const RUNTIME_CACHE = "aida-runtime-v6";
 
 const APP_SHELL = [
   "./",
@@ -15,6 +15,9 @@ const APP_SHELL = [
   "pages/index-seleciona.html",
   "./styles/style-ferramenta.css",
   "./scripts/script-ferramenta.js",
+  "pages/index-manutencao.html",
+  "./styles/style-manutencao.css",
+  "./scripts/script-manutencao.js",
   "pages/index-analise.html",
   "./styles/style-analise.css",
   "./scripts/script-analise.js",
@@ -137,4 +140,3 @@ self.addEventListener("fetch", (event) => {
     })
   );
 });
-

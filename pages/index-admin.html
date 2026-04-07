@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
@@ -25,59 +25,59 @@
   <main class="page-frame admin-main">
     <section class="glass-panel admin-hero">
       <div class="admin-hero-copy">
-        <span class="page-kicker">Controle total do ecossistema</span>
-        <h1 class="page-title">Central administrativa AIDA.ON</h1>
+        <span class="page-kicker">Central operacional</span>
+        <h1 class="page-title">Painel administrativo AIDA.ON</h1>
         <p class="page-copy">
-          Gerencie contas, metodos, acessos e comunicados do site com uma visao mais completa
-          da operacao. Este painel foi redesenhado para virar uma mesa de comando da ferramenta.
+          Controle acessos, mensagens, modos de operacao, metodos e contas em uma estrutura
+          separada por sessoes. O foco aqui e facilitar leitura, decisao e manutencao do sistema.
         </p>
 
         <div class="hero-tags">
-          <span class="hero-tag">Contas</span>
+          <span class="hero-tag">Operacao</span>
+          <span class="hero-tag">Manutencao</span>
+          <span class="hero-tag">Usuarios</span>
           <span class="hero-tag">Metodos</span>
-          <span class="hero-tag">Fluxos</span>
-          <span class="hero-tag">Avisos</span>
         </div>
       </div>
 
-      <div class="admin-hero-side">
-        <article class="command-card">
-          <span class="command-label">Sessao ativa</span>
+      <aside class="admin-hero-side">
+        <article class="hero-side-card">
+          <span class="hero-side-label">Sessao ativa</span>
           <strong>Admin</strong>
-          <p>Controle elevado liberado.</p>
+          <p>Controle elevado liberado para este navegador.</p>
         </article>
 
-        <article class="command-card">
-          <span class="command-label">Ultimo acesso</span>
+        <article class="hero-side-card">
+          <span class="hero-side-label">Ultimo acesso</span>
           <strong id="adminLastAccess">Agora</strong>
-          <p>Historico local deste navegador.</p>
+          <p>Historico local do painel administrativo.</p>
         </article>
 
-        <article class="command-card">
-          <span class="command-label">Suporte visivel</span>
+        <article class="hero-side-card">
+          <span class="hero-side-label">Contato visivel</span>
           <strong id="adminSupportPreview">admin@gmail.com</strong>
-          <p>Email usado nos avisos institucionais.</p>
+          <p>Email usado nos avisos e na tela de manutencao.</p>
         </article>
-      </div>
+      </aside>
     </section>
 
     <section class="admin-stats">
       <article class="glass-card stat-card">
         <span class="stat-label">Usuarios</span>
         <strong id="statUsers">--</strong>
-        <p>Contas registradas no sistema.</p>
+        <p>Contas conhecidas pelo painel.</p>
       </article>
 
       <article class="glass-card stat-card">
         <span class="stat-label">Analises</span>
         <strong id="statAnalyses">--</strong>
-        <p>Processamentos encontrados na base.</p>
+        <p>Processamentos registrados na base.</p>
       </article>
 
       <article class="glass-card stat-card">
-        <span class="stat-label">Ferramentas</span>
+        <span class="stat-label">Modulos</span>
         <strong id="statTools">--</strong>
-        <p>Paginas e modulos mapeados no painel.</p>
+        <p>Paginas e fluxos mapeados no sistema.</p>
       </article>
 
       <article class="glass-card stat-card">
@@ -87,18 +87,27 @@
       </article>
     </section>
 
-    <section class="admin-layout admin-layout-focus">
-      <section class="glass-panel admin-section admin-section-main">
-        <div class="section-head">
-          <div>
-            <span class="page-kicker">Configuracoes</span>
-            <h2>Controle central do site</h2>
-          </div>
-          <span id="configStatus" class="admin-status">Aguardando alteracoes</span>
+    <section class="glass-panel admin-section">
+      <div class="section-head">
+        <div>
+          <span class="page-kicker">Operacao do site</span>
+          <h2>Configuracoes principais</h2>
+          <p class="admin-muted">
+            Ajuste comunicacao, acessos publicos e comportamento da experiencia sem precisar
+            navegar por blocos apertados.
+          </p>
         </div>
+        <span id="configStatus" class="admin-status">Aguardando alteracoes</span>
+      </div>
 
-        <form id="adminConfigForm" class="admin-form">
-          <div class="admin-form-grid">
+      <form id="adminConfigForm" class="admin-form">
+        <section class="admin-subsection">
+          <div class="subsection-head">
+            <span class="subsection-kicker">Comunicacao</span>
+            <h3>Mensagem e identidade operacional</h3>
+          </div>
+
+          <div class="admin-field-grid">
             <div class="admin-field">
               <label for="configSupportEmail">Email de suporte para avisos do sistema</label>
               <input id="configSupportEmail" type="email" class="field-input" placeholder="suporte@aida.on">
@@ -114,10 +123,17 @@
               <textarea id="configAnnouncement" rows="4" class="field-textarea" placeholder="Escreva um aviso rapido para os usuarios."></textarea>
             </div>
           </div>
+        </section>
 
-          <div class="admin-toggle-columns">
-            <div class="admin-toggles">
-              <label class="toggle-card">
+        <div class="admin-two-column">
+          <section class="admin-subsection">
+            <div class="subsection-head">
+              <span class="subsection-kicker">Fluxo publico</span>
+              <h3>Regras de acesso e experiencia</h3>
+            </div>
+
+            <div class="toggle-stack">
+              <label class="toggle-row">
                 <input id="configAllowRegistrations" type="checkbox">
                 <div>
                   <strong>Permitir novos cadastros</strong>
@@ -125,7 +141,7 @@
                 </div>
               </label>
 
-              <label class="toggle-card">
+              <label class="toggle-row">
                 <input id="configEnableInstallPrompt" type="checkbox">
                 <div>
                   <strong>Exibir convite de instalacao</strong>
@@ -133,15 +149,15 @@
                 </div>
               </label>
 
-              <label class="toggle-card">
+              <label class="toggle-row">
                 <input id="configMaintenanceMode" type="checkbox">
                 <div>
                   <strong>Modo manutencao</strong>
-                  <span>Destaca um aviso global e sinaliza operacao controlada no site.</span>
+                  <span>Envia usuarios da ferramenta para a tela de manutencao com acesso por codigo.</span>
                 </div>
               </label>
 
-              <label class="toggle-card">
+              <label class="toggle-row">
                 <input id="configAllowUploadPage" type="checkbox">
                 <div>
                   <strong>Liberar pagina de upload</strong>
@@ -149,7 +165,7 @@
                 </div>
               </label>
 
-              <label class="toggle-card">
+              <label class="toggle-row">
                 <input id="configAllowHistoryPage" type="checkbox">
                 <div>
                   <strong>Liberar historico</strong>
@@ -157,7 +173,7 @@
                 </div>
               </label>
 
-              <label class="toggle-card">
+              <label class="toggle-row">
                 <input id="configAllowProfilePage" type="checkbox">
                 <div>
                   <strong>Liberar perfil</strong>
@@ -165,7 +181,7 @@
                 </div>
               </label>
 
-              <label class="toggle-card">
+              <label class="toggle-row">
                 <input id="configLockAnalysisPage" type="checkbox">
                 <div>
                   <strong>Travar analise</strong>
@@ -173,7 +189,7 @@
                 </div>
               </label>
 
-              <label class="toggle-card">
+              <label class="toggle-row">
                 <input id="configDefaultWatermarkCheck" type="checkbox">
                 <div>
                   <strong>Marca visual ligada por padrao</strong>
@@ -181,7 +197,7 @@
                 </div>
               </label>
 
-              <label class="toggle-card">
+              <label class="toggle-row">
                 <input id="configDefaultMetadataCheck" type="checkbox">
                 <div>
                   <strong>Metadados ligados por padrao</strong>
@@ -189,53 +205,82 @@
                 </div>
               </label>
             </div>
+          </section>
 
-            <aside class="admin-preview-card">
-              <span class="page-kicker">Resumo vivo</span>
-              <h3>Como o site esta configurado agora</h3>
-              <p class="admin-muted">
-                Este bloco resume rapidamente o estado operacional da plataforma com base nas escolhas do painel.
-              </p>
+          <section class="admin-subsection admin-subsection-highlight">
+            <div class="subsection-head">
+              <span class="subsection-kicker">Manutencao</span>
+              <h3>Experiencia de acesso controlado</h3>
+            </div>
+
+            <p class="admin-muted">
+              Quando o modo manutencao estiver ativo, o usuario comum sera levado para uma tela
+              dedicada antes de entrar na ferramenta.
+            </p>
+
+            <article class="maintenance-code-card">
+              <span>Codigo temporario atual</span>
+              <strong>admin3ds</strong>
+              <p>Esse codigo libera a ferramenta na sessao atual do navegador para validacoes controladas.</p>
+            </article>
+
+            <div class="preview-panel">
+              <span class="subsection-kicker">Resumo vivo</span>
               <div id="configPreviewList" class="preview-list"></div>
-            </aside>
-          </div>
+            </div>
+          </section>
+        </div>
 
-          <div class="admin-form-actions">
-            <button type="submit" class="aida-button">Salvar configuracoes</button>
-            <button id="btnResetConfig" type="button" class="aida-button secondary">Restaurar padrao</button>
-          </div>
-        </form>
-      </section>
+        <div class="admin-form-actions">
+          <button type="submit" class="aida-button">Salvar configuracoes</button>
+          <button id="btnResetConfig" type="button" class="aida-button secondary">Restaurar padrao</button>
+        </div>
+      </form>
+    </section>
 
-      <aside class="glass-panel admin-section admin-section-side">
+    <section class="admin-two-column admin-two-column-balanced">
+      <section class="glass-panel admin-section">
         <div class="section-head">
           <div>
-            <span class="page-kicker">Operacao rapida</span>
-            <h2>Comandos de alto impacto</h2>
+            <span class="page-kicker">Acao rapida</span>
+            <h2>Comandos operacionais</h2>
           </div>
         </div>
 
         <div class="quick-actions">
-          <button id="btnPresetOpen" type="button" class="quick-action-card">
+          <button id="btnPresetOpen" type="button" class="quick-action-row">
             <strong>Modo aberto</strong>
             <span>Liga o fluxo padrao para testes e apresentacoes.</span>
           </button>
 
-          <button id="btnPresetRestrict" type="button" class="quick-action-card">
+          <button id="btnPresetRestrict" type="button" class="quick-action-row">
             <strong>Modo restrito</strong>
-            <span>Fecha cadastros, trava analise e ativa manutencao.</span>
+            <span>Ativa manutencao, fecha cadastros e deixa a operacao sob controle.</span>
           </button>
 
-          <button id="btnClearAnnouncement" type="button" class="quick-action-card">
+          <button id="btnClearAnnouncement" type="button" class="quick-action-row">
             <strong>Limpar aviso</strong>
-            <span>Apaga a mensagem institucional atual sem mexer no resto.</span>
+            <span>Remove a mensagem institucional atual sem mexer nas outras regras.</span>
           </button>
 
-          <button id="btnUnlockUsers" type="button" class="quick-action-card">
+          <button id="btnUnlockUsers" type="button" class="quick-action-row">
             <strong>Desbloquear contas</strong>
-            <span>Remove bloqueios locais para restaurar o acesso dos usuarios.</span>
+            <span>Remove bloqueios locais e restaura o acesso dos usuarios.</span>
           </button>
         </div>
+      </section>
+
+      <section class="glass-panel admin-section">
+        <div class="section-head">
+          <div>
+            <span class="page-kicker">Panorama</span>
+            <h2>Indicadores internos</h2>
+          </div>
+        </div>
+
+        <p class="admin-muted">
+          Um quadro rapido para acompanhar o volume de bloqueios e a disponibilidade tecnica dos metodos.
+        </p>
 
         <div class="admin-mini-board">
           <article class="mini-card">
@@ -248,82 +293,78 @@
             <strong id="activeMethodsCount">0</strong>
           </article>
         </div>
-      </aside>
-    </section>
-
-    <section class="admin-layout">
-      <section class="glass-panel admin-section">
-        <div class="section-head">
-          <div>
-            <span class="page-kicker">Metodos</span>
-            <h2>Gerenciamento da ferramenta de analise</h2>
-          </div>
-        </div>
-
-        <p class="admin-muted">
-          Ative, desative e renomeie os metodos disponiveis no seletor da analise. O painel
-          tambem permite ajustar a descricao exibida e sinalizar quando um metodo ja pode
-          ser liberado operacionalmente.
-        </p>
-
-        <div id="methodsConfigGrid" class="methods-config-grid"></div>
-      </section>
-
-      <section class="glass-panel admin-section">
-        <div class="section-head">
-          <div>
-            <span class="page-kicker">Mapa do site</span>
-            <h2>Ferramentas e modulos</h2>
-          </div>
-        </div>
-
-        <div id="toolsGrid" class="tools-grid"></div>
       </section>
     </section>
 
-    <section class="admin-layout bottom-layout">
-      <section class="glass-panel admin-section admin-users-section">
-        <div class="section-head">
-          <div>
-            <span class="page-kicker">Usuarios</span>
-            <h2>Gestao de contas</h2>
-          </div>
-          <button id="btnRefreshData" type="button" class="aida-button secondary">Atualizar dados</button>
+    <section class="glass-panel admin-section">
+      <div class="section-head">
+        <div>
+          <span class="page-kicker">Mapa do sistema</span>
+          <h2>Paginas e modulos controlados</h2>
+          <p class="admin-muted">
+            Cada linha resume o estado operacional do modulo e facilita a abertura direta para inspecao.
+          </p>
         </div>
+      </div>
 
-        <div class="users-toolbar">
-          <input id="userSearchInput" type="search" class="field-input user-search-input" placeholder="Buscar por nome ou email">
-          <p id="blockedUsersInfo" class="admin-muted">Nenhuma conta com restricao no momento.</p>
+      <div id="toolsGrid" class="tool-stack"></div>
+    </section>
+
+    <section class="glass-panel admin-section">
+      <div class="section-head">
+        <div>
+          <span class="page-kicker">Metodos</span>
+          <h2>Configuracao da ferramenta de analise</h2>
+          <p class="admin-muted">
+            Renomeie, descreva e ajuste a disponibilidade operacional de cada metodo em blocos mais amplos.
+          </p>
         </div>
+      </div>
 
-        <p id="usersStatus" class="admin-muted">Carregando usuarios...</p>
-        <div class="table-shell">
-          <table class="admin-table">
-            <thead>
-              <tr>
-                <th>Nome</th>
-                <th>Email</th>
-                <th>Origem</th>
-                <th>Status</th>
-                <th>Acoes</th>
-              </tr>
-            </thead>
-            <tbody id="usersTableBody"></tbody>
-          </table>
+      <div id="methodsConfigGrid" class="methods-stack"></div>
+    </section>
+
+    <section class="glass-panel admin-section admin-users-section">
+      <div class="section-head">
+        <div>
+          <span class="page-kicker">Usuarios</span>
+          <h2>Gestao de contas</h2>
         </div>
-      </section>
+        <button id="btnRefreshData" type="button" class="aida-button secondary">Atualizar dados</button>
+      </div>
 
-      <section class="glass-panel admin-section">
-        <div class="section-head">
-          <div>
-            <span class="page-kicker">Atividade</span>
-            <h2>Metodos e operacao</h2>
-          </div>
+      <div class="users-toolbar">
+        <input id="userSearchInput" type="search" class="field-input user-search-input" placeholder="Buscar por nome ou email">
+        <p id="blockedUsersInfo" class="admin-muted">Nenhuma conta com restricao no momento.</p>
+      </div>
+
+      <p id="usersStatus" class="admin-muted">Carregando usuarios...</p>
+      <div class="table-shell">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Email</th>
+              <th>Origem</th>
+              <th>Status</th>
+              <th>Acoes</th>
+            </tr>
+          </thead>
+          <tbody id="usersTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="glass-panel admin-section">
+      <div class="section-head">
+        <div>
+          <span class="page-kicker">Atividade</span>
+          <h2>Leitura de metodos usados</h2>
         </div>
+      </div>
 
-        <p id="analysisStatus" class="admin-muted">Carregando estatisticas...</p>
-        <div id="methodsList" class="methods-list"></div>
-      </section>
+      <p id="analysisStatus" class="admin-muted">Carregando estatisticas...</p>
+      <div id="methodsList" class="methods-list"></div>
     </section>
   </main>
 
@@ -332,5 +373,3 @@
   <script src="../scripts/script-administrador.js"></script>
 </body>
 </html>
-
-

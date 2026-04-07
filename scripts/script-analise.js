@@ -25,6 +25,7 @@ const EXEMPLOS_LSB = [
 const ADMIN_EMAIL = "admin@gmail.com";
 const CHAVE_ADMIN_CONFIG = "AIDA_ADMIN_CONFIG";
 const CHAVE_LOGIN_FEEDBACK = "AIDA_LOGIN_FEEDBACK";
+const CHAVE_MANUTENCAO_ACESSO = "AIDA_MAINTENANCE_ACCESS";
 const CONFIG_ADMIN_PADRAO = {
   allowRegistrations: true,
   enableInstallPrompt: true,
@@ -103,6 +104,14 @@ function usuarioEhAdmin() {
   const tipo = localStorage.getItem("usuarioTipo");
   const email = (localStorage.getItem("usuarioEmail") || "").trim().toLowerCase();
   return tipo === "admin" || email === ADMIN_EMAIL;
+}
+
+function possuiAcessoManutencao() {
+  return sessionStorage.getItem(CHAVE_MANUTENCAO_ACESSO) === "granted";
+}
+
+function redirecionarParaManutencao(destino = "./index-analise.html") {
+  window.location.href = `./index-manutencao.html?redirect=${encodeURIComponent(destino)}`;
 }
 
 function obterStatusConta(email) {
@@ -628,7 +637,6 @@ async function salvarHistorico(imagemBase64, dados) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  renderizarAvisoSistema();
   const nomeSalvo = localStorage.getItem("usuarioNome");
   const botaoUsuario = document.getElementById("nome-usuario2");
   const btnSair = document.getElementById("btn-sair");
@@ -678,6 +686,17 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
+  if (
+    configuracaoAdmin.maintenanceMode &&
+    !usuarioEhAdmin() &&
+    !possuiAcessoManutencao()
+  ) {
+    redirecionarParaManutencao("./index-analise.html");
+    return;
+  }
+
+  renderizarAvisoSistema();
+
   renderizarMetodosDisponiveis(metodoAnalise, configuracaoAdmin);
 
   if (btnVerificar) {
@@ -703,7 +722,11 @@ document.addEventListener("DOMContentLoaded", () => {
     linkPerfilUsuario.hidden = true;
   }
 
-  if (!configuracaoAdmin.allowUploadPage && !usuarioEhAdmin()) {
+  if (
+    !configuracaoAdmin.allowUploadPage &&
+    !configuracaoAdmin.maintenanceMode &&
+    !usuarioEhAdmin()
+  ) {
     if (btnTrocar) {
       btnTrocar.hidden = true;
     }
@@ -1031,6 +1054,15 @@ document.addEventListener("DOMContentLoaded", () => {
         "Seu acesso foi bloqueado pelo administrador."
       );
       window.location.href = "./index-login.html";
+      return;
+    }
+
+    if (
+      configuracaoAtual.maintenanceMode &&
+      !usuarioEhAdmin() &&
+      !possuiAcessoManutencao()
+    ) {
+      redirecionarParaManutencao("./index-analise.html");
       return;
     }
 

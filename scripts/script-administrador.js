@@ -426,11 +426,11 @@ function renderizarResumoVivo(configuracao) {
       selo: configuracao.allowRegistrations ? "Liberado" : "Pausado",
     },
     {
-      titulo: "Analise",
-      descricao: configuracao.lockAnalysisPage
-        ? "Processamento travado"
-        : "Processamento ativo",
-      selo: configuracao.lockAnalysisPage ? "Travada" : "Online",
+      titulo: "Modo manutencao",
+      descricao: configuracao.maintenanceMode
+        ? "Tela de manutencao ativa com acesso temporario por codigo."
+        : "Ferramenta aberta sem barreira de manutencao.",
+      selo: configuracao.maintenanceMode ? "Ativo" : "Livre",
     },
     {
       titulo: "Acessos",
@@ -440,6 +440,13 @@ function renderizarResumoVivo(configuracao) {
           .length
       } areas liberadas para o usuario`,
       selo: "Fluxo",
+    },
+    {
+      titulo: "Analise",
+      descricao: configuracao.lockAnalysisPage
+        ? "Processamento travado"
+        : "Processamento ativo",
+      selo: configuracao.lockAnalysisPage ? "Travada" : "Online",
     },
     {
       titulo: "Botao principal",
@@ -472,7 +479,9 @@ function renderizarMetodosConfiguraveis(configuracao) {
 
   grade.innerHTML = Object.entries(configuracao.methods)
     .map(([chave, metodo]) => {
-      const cardClass = metodo.enabled ? "method-config-card" : "method-config-card is-disabled";
+      const cardClass = metodo.enabled
+        ? "method-config-panel"
+        : "method-config-panel is-disabled";
       const badgeBackend = metodo.backendReady
         ? '<span class="micro-pill">Backend pronto</span>'
         : '<span class="micro-pill warning">Backend pendente</span>';
@@ -490,45 +499,55 @@ function renderizarMetodosConfiguraveis(configuracao) {
             </div>
           </div>
 
-          <div class="admin-field">
-            <label for="methodLabel-${chave}">Nome exibido ao usuario</label>
-            <input
-              id="methodLabel-${chave}"
-              data-method-label="${chave}"
-              type="text"
-              class="field-input"
-              value="${escaparHtml(metodo.label)}"
-            >
+          <div class="method-config-body">
+            <div class="admin-field">
+              <label for="methodLabel-${chave}">Nome exibido ao usuario</label>
+              <input
+                id="methodLabel-${chave}"
+                data-method-label="${chave}"
+                type="text"
+                class="field-input"
+                value="${escaparHtml(metodo.label)}"
+              >
+            </div>
+
+            <div class="admin-field">
+              <label for="methodDescription-${chave}">Descricao interna do metodo</label>
+              <textarea
+                id="methodDescription-${chave}"
+                data-method-description="${chave}"
+                class="field-textarea"
+                rows="4"
+              >${escaparHtml(metodo.descricao)}</textarea>
+            </div>
           </div>
 
-          <div class="admin-field">
-            <label for="methodDescription-${chave}">Descricao interna do metodo</label>
-            <textarea
-              id="methodDescription-${chave}"
-              data-method-description="${chave}"
-              class="field-textarea"
-              rows="4"
-            >${escaparHtml(metodo.descricao)}</textarea>
-          </div>
+          <div class="method-config-switches">
+            <label class="method-config-switch" for="methodEnabled-${chave}">
+              <div>
+                <strong>Metodo visivel na analise</strong>
+                <span>Controla se o metodo aparece no seletor publico.</span>
+              </div>
+              <input
+                id="methodEnabled-${chave}"
+                data-method-enabled="${chave}"
+                type="checkbox"
+                ${metodo.enabled ? "checked" : ""}
+              >
+            </label>
 
-          <div class="method-config-switch">
-            <label for="methodEnabled-${chave}">Metodo visivel na analise</label>
-            <input
-              id="methodEnabled-${chave}"
-              data-method-enabled="${chave}"
-              type="checkbox"
-              ${metodo.enabled ? "checked" : ""}
-            >
-          </div>
-
-          <div class="method-config-switch">
-            <label for="methodBackend-${chave}">Backend liberado para uso</label>
-            <input
-              id="methodBackend-${chave}"
-              data-method-backend="${chave}"
-              type="checkbox"
-              ${metodo.backendReady ? "checked" : ""}
-            >
+            <label class="method-config-switch" for="methodBackend-${chave}">
+              <div>
+                <strong>Backend liberado</strong>
+                <span>Permite uso operacional real do metodo escolhido.</span>
+              </div>
+              <input
+                id="methodBackend-${chave}"
+                data-method-backend="${chave}"
+                type="checkbox"
+                ${metodo.backendReady ? "checked" : ""}
+              >
+            </label>
           </div>
         </article>
       `;
@@ -546,6 +565,13 @@ function atualizarMiniBoard(configuracao) {
 }
 
 function obterSeloModulo(modulo, configuracao) {
+  if (
+    configuracao.maintenanceMode &&
+    ["Selecao de imagem", "Analise forense"].includes(modulo.nome)
+  ) {
+    return "Acesso por codigo";
+  }
+
   if (modulo.nome === "Login e cadastro") {
     return configuracao.allowRegistrations ? "Cadastro aberto" : "Cadastro pausado";
   }
@@ -577,6 +603,10 @@ function obterDescricaoModulo(modulo, configuracao) {
   }
 
   if (modulo.nome === "Selecao de imagem") {
+    if (configuracao.maintenanceMode) {
+      return "A tentativa de entrada e enviada para a tela de manutencao.";
+    }
+
     return configuracao.allowUploadPage
       ? "O usuario pode entrar na etapa de upload e trocar a imagem enviada."
       : "A entrada da jornada foi bloqueada temporariamente pelo painel.";
@@ -595,6 +625,10 @@ function obterDescricaoModulo(modulo, configuracao) {
   }
 
   if (modulo.nome === "Analise forense") {
+    if (configuracao.maintenanceMode) {
+      return "A analise fica protegida por uma tela intermediaria com codigo temporario.";
+    }
+
     return configuracao.lockAnalysisPage
       ? "A tela continua visivel, mas o processamento fica travado."
       : "A analise continua operacional com o CTA configurado pelo painel.";
@@ -618,12 +652,14 @@ function renderizarFerramentas(configuracao) {
 
   toolsGrid.innerHTML = MODULOS_SISTEMA.map(
     (modulo) => `
-      <article class="tool-card">
-        <div class="tool-card-head">
-          <h3>${escaparHtml(modulo.nome)}</h3>
-          <span class="micro-pill">${escaparHtml(obterSeloModulo(modulo, configuracao))}</span>
+      <article class="tool-row">
+        <div class="tool-row-main">
+          <div class="tool-row-head">
+            <h3>${escaparHtml(modulo.nome)}</h3>
+            <span class="micro-pill">${escaparHtml(obterSeloModulo(modulo, configuracao))}</span>
+          </div>
+          <p>${escaparHtml(obterDescricaoModulo(modulo, configuracao))}</p>
         </div>
-        <p>${escaparHtml(obterDescricaoModulo(modulo, configuracao))}</p>
         <a href="${modulo.href}" class="tool-link">Abrir modulo</a>
       </article>
     `

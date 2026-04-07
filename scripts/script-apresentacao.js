@@ -38,10 +38,12 @@
 
 const ADMIN_EMAIL = "admin@gmail.com";
 const CHAVE_ADMIN_CONFIG = "AIDA_ADMIN_CONFIG";
+const CHAVE_MANUTENCAO_ACESSO = "AIDA_MAINTENANCE_ACCESS";
 const CONFIG_ADMIN_PADRAO = {
   allowRegistrations: true,
   enableInstallPrompt: true,
   maintenanceMode: false,
+  allowUploadPage: true,
   supportEmail: ADMIN_EMAIL,
   announcementMessage: "",
 };
@@ -77,6 +79,14 @@ function usuarioEhAdmin() {
   const tipo = localStorage.getItem("usuarioTipo");
   const email = (localStorage.getItem("usuarioEmail") || "").trim().toLowerCase();
   return tipo === "admin" || email === ADMIN_EMAIL;
+}
+
+function possuiAcessoManutencao() {
+  return sessionStorage.getItem(CHAVE_MANUTENCAO_ACESSO) === "granted";
+}
+
+function montarLinkManutencao(destino = "./index-seleciona.html") {
+  return `./index-manutencao.html?redirect=${encodeURIComponent(destino)}`;
 }
 
 function abrirPainelAdmin(event) {
@@ -142,6 +152,8 @@ function ajustarAcessoPrincipalFerramenta() {
   const ctaPrincipal = document.querySelector('.btn-group-ferr .btn-main');
   const badgeNovidade = document.querySelector(".new-feature-badge");
   const admin = usuarioEhAdmin();
+  const acessoManutencao = possuiAcessoManutencao();
+  const destinoFerramenta = "./index-seleciona.html";
 
   if (!ctaPrincipal) {
     return;
@@ -155,8 +167,21 @@ function ajustarAcessoPrincipalFerramenta() {
     ctaPrincipal.textContent = ctaPrincipal.dataset.defaultLabel || "Experimentar ferramenta";
   };
 
+  if (configuracao.maintenanceMode && !admin && !acessoManutencao) {
+    ctaPrincipal.href = montarLinkManutencao(destinoFerramenta);
+    ctaPrincipal.classList.remove("is-disabled");
+    ctaPrincipal.removeAttribute("aria-disabled");
+    ctaPrincipal.textContent = "Acessar ferramenta";
+
+    if (badgeNovidade) {
+      badgeNovidade.hidden = false;
+    }
+
+    return;
+  }
+
   if (configuracao.allowUploadPage || admin) {
-    ctaPrincipal.href = "./index-seleciona.html";
+    ctaPrincipal.href = destinoFerramenta;
     ctaPrincipal.classList.remove("is-disabled");
     ctaPrincipal.removeAttribute("aria-disabled");
     restaurarLabel();

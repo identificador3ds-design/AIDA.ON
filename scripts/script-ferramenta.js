@@ -1,7 +1,9 @@
 ﻿const ADMIN_EMAIL = "admin@gmail.com";
 const CHAVE_ADMIN_CONFIG = "AIDA_ADMIN_CONFIG";
 const CHAVE_LOGIN_FEEDBACK = "AIDA_LOGIN_FEEDBACK";
+const CHAVE_MANUTENCAO_ACESSO = "AIDA_MAINTENANCE_ACCESS";
 const CONFIG_ADMIN_PADRAO = {
+  maintenanceMode: false,
   allowUploadPage: true,
   accountStates: {},
 };
@@ -50,6 +52,14 @@ function usuarioEhAdmin() {
   return tipo === "admin" || email === ADMIN_EMAIL;
 }
 
+function possuiAcessoManutencao() {
+  return sessionStorage.getItem(CHAVE_MANUTENCAO_ACESSO) === "granted";
+}
+
+function redirecionarParaManutencao(destino = "./index-seleciona.html") {
+  window.location.href = `./index-manutencao.html?redirect=${encodeURIComponent(destino)}`;
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const btnAcaoSelecionar = document.getElementById("btnAcaoSelecionar");
   const inputFileBotao = document.getElementById("inputFileBotao");
@@ -67,7 +77,20 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  if (!configuracaoAdmin.allowUploadPage && !usuarioEhAdmin()) {
+  if (
+    configuracaoAdmin.maintenanceMode &&
+    !usuarioEhAdmin() &&
+    !possuiAcessoManutencao()
+  ) {
+    redirecionarParaManutencao("./index-seleciona.html");
+    return;
+  }
+
+  if (
+    !configuracaoAdmin.allowUploadPage &&
+    !configuracaoAdmin.maintenanceMode &&
+    !usuarioEhAdmin()
+  ) {
     window.location.href = "./index-apresentacao.html";
     return;
   }

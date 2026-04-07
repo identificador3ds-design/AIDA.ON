@@ -1,12 +1,7 @@
 ﻿.profile-page::before {
   background:
-<<<<<<< HEAD:testes/style-perfil.css
     linear-gradient(180deg, rgba(7, 29, 27, 0.72), rgba(13, 53, 49, 0.88)),
     url("../img/Frame 18.png") center/cover no-repeat;
-=======
-    linear-gradient(180deg, rgba(7, 29, 27, 0.74), rgba(13, 53, 49, 0.88)),
-  url("../../assets/images/Frame 18.png") center/cover no-repeat;
->>>>>>> 112337d24f7a74f7cd61f2fd702dd0ef65ce3242:styles/style-perfil.css
   opacity: 0.82;
 }
 

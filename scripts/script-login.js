@@ -1,4 +1,8 @@
+<<<<<<< HEAD:login/script.js
+// Conexão com o banco
+=======
 ﻿// Conexao com o banco
+>>>>>>> 112337d24f7a74f7cd61f2fd702dd0ef65ce3242:scripts/script-login.js
 const supabaseUrl = "https://nwzijdudhemuibsyzpub.supabase.co";
 const supabaseKey =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im53emlqZHVkaGVtdWlic3l6cHViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwMjk5MTAsImV4cCI6MjA4NzYwNTkxMH0.aDHymYEKtyY5m2eaOHoBy4QRpaAvtafi_PVDtrL9gQc";
@@ -19,11 +23,11 @@ const brandSignupCopy = document.querySelector("[data-copy-signup]");
 const modeContent = {
   signin: {
     heading: "Entrar no AIDA",
-    description: "Acesse sua conta para continuar com suas analises e acompanhar seu ambiente de trabalho.",
+    description: "Acesse sua conta para continuar com suas análises e acompanhar seu ambiente de trabalho.",
   },
   signup: {
     heading: "Criar conta no AIDA",
-    description: "Configure seu acesso em poucos passos e entre na plataforma com seguranca e praticidade.",
+    description: "Configure seu acesso em poucos passos e entre na plataforma com segurança e praticidade.",
   },
 };
 
@@ -141,7 +145,7 @@ document.getElementById("registerForm").addEventListener("submit", async (event)
     return;
   }
 
-  mostrarAviso("Cadastro finalizado! Faca seu login.", "cadastro");
+  mostrarAviso("Cadastro finalizado! Faça seu login.", "cadastro");
 
   setTimeout(() => {
     setMode("signin");
@@ -160,7 +164,7 @@ document.getElementById("loginForm").addEventListener("submit", async (event) =>
     try {
       await _supabase.auth.signOut();
     } catch (erro) {
-      console.warn("Nao foi possivel encerrar a sessao anterior do Supabase:", erro);
+      console.warn("Não foi possível encerrar a sessão anterior do Supabase:", erro);
     }
 
     salvarSessaoAdmin();
@@ -175,12 +179,14 @@ document.getElementById("loginForm").addEventListener("submit", async (event) =>
   const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
-    mostrarAviso("Email ou senha invalidos.", "erro");
+    mostrarAviso("E-mail ou senha inválidos.", "erro");
     return;
   }
 
   const nomeUsuario = data.user.user_metadata.full_name || "usuario";
+  const emailUsuario = data.user.email || email;
   localStorage.setItem("usuarioNome", nomeUsuario);
+  localStorage.setItem("usuarioEmail", emailUsuario);
 
   mostrarAviso(`Bem-vindo, ${nomeUsuario}!`);
 

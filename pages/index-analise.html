@@ -8,6 +8,22 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="AIDA.ON">
     <link rel="manifest" href="../manifest.webmanifest">
+<<<<<<< HEAD:Ferramenta-Analise/index-analise.html
+    <link rel="apple-touch-icon" href="../img/pwa-icon-180.png">
+    <title>AIDA.ON - Análise da Imagem</title>
+    <link rel="icon" type="image/png" href="../img/AIDABranco.ico">
+    <link rel="stylesheet" href="../shared-theme.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="aida-shell analysis-page">
+    <header class="page-header">
+        <a href="../index.html" aria-label="Página inicial">
+            <img src="../img/LogoBranca.png" alt="Logo AIDA.ON" class="brand-logo">
+        </a>
+
+        <div class="analysis-header-actions">
+            <a href="../Hist%C3%B3rico/index-historico.html" class="top-link">Histórico</a>
+=======
     <link rel="apple-touch-icon" href="../assets/images/pwa-icon-180.png">
     <title>AIDA.ON - Analise da Imagem</title>
     <link rel="icon" type="image/png" href="../assets/images/AIDABranco.ico">
@@ -22,6 +38,7 @@
 
         <div class="analysis-header-actions">
             <a href="./index-historico.html" class="top-link">Historico</a>
+>>>>>>> 112337d24f7a74f7cd61f2fd702dd0ef65ce3242:pages/index-analise.html
 
             <div class="dropdown">
                 <button class="dropbtn" id="nome-usuario2" type="button">Minha conta</button>
@@ -36,14 +53,14 @@
     <main class="page-frame analysis-main">
         <section class="analysis-copy">
 
-            <div class="analysis-steps" aria-label="Passos da analise">
+            <div class="analysis-steps" aria-label="Passos da análise">
                 <div class="analysis-step">
                     <span>1</span>
                     <strong>Veja a imagem</strong>
                 </div>
                 <div class="analysis-step">
                     <span>2</span>
-                    <strong>Escolha o metodo</strong>
+                    <strong>Escolha o método</strong>
                 </div>
                 <div class="analysis-step">
                     <span>3</span>
@@ -65,7 +82,7 @@
 
             <section class="container-controles glass-card">
                 <div class="controls-header">
-                    <p>Preencha apenas o necessario e clique em analisar.</p>
+                    <p>Preencha apenas o necessário e clique em analisar.</p>
                 </div>
 
                 <div class="field-group">
@@ -74,9 +91,9 @@
                 </div>
 
                 <div class="field-group">
-                    <label for="metodoAnalise" class="field-label">Metodo de analise</label>
+                    <label for="metodoAnalise" class="field-label">Método de análise</label>
                     <select id="metodoAnalise" class="field-select">
-                        <option value="" disabled selected>Escolha uma opcao</option>
+                        <option value="" disabled selected>Escolha uma opção</option>
                         <option value="FFT">FFT</option>
                         <option value="PSEM">PSEM</option>
                         <option value="M4">LSB</option>
@@ -85,13 +102,13 @@
                 </div>
 
                 <div class="field-group">
-                    <span class="field-label">Ajudas automaticas</span>
+                    <span class="field-label">Ajudas automáticas</span>
 
                     <div class="analysis-checks">
                         <label class="analysis-check">
                             <input type="checkbox" id="checkMarcaDagua" checked>
                             <div>
-                                <strong>Procurar marca visivel</strong>
+                                <strong>Procurar marca visível</strong>
                                 <span>Busca sinais claros, como logos inseridos por ferramentas de IA.</span>
                             </div>
                         </label>
@@ -100,14 +117,14 @@
                             <input type="checkbox" id="checkMetadados" checked>
                             <div>
                                 <strong>Ler metadados</strong>
-                                <span>Procura informacoes escondidas no arquivo que podem indicar origem artificial.</span>
+                                <span>Procura informações escondidas no arquivo que podem indicar origem artificial.</span>
                             </div>
                         </label>
                     </div>
                 </div>
 
                 <div class="analysis-note">
-                    Dica: se voce nao souber o que escolher, deixe as duas opcoes ligadas.
+                    Dica: se você não souber o que escolher, deixe as duas opções ligadas.
                 </div>
 
                 <div class="grupo-botoes">
@@ -124,7 +141,7 @@
             <div class="spinner" aria-hidden="true"></div>
             <div class="loading-copy">
                 <strong>Analisando imagem...</strong>
-                <p>Estamos preparando um resumo simples para voce entender o resultado.</p>
+                <p>Estamos preparando um resumo simples para você entender o resultado.</p>
             </div>
         </div>
 
@@ -143,7 +160,7 @@
             <div class="resultado-corpo-vertical">
                 <section class="container-imagem-processada glass-card">
                     <span class="section-tag">Imagem analisada</span>
-                    <p class="result-copy">Esta e a visualizacao gerada pelo metodo escolhido.</p>
+                    <p class="result-copy">Esta é a visualização gerada pelo método escolhido.</p>
 
                     <div class="result-visual">
                         <img id="imagemProcessada" src="#" alt="Resultado da analise" class="imagem-preview">
@@ -152,14 +169,14 @@
 
                 <section class="container-explicacao glass-card">
                     <div class="method-copy">
-                        <span class="section-tag">Explicacao</span>
+                        <span class="section-tag">Explicação</span>
                         <h3 id="tituloMetodo">Sobre o resultado</h3>
                         <p id="textoMetodo">Aguardando processamento...</p>
                     </div>
 
                     <div id="blocoExemplosMetodo" class="bloco-exemplos" hidden>
                         <div class="cabecalho-exemplos">
-                            <h4 id="tituloExemplosMetodo" class="titulo-exemplos">Referencias para comparacao</h4>
+                            <h4 id="tituloExemplosMetodo" class="titulo-exemplos">Referências para comparação</h4>
                             <p id="descricaoExemplosMetodo" class="descricao-exemplos"></p>
                         </div>
 
@@ -172,7 +189,7 @@
 
     <div id="installAppPrompt" class="install-app-sheet" hidden aria-hidden="true">
         <div class="install-app-card glass-panel" role="dialog" aria-modal="true" aria-labelledby="installPromptTitle">
-            <button id="btnFecharInstalacao" type="button" class="install-app-close" aria-label="Fechar convite de instalacao">
+            <button id="btnFecharInstalacao" type="button" class="install-app-close" aria-label="Fechar convite de instalação">
                 x
             </button>
 
@@ -180,27 +197,27 @@
                 <img src="../assets/images/pwa-icon-192.png" alt="Icone do AIDA.ON" class="install-app-icon">
 
                 <div class="install-app-copy">
-                    <span class="section-tag">Acesso rapido</span>
+                    <span class="section-tag">Acesso rápido</span>
                     <h3 id="installPromptTitle">Instale o AIDA.ON no seu celular</h3>
                     <p id="installPromptText">
-                        Deixe a ferramenta na tela inicial com cara de app e acesso mais rapido sempre que precisar analisar uma imagem.
+                        Deixe a ferramenta na tela inicial com cara de app e acesso mais rápido sempre que precisar analisar uma imagem.
                     </p>
                 </div>
             </div>
 
             <ol id="installIosSteps" class="install-app-steps" hidden>
-                <li>Toque no botao de compartilhar do navegador.</li>
-                <li>Escolha "Adicionar a Tela de Inicio".</li>
-                <li>Confirme para deixar o AIDA.ON com icone e nome no celular.</li>
+                <li>Toque no botão de compartilhar do navegador.</li>
+                <li>Escolha "Adicionar à Tela de Início".</li>
+                <li>Confirme para deixar o AIDA.ON com ícone e nome no celular.</li>
             </ol>
 
             <label class="install-app-preference" for="checkNaoMostrarInstalacao">
                 <input id="checkNaoMostrarInstalacao" type="checkbox">
-                <span>Nao aparecer novamente</span>
+                <span>Não aparecer novamente</span>
             </label>
 
             <div class="install-app-actions">
-                <button id="btnAgoraNao" type="button" class="aida-button secondary">Agora nao</button>
+                <button id="btnAgoraNao" type="button" class="aida-button secondary">Agora não</button>
                 <button id="btnInstalarApp" type="button" class="aida-button">Instalar</button>
             </div>
         </div>

@@ -1,0 +1,505 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AIDA | Acesso antecipado</title>
+  <style>
+    :root {
+      --bg-dark: #081f1c;
+      --bg-primary: #10403b;
+      --bg-card: rgba(16, 64, 59, 0.88);
+      --text-main: #f5f5f5;
+      --text-soft: #d6d6d6;
+      --accent: #6fcf97;
+      --accent-2: #bfbfbf;
+      --danger: #ff6b6b;
+      --warning: #ffd166;
+      --success: #80ed99;
+      --border: rgba(255,255,255,0.08);
+      --shadow: 0 20px 50px rgba(0,0,0,0.28);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top, rgba(111, 207, 151, 0.12), transparent 28%),
+        linear-gradient(180deg, #0a2420 0%, #081f1c 100%);
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .panel {
+      width: 100%;
+      max-width: 620px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 26px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      padding: 34px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    .brand-mark {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--accent), #2f7d67);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #05221c;
+      font-weight: 800;
+      font-size: 18px;
+      letter-spacing: 1px;
+    }
+
+    .brand h1 {
+      font-size: 28px;
+      letter-spacing: 1px;
+      color: #ffffff;
+    }
+
+    .brand p {
+      color: var(--text-soft);
+      font-size: 14px;
+      margin-top: 2px;
+    }
+
+    .headline {
+      font-size: 34px;
+      line-height: 1.15;
+      margin-bottom: 12px;
+    }
+
+    .headline span {
+      color: var(--accent);
+    }
+
+    .subtext {
+      color: var(--text-soft);
+      line-height: 1.65;
+      margin-bottom: 30px;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 20px;
+      padding: 22px;
+    }
+
+    .label {
+      display: block;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 1.6px;
+      color: var(--accent-2);
+      margin-bottom: 10px;
+    }
+
+    .input-group {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .tac-split-group {
+  display: grid;
+  grid-template-columns: 0.8fr 1fr 1fr 0.8fr;
+  gap: 12px;
+}
+
+button {
+  width: 100%;
+  min-width: 160px;
+  height: 54px;
+}
+
+    input {
+      flex: 1;
+      height: 54px;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      background: rgba(0,0,0,0.25);
+      color: white;
+      font-size: 16px;
+      padding: 0 18px;
+      outline: none;
+      transition: 0.25s ease;
+    }
+
+    input:focus {
+      border-color: rgba(111, 207, 151, 0.6);
+      box-shadow: 0 0 0 3px rgba(111, 207, 151, 0.12);
+    }
+
+    button {
+      min-width: 160px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--accent), #4ea878);
+      color: #06221c;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+      padding: 0 18px;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      opacity: 0.95;
+    }
+
+    .helper {
+      color: var(--text-soft);
+      font-size: 13px;
+      line-height: 1.5;
+      margin-bottom: 6px;
+    }
+
+    .secure-note {
+      color: rgba(255,255,255,0.58);
+      font-size: 12px;
+      line-height: 1.5;
+      margin-top: 10px;
+    }
+
+    .result {
+      margin-top: 18px;
+      min-height: 180px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .status {
+      padding: 14px 16px;
+      border-radius: 14px;
+      font-weight: 700;
+      font-size: 15px;
+      border: 1px solid transparent;
+    }
+
+    .status.success {
+      background: rgba(128, 237, 153, 0.12);
+      color: var(--success);
+      border-color: rgba(128, 237, 153, 0.22);
+    }
+
+    .status.error {
+      background: rgba(255, 107, 107, 0.12);
+      color: var(--danger);
+      border-color: rgba(255, 107, 107, 0.22);
+    }
+
+    .status.warning {
+      background: rgba(255, 209, 102, 0.12);
+      color: var(--warning);
+      border-color: rgba(255, 209, 102, 0.22);
+    }
+
+    .details {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .detail-box {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px;
+      padding: 14px;
+    }
+
+    .detail-box small {
+      display: block;
+      color: var(--accent-2);
+      font-size: 11px;
+      letter-spacing: 1.1px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .detail-box strong {
+      font-size: 16px;
+      color: white;
+      word-break: break-word;
+    }
+
+    .mono {
+      font-family: Consolas, Monaco, monospace;
+    }
+
+    .foot {
+      margin-top: 12px;
+      color: var(--text-soft);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 560px) {
+      .panel {
+        padding: 22px;
+      }
+
+      .tac-split-group {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .headline {
+        font-size: 28px;
+      }
+
+      .input-group {
+        flex-direction: column;
+      }
+
+      button {
+        min-width: 100%;
+        height: 52px;
+      }
+
+      .details {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="panel">
+    <div class="brand">
+      <div class="brand-mark">AI</div>
+      <div>
+        <h1>AIDA</h1>
+        <p>Acesso antecipado ao projeto</p>
+      </div>
+    </div>
+
+    <h2 class="headline">Digite seu <span>TAC</span> para desbloquear o acesso</h2>
+    <p class="subtext">
+      Informe o token exclusivo recebido pela equipe. O sistema verifica se ele existe,
+      se a estrutura Ã© vÃ¡lida e, em caso positivo, libera sua entrada.
+    </p>
+
+    <div class="card">
+      <label class="label">Token de autenticaÃ§Ã£o</label>
+
+      <div class="input-group tac-split-group">
+        <input id="lotInput" type="text" placeholder="LOTE" maxlength="1" autocomplete="off" />
+        <input id="phaseInput" type="text" placeholder="FASE" maxlength="2" autocomplete="off" />
+        <input id="idInput" type="text" placeholder="ID" maxlength="3" autocomplete="off" />
+        <input id="vvInput" type="text" placeholder="VV" maxlength="2" autocomplete="off" />
+      </div>
+
+      <div class="input-group">
+        <button id="checkBtn">Liberar acesso</button>
+      </div>
+
+      <p class="helper">
+        Preencha separadamente: <span class="mono">LOTE</span>, <span class="mono">FASE</span>, <span class="mono">ID</span> e <span class="mono">VV</span>.
+      </p>
+      <p class="secure-note">
+        ObservaÃ§Ã£o: em HTML/CSS/JS puros nÃ£o existe garantia real contra inspeÃ§Ã£o via F12. Para seguranÃ§a de verdade, a validaÃ§Ã£o precisa acontecer no servidor.
+      </p>
+
+      <div class="result" id="resultBox">
+        <div class="status warning">Digite seu TAC para iniciar a verificaÃ§Ã£o.</div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Front-end only: Ãºtil para protÃ³tipo visual. Para produÃ§Ã£o, mover tudo para o backend.
+
+    const accessTickets = [
+      { ticketCode: '563-621-1960', phase: 'F1', accessId: '014', lot: 'M' },
+      { ticketCode: '633-709-8940', phase: 'F1', accessId: '015', lot: 'M' },
+      { ticketCode: '609-425-8913', phase: 'F1', accessId: '016', lot: 'M' },
+      { ticketCode: '531-192-9752', phase: 'F1', accessId: '017', lot: 'M' },
+      { ticketCode: '594-533-7744', phase: 'F1', accessId: '018', lot: 'M' },
+      { ticketCode: '449-127-6681', phase: 'F2', accessId: '019', lot: 'M' },
+      { ticketCode: '782-314-2057', phase: 'F2', accessId: '020', lot: 'M' },
+      { ticketCode: '218-906-4473', phase: 'F2', accessId: '021', lot: 'M' },
+      { ticketCode: '375-842-1906', phase: 'F2', accessId: '022', lot: 'M' },
+      { ticketCode: '846-275-6318', phase: 'F2', accessId: '023', lot: 'M' },
+      { ticketCode: '927-160-5842', phase: 'F3', accessId: '024', lot: 'M' },
+      { ticketCode: '184-653-9721', phase: 'F3', accessId: '025', lot: 'M' },
+      { ticketCode: '668-491-3054', phase: 'F3', accessId: '026', lot: 'M' },
+      { ticketCode: '302-778-1469', phase: 'F3', accessId: '027', lot: 'M' },
+      { ticketCode: '715-234-8801', phase: 'F1', accessId: '028', lot: 'M' },
+      { ticketCode: '491-860-2275', phase: 'F1', accessId: '029', lot: 'M' },
+      { ticketCode: '256-719-6348', phase: 'F2', accessId: '030', lot: 'M' },
+      { ticketCode: '880-342-5176', phase: 'F2', accessId: '031', lot: 'M' },
+      { ticketCode: '643-195-7083', phase: 'F3', accessId: '032', lot: 'M' },
+      { ticketCode: '519-486-9314', phase: 'F3', accessId: '033', lot: 'M' }
+    ];
+
+    const phaseMap = { F1: 1, F2: 2, F3: 3, F4: 4 };
+
+    function lotValue(letter) {
+      return letter.toUpperCase().charCodeAt(0) - 64;
+    }
+
+    // Nova lÃ³gica: um Ãºnico tipo de acesso, entÃ£o o TAC depende sÃ³ de lote, fase e ID.
+    function calculateVerifier(lot, phase, accessId) {
+      const phaseValue = phaseMap[phase];
+      const idValue = Number(accessId);
+      const total = (phaseValue * 17) + (idValue * 7) + (lotValue(lot) * 3) + 11;
+      return String(total % 100).padStart(2, '0');
+    }
+
+    function buildTac(ticket) {
+      const vv = calculateVerifier(ticket.lot, ticket.phase, ticket.accessId);
+      return `${ticket.lot}-${ticket.phase}-${ticket.accessId}-${vv}`;
+    }
+
+    const database = accessTickets.map(ticket => ({ ...ticket, tac: buildTac(ticket) }));
+
+    const resultBox = document.getElementById('resultBox');
+    const lotInput = document.getElementById('lotInput');
+    const phaseInput = document.getElementById('phaseInput');
+    const idInput = document.getElementById('idInput');
+    const vvInput = document.getElementById('vvInput');
+    const checkBtn = document.getElementById('checkBtn');
+
+    function normalizeTacPart(value) {
+      return value.trim().toUpperCase().replace(/\s+/g, '');
+    }
+
+    function openProtectedArea(ticket) {
+      sessionStorage.setItem('aida_early_access', 'granted');
+      sessionStorage.setItem('aida_ticket_code', ticket.ticketCode);
+      sessionStorage.setItem('aida_tac', ticket.tac);
+
+      // Troque pela rota real do seu site.
+      setTimeout(() => {
+        window.location.href = '../index.html';
+      }, 1200);
+    }
+
+    function validateTac() {
+      const lot = normalizeTacPart(lotInput.value);
+      const phase = normalizeTacPart(phaseInput.value);
+      const accessId = normalizeTacPart(idInput.value);
+      const receivedVerifier = normalizeTacPart(vvInput.value);
+      const raw = `${lot}-${phase}-${accessId}-${receivedVerifier}`;
+
+      if (!lot || !phase || !accessId || !receivedVerifier) {
+        resultBox.innerHTML = `<div class="status warning">Preencha todos os campos do TAC para validar.</div>`;
+        return;
+      }
+
+      if (!phaseMap[phase] || !/^\d{3}$/.test(accessId) || !/^[A-Z]$/.test(lot) || !/^\d{2}$/.test(receivedVerifier)) {
+        resultBox.innerHTML = `
+          <div class="status error">Os dados informados nÃ£o seguem a estrutura esperada pelo sistema.</div>
+        `;
+        return;
+      }
+
+      const expectedVerifier = calculateVerifier(lot, phase, accessId);
+      const fullTac = `${lot}-${phase}-${accessId}-${expectedVerifier}`;
+      const existing = database.find(item => item.tac === raw);
+      const sameBaseExists = database.find(item => item.lot === lot && item.phase === phase && item.accessId === accessId);
+
+      if (existing && receivedVerifier === expectedVerifier) {
+        resultBox.innerHTML = `
+          <div class="status success">TAC vÃ¡lido. Acesso liberado com sucesso.</div>
+          <div class="details">
+            <div class="detail-box"><small>Ticket Code</small><strong>${existing.ticketCode}</strong></div>
+            <div class="detail-box"><small>Fase</small><strong>${existing.phase}</strong></div>
+            <div class="detail-box"><small>ID de acesso</small><strong>${existing.accessId}</strong></div>
+            <div class="detail-box"><small>Status</small><strong>Liberado</strong></div>
+          </div>
+          <p class="foot">Redirecionando para a Ã¡rea do projeto...</p>
+        `;
+        openProtectedArea(existing);
+        return;
+      }
+
+      if (sameBaseExists && receivedVerifier !== expectedVerifier) {
+        resultBox.innerHTML = `
+          <div class="status error">TAC invÃ¡lido. O verificador final nÃ£o confere.</div>
+          <div class="details">
+            <div class="detail-box"><small>TAC informado</small><strong class="mono">${raw}</strong></div>
+            <div class="detail-box"><small>TAC correto</small><strong class="mono">${fullTac}</strong></div>
+          </div>
+          <p class="foot">Esse cÃ³digo parece ter sido alterado manualmente.</p>
+        `;
+        return;
+      }
+
+      if (!sameBaseExists && receivedVerifier === expectedVerifier) {
+        resultBox.innerHTML = `
+          <div class="status warning">O TAC Ã© coerente pela fÃ³rmula, mas nÃ£o existe na base autorizada.</div>
+          <div class="details">
+            <div class="detail-box"><small>Status</small><strong>NÃ£o autorizado</strong></div>
+            <div class="detail-box"><small>TAC calculado</small><strong class="mono">${fullTac}</strong></div>
+          </div>
+          <p class="foot">Somente TACs cadastrados pela equipe liberam acesso.</p>
+        `;
+        return;
+      }
+
+      resultBox.innerHTML = `
+        <div class="status error">TAC invÃ¡lido e nÃ£o autorizado.</div>
+        <div class="details">
+          <div class="detail-box"><small>TAC informado</small><strong class="mono">${raw}</strong></div>
+          <div class="detail-box"><small>Verificador esperado</small><strong>${expectedVerifier}</strong></div>
+        </div>
+        <p class="foot">O cÃ³digo nÃ£o corresponde a um convite real de acesso antecipado.</p>
+      `;
+    }
+
+    checkBtn.addEventListener('click', validateTac);
+[lotInput, phaseInput, idInput, vvInput].forEach((input, index, inputs) => {
+  input.addEventListener('input', () => {
+    input.value = normalizeTacPart(input.value);
+    const max = Number(input.getAttribute('maxlength'));
+    if (input.value.length >= max && inputs[index + 1]) {
+      inputs[index + 1].focus();
+    }
+  });
+
+  input.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') validateTac();
+  });
+});
+
+checkBtn.addEventListener('click', validateTac);
+
+    // Dificulta atalhos comuns de inspeÃ§Ã£o, mas nÃ£o substitui backend.
+    document.addEventListener('contextmenu', (event) => event.preventDefault());
+    document.addEventListener('keydown', (event) => {
+      const key = event.key.toUpperCase();
+      if (
+        key === 'F12' ||
+        (event.ctrlKey && event.shiftKey && ['I', 'J', 'C'].includes(key)) ||
+        (event.ctrlKey && key === 'U')
+      ) {
+        event.preventDefault();
+      }
+    });
+  </script>
+</body>
+</html>
+
+

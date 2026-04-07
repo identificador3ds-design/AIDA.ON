@@ -1,29 +1,40 @@
-const STATIC_CACHE = "aida-static-v4";
-const RUNTIME_CACHE = "aida-runtime-v4";
+﻿const STATIC_CACHE = "aida-static-v5";
+const RUNTIME_CACHE = "aida-runtime-v5";
 
 const APP_SHELL = [
   "./",
   "./index.html",
   "./manifest.webmanifest",
-  "./pwa-register.js",
-  "./shared-theme.css",
-  "./login/index-login.html",
-  "./login/style.css",
-  "./login/script.js",
-  "./Ferramenta/index-seleciona.html",
-  "./Ferramenta/style.css",
-  "./Ferramenta/script.js",
-  "./Ferramenta-Analise/index-analise.html",
-  "./Ferramenta-Analise/style.css",
-  "./Ferramenta-Analise/script.js",
-  "./Administrador/index-admin.html",
-  "./Administrador/style.css",
-  "./Administrador/script.js",
-  "./img/LogoBranca.png",
-  "./img/AIDABranco.ico",
-  "./img/pwa-icon-180.png",
-  "./img/pwa-icon-192.png",
-  "./img/pwa-icon-512.png"
+  "./styles/style-home.css",
+  "./styles/style-shared-theme.css",
+  "./scripts/script-pwa-register.js",
+  "./scripts/script-home.js",
+  "pages/index-login.html",
+  "./styles/style-login.css",
+  "./scripts/script-login.js",
+  "pages/index-seleciona.html",
+  "./styles/style-ferramenta.css",
+  "./scripts/script-ferramenta.js",
+  "pages/index-analise.html",
+  "./styles/style-analise.css",
+  "./scripts/script-analise.js",
+  "pages/index-admin.html",
+  "./styles/style-administrador.css",
+  "./scripts/script-administrador.js",
+  "pages/index-apresentacao.html",
+  "./styles/style-apresentacao.css",
+  "./scripts/script-apresentacao.js",
+  "pages/index-historico.html",
+  "./styles/style-historico.css",
+  "./scripts/script-historico.js",
+  "pages/index-perfil.html",
+  "./styles/style-perfil.css",
+  "./scripts/script-perfil.js",
+  "./assets/images/LogoBranca.png",
+  "./assets/images/AIDABranco.ico",
+  "./assets/images/pwa-icon-180.png",
+  "./assets/images/pwa-icon-192.png",
+  "./assets/images/pwa-icon-512.png"
 ];
 
 self.addEventListener("install", (event) => {
@@ -93,7 +104,7 @@ self.addEventListener("fetch", (event) => {
           }
 
           if (event.request.mode === "navigate") {
-            return caches.match("./Ferramenta/index-seleciona.html");
+            return caches.match("pages/index-seleciona.html");
           }
 
           return Response.error();
@@ -118,7 +129,7 @@ self.addEventListener("fetch", (event) => {
         })
         .catch(() => {
           if (event.request.destination === "image") {
-            return caches.match("./img/pwa-icon-192.png");
+            return caches.match("./assets/images/pwa-icon-192.png");
           }
 
           return Response.error();
@@ -126,3 +137,4 @@ self.addEventListener("fetch", (event) => {
     })
   );
 });
+

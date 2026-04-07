@@ -1,12 +1,8 @@
-<<<<<<< HEAD:testes/script.js
 const supabaseUrl = "https://nwzijdudhemuibsyzpub.supabase.co";
 const supabaseKey =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im53emlqZHVkaGVtdWlic3l6cHViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwMjk5MTAsImV4cCI6MjA4NzYwNTkxMH0.aDHymYEKtyY5m2eaOHoBy4QRpaAvtafi_PVDtrL9gQc";
 const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 const ADMIN_EMAIL = "admin@gmail.com";
-=======
-﻿const ADMIN_EMAIL = "admin@gmail.com";
->>>>>>> 112337d24f7a74f7cd61f2fd702dd0ef65ce3242:scripts/script-perfil.js
 const CHAVE_ADMIN_CONFIG = "AIDA_ADMIN_CONFIG";
 const CHAVE_LOGIN_FEEDBACK = "AIDA_LOGIN_FEEDBACK";
 const CONFIG_ADMIN_PADRAO = {

@@ -1,3 +1,7 @@
+const supabaseUrl = "https://nwzijdudhemuibsyzpub.supabase.co";
+const supabaseKey =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im53emlqZHVkaGVtdWlic3l6cHViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwMjk5MTAsImV4cCI6MjA4NzYwNTkxMH0.aDHymYEKtyY5m2eaOHoBy4QRpaAvtafi_PVDtrL9gQc";
+const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 const ADMIN_EMAIL = "admin@gmail.com";
 const CHAVE_ADMIN_CONFIG = "AIDA_ADMIN_CONFIG";
 const CHAVE_LOGIN_FEEDBACK = "AIDA_LOGIN_FEEDBACK";
@@ -99,7 +103,82 @@ function renderizarAvisoSistema() {
   main.insertBefore(aviso, main.firstChild);
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+async function obterQuantidadeAnalisesUsuario() {
+  try {
+    const {
+      data: { user },
+    } = await _supabase.auth.getUser();
+
+    if (!user) {
+      return 0;
+    }
+
+    const { count, error } = await _supabase
+      .from("historico_analises")
+      .select("*", { count: "exact", head: true })
+      .eq("user_id", user.id);
+
+    if (error) {
+      console.error("Erro ao buscar quantidade de analises:", error);
+      return 0;
+    }
+
+    return Number(count || 0);
+  } catch (erro) {
+    console.error("Erro ao consultar analises do usuario:", erro);
+    return 0;
+  }
+}
+
+async function atualizarPerfilUsuario({ nome, email, tipoUsuarioAtual }) {
+  if (tipoUsuarioAtual === "admin") {
+    localStorage.setItem("usuarioNome", nome);
+    localStorage.setItem("usuarioEmail", email);
+    return { ok: true, mensagem: "Informações atualizadas com sucesso." };
+  }
+
+  const {
+    data: { user },
+  } = await _supabase.auth.getUser();
+
+  if (!user) {
+    localStorage.setItem("usuarioNome", nome);
+    localStorage.setItem("usuarioEmail", email);
+    return { ok: true, mensagem: "Informações atualizadas localmente." };
+  }
+
+  const emailAlterado = user.email !== email;
+  const { error: authUpdateError } = await _supabase.auth.updateUser(
+    emailAlterado
+      ? { email, data: { full_name: nome } }
+      : { data: { full_name: nome } }
+  );
+
+  if (authUpdateError) {
+    return { ok: false, mensagem: authUpdateError.message };
+  }
+
+  const { error: userTableError } = await _supabase
+    .from("usuarios")
+    .update({ nome, email })
+    .eq("email", user.email);
+
+  if (userTableError) {
+    console.error("Erro ao atualizar tabela de usuarios:", userTableError);
+  }
+
+  localStorage.setItem("usuarioNome", nome);
+  localStorage.setItem("usuarioEmail", email);
+
+  return {
+    ok: true,
+    mensagem: emailAlterado
+      ? "Informações atualizadas. Confira seu email para confirmar a troca de endereço."
+      : "Informações atualizadas com sucesso.",
+  };
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
   const configuracaoAdmin = obterAdminConfig();
 
   if (!configuracaoAdmin.allowProfilePage && !localStorage.getItem("usuarioTipo")?.includes("admin")) {
@@ -125,15 +204,131 @@ document.addEventListener("DOMContentLoaded", () => {
   const tipoSalvo = localStorage.getItem("usuarioTipo");
   const nome = document.getElementById("nome-usuario");
   const email = document.getElementById("email-usuario");
+  const infoNome = document.getElementById("profile-info-name");
+  const infoEmail = document.getElementById("profile-info-email");
+  const infoPerfil = document.getElementById("profile-info-role");
+  const infoAnalises = document.getElementById("profile-info-analyses");
+  const editButton = document.getElementById("edit-profile-button");
+  const editModal = document.getElementById("profile-edit-modal");
+  const editForm = document.getElementById("profile-edit-form");
+  const editNameInput = document.getElementById("edit-profile-name");
+  const editEmailInput = document.getElementById("edit-profile-email");
+  const editFeedback = document.getElementById("profile-edit-feedback");
   const logoutLink = document.getElementById("logout-link");
   const adminLink = document.createElement("a");
+  const rotuloPerfil = tipoSalvo === "admin" ? "Administrador" : "Usuario";
+  let nomeExibicao = tipoSalvo === "admin" ? "Admin" : nomeSalvo || "Usuario";
+  let emailExibicao = emailSalvo || "usuarioaida@gmail.com";
 
-  if (nome) {
-    nome.textContent = tipoSalvo === "admin" ? "Admin" : nomeSalvo || "Usuario";
+  const aplicarDadosPerfil = () => {
+    if (nome) {
+      nome.textContent = nomeExibicao;
+    }
+
+    if (email) {
+      email.textContent = emailExibicao;
+    }
+
+    if (infoNome) {
+      infoNome.textContent = nomeExibicao;
+    }
+
+    if (infoEmail) {
+      infoEmail.textContent = emailExibicao;
+    }
+
+    if (infoPerfil) {
+      infoPerfil.textContent = rotuloPerfil;
+    }
+  };
+
+  aplicarDadosPerfil();
+
+  if (infoAnalises) {
+    infoAnalises.textContent = String(await obterQuantidadeAnalisesUsuario());
   }
 
-  if (email) {
-    email.textContent = emailSalvo || "usuarioaida@gmail.com";
+  const fecharModalEdicao = () => {
+    if (!editModal || !editFeedback) {
+      return;
+    }
+
+    editModal.hidden = true;
+    editFeedback.hidden = true;
+    editFeedback.textContent = "";
+    editFeedback.classList.remove("error");
+  };
+
+  const abrirModalEdicao = () => {
+    if (!editModal || !editNameInput || !editEmailInput || !editFeedback) {
+      return;
+    }
+
+    editNameInput.value = nomeExibicao;
+    editEmailInput.value = emailExibicao;
+    editModal.hidden = false;
+    editFeedback.hidden = true;
+    editFeedback.textContent = "";
+    editFeedback.classList.remove("error");
+    editNameInput.focus();
+  };
+
+  if (editButton) {
+    editButton.addEventListener("click", abrirModalEdicao);
+  }
+
+  document.querySelectorAll("[data-close-profile-modal]").forEach((elemento) => {
+    elemento.addEventListener("click", fecharModalEdicao);
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && editModal && !editModal.hidden) {
+      fecharModalEdicao();
+    }
+  });
+
+  if (editForm && editNameInput && editEmailInput && editFeedback) {
+    editForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const nomeAtualizado = editNameInput.value.trim();
+      const emailAtualizado = editEmailInput.value.trim().toLowerCase();
+
+      if (!nomeAtualizado || !emailAtualizado) {
+        editFeedback.hidden = false;
+        editFeedback.textContent = "Preencha nome e email para continuar.";
+        editFeedback.classList.add("error");
+        return;
+      }
+
+      const botaoSalvar = editForm.querySelector('button[type="submit"]');
+
+      if (botaoSalvar) {
+        botaoSalvar.disabled = true;
+      }
+
+      const resultado = await atualizarPerfilUsuario({
+        nome: nomeAtualizado,
+        email: emailAtualizado,
+        tipoUsuarioAtual: tipoSalvo,
+      });
+
+      if (botaoSalvar) {
+        botaoSalvar.disabled = false;
+      }
+
+      if (!resultado.ok) {
+        editFeedback.hidden = false;
+        editFeedback.textContent = resultado.mensagem || "Nao foi possivel atualizar suas informacoes.";
+        editFeedback.classList.add("error");
+        return;
+      }
+
+      nomeExibicao = nomeAtualizado;
+      emailExibicao = emailAtualizado;
+      aplicarDadosPerfil();
+      fecharModalEdicao();
+    });
   }
 
   if (tipoSalvo === "admin") {

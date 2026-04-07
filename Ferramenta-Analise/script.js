@@ -10,7 +10,7 @@ const EXEMPLOS_LSB = [
     titulo: "Referencia de imagem gerada por IA",
     imagem: "../Imagens%20exemplos/exemplo-lsb-ia.png",
     descricao:
-      "Neste mapa LSB, o ruido aparece mais concentrado e com padroes repetitivos. Esse comportamento costuma indicar uma distribuicao artificial dos bits menos significativos.",
+      "Neste mapa LSB, o ruído aparece mais concentrado e com padrões repetitivos. Esse comportamento costuma indicar uma distribuição artificial dos bits menos significativos.",
   },
   {
     rotulo: "Real",
@@ -18,7 +18,7 @@ const EXEMPLOS_LSB = [
     titulo: "Referencia de imagem real",
     imagem: "../Imagens%20exemplos/exemplo-lsb-real.png",
     descricao:
-      "Aqui a distribuicao dos pixels ativos fica mais irregular e organica, sem blocos tao consistentes. Esse comportamento tende a combinar melhor com fotos reais.",
+      "Aqui a distribuição dos pixels ativos fica mais irregular e orgânica, sem blocos tão consistentes. Esse comportamento tende a combinar melhor com fotos reais.",
   },
 ];
 
@@ -127,7 +127,7 @@ function renderizarAvisoSistema() {
   let possuiAvisoPrincipal = false;
 
   if (configuracao.maintenanceMode) {
-    mensagens.push("Modo manutencao ativo.");
+    mensagens.push("Modo manutenção ativo.");
     possuiAvisoPrincipal = true;
   }
 
@@ -175,7 +175,7 @@ function renderizarMetodosDisponiveis(select, configuracao) {
     return;
   }
 
-  const placeholder = '<option value="" disabled selected>Escolha uma opcao</option>';
+  const placeholder = '<option value="" disabled selected>Escolha uma opção</option>';
   const opcoes = [placeholder];
 
   Object.entries(configuracao.methods).forEach(([chave, metodo]) => {
@@ -271,16 +271,16 @@ function montarDescricaoMetodo(dados) {
 
   if (metodoRetornado.includes("marca visual")) {
     const iaNome = dados.metodo.replace("Marca Visual (", "").replace(")", "");
-    return `Marca visual encontrada\n\nEncontramos uma marca visivel no canto inferior direito da imagem, ligada a ferramenta ${iaNome}. Isso e um sinal forte de que a imagem foi gerada por IA.`;
+    return `Marca visual encontrada\n\nEncontramos uma marca visível no canto inferior direito da imagem, ligada à ferramenta ${iaNome}. Isso é um sinal forte de que a imagem foi gerada por IA.`;
   }
 
   if (metodoRetornado.includes("metadados")) {
     const iaNome = dados.metodo.replace("Metadados (", "").replace(")", "");
-    return `Metadados encontrados\n\nO arquivo traz informacoes internas ligadas a ferramenta ${iaNome}. Isso sugere que a imagem foi exportada por um gerador de imagem.`;
+    return `Metadados encontrados\n\nO arquivo traz informações internas ligadas à ferramenta ${iaNome}. Isso sugere que a imagem foi exportada por um gerador de imagem.`;
   }
 
   if (metodoRetornado.includes("lsb")) {
-    return `Resultado do metodo LSB\n\nO metodo encontrou ${dados.energia} pixels ativos nas partes menos visiveis da imagem. Quando esse numero fica muito concentrado, pode haver sinais artificiais ou marcas digitais escondidas.`;
+    return `Resultado do método LSB\n\nO método encontrou ${dados.energia} pixels ativos nas partes menos visíveis da imagem. Quando esse número fica muito concentrado, pode haver sinais artificiais ou marcas digitais escondidas.`;
   }
 
   if (
@@ -288,7 +288,7 @@ function montarDescricaoMetodo(dados) {
     metodoRetornado.includes("laplaciano") ||
     metodoRetornado.includes("neon")
   ) {
-    return `Resultado do gradiente\n\nO metodo destacou bordas e areas com mudancas fortes na imagem. A intensidade media encontrada foi ${dados.energia}, o que ajuda a revelar texturas artificiais e padroes de geracao por IA.`;
+    return `Resultado do gradiente\n\nO método destacou bordas e áreas com mudanças fortes na imagem. A intensidade média encontrada foi ${dados.energia}, o que ajuda a revelar texturas artificiais e padrões de geração por IA.`;
   }
 
   if (
@@ -296,10 +296,10 @@ function montarDescricaoMetodo(dados) {
     metodoRetornado.includes("fft") ||
     metodoRetornado.includes("consistencia")
   ) {
-    return `Resultado da frequencia\n\nA leitura de frequencia encontrou energia ${dados.energia}. Quando esse valor foge do esperado, a imagem pode ter sido criada ou alterada de forma artificial.`;
+    return `Resultado da frequência\n\nA leitura de frequência encontrou energia ${dados.energia}. Quando esse valor foge do esperado, a imagem pode ter sido criada ou alterada de forma artificial.`;
   }
 
-  return `Resumo da analise\n\nMetodo utilizado: ${dados.metodo}\nChance de IA: ${dados.probabilidade}\nEnergia encontrada: ${dados.energia}`;
+  return `Resumo da análise\n\nMétodo utilizado: ${dados.metodo}\nChance de IA: ${dados.probabilidade}\nEnergia encontrada: ${dados.energia}`;
 }
 
 function limparExemplosMetodo(bloco, titulo, descricao, lista) {
@@ -308,7 +308,7 @@ function limparExemplosMetodo(bloco, titulo, descricao, lista) {
   }
 
   if (titulo) {
-    titulo.innerText = "Referencias para comparacao";
+    titulo.innerText = "Referências para comparação";
   }
 
   if (descricao) {

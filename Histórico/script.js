@@ -60,7 +60,7 @@ function renderizarAvisoSistema() {
   let possuiAvisoPrincipal = false;
 
   if (configuracao.maintenanceMode) {
-    mensagens.push("Modo manutencao ativo.");
+    mensagens.push("Modo manutenção ativo.");
     possuiAvisoPrincipal = true;
   }
 
@@ -133,14 +133,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   let historicoNuvem = [];
 
   const carregarHistorico = async () => {
-    lista.innerHTML = '<div class="mensagem-vazia">Buscando evidencias na nuvem...</div>';
+    lista.innerHTML = '<div class="mensagem-vazia">Buscando evidências na nuvem...</div>';
 
     const {
       data: { user },
     } = await _supabase.auth.getUser();
 
     if (!user) {
-      lista.innerHTML = '<div class="mensagem-vazia">Voce precisa estar logado para ver o historico.</div>';
+      lista.innerHTML = '<div class="mensagem-vazia">Você precisa estar logado para ver o histórico.</div>';
       return;
     }
 
@@ -158,7 +158,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     historicoNuvem = registros || [];
 
     if (!historicoNuvem.length) {
-      lista.innerHTML = '<div class="mensagem-vazia">Nenhuma analise encontrada no banco de dados.</div>';
+      lista.innerHTML = '<div class="mensagem-vazia">Nenhuma análise encontrada no banco de dados.</div>';
       return;
     }
 
@@ -186,7 +186,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       button.addEventListener("click", () => {
         const item = historicoNuvem[Number(button.dataset.index)];
         document.getElementById("modalImgProcessada").src = item.resultado_img || item.imagem_original;
-        document.getElementById("modalTitulo").textContent = `Metodo: ${item.metodo}`;
+        document.getElementById("modalTitulo").textContent = `Método: ${item.metodo}`;
         modal.style.display = "flex";
       });
     });
@@ -204,7 +204,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   btnLimpar.addEventListener("click", async () => {
     const confirmed = window.confirm(
-      "Deseja apagar todos os seus registros periciais da nuvem? Esta acao e irreversivel."
+      "Deseja apagar todos os seus registros periciais da nuvem? Esta ação é irreversível."
     );
 
     if (!confirmed) {

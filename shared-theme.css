@@ -170,12 +170,7 @@ body.aida-shell ::-webkit-scrollbar-thumb {
 }
 
 .page-kicker::before {
-  content: "";
-  width: 9px;
-  height: 9px;
-  border-radius: 999px;
-  background: var(--highlight);
-  box-shadow: 0 0 0 6px var(--highlight-soft);
+  content: none;
 }
 
 .page-title {

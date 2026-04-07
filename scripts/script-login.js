@@ -1,8 +1,6 @@
-<<<<<<< HEAD:login/script.js
+
 // Conexão com o banco
-=======
 ﻿// Conexao com o banco
->>>>>>> 112337d24f7a74f7cd61f2fd702dd0ef65ce3242:scripts/script-login.js
 const supabaseUrl = "https://nwzijdudhemuibsyzpub.supabase.co";
 const supabaseKey =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im53emlqZHVkaGVtdWlic3l6cHViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwMjk5MTAsImV4cCI6MjA4NzYwNTkxMH0.aDHymYEKtyY5m2eaOHoBy4QRpaAvtafi_PVDtrL9gQc";

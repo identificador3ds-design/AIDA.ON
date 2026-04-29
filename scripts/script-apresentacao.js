@@ -3,35 +3,35 @@
     name: "Alexandre",
     role: "Head of Documentation",
     description:
-      "ResponsÃ¡vel pela documentaÃ§Ã£o tÃ©cnica do projeto, organizando metodologias, processos de desenvolvimento e relatÃ³rios para garantir clareza, replicaÃ§Ã£o e evoluÃ§Ã£o da pesquisa.",
+      "Responsável pela documentação técnica do projeto, organizando metodologias, processos de desenvolvimento e relatórios para garantir clareza, replicação e evolução da pesquisa.",
     image: "../assets/images/alex-exec.png",
   },
   {
     name: "Arthur",
     role: "Head of Detection Methodologies",
     description:
-      "ResponsÃ¡vel pelo desenvolvimento e aplicaÃ§Ã£o de metodologias de detecÃ§Ã£o de conteÃºdo gerado ou manipulado por IA, buscando precisÃ£o, confiabilidade e inovaÃ§Ã£o nas tÃ©cnicas utilizadas.",
+      "Responsável pelo desenvolvimento e aplicação de metodologias de detecção de conteúdo gerado ou manipulado por IA, buscando precisão, confiabilidade e inovação nas técnicas utilizadas.",
     image: "../assets/images/thur-exec.png",
   },
   {
     name: "Eduardo",
     role: "Data Acquisition Lead",
     description:
-      "ResponsÃ¡vel pela coleta, organizaÃ§Ã£o e preparaÃ§Ã£o dos dados do projeto, garantindo qualidade, diversidade e consistÃªncia para testes e anÃ¡lises.",
+      "Responsável pela coleta, organização e preparação dos dados do projeto, garantindo qualidade, diversidade e consistência para testes e análises.",
     image: "../assets/images/nidu-exec.png",
   },
   {
     name: "Iago",
     role: "Project Manager & Lead Backend",
     description:
-      "ResponsÃ¡vel pela coordenaÃ§Ã£o do projeto e pelo desenvolvimento do backend, garantindo organizaÃ§Ã£o, integraÃ§Ã£o e funcionamento eficiente da plataforma.",
+      "Responsável pela coordenação do projeto e pelo desenvolvimento do backend, garantindo organização, integração e funcionamento eficiente da plataforma.",
     image: "../assets/images/iago-exec.png",
   },
   {
     name: "Pedro",
     role: "UX/UI Designer & Lead Frontend",
     description:
-      "ResponsÃ¡vel pela coleta, seleÃ§Ã£o e organizaÃ§Ã£o dos dados do projeto, garantindo qualidade, diversidade e consistÃªncia para testes e anÃ¡lises.",
+      "Responsável pela coleta, seleção e organização dos dados do projeto, garantindo qualidade, diversidade e consistÃªncia para testes e análises.",
     image: "../assets/images/pedrao-exec.png",
   },
 ];

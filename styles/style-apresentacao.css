@@ -1031,6 +1031,11 @@ section {
   width: 180px;
 }
 
+.foot-contact {
+  color: var(--neutral);
+  font-size: 0.98rem;
+}
+
 .foot-title {
   font-size: 1.2rem;
   font-weight: 700;

@@ -240,6 +240,7 @@
 }
 
 .logout-card {
+  grid-column: span 2;
   background: linear-gradient(135deg, #4d1a1a 0%, #6e2323 100%);
   border-color: rgba(110, 35, 35, 0.2);
 }
@@ -512,6 +513,10 @@
   .profile-actions {
     grid-template-columns: 1fr;
     width: 100%;
+  }
+
+  .logout-card {
+    grid-column: auto;
   }
 
 }

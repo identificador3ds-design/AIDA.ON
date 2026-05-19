@@ -1,4 +1,4 @@
-﻿const members = [
+const members = [
   {
     name: "Alexandre",
     role: "Head of Documentation",

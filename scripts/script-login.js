@@ -21,6 +21,7 @@ const brandSigninCopy = document.querySelector("[data-copy-signin]");
 const brandSignupCopy = document.querySelector("[data-copy-signup]");
 const loginForm = document.getElementById("loginForm");
 const registerForm = document.getElementById("registerForm");
+const googleAuthButtons = document.querySelectorAll("[data-google-auth]");
 
 const CONFIG_ADMIN_PADRAO = {
   accountStates: {},
@@ -196,9 +197,140 @@ function toggleView() {
   setMode(nextMode);
 }
 
+function obterUrlRetornoOAuth() {
+  return `${window.location.origin}${window.location.pathname}`;
+}
+
+function obterNomeUsuario(user) {
+  const nomeMetadados =
+    user?.user_metadata?.full_name ||
+    user?.user_metadata?.name ||
+    user?.identities?.[0]?.identity_data?.full_name ||
+    user?.identities?.[0]?.identity_data?.name;
+
+  if (nomeMetadados) {
+    return nomeMetadados;
+  }
+
+  return user?.email?.split("@")[0] || "usuario";
+}
+
+async function salvarUsuarioNaTabela(user) {
+  const email = String(user?.email || "").trim().toLowerCase();
+
+  if (!email) {
+    return;
+  }
+
+  const nome = obterNomeUsuario(user);
+
+  try {
+    const { error } = await _supabase
+      .from("usuarios")
+      .upsert([{ nome, email }], { onConflict: "email" });
+
+    if (error) {
+      console.warn("Nao foi possivel salvar o usuario na tabela usuarios:", error);
+    }
+  } catch (erro) {
+    console.warn("Nao foi possivel sincronizar o usuario:", erro);
+  }
+}
+
+async function finalizarLoginUsuario(user, mensagemBoasVindas = true) {
+  const emailUsuario = String(user?.email || "").trim().toLowerCase();
+
+  if (!emailUsuario) {
+    mostrarAviso("Nao foi possivel identificar o email da conta.", "erro");
+    return false;
+  }
+
+  if (contaSemAcesso(emailUsuario)) {
+    limparSessaoLocal();
+
+    try {
+      await _supabase.auth.signOut();
+    } catch (erro) {
+      console.warn("Nao foi possivel encerrar a sessao bloqueada do Supabase:", erro);
+    }
+
+    mostrarAviso("Esta conta foi bloqueada pelo administrador.", "erro");
+    return false;
+  }
+
+  const nomeUsuario = obterNomeUsuario(user);
+
+  await salvarUsuarioNaTabela(user);
+  limparSessaoLocal();
+  localStorage.setItem("usuarioNome", nomeUsuario);
+  localStorage.setItem("usuarioEmail", emailUsuario);
+  localStorage.removeItem(CHAVE_LOGIN_FEEDBACK);
+  localStorage.removeItem(CHAVE_ADMIN_REDIRECT_MESSAGE);
+
+  if (mensagemBoasVindas) {
+    mostrarAviso(`Bem-vindo, ${nomeUsuario}!`);
+  }
+
+  setTimeout(() => {
+    window.location.href = "./index-apresentacao.html";
+  }, 1250);
+
+  return true;
+}
+
+async function processarRetornoOAuth() {
+  const possuiRetornoOAuth =
+    window.location.search.includes("code=") ||
+    window.location.hash.includes("access_token") ||
+    window.location.hash.includes("error");
+
+  if (!possuiRetornoOAuth) {
+    return;
+  }
+
+  const {
+    data: { session },
+    error,
+  } = await _supabase.auth.getSession();
+
+  if (error) {
+    mostrarAviso("Nao foi possivel concluir o login com Google.", "erro");
+    return;
+  }
+
+  if (session?.user) {
+    await finalizarLoginUsuario(session.user);
+  }
+}
+
 modeButtons.forEach((button) => {
   button.addEventListener("click", () => {
     setMode(button.dataset.modeTarget);
+  });
+});
+
+googleAuthButtons.forEach((button) => {
+  button.addEventListener("click", async () => {
+    googleAuthButtons.forEach((item) => {
+      item.disabled = true;
+    });
+
+    const { error } = await _supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: obterUrlRetornoOAuth(),
+        queryParams: {
+          prompt: "select_account",
+        },
+      },
+    });
+
+    if (error) {
+      googleAuthButtons.forEach((item) => {
+        item.disabled = false;
+      });
+      mostrarAviso("Nao foi possivel iniciar o login com Google.", "erro");
+    }
   });
 });
 
@@ -289,20 +421,9 @@ loginForm?.addEventListener("submit", async (event) => {
     return;
   }
 
-  const nomeUsuario = data.user?.user_metadata?.full_name || "usuario";
-
-  limparSessaoLocal();
-  localStorage.setItem("usuarioNome", nomeUsuario);
-  localStorage.setItem("usuarioEmail", emailUsuario);
-  localStorage.removeItem(CHAVE_LOGIN_FEEDBACK);
-  localStorage.removeItem(CHAVE_ADMIN_REDIRECT_MESSAGE);
-
-  mostrarAviso(`Bem-vindo, ${nomeUsuario}!`);
-
-  setTimeout(() => {
-    window.location.href = "./index-apresentacao.html";
-  }, 1250);
+  await finalizarLoginUsuario(data.user);
 });
 
 setMode("signin");
 consumirAvisosPendentes();
+processarRetornoOAuth();

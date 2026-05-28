@@ -67,7 +67,7 @@ button {
 .auth-card {
   width: 100%;
   max-width: 1200px;
-  min-height: 430px;
+  min-height: 540px;
   display: grid;
   grid-template-columns: 320px 360px;
   justify-content: space-between;
@@ -281,6 +281,67 @@ button {
   
 }
 
+.oauth-divider {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: rgba(226, 244, 239, 0.78);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.oauth-divider::before,
+.oauth-divider::after {
+  content: "";
+  height: 1px;
+  flex: 1;
+  background: rgba(226, 244, 239, 0.2);
+}
+
+.google-button {
+  width: 100%;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(229, 246, 241, 0.62);
+  color: #12342f;
+  background: #f8fffd;
+  font-size: 0.9rem;
+  font-weight: 700;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.google-button:hover {
+  transform: translateY(-1px);
+  background: #ffffff;
+  box-shadow: 0 10px 20px rgba(0, 22, 18, 0.22);
+}
+
+.google-button:disabled {
+  cursor: wait;
+  opacity: 0.72;
+  transform: none;
+}
+
+.google-icon {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 22px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #ffffff;
+  background: conic-gradient(from -45deg, #4285f4 0 25%, #34a853 0 50%, #fbbc05 0 75%, #ea4335 0 100%);
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
 .switch-link {
   margin-top: 2px;
   background: transparent;
@@ -344,7 +405,7 @@ button {
 @media (max-width: 1024px) {
   .auth-card {
     max-width: 920px;
-    min-height: 420px;
+    min-height: 520px;
     grid-template-columns: 280px 320px;
     justify-content: space-between;
     gap: 0;
@@ -368,7 +429,7 @@ button {
   }
 
   .panel__content--form {
-    min-height: 470px;
+    min-height: 560px;
   }
 
   .form-view {

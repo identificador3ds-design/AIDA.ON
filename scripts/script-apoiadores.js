@@ -26,3 +26,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 });
+const favicon = document.getElementById('favicon');
+
+function updateFavicon() {
+
+  if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    favicon.href = '../assets/images/AIDABranco.ico';
+  } else {
+    favicon.href = '../assets/images/AIDAPreto.ico';
+  }
+}
+
+
+updateFavicon();

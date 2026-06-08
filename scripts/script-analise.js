@@ -2,7 +2,19 @@
 const supabaseKey =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im53emlqZHVkaGVtdWlic3l6cHViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwMjk5MTAsImV4cCI6MjA4NzYwNTkxMH0.aDHymYEKtyY5m2eaOHoBy4QRpaAvtafi_PVDtrL9gQc";
 const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
+const favicon = document.getElementById('favicon');
 
+function updateFavicon() {
+
+  if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    favicon.href = '../assets/images/AIDABranco.ico';
+  } else {
+    favicon.href = '../assets/images/AIDAPreto.ico';
+  }
+}
+
+
+updateFavicon();
 const EXEMPLOS_LSB = [
   {
     rotulo: "IA",

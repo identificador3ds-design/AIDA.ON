@@ -6,7 +6,19 @@ const ADMIN_EMAIL = "admin@gmail.com";
 const CHAVE_ADMIN_CONFIG = "AIDA_ADMIN_CONFIG";
 const CHAVE_ADMIN_LAST_ACCESS = "AIDA_ADMIN_LAST_ACCESS";
 const CHAVE_ADMIN_REDIRECT_MESSAGE = "AIDA_ADMIN_REDIRECT_MESSAGE";
+const favicon = document.getElementById('favicon');
 
+function updateFavicon() {
+
+  if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    favicon.href = '../assets/images/AIDABranco.ico';
+  } else {
+    favicon.href = '../assets/images/AIDAPreto.ico';
+  }
+}
+
+
+updateFavicon();
 const METODOS_PADRAO = {
   FFT: {
     label: "FFT",

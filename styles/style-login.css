@@ -342,6 +342,31 @@ button {
   font-weight: 800;
 }
 
+.privacy-consent {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: #d2e8e3;
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.privacy-consent input {
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+  accent-color: #8fd8b7;
+  flex: 0 0 18px;
+}
+
+.privacy-consent a {
+  color: #f3fffb;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 .switch-link {
   margin-top: 2px;
   background: transparent;
@@ -503,6 +528,10 @@ button {
 
   .switch-link {
     font-size: 0.86rem;
+  }
+
+  .privacy-consent {
+    font-size: 0.78rem;
   }
 
   #toast-container {

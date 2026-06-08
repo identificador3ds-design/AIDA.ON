@@ -1,6 +1,7 @@
 ﻿const ADMIN_EMAIL = "admin@gmail.com";
 const CHAVE_ADMIN_CONFIG = "AIDA_ADMIN_CONFIG";
 const CHAVE_LOGIN_FEEDBACK = "AIDA_LOGIN_FEEDBACK";
+const CHAVE_IMAGEM_SELECIONADA = "AIDA_ImagemSelecionada";
 const CONFIG_ADMIN_PADRAO = {
   maintenanceMode: false,
   allowUploadPage: true,
@@ -100,7 +101,8 @@ document.addEventListener("DOMContentLoaded", () => {
       if (arquivo) {
         const reader = new FileReader();
         reader.onload = (evento) => {
-          localStorage.setItem("AIDA_ImagemSelecionada", evento.target.result);
+          sessionStorage.setItem(CHAVE_IMAGEM_SELECIONADA, evento.target.result);
+          localStorage.removeItem(CHAVE_IMAGEM_SELECIONADA);
           window.location.href = "./index-analise.html";
         };
         reader.readAsDataURL(arquivo);

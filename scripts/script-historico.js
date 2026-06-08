@@ -101,6 +101,44 @@ function renderizarAvisoSistema() {
   document.body.appendChild(aviso);
 }
 
+function escaparHtml(valor) {
+  return String(valor ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+async function removerEvidenciasUsuario(userId) {
+  if (!userId) {
+    return;
+  }
+
+  const { data, error } = await _supabase.storage.from("evidencias").list(userId, {
+    limit: 1000,
+  });
+
+  if (error) {
+    console.warn("Nao foi possivel listar evidencias do usuario:", error.message);
+    return;
+  }
+
+  const caminhos = (data || [])
+    .filter((item) => item?.name)
+    .map((item) => `${userId}/${item.name}`);
+
+  if (!caminhos.length) {
+    return;
+  }
+
+  const { error: removeError } = await _supabase.storage.from("evidencias").remove(caminhos);
+
+  if (removeError) {
+    console.warn("Nao foi possivel remover todas as evidencias:", removeError.message);
+  }
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
   const configuracaoAdmin = obterAdminConfig();
   const tipoUsuario = localStorage.getItem("usuarioTipo");
@@ -168,12 +206,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       card.className = "card-historico-item glass-card";
       card.innerHTML = `
         <div class="thumb-container">
-          <img src="${item.imagem_original}" alt="Imagem analisada">
+          <img src="${escaparHtml(item.imagem_original)}" alt="Imagem analisada">
         </div>
         <div class="info-historico">
-          <span class="data-badge">${dataFormatada}</span>
-          <h4>${item.metodo}</h4>
-          <div class="status-badge">${item.probabilidade}</div>
+          <span class="data-badge">${escaparHtml(dataFormatada)}</span>
+          <h4>${escaparHtml(item.metodo)}</h4>
+          <div class="status-badge">${escaparHtml(item.probabilidade)}</div>
         </div>
         <button class="aida-button secondary btn-detalhes" data-index="${index}">Examinar resultado</button>
       `;
@@ -213,7 +251,24 @@ document.addEventListener("DOMContentLoaded", async () => {
       data: { user },
     } = await _supabase.auth.getUser();
 
-    await _supabase.from("historico_analises").delete().eq("user_id", user.id);
+    if (!user) {
+      lista.innerHTML = '<div class="mensagem-vazia">Voce precisa estar logado para limpar o historico.</div>';
+      return;
+    }
+
+    btnLimpar.disabled = true;
+    lista.innerHTML = '<div class="mensagem-vazia">Removendo historico e evidencias salvas...</div>';
+
+    await removerEvidenciasUsuario(user.id);
+    const { error } = await _supabase.from("historico_analises").delete().eq("user_id", user.id);
+
+    if (error) {
+      lista.innerHTML = '<div class="mensagem-vazia">Nao foi possivel limpar o historico agora.</div>';
+      btnLimpar.disabled = false;
+      return;
+    }
+
+    btnLimpar.disabled = false;
     carregarHistorico();
   });
 

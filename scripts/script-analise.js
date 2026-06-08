@@ -25,6 +25,8 @@ const EXEMPLOS_LSB = [
 const ADMIN_EMAIL = "admin@gmail.com";
 const CHAVE_ADMIN_CONFIG = "AIDA_ADMIN_CONFIG";
 const CHAVE_LOGIN_FEEDBACK = "AIDA_LOGIN_FEEDBACK";
+const CHAVE_IMAGEM_SELECIONADA = "AIDA_ImagemSelecionada";
+const CHAVE_SALVAR_HISTORICO = "AIDA_SALVAR_HISTORICO";
 const CONFIG_ADMIN_PADRAO = {
   allowRegistrations: true,
   enableInstallPrompt: true,
@@ -372,6 +374,37 @@ function base64ToBlob(base64, mime) {
 function obterMimeType(base64) {
   const correspondencia = base64.match(/^data:(.*?);base64,/);
   return correspondencia ? correspondencia[1] : "image/png";
+}
+
+function obterImagemSelecionadaTemporaria() {
+  const imagemSessao = sessionStorage.getItem(CHAVE_IMAGEM_SELECIONADA);
+  const imagemLegada = localStorage.getItem(CHAVE_IMAGEM_SELECIONADA);
+
+  if (imagemLegada) {
+    localStorage.removeItem(CHAVE_IMAGEM_SELECIONADA);
+  }
+
+  if (imagemSessao) {
+    return imagemSessao;
+  }
+
+  if (imagemLegada) {
+    sessionStorage.setItem(CHAVE_IMAGEM_SELECIONADA, imagemLegada);
+    return imagemLegada;
+  }
+
+  return "";
+}
+
+function salvarImagemSelecionadaTemporaria(imagemBase64) {
+  if (imagemBase64) {
+    sessionStorage.setItem(CHAVE_IMAGEM_SELECIONADA, imagemBase64);
+    localStorage.removeItem(CHAVE_IMAGEM_SELECIONADA);
+    return;
+  }
+
+  sessionStorage.removeItem(CHAVE_IMAGEM_SELECIONADA);
+  localStorage.removeItem(CHAVE_IMAGEM_SELECIONADA);
 }
 
 function mostrarAlerta(mensagem) {
@@ -771,6 +804,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const metodoAnalise = document.getElementById("metodoAnalise");
   const checkMarcaDagua = document.getElementById("checkMarcaDagua");
   const checkMetadados = document.getElementById("checkMetadados");
+  const checkSalvarHistorico = document.getElementById("checkSalvarHistorico");
   const loading = document.getElementById("loading");
   const areaResultado = document.getElementById("areaResultado");
   const imagemProcessada = document.getElementById("imagemProcessada");
@@ -810,7 +844,7 @@ document.addEventListener("DOMContentLoaded", () => {
   );
   const configuracaoAdmin = obterAdminConfig();
 
-  let imagemAtual = localStorage.getItem("AIDA_ImagemSelecionada") || "";
+  let imagemAtual = obterImagemSelecionadaTemporaria();
   let tutorialIndiceAtual = 0;
   let tutorialAtivo = false;
 
@@ -851,6 +885,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (checkMetadados) {
     checkMetadados.checked = Boolean(configuracaoAdmin.defaultMetadataCheck);
+  }
+
+  if (checkSalvarHistorico) {
+    checkSalvarHistorico.checked = localStorage.getItem(CHAVE_SALVAR_HISTORICO) === "true";
   }
 
   if (linkHistorico && !configuracaoAdmin.allowHistoryPage) {
@@ -1402,7 +1440,7 @@ document.addEventListener("DOMContentLoaded", () => {
       localStorage.removeItem("usuarioNome");
       localStorage.removeItem("usuarioEmail");
       localStorage.removeItem("usuarioTipo");
-      localStorage.removeItem("AIDA_ImagemSelecionada");
+      salvarImagemSelecionadaTemporaria("");
 
       try {
         await _supabase.auth.signOut();
@@ -1473,12 +1511,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function definirImagemAtual(imagemBase64) {
     imagemAtual = imagemBase64 || "";
-
-    if (imagemAtual) {
-      localStorage.setItem("AIDA_ImagemSelecionada", imagemAtual);
-    } else {
-      localStorage.removeItem("AIDA_ImagemSelecionada");
-    }
+    salvarImagemSelecionadaTemporaria(imagemAtual);
 
     atualizarPreviewImagem(imagemAtual);
     limparResultado();
@@ -1537,6 +1570,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (checkMetadados) {
     checkMetadados.addEventListener("change", limparResultado);
+  }
+
+  if (checkSalvarHistorico) {
+    checkSalvarHistorico.addEventListener("change", () => {
+      localStorage.setItem(CHAVE_SALVAR_HISTORICO, String(checkSalvarHistorico.checked));
+    });
   }
 
   window.setTimeout(iniciarTutorialPrimeiroAcesso, 450);
@@ -1642,9 +1681,16 @@ document.addEventListener("DOMContentLoaded", () => {
         lista: exemplosMetodo,
       });
 
-      await salvarHistorico(imagemAtual, dados);
+      if (checkSalvarHistorico?.checked) {
+        await salvarHistorico(imagemAtual, dados);
+      }
+
       mostrarConviteInstalacao();
-      mostrarAlerta("Analise concluida!");
+      mostrarAlerta(
+        checkSalvarHistorico?.checked
+          ? "Analise concluida e salva no historico."
+          : "Analise concluida sem salvar no historico."
+      );
     } catch (erro) {
       console.error("Erro ao processar imagem:", erro);
 

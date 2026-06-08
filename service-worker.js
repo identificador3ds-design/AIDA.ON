@@ -1,5 +1,5 @@
-const STATIC_CACHE = "aida-static-v6";
-const RUNTIME_CACHE = "aida-runtime-v6";
+const STATIC_CACHE = "aida-static-v7";
+const RUNTIME_CACHE = "aida-runtime-v7";
 
 const APP_SHELL = [
   "./",
@@ -33,6 +33,8 @@ const APP_SHELL = [
   "pages/index-perfil.html",
   "./styles/style-perfil.css",
   "./scripts/script-perfil.js",
+  "pages/index-privacidade.html",
+  "./styles/style-privacidade.css",
   "./assets/images/LogoBranca.png",
   "./assets/images/AIDABranco.ico",
   "./assets/images/pwa-icon-180.png",

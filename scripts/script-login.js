@@ -5,10 +5,11 @@ const supabaseKey =
 const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
 const ADMIN_EMAIL = "admin@gmail.com";
-const ADMIN_PASSWORD = "admin3ds";
 const CHAVE_ADMIN_CONFIG = "AIDA_ADMIN_CONFIG";
 const CHAVE_LOGIN_FEEDBACK = "AIDA_LOGIN_FEEDBACK";
 const CHAVE_ADMIN_REDIRECT_MESSAGE = "AIDA_ADMIN_REDIRECT_MESSAGE";
+
+
 
 const signinForm = document.querySelector(".form.signin");
 const signupForm = document.querySelector(".form.signup");
@@ -22,6 +23,7 @@ const brandSignupCopy = document.querySelector("[data-copy-signup]");
 const loginForm = document.getElementById("loginForm");
 const registerForm = document.getElementById("registerForm");
 const googleAuthButtons = document.querySelectorAll("[data-google-auth]");
+const privacyAgreement = document.getElementById("privacyAgreement");
 
 const CONFIG_ADMIN_PADRAO = {
   accountStates: {},
@@ -40,19 +42,10 @@ const modeContent = {
   },
 };
 
-const loginAdmin = (email, password) =>
-  email.trim().toLowerCase() === ADMIN_EMAIL && password === ADMIN_PASSWORD;
-
 const limparSessaoLocal = () => {
   localStorage.removeItem("usuarioNome");
   localStorage.removeItem("usuarioEmail");
   localStorage.removeItem("usuarioTipo");
-};
-
-const salvarSessaoAdmin = () => {
-  localStorage.setItem("usuarioNome", "Admin");
-  localStorage.setItem("usuarioEmail", ADMIN_EMAIL);
-  localStorage.setItem("usuarioTipo", "admin");
 };
 
 function normalizarEstadosConta(salvo = {}) {
@@ -264,6 +257,11 @@ async function finalizarLoginUsuario(user, mensagemBoasVindas = true) {
   limparSessaoLocal();
   localStorage.setItem("usuarioNome", nomeUsuario);
   localStorage.setItem("usuarioEmail", emailUsuario);
+
+  if (emailUsuario === ADMIN_EMAIL) {
+    localStorage.setItem("usuarioTipo", "admin");
+  }
+
   localStorage.removeItem(CHAVE_LOGIN_FEEDBACK);
   localStorage.removeItem(CHAVE_ADMIN_REDIRECT_MESSAGE);
 
@@ -311,6 +309,11 @@ modeButtons.forEach((button) => {
 
 googleAuthButtons.forEach((button) => {
   button.addEventListener("click", async () => {
+    if (button.closest(".signup") && privacyAgreement && !privacyAgreement.checked) {
+      mostrarAviso("Leia e aceite o Aviso de Privacidade para continuar com Google.", "cadastro-erro");
+      return;
+    }
+
     googleAuthButtons.forEach((item) => {
       item.disabled = true;
     });
@@ -336,6 +339,11 @@ googleAuthButtons.forEach((button) => {
 
 registerForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
+
+  if (privacyAgreement && !privacyAgreement.checked) {
+    mostrarAviso("Leia e aceite o Aviso de Privacidade para criar a conta.", "cadastro-erro");
+    return;
+  }
 
   const email = document.getElementById("regEmail")?.value.trim() || "";
   const password = document.getElementById("regPassword")?.value || "";
@@ -378,26 +386,6 @@ loginForm?.addEventListener("submit", async (event) => {
 
   const email = document.getElementById("loginEmail")?.value.trim() || "";
   const password = document.getElementById("loginPassword")?.value || "";
-
-  if (loginAdmin(email, password)) {
-    limparSessaoLocal();
-
-    try {
-      await _supabase.auth.signOut();
-    } catch (erro) {
-      console.warn("Nao foi possivel encerrar a sessao anterior do Supabase:", erro);
-    }
-
-    salvarSessaoAdmin();
-    localStorage.removeItem(CHAVE_LOGIN_FEEDBACK);
-    localStorage.removeItem(CHAVE_ADMIN_REDIRECT_MESSAGE);
-    mostrarAviso("Bem-vindo, Admin!");
-
-    setTimeout(() => {
-      window.location.href = "./index-apresentacao.html";
-    }, 1250);
-    return;
-  }
 
   const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
 

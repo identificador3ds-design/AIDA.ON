@@ -348,6 +348,13 @@
   line-height: 1.55;
 }
 
+.analysis-note a {
+  color: #ffffff;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 .grupo-botoes {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

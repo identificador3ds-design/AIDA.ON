@@ -8,7 +8,19 @@ const fictionalPartners = [
   { name: "Atlas", short: "AT", colors: ["#f4b400", "#ffe082"], accent: "#5f4300" },
   { name: "Pulse", short: "PL", colors: ["#00b8d9", "#7ce7ff"], accent: "#083844" },
 ];
+const favicon = document.getElementById('favicon');
 
+function updateFavicon() {
+
+  if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    favicon.href = '../assets/images/AIDABranco.ico';
+  } else {
+    favicon.href = '../assets/images/AIDAPreto.ico';
+  }
+}
+
+
+updateFavicon();
 const menuToggle = document.querySelector(".menu-toggle");
 const navbar = document.querySelector(".navbar");
 const overlay = document.querySelector(".menu-overlay");

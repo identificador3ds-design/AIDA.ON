@@ -22,9 +22,21 @@ const brandSigninCopy = document.querySelector("[data-copy-signin]");
 const brandSignupCopy = document.querySelector("[data-copy-signup]");
 const loginForm = document.getElementById("loginForm");
 const registerForm = document.getElementById("registerForm");
+const favicon = document.getElementById('favicon');
 const googleAuthButtons = document.querySelectorAll("[data-google-auth]");
 const privacyAgreement = document.getElementById("privacyAgreement");
 
+function updateFavicon() {
+
+  if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    favicon.href = '../assets/images/AIDABranco.ico';
+  } else {
+    favicon.href = '../assets/images/AIDAPreto.ico';
+  }
+}
+
+
+updateFavicon();
 const CONFIG_ADMIN_PADRAO = {
   accountStates: {},
 };

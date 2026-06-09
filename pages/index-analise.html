@@ -41,15 +41,12 @@
             <div class="analysis-steps" aria-label="Passos da análise">
                 <div class="analysis-step">
                     <span>1</span>
-                    <strong>Veja a imagem</strong>
+                    <strong>Escolha a imagem</strong>
                 </div>
+                
                 <div class="analysis-step">
                     <span>2</span>
-                    <strong>Escolha o método</strong>
-                </div>
-                <div class="analysis-step">
-                    <span>3</span>
-                    <strong>Leia o resultado</strong>
+                    <strong>Veja o resultado</strong>
                 </div>
             </div>
         </section>
@@ -63,67 +60,6 @@
                 <div class="preview-stage">
                     <img id="imagemPreview" src="#" alt="Sua imagem selecionada" class="imagem-preview" hidden>
                 </div>
-            </section>
-
-            <section class="container-controles glass-card">
-                <div class="controls-header">
-                    <p>Preencha apenas o necessário e clique em analisar.</p>
-                </div>
-
-                <div class="field-group" id="tipoImagemGroup">
-                    <label for="tipoImagem" class="field-label">Tipo de imagem</label>
-                    <select id="tipoImagem" class="field-select">
-                        <option value="" selected>Escolha o que mais combina com a imagem</option>
-                        <option value="pessoa">Pessoa</option>
-                        <option value="objeto">Objeto</option>
-                        <option value="paisagem">Paisagem</option>
-                        <option value="documento">Documento</option>
-                        <option value="ilustracao">Ilustracao ou arte digital</option>
-                        <option value="logo">Logo ou identidade visual</option>
-                        <option value="tela">Tela ou interface</option>
-                        <option value="outro">Outro</option>
-                    </select>
-                    <p id="tipoImagemHint" class="field-helper">
-                        Escolha o que mais aparece na imagem para receber uma recomendacao de metodo.
-                    </p>
-                </div>
-
-                <div class="field-group" id="metodoAnaliseGroup">
-                    <label for="metodoAnalise" class="field-label">Método de análise</label>
-                    <select id="metodoAnalise" class="field-select">
-                        <option value="" disabled selected>Escolha uma opção</option>
-                        <option value="FFT">FFT</option>
-                        <option value="PSEM">PSEM</option>
-                        <option value="M4">LSB</option>
-                        <option value="GRAD">Gradiente Laplaciano (Neon)</option>
-                    </select>
-                    <p id="metodoRecomendadoHint" class="field-helper">
-                        Se voce nao conhecer os metodos, deixe a opcao marcada como recomendada.
-                    </p>
-                </div>
-
-                <div class="field-group" id="ajudasAutomaticasGroup">
-                    <span class="field-label">Ajudas automáticas</span>
-
-                    <div class="analysis-checks">
-                        <label class="analysis-check">
-                            <input type="checkbox" id="checkMarcaDagua" checked>
-                            <div>
-                                <strong>Procurar marca visível</strong>
-                                <span>Busca sinais claros, como logos inseridos por ferramentas de IA.</span>
-                            </div>
-                        </label>
-
-                        <label class="analysis-check">
-                            <input type="checkbox" id="checkMetadados" checked>
-                            <div>
-                                <strong>Ler metadados</strong>
-                                <span>Procura informações escondidas no arquivo que podem indicar origem artificial.</span>
-                            </div>
-                        </label>
-                    </div>
-                </div>
-
                 <div class="field-group" id="retencaoAnaliseGroup">
                     <span class="field-label">Historico e retencao</span>
 
@@ -137,8 +73,7 @@
                 </div>
 
                 <div class="analysis-note">
-                    Dica: se você não souber o que escolher, deixe as duas opções ligadas.
-                    Veja tambem o <a href="./index-privacidade.html">Aviso de Privacidade</a>.
+                    Veja o <a href="./index-privacidade.html">Aviso de Privacidade</a>.
                 </div>
 
                 <div class="grupo-botoes" id="acoesAnaliseGroup">
@@ -149,6 +84,8 @@
 
                 <a href="./index-seleciona.html" class="inline-link">Voltar para escolher outra imagem</a>
             </section>
+
+            
         </section>
 
         <div id="loading" class="loading-state glass-card" style="display: none;">

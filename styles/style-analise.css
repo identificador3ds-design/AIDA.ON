@@ -168,9 +168,10 @@
 
 .analysis-content {
   display: grid;
-  grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+  grid-template-columns: minmax(0, 720px);
   gap: 24px;
   align-items: stretch;
+  justify-content: center;
 }
 
 .container-imagem,
@@ -286,6 +287,9 @@
   color: var(--text-soft);
   line-height: 1.55;
 }
+.field-label {
+  margin-top: 10px;
+}
 
 .field-helper.is-recommended {
   color: #f1fff8;
@@ -340,12 +344,12 @@
 }
 
 .analysis-note {
-  padding: 14px 16px;
+  padding: 8px;
+  width: 210px;
   border-radius: 14px;
-  border: 1px solid rgba(229, 231, 235, 0.08);
-  background: rgba(143, 216, 183, 0.09);
   color: #edf4f2;
   line-height: 1.55;
+  margin: 10px;
 }
 
 .analysis-note a {
@@ -359,6 +363,7 @@
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
+  margin-bottom: 10px;
 }
 
 .aida-button[disabled] {
@@ -1140,7 +1145,7 @@ body.tutorial-active .tutorial-fab {
   }
 
   .analysis-note {
-    padding: 12px 14px;
+    padding: 12px;
   }
 
   .install-app-head {

@@ -8,6 +8,15 @@ const ADMIN_EMAIL = "admin@gmail.com";
 const CHAVE_ADMIN_CONFIG = "AIDA_ADMIN_CONFIG";
 const CHAVE_LOGIN_FEEDBACK = "AIDA_LOGIN_FEEDBACK";
 const CHAVE_ADMIN_REDIRECT_MESSAGE = "AIDA_ADMIN_REDIRECT_MESSAGE";
+const CONFIG_ADMIN_PADRAO = {
+  allowRegistrations: true,
+  enableInstallPrompt: true,
+  maintenanceMode: false,
+  allowUploadPage: true,
+  supportEmail: ADMIN_EMAIL,
+  announcementMessage: "",
+  accountStates: {},
+};
 
 
 
@@ -25,6 +34,8 @@ const registerForm = document.getElementById("registerForm");
 const favicon = document.getElementById('favicon');
 const googleAuthButtons = document.querySelectorAll("[data-google-auth]");
 const privacyAgreement = document.getElementById("privacyAgreement");
+
+let loginFinalizado = false;
 
 
 const modeContent = {
@@ -236,6 +247,10 @@ async function finalizarLoginUsuario(user, mensagemBoasVindas = true) {
     return false;
   }
 
+  if (loginFinalizado) {
+    return true;
+  }
+
   if (contaSemAcesso(emailUsuario)) {
     limparSessaoLocal();
 
@@ -249,6 +264,7 @@ async function finalizarLoginUsuario(user, mensagemBoasVindas = true) {
     return false;
   }
 
+  loginFinalizado = true;
   const nomeUsuario = obterNomeUsuario(user);
 
   await salvarUsuarioNaTabela(user);
@@ -275,12 +291,59 @@ async function finalizarLoginUsuario(user, mensagemBoasVindas = true) {
 }
 
 async function processarRetornoOAuth() {
+  const searchParams = new URLSearchParams(window.location.search);
+  const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+  const codigoOAuth = searchParams.get("code") || hashParams.get("code");
   const possuiRetornoOAuth =
-    window.location.search.includes("code=") ||
-    window.location.hash.includes("access_token") ||
-    window.location.hash.includes("error");
+    Boolean(codigoOAuth) ||
+    searchParams.has("error") ||
+    hashParams.has("access_token") ||
+    hashParams.has("error");
 
   if (!possuiRetornoOAuth) {
+    return;
+  }
+
+  const erroOAuth = searchParams.get("error") || hashParams.get("error");
+  const descricaoErroOAuth =
+    searchParams.get("error_description") || hashParams.get("error_description");
+
+  if (erroOAuth) {
+    mostrarAviso(
+      descricaoErroOAuth || "Nao foi possivel concluir o login com Google.",
+      "erro"
+    );
+    return;
+  }
+
+  let session = null;
+  let error = null;
+
+  if (codigoOAuth) {
+    const resultado = await _supabase.auth.exchangeCodeForSession(codigoOAuth);
+    session = resultado.data?.session || null;
+    error = resultado.error;
+  }
+
+  if (!session && !error) {
+    const resultado = await _supabase.auth.getSession();
+    session = resultado.data?.session || null;
+    error = resultado.error;
+  }
+
+  if (error) {
+    mostrarAviso("Nao foi possivel concluir o login com Google.", "erro");
+    return;
+  }
+
+  if (session?.user) {
+    window.history.replaceState(null, document.title, window.location.pathname);
+    await finalizarLoginUsuario(session.user);
+  }
+}
+
+async function redirecionarSessaoAtiva() {
+  if (loginFinalizado) {
     return;
   }
 
@@ -290,14 +353,20 @@ async function processarRetornoOAuth() {
   } = await _supabase.auth.getSession();
 
   if (error) {
-    mostrarAviso("Nao foi possivel concluir o login com Google.", "erro");
+    console.warn("Nao foi possivel verificar a sessao ativa:", error);
     return;
   }
 
   if (session?.user) {
-    await finalizarLoginUsuario(session.user);
+    await finalizarLoginUsuario(session.user, false);
   }
 }
+
+_supabase.auth.onAuthStateChange((event, session) => {
+  if ((event === "SIGNED_IN" || event === "INITIAL_SESSION") && session?.user) {
+    finalizarLoginUsuario(session.user, false);
+  }
+});
 
 modeButtons.forEach((button) => {
   button.addEventListener("click", () => {
@@ -412,4 +481,4 @@ loginForm?.addEventListener("submit", async (event) => {
 
 setMode("signin");
 consumirAvisosPendentes();
-processarRetornoOAuth();
+processarRetornoOAuth().then(redirecionarSessaoAtiva);

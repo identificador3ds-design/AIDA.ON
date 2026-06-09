@@ -5,6 +5,7 @@ const supabaseKey =
 const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
 const ADMIN_EMAIL = "admin@gmail.com";
+const ADMIN_PASSWORD = "admin3ds";
 const CHAVE_ADMIN_CONFIG = "AIDA_ADMIN_CONFIG";
 const CHAVE_LOGIN_FEEDBACK = "AIDA_LOGIN_FEEDBACK";
 const CHAVE_ADMIN_REDIRECT_MESSAGE = "AIDA_ADMIN_REDIRECT_MESSAGE";
@@ -34,7 +35,6 @@ const loginForm = document.getElementById("loginForm");
 const registerForm = document.getElementById("registerForm");
 const favicon = document.getElementById('favicon');
 const googleAuthButtons = document.querySelectorAll("[data-google-auth]");
-const privacyAgreement = document.getElementById("privacyAgreement");
 
 let loginFinalizado = false;
 const loginParams = new URLSearchParams(window.location.search);
@@ -204,6 +204,20 @@ function toggleView() {
 
 function obterUrlRetornoOAuth() {
   return `${window.location.origin}${window.location.pathname}`;
+}
+
+function acessarAdminLocal() {
+  limparSessaoLocal();
+  localStorage.setItem("usuarioNome", "Admin");
+  localStorage.setItem("usuarioEmail", ADMIN_EMAIL);
+  localStorage.setItem("usuarioTipo", "admin");
+  localStorage.removeItem(CHAVE_LOGIN_FEEDBACK);
+  localStorage.removeItem(CHAVE_ADMIN_REDIRECT_MESSAGE);
+  mostrarAviso("Acesso administrativo liberado.");
+
+  setTimeout(() => {
+    window.location.href = "./index-admin.html";
+  }, 900);
 }
 
 function obterDadosRetornoOAuth() {
@@ -394,11 +408,6 @@ modeButtons.forEach((button) => {
 
 googleAuthButtons.forEach((button) => {
   button.addEventListener("click", async () => {
-    if (button.closest(".signup") && privacyAgreement && !privacyAgreement.checked) {
-      mostrarAviso("Leia e aceite o Aviso de Privacidade para continuar com Google.", "cadastro-erro");
-      return;
-    }
-
     googleAuthButtons.forEach((item) => {
       item.disabled = true;
     });
@@ -425,11 +434,6 @@ googleAuthButtons.forEach((button) => {
 registerForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
 
-  if (privacyAgreement && !privacyAgreement.checked) {
-    mostrarAviso("Leia e aceite o Aviso de Privacidade para criar a conta.", "cadastro-erro");
-    return;
-  }
-
   const email = document.getElementById("regEmail")?.value.trim() || "";
   const password = document.getElementById("regPassword")?.value || "";
   const nome = document.getElementById("regName")?.value.trim() || "";
@@ -437,7 +441,10 @@ registerForm?.addEventListener("submit", async (event) => {
   const { error } = await _supabase.auth.signUp({
     email,
     password,
-    options: { data: { full_name: nome } },
+    options: {
+      data: { full_name: nome },
+      emailRedirectTo: obterUrlRetornoOAuth(),
+    },
   });
 
   if (error) {
@@ -445,25 +452,11 @@ registerForm?.addEventListener("submit", async (event) => {
     return;
   }
 
-  const { error: insertError } = await _supabase.from("usuarios").insert([{ nome, email }]);
-
-  if (insertError) {
-    mostrarAviso(
-      "Conta criada, mas houve um erro ao salvar seus dados complementares.",
-      "cadastro-erro"
-    );
-
-    setTimeout(() => {
-      setMode("signin");
-    }, 1800);
-    return;
-  }
-
-  mostrarAviso("Cadastro finalizado! Faca seu login.", "cadastro");
+  mostrarAviso("Conta criada! Verifique seu email para confirmar o cadastro.", "cadastro");
 
   setTimeout(() => {
     setMode("signin");
-  }, 1800);
+  }, 2200);
 });
 
 loginForm?.addEventListener("submit", async (event) => {
@@ -471,11 +464,27 @@ loginForm?.addEventListener("submit", async (event) => {
 
   const email = document.getElementById("loginEmail")?.value.trim() || "";
   const password = document.getElementById("loginPassword")?.value || "";
+  const emailNormalizado = email.trim().toLowerCase();
+
+  if (emailNormalizado === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+    acessarAdminLocal();
+    return;
+  }
 
   const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
-    mostrarAviso("E-mail ou senha invalidos.", "erro");
+    const mensagemErro = String(error.message || "").toLowerCase();
+    const precisaConfirmarEmail =
+      mensagemErro.includes("email not confirmed") ||
+      mensagemErro.includes("not confirmed");
+
+    mostrarAviso(
+      precisaConfirmarEmail
+        ? "Confirme seu email antes de entrar."
+        : "E-mail ou senha invalidos.",
+      "erro"
+    );
     return;
   }
 

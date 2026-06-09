@@ -5,6 +5,9 @@ const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 const favicon = document.getElementById('favicon');
 
 function updateFavicon() {
+  if (!favicon) {
+    return;
+  }
 
   if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
     favicon.href = '../assets/images/AIDABranco.ico';
@@ -38,6 +41,8 @@ const ADMIN_EMAIL = "admin@gmail.com";
 const CHAVE_ADMIN_CONFIG = "AIDA_ADMIN_CONFIG";
 const CHAVE_LOGIN_FEEDBACK = "AIDA_LOGIN_FEEDBACK";
 const CHAVE_IMAGEM_SELECIONADA = "AIDA_ImagemSelecionada";
+const DB_IMAGEM_SELECIONADA = "AIDA_ImagemSelecionada_DB";
+const STORE_IMAGEM_SELECIONADA = "imagem";
 const CHAVE_SALVAR_HISTORICO = "AIDA_SALVAR_HISTORICO";
 const CONFIG_ADMIN_PADRAO = {
   allowRegistrations: true,
@@ -388,31 +393,135 @@ function obterMimeType(base64) {
   return correspondencia ? correspondencia[1] : "image/png";
 }
 
-function obterImagemSelecionadaTemporaria() {
-  const imagemSessao = sessionStorage.getItem(CHAVE_IMAGEM_SELECIONADA);
-  const imagemLegada = localStorage.getItem(CHAVE_IMAGEM_SELECIONADA);
+function abrirBancoImagemSelecionada() {
+  return new Promise((resolve, reject) => {
+    if (!window.indexedDB) {
+      reject(new Error("IndexedDB indisponivel."));
+      return;
+    }
 
-  if (imagemLegada) {
-    localStorage.removeItem(CHAVE_IMAGEM_SELECIONADA);
-  }
+    const request = indexedDB.open(DB_IMAGEM_SELECIONADA, 1);
 
-  if (imagemSessao) {
-    return imagemSessao;
-  }
+    request.onupgradeneeded = () => {
+      request.result.createObjectStore(STORE_IMAGEM_SELECIONADA);
+    };
 
-  if (imagemLegada) {
-    sessionStorage.setItem(CHAVE_IMAGEM_SELECIONADA, imagemLegada);
-    return imagemLegada;
-  }
-
-  return "";
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error || new Error("Nao foi possivel abrir o banco."));
+  });
 }
 
-function salvarImagemSelecionadaTemporaria(imagemBase64) {
+async function obterImagemSelecionadaDoBanco() {
+  const db = await abrirBancoImagemSelecionada();
+
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(STORE_IMAGEM_SELECIONADA, "readonly");
+    const request = transaction.objectStore(STORE_IMAGEM_SELECIONADA).get(CHAVE_IMAGEM_SELECIONADA);
+
+    request.onsuccess = () => resolve(request.result || "");
+    request.onerror = () => reject(request.error || new Error("Nao foi possivel ler a imagem."));
+    transaction.oncomplete = () => db.close();
+    transaction.onerror = () => {
+      db.close();
+      reject(transaction.error || new Error("Nao foi possivel ler a imagem."));
+    };
+  });
+}
+
+async function salvarImagemSelecionadaNoBanco(imagemBase64) {
+  const db = await abrirBancoImagemSelecionada();
+
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(STORE_IMAGEM_SELECIONADA, "readwrite");
+    const store = transaction.objectStore(STORE_IMAGEM_SELECIONADA);
+
+    if (imagemBase64) {
+      store.put(imagemBase64, CHAVE_IMAGEM_SELECIONADA);
+    } else {
+      store.delete(CHAVE_IMAGEM_SELECIONADA);
+    }
+
+    transaction.oncomplete = () => {
+      db.close();
+      resolve();
+    };
+    transaction.onerror = () => {
+      db.close();
+      reject(transaction.error || new Error("Nao foi possivel atualizar a imagem."));
+    };
+  });
+}
+
+function obterImagemSelecionadaTemporaria() {
+  let imagemSessao = "";
+  let imagemLegada = "";
+
+  try {
+    imagemSessao = sessionStorage.getItem(CHAVE_IMAGEM_SELECIONADA) || "";
+  } catch (erro) {
+    imagemSessao = "";
+  }
+
+  try {
+    imagemLegada = localStorage.getItem(CHAVE_IMAGEM_SELECIONADA) || "";
+  } catch (erro) {
+    imagemLegada = "";
+  }
+
+  const imagemDisponivel = imagemSessao || imagemLegada;
+
+  if (imagemDisponivel && !imagemSessao) {
+    try {
+      sessionStorage.setItem(CHAVE_IMAGEM_SELECIONADA, imagemDisponivel);
+    } catch (erro) {
+      sessionStorage.removeItem(CHAVE_IMAGEM_SELECIONADA);
+    }
+  }
+
+  return imagemDisponivel;
+}
+
+async function obterImagemSelecionadaTemporariaAsync() {
+  const imagemRapida = obterImagemSelecionadaTemporaria();
+
+  if (imagemRapida) {
+    return imagemRapida;
+  }
+
+  try {
+    return await obterImagemSelecionadaDoBanco();
+  } catch (erro) {
+    console.warn("Nao foi possivel recuperar a imagem do IndexedDB:", erro);
+    return "";
+  }
+}
+
+async function salvarImagemSelecionadaTemporaria(imagemBase64) {
   if (imagemBase64) {
-    sessionStorage.setItem(CHAVE_IMAGEM_SELECIONADA, imagemBase64);
-    localStorage.removeItem(CHAVE_IMAGEM_SELECIONADA);
+    try {
+      await salvarImagemSelecionadaNoBanco(imagemBase64);
+    } catch (erro) {
+      console.warn("Nao foi possivel salvar a imagem no IndexedDB:", erro);
+    }
+
+    try {
+      sessionStorage.setItem(CHAVE_IMAGEM_SELECIONADA, imagemBase64);
+    } catch (erro) {
+      sessionStorage.removeItem(CHAVE_IMAGEM_SELECIONADA);
+    }
+
+    try {
+      localStorage.removeItem(CHAVE_IMAGEM_SELECIONADA);
+    } catch (erro) {
+      console.warn("Nao foi possivel limpar a imagem legada:", erro);
+    }
     return;
+  }
+
+  try {
+    await salvarImagemSelecionadaNoBanco("");
+  } catch (erro) {
+    console.warn("Nao foi possivel limpar a imagem do IndexedDB:", erro);
   }
 
   sessionStorage.removeItem(CHAVE_IMAGEM_SELECIONADA);
@@ -800,7 +909,7 @@ async function salvarHistorico(imagemBase64, dados) {
   }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   const nomeSalvo = localStorage.getItem("usuarioNome");
   const botaoUsuario = document.getElementById("nome-usuario2");
   const btnSair = document.getElementById("btn-sair");
@@ -856,7 +965,7 @@ document.addEventListener("DOMContentLoaded", () => {
   );
   const configuracaoAdmin = obterAdminConfig();
 
-  let imagemAtual = obterImagemSelecionadaTemporaria();
+  let imagemAtual = await obterImagemSelecionadaTemporariaAsync();
   let tutorialIndiceAtual = 0;
   let tutorialAtivo = false;
 
@@ -1452,7 +1561,7 @@ document.addEventListener("DOMContentLoaded", () => {
       localStorage.removeItem("usuarioNome");
       localStorage.removeItem("usuarioEmail");
       localStorage.removeItem("usuarioTipo");
-      salvarImagemSelecionadaTemporaria("");
+      await salvarImagemSelecionadaTemporaria("");
 
       try {
         await _supabase.auth.signOut();
@@ -1521,9 +1630,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function definirImagemAtual(imagemBase64) {
+  async function definirImagemAtual(imagemBase64) {
     imagemAtual = imagemBase64 || "";
-    salvarImagemSelecionadaTemporaria(imagemAtual);
+    await salvarImagemSelecionadaTemporaria(imagemAtual);
 
     atualizarPreviewImagem(imagemAtual);
     limparResultado();
@@ -1546,8 +1655,8 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       const reader = new FileReader();
-      reader.onload = (evento) => {
-        definirImagemAtual(evento.target.result);
+      reader.onload = async (evento) => {
+        await definirImagemAtual(evento.target.result);
 
         if (tipoImagemInput) {
           tipoImagemInput.value = "";

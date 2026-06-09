@@ -1,5 +1,5 @@
-const STATIC_CACHE = "aida-static-v9";
-const RUNTIME_CACHE = "aida-runtime-v9";
+const STATIC_CACHE = "aida-static-v14";
+const RUNTIME_CACHE = "aida-runtime-v14";
 
 const APP_SHELL = [
   "./",
@@ -8,6 +8,7 @@ const APP_SHELL = [
   "./styles/style-home.css",
   "./styles/style-shared-theme.css",
   "./scripts/script-pwa-register.js",
+  "./scripts/script-cookie-consent.js",
   "./scripts/script-home.js",
   "pages/index-login.html",
   "./styles/style-login.css",

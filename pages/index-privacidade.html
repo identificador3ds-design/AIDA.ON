@@ -1,143 +1,153 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#090a0f">
-    <title>AIDA.ON - Termos de Privacidade</title>
-    <link rel="icon" type="image/png" href="../assets/images/AIDABranco.ico">
-    <link rel="stylesheet" href="../styles/style-privacidade.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#10403b">
+  <title>AIDA.ON - Aviso de Privacidade</title>
+  <link rel="icon" type="image/png" href="../assets/images/AIDABranco.ico">
+  <link rel="stylesheet" href="../styles/style-privacidade.css">
 </head>
-<body class="privacy-terms">
-    <header class="terms-topbar">
-        <a href="../index.html" class="terms-brand" aria-label="Pagina inicial">
-            <img src="../assets/images/LogoBranca.png" alt="Logo AIDA.ON">
-        </a>
+<body class="privacy-page">
+  <header class="privacy-header">
+    <a href="../index.html" class="privacy-brand" aria-label="Pagina inicial">
+      <img src="../assets/images/LogoBranca.png" alt="Logo AIDA.ON">
+    </a>
 
-        <div class="terms-topbar-meta">
-            <span>LGPD</span>
-            <span>v2026.05</span>
-            <a href="./index-login.html">Voltar</a>
+    <a href="./index-login.html" class="privacy-back-link" id="privacyBackLink">Voltar</a>
+  </header>
+
+  <main class="privacy-shell">
+    <section class="privacy-hero">
+      <div class="privacy-hero-copy">
+        <span class="privacy-kicker">LGPD e transparencia</span>
+        <h1>Aviso de Privacidade</h1>
+        <p>
+          Este documento explica como o AIDA.ON trata dados de conta, imagens enviadas,
+          resultados de analise, historico opcional e preferencias de cookies.
+        </p>
+      </div>
+
+      <aside class="privacy-summary" aria-label="Resumo rapido">
+        <strong>Resumo rapido</strong>
+        <p>Usamos dados para autenticar sua conta, processar imagens e manter a plataforma funcionando.</p>
+        <p>O historico so e salvo quando voce marca essa opcao na analise.</p>
+        <span>Atualizado em 09/06/2026</span>
+      </aside>
+    </section>
+
+    <section class="privacy-grid" aria-label="Topicos principais de privacidade">
+      <article class="privacy-card">
+        <span>01</span>
+        <h2>Dados da conta</h2>
+        <p>
+          Tratamos nome, email, dados de autenticacao e identificadores tecnicos criados
+          pelo Supabase Auth para permitir cadastro, login e protecao de acesso.
+        </p>
+      </article>
+
+      <article class="privacy-card">
+        <span>02</span>
+        <h2>Imagens analisadas</h2>
+        <p>
+          A imagem selecionada e usada para gerar o resultado tecnico. Ela pode conter
+          pessoas, objetos, locais e metadados, por isso evite enviar conteudo sensivel.
+        </p>
+      </article>
+
+      <article class="privacy-card">
+        <span>03</span>
+        <h2>Historico opcional</h2>
+        <p>
+          O historico na nuvem e criado somente quando a opcao de salvar analise estiver
+          ligada. Quando desligada, a imagem e usada apenas para processar a resposta.
+        </p>
+      </article>
+
+      <article class="privacy-card">
+        <span>04</span>
+        <h2>Cookies e preferencias</h2>
+        <p>
+          Usamos cookies ou armazenamento local para guardar escolhas simples, como aceite
+          de cookies, sessao, preferencias do app, tutorial visto e instalacao do PWA.
+        </p>
+      </article>
+    </section>
+
+    <section class="privacy-document">
+      <div class="privacy-section" id="finalidades">
+        <span class="privacy-section-number">Finalidades</span>
+        <div>
+          <h2>Por que usamos esses dados</h2>
+          <ul>
+            <li>Permitir login, cadastro e identificacao do usuario autenticado.</li>
+            <li>Processar a imagem enviada e devolver um resultado compreensivel.</li>
+            <li>Salvar historico apenas quando o usuario escolher essa opcao.</li>
+            <li>Manter seguranca, controle de acesso, avisos administrativos e funcionamento do PWA.</li>
+          </ul>
         </div>
-    </header>
+      </div>
 
-    <main class="terms-shell">
-        <aside class="terms-index" aria-label="Indice dos termos">
-            <p class="terms-index-label">Arquivo legal</p>
-            <h1>Aviso de Privacidade</h1>
-            <p class="terms-version">Atualizado em 29/05/2026</p>
+      <div class="privacy-section" id="bases-legais">
+        <span class="privacy-section-number">Bases legais</span>
+        <div>
+          <h2>Hipoteses de tratamento</h2>
+          <p>
+            Para cadastro e uso da plataforma, usamos execucao de contrato ou procedimentos
+            preliminares. Para historico opcional, usamos consentimento. Para seguranca,
+            prevencao de abuso e funcionamento essencial, pode haver legitimo interesse
+            com minimizacao dos dados.
+          </p>
+        </div>
+      </div>
 
-            <nav>
-                <a href="#dados">01. Dados tratados</a>
-                <a href="#finalidades">02. Finalidades</a>
-                <a href="#bases">03. Bases legais</a>
-                <a href="#compartilhamento">04. Compartilhamento</a>
-                <a href="#retencao">05. Retencao</a>
-                <a href="#direitos">06. Direitos</a>
-                <a href="#observacao">07. Observacao</a>
-            </nav>
-        </aside>
+      <div class="privacy-section" id="terceiros">
+        <span class="privacy-section-number">Terceiros</span>
+        <div>
+          <h2>Servicos envolvidos</h2>
+          <ul>
+            <li>Supabase: autenticacao, tabela de usuarios, historico e armazenamento de evidencias salvas.</li>
+            <li>Google: login social quando o usuario escolhe entrar com Google.</li>
+            <li>Backend AIDA.ON: processamento temporario da imagem enviada para analise.</li>
+          </ul>
+        </div>
+      </div>
 
-        <article class="terms-document">
-            <div class="terms-title-block">
-                <p class="terms-kicker">AIDA.ON // privacidade e dados pessoais</p>
-                <h2>Termos de tratamento de dados</h2>
-                <p>
-                    Este documento explica, em linguagem direta, como o AIDA.ON trata dados
-                    pessoais durante cadastro, autenticacao, envio de imagens, analise tecnica
-                    e historico de resultados.
-                </p>
-            </div>
+      <div class="privacy-section" id="retencao">
+        <span class="privacy-section-number">Retencao</span>
+        <div>
+          <h2>Por quanto tempo guardamos</h2>
+          <p>
+            Dados de conta permanecem enquanto a conta existir. O historico salvo permanece
+            disponivel para consulta ate ser removido pelo usuario ou por rotina administrativa.
+            Preferencias locais podem ser limpas pelo navegador.
+          </p>
+        </div>
+      </div>
 
-            <section id="dados" class="term-clause">
-                <span class="clause-number">01</span>
-                <div>
-                    <h3>Dados tratados</h3>
-                    <ul>
-                        <li>Nome, e-mail e dados de autenticacao informados no cadastro ou login.</li>
-                        <li>Imagem enviada para analise, que pode conter pessoas, objetos, locais e metadados.</li>
-                        <li>Resultado da analise, metodo usado, probabilidade exibida e data do processamento.</li>
-                        <li>Preferencias locais, como tutorial visto, instalacao do PWA e decisao de salvar historico.</li>
-                    </ul>
-                </div>
-            </section>
+      <div class="privacy-section" id="direitos">
+        <span class="privacy-section-number">Direitos</span>
+        <div>
+          <h2>Seus direitos</h2>
+          <p>
+            Voce pode solicitar acesso, correcao, eliminacao, informacoes sobre compartilhamento
+            e revogacao de consentimento quando aplicavel. O canal inicial do projeto e
+            contato@aida.com.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
 
-            <section id="finalidades" class="term-clause">
-                <span class="clause-number">02</span>
-                <div>
-                    <h3>Finalidades</h3>
-                    <ul>
-                        <li>Permitir acesso a conta e identificacao do usuario autenticado.</li>
-                        <li>Processar tecnicamente a imagem enviada e devolver um resultado compreensivel.</li>
-                        <li>Salvar historico somente quando o usuario marcar essa opcao na tela de analise.</li>
-                        <li>Manter seguranca, controle de acesso e funcionamento essencial da plataforma.</li>
-                    </ul>
-                </div>
-            </section>
+  <script src="../scripts/script-cookie-consent.js"></script>
+  <script>
+    const privacyBackLink = document.getElementById("privacyBackLink");
+    const privacySource = new URLSearchParams(window.location.search).get("from");
 
-            <section id="bases" class="term-clause">
-                <span class="clause-number">03</span>
-                <div>
-                    <h3>Bases legais iniciais</h3>
-                    <p>
-                        Para cadastro e uso da conta, a base prevista e execucao de contrato ou
-                        procedimentos preliminares. Para historico opcional, a base operacional
-                        adotada neste projeto e o consentimento do usuario. Para seguranca e
-                        prevencao de abuso, pode haver legitimo interesse, sempre com minimizacao.
-                    </p>
-                </div>
-            </section>
-
-            <section id="compartilhamento" class="term-clause">
-                <span class="clause-number">04</span>
-                <div>
-                    <h3>Compartilhamento</h3>
-                    <ul>
-                        <li>Supabase: autenticacao, tabela de usuarios, historico e armazenamento de evidencias salvas.</li>
-                        <li>Google: login social quando o usuario escolhe entrar com Google.</li>
-                        <li>Render/backend AIDA.ON: processamento temporario da imagem enviada para analise.</li>
-                    </ul>
-                </div>
-            </section>
-
-            <section id="retencao" class="term-clause">
-                <span class="clause-number">05</span>
-                <div>
-                    <h3>Retencao</h3>
-                    <p>
-                        A imagem selecionada fica apenas no armazenamento de sessao do navegador
-                        enquanto a aba estiver aberta. O historico na nuvem e criado somente quando
-                        a opcao de salvar estiver ligada. O usuario pode limpar seus registros pela
-                        pagina de historico.
-                    </p>
-                </div>
-            </section>
-
-            <section id="direitos" class="term-clause">
-                <span class="clause-number">06</span>
-                <div>
-                    <h3>Direitos do titular</h3>
-                    <p>
-                        Voce pode solicitar confirmacao de tratamento, acesso, correcao, eliminacao,
-                        informacoes sobre compartilhamento e revogacao de consentimento quando ele
-                        for a base usada. O canal inicial do projeto e contato@aida.com.
-                    </p>
-                </div>
-            </section>
-
-            <section id="observacao" class="term-clause term-clause-final">
-                <span class="clause-number">07</span>
-                <div>
-                    <h3>Observacao importante</h3>
-                    <p>
-                        Este aviso e uma etapa inicial de adequacao. Antes de uso publico em
-                        producao, o projeto ainda deve validar bases legais, encarregado/canal
-                        oficial, politicas do Supabase e Render, regras de seguranca do banco e
-                        prazos formais de retencao.
-                    </p>
-                </div>
-            </section>
-        </article>
-    </main>
+    if (privacyBackLink) {
+      privacyBackLink.href =
+        privacySource === "perfil" ? "./index-perfil.html" : "./index-login.html";
+    }
+  </script>
 </body>
 </html>

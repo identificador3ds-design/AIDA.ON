@@ -197,7 +197,7 @@ button {
   width: min(100%, 330px);
   display: grid;
   justify-items: center;
-  gap: 14px;
+  gap: 12px;
 }
 
 .form-view h2 {
@@ -263,7 +263,7 @@ button {
 .primary-button {
   width: 172px;
   height: 42px;
-  margin-top: 10px;
+  margin-top: 6px;
   border-radius: 999px;
   background: linear-gradient(135deg, #329288 0%, #2a7f75 100%);
   color: #e8f5f2;
@@ -301,20 +301,17 @@ button {
 }
 
 .google-button {
-  width: 15%;
-  height: 30px;
-  min-height: 44px;
+  width: 46px;
+  height: 46px;
+  min-height: 46px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  padding: 0 16px;
-  border-radius: 90%;
+  padding: 0;
+  border-radius: 50%;
   border: 1px solid rgba(229, 246, 241, 0.62);
   color: #12342f;
   background: #f8fffd;
-  font-size: 0.9rem;
-  font-weight: 700;
   transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
@@ -355,25 +352,17 @@ button {
   font-weight: 800;
 }
 
-.privacy-consent {
+.privacy-note {
   width: 100%;
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
+  max-width: 280px;
+  margin: -2px 0 0;
   color: #d2e8e3;
-  font-size: 0.82rem;
-  line-height: 1.45;
+  font-size: 0.72rem;
+  line-height: 1.35;
+  text-align: center;
 }
 
-.privacy-consent input {
-  width: 18px;
-  height: 18px;
-  margin-top: 1px;
-  accent-color: #8fd8b7;
-  flex: 0 0 18px;
-}
-
-.privacy-consent a {
+.privacy-note a {
   color: #f3fffb;
   font-weight: 700;
   text-decoration: underline;
@@ -543,8 +532,8 @@ button {
     font-size: 0.86rem;
   }
 
-  .privacy-consent {
-    font-size: 0.78rem;
+  .privacy-note {
+    font-size: 0.7rem;
   }
 
   #toast-container {

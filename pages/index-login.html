@@ -67,7 +67,6 @@
             <div class="oauth-divider" aria-hidden="true"><span>ou</span></div>
             <button type="button" class="google-button" data-google-auth>
               <span class="google-icon" aria-hidden="true">G</span>
-              
             </button>
             <button type="button" class="switch-link" data-mode-target="signup">Criar conta</button>
           </form>
@@ -108,19 +107,14 @@
               <input type="password" id="regPassword" placeholder="Password" autocomplete="new-password" required>
             </label>
 
-            <label class="privacy-consent" for="privacyAgreement">
-              <input type="checkbox" id="privacyAgreement" required>
-              <span>
-                Li o <a href="./index-privacidade.html" target="_blank" rel="noreferrer">Aviso de Privacidade</a>
-                e entendi como meus dados serao tratados.
-              </span>
-            </label>
-
             <button type="submit" class="primary-button">Registrar</button>
+            <p class="privacy-note">
+              Ao registrar, voce concorda com o
+              <a href="./index-privacidade.html?from=login" target="_blank" rel="noreferrer">Aviso de Privacidade</a>.
+            </p>
             <div class="oauth-divider" aria-hidden="true"><span>ou</span></div>
             <button type="button" class="google-button" data-google-auth>
               <span class="google-icon" aria-hidden="true">G</span>
-              Continuar com Google
             </button>
             <button type="button" class="switch-link" data-mode-target="signin">Ja possui uma conta?</button>
           </form>
@@ -132,6 +126,7 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../scripts/script-cookie-consent.js"></script>
   <script src="../scripts/script-login.js"></script>
 </body>
 

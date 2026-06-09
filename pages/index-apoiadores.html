@@ -3,14 +3,160 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="refresh" content="0; url=./apoiadores.html">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AIDA - Redirecionando</title>
-    <link rel="canonical" href="./apoiadores.html">
+    <title>AIDA - Apoiadores</title>
+    <link rel="icon" id="favicon" type="image/png" href="../assets/images/AIDABranco.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Afacad:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="../styles/style-apresentacao.css">
+    <link rel="stylesheet" href="../styles/apoiadores.css">
 </head>
 
-<body>
-    <p>Redirecionando para <a href="./apoiadores.html">./apoiadores.html</a>...</p>
+<body class="page-apoiadores">
+    <header class="cabecalho">
+        <div class="headcontent">
+            <a href="./index-apresentacao.html#topo" class="brand" aria-label="Voltar para a apresentacao do AIDA">
+                <img src="../assets/images/LogoBranca.png" alt="Logo da AIDA.ON" class="logoaida">
+            </a>
+
+            <nav class="navbar" id="menu-principal" aria-label="Navegacao principal">
+                <a href="./index-apresentacao.html#sobre" class="ancoranav">Sobre</a>
+                <a href="./index-apresentacao.html#funcionamento" class="ancoranav">Funcionamento</a>
+                <a href="./index-apresentacao.html#tecnologias" class="ancoranav">Tecnologias</a>
+                <a href="#topo" class="ancoranav active" aria-current="page">Apoiadores</a>
+                <a href="./index-apresentacao.html#equipe" class="ancoranav">Equipe</a>
+                <a href="./index-seleciona.html" class="ancoranav mobile-only-link">Experimentar</a>
+
+                <div class="dropdown mobile-only">
+                    <button class="dropbtn" id="nome-usuario" type="button">Minha conta</button>
+                    <div class="dropdown-content">
+                        <a href="./index-perfil.html" class="dropa">
+                            <img src="../assets/images/circle-user-regular-full.svg" alt="" class="logout">
+                            My account
+                        </a>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="header-right">
+                <div class="dropdown desktop-only">
+                    <button class="dropbtn" id="nome-usuario2" type="button">Minha conta</button>
+                    <div class="dropdown-content">
+                        <a href="./index-perfil.html" class="dropa">
+                            <img src="../assets/images/circle-user-regular-full.svg" alt="" class="logout">
+                            My account
+                        </a>
+                    </div>
+                </div>
+
+                <button class="menu-toggle" type="button" aria-label="Abrir menu" aria-expanded="false"
+                    aria-controls="menu-principal">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="menu-overlay"></div>
+
+    <main id="topo">
+        <section class="apoio-hero">
+            <div class="apoio-container apoio-hero-grid">
+                <div class="apoio-copy">
+                    <span class="section-label">Apoiadores</span>
+                    <h1 class="apoio-title">Parcerias que ajudam o AIDA a crescer com credibilidade.</h1>
+                    <p class="apoio-text">
+                        Esta pagina reune empresas e pessoas que apoiam o desenvolvimento do AIDA.ON. O objetivo e
+                        apresentar os parceiros de forma simples, clara e facil de consultar.
+                    </p>
+                    <div class="apoio-actions">
+                        <a href="#lista-apoiadores" class="btn-main">Ver apoiadores</a>
+                        <a href="mailto:contato@aida.com?subject=Parceria%20com%20AIDA.ON" class="btn-watch">Quero apoiar</a>
+                    </div>
+                </div>
+
+                <div class="apoio-resumo" aria-label="Resumo da pagina">
+                    <span>Foco</span>
+                    <strong>Credibilidade, visibilidade e desenvolvimento do projeto.</strong>
+                </div>
+            </div>
+        </section>
+
+        <section class="apoio-lista" id="lista-apoiadores" aria-labelledby="titulo-apoiadores">
+            <div class="apoio-container">
+                <div class="apoio-section-head">
+                    <span class="section-label">Rede de apoio</span>
+                    <h2 class="section-title" id="titulo-apoiadores">Apoiadores atuais</h2>
+                    <p class="section-text">
+                        Parceiros que contribuem para fortalecer a presenca institucional e a evolucao do AIDA.ON.
+                    </p>
+                </div>
+
+                <div class="apoio-partners">
+                    <a class="apoio-partner" href="https://progrid.net.br/home.html" target="_blank" rel="noreferrer">
+                        <span class="apoio-partner-name">ProgrID</span>
+                        <span class="apoio-partner-desc">Parceiro institucional do projeto AIDA.ON.</span>
+                        <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+                    </a>
+
+                    <div class="apoio-partner apoio-partner-muted">
+                        <span class="apoio-partner-name">Novos apoiadores</span>
+                        <span class="apoio-partner-desc">Espaco aberto para futuras parcerias.</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="apoio-contato" aria-labelledby="titulo-contato">
+            <div class="apoio-container apoio-contato-inner">
+                <div>
+                    <span class="section-label">Contato</span>
+                    <h2 class="section-title" id="titulo-contato">Quer apoiar o AIDA.ON?</h2>
+                    <p class="section-text">
+                        Envie uma mensagem para conversarmos sobre formas de parceria, divulgacao e apoio institucional.
+                    </p>
+                </div>
+
+                <a href="mailto:contato@aida.com?subject=Parceria%20com%20AIDA.ON" class="btn-main">Entrar em contato</a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="foot-column">
+                <img src="../assets/images/LogoBranca.png" class="logo-footer" alt="Logo AIDA.ON">
+                <p class="foot-contact">contato@aida.com</p>
+            </div>
+
+            <div class="foot-column">
+                <span class="foot-title">Apoiadores</span>
+                <ul class="foot-list">
+                    <li><a href="https://progrid.net.br/home.html" target="_blank" rel="noreferrer">ProgrID</a></li>
+                    <li><a href="#lista-apoiadores">Ver apoiadores</a></li>
+                </ul>
+            </div>
+
+            <div class="foot-column">
+                <span class="foot-title">Projeto</span>
+                <ul class="foot-list">
+                    <li><a href="./index-apresentacao.html">Apresentacao</a></li>
+                    <li><a href="./index-privacidade.html">Aviso de privacidade</a></li>
+                    <li><a href="./index-login.html">Minha conta</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-rights">
+            <p>&copy; 2026 AIDA. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="../scripts/apoiadores.js"></script>
 </body>
 
 </html>

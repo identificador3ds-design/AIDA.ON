@@ -8,6 +8,7 @@ const ADMIN_EMAIL = "admin@gmail.com";
 const CHAVE_ADMIN_CONFIG = "AIDA_ADMIN_CONFIG";
 const CHAVE_LOGIN_FEEDBACK = "AIDA_LOGIN_FEEDBACK";
 const CHAVE_ADMIN_REDIRECT_MESSAGE = "AIDA_ADMIN_REDIRECT_MESSAGE";
+const PARAM_TROCAR_CONTA = "trocar_conta";
 const CONFIG_ADMIN_PADRAO = {
   allowRegistrations: true,
   enableInstallPrompt: true,
@@ -36,6 +37,8 @@ const googleAuthButtons = document.querySelectorAll("[data-google-auth]");
 const privacyAgreement = document.getElementById("privacyAgreement");
 
 let loginFinalizado = false;
+const loginParams = new URLSearchParams(window.location.search);
+const modoTrocarConta = loginParams.get(PARAM_TROCAR_CONTA) === "1";
 
 
 const modeContent = {
@@ -203,6 +206,23 @@ function obterUrlRetornoOAuth() {
   return `${window.location.origin}${window.location.pathname}`;
 }
 
+function obterDadosRetornoOAuth() {
+  const searchParams = new URLSearchParams(window.location.search);
+  const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+  const codigoOAuth = searchParams.get("code") || hashParams.get("code");
+
+  return {
+    searchParams,
+    hashParams,
+    codigoOAuth,
+    possuiRetornoOAuth:
+      Boolean(codigoOAuth) ||
+      searchParams.has("error") ||
+      hashParams.has("access_token") ||
+      hashParams.has("error"),
+  };
+}
+
 function obterNomeUsuario(user) {
   const nomeMetadados =
     user?.user_metadata?.full_name ||
@@ -280,7 +300,7 @@ async function finalizarLoginUsuario(user, mensagemBoasVindas = true) {
   localStorage.removeItem(CHAVE_ADMIN_REDIRECT_MESSAGE);
 
   if (mensagemBoasVindas) {
-    mostrarAviso(`Bem-vindo, ${nomeUsuario}!`);
+    mostrarAviso(`Bem-vindo(a), ${nomeUsuario}!`);
   }
 
   setTimeout(() => {
@@ -291,14 +311,8 @@ async function finalizarLoginUsuario(user, mensagemBoasVindas = true) {
 }
 
 async function processarRetornoOAuth() {
-  const searchParams = new URLSearchParams(window.location.search);
-  const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ""));
-  const codigoOAuth = searchParams.get("code") || hashParams.get("code");
-  const possuiRetornoOAuth =
-    Boolean(codigoOAuth) ||
-    searchParams.has("error") ||
-    hashParams.has("access_token") ||
-    hashParams.has("error");
+  const { searchParams, hashParams, codigoOAuth, possuiRetornoOAuth } =
+    obterDadosRetornoOAuth();
 
   if (!possuiRetornoOAuth) {
     return;
@@ -363,8 +377,12 @@ async function redirecionarSessaoAtiva() {
 }
 
 _supabase.auth.onAuthStateChange((event, session) => {
+  if (modoTrocarConta) {
+    return;
+  }
+
   if ((event === "SIGNED_IN" || event === "INITIAL_SESSION") && session?.user) {
-    finalizarLoginUsuario(session.user, false);
+    finalizarLoginUsuario(session.user, obterDadosRetornoOAuth().possuiRetornoOAuth);
   }
 });
 
@@ -479,6 +497,25 @@ loginForm?.addEventListener("submit", async (event) => {
   await finalizarLoginUsuario(data.user);
 });
 
-setMode("signin");
-consumirAvisosPendentes();
-processarRetornoOAuth().then(redirecionarSessaoAtiva);
+async function iniciarPaginaLogin() {
+  setMode("signin");
+  consumirAvisosPendentes();
+
+  if (modoTrocarConta) {
+    limparSessaoLocal();
+
+    try {
+      await _supabase.auth.signOut();
+    } catch (erro) {
+      console.warn("Nao foi possivel limpar a sessao para trocar de conta:", erro);
+    }
+
+    window.history.replaceState(null, document.title, window.location.pathname);
+    return;
+  }
+
+  await processarRetornoOAuth();
+  await redirecionarSessaoAtiva();
+}
+
+iniciarPaginaLogin();

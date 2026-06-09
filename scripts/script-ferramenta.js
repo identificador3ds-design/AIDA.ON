@@ -10,6 +10,9 @@ const CONFIG_ADMIN_PADRAO = {
 const favicon = document.getElementById('favicon');
 
 function updateFavicon() {
+  if (!favicon) {
+    return;
+  }
 
   if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
     favicon.href = '../assets/images/AIDABranco.ico';

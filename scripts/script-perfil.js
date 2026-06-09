@@ -17,6 +17,9 @@ const CONFIG_ADMIN_PADRAO = {
 const favicon = document.getElementById('favicon');
 
 function updateFavicon() {
+  if (!favicon) {
+    return;
+  }
 
   if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
     favicon.href = '../assets/images/AIDABranco.ico';
@@ -27,6 +30,25 @@ function updateFavicon() {
 
 
 updateFavicon();
+
+function limparSessaoLocal() {
+  localStorage.removeItem("usuarioNome");
+  localStorage.removeItem("usuarioEmail");
+  localStorage.removeItem("usuarioTipo");
+}
+
+async function sairParaLogin(destino = "./index-login.html") {
+  limparSessaoLocal();
+
+  try {
+    await _supabase.auth.signOut();
+  } catch (erro) {
+    console.warn("Nao foi possivel encerrar a sessao do Supabase:", erro);
+  }
+
+  window.location.href = destino;
+}
+
 function obterAdminConfig() {
   try {
     const salvo = JSON.parse(localStorage.getItem(CHAVE_ADMIN_CONFIG) || "{}");
@@ -197,9 +219,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   if (contaAtualSemAcesso()) {
-    localStorage.removeItem("usuarioNome");
-    localStorage.removeItem("usuarioEmail");
-    localStorage.removeItem("usuarioTipo");
+    limparSessaoLocal();
     localStorage.setItem(
       CHAVE_LOGIN_FEEDBACK,
       "Seu acesso foi bloqueado pelo administrador."
@@ -225,6 +245,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const editEmailInput = document.getElementById("edit-profile-email");
   const editFeedback = document.getElementById("profile-edit-feedback");
   const logoutLink = document.getElementById("logout-link");
+  const switchAccountLink = document.getElementById("switch-account-link");
   const adminLink = document.createElement("a");
   const rotuloPerfil = tipoSalvo === "admin" ? "Administrador" : "Usuario";
   let nomeExibicao = tipoSalvo === "admin" ? "Admin" : nomeSalvo || "Usuario";
@@ -362,10 +383,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   if (logoutLink) {
-    logoutLink.addEventListener("click", () => {
-      localStorage.removeItem("usuarioNome");
-      localStorage.removeItem("usuarioEmail");
-      localStorage.removeItem("usuarioTipo");
+    logoutLink.addEventListener("click", (event) => {
+      event.preventDefault();
+      sairParaLogin("./index-login.html");
+    });
+  }
+
+  if (switchAccountLink) {
+    switchAccountLink.addEventListener("click", (event) => {
+      event.preventDefault();
+      sairParaLogin("./index-login.html?trocar_conta=1");
     });
   }
 });

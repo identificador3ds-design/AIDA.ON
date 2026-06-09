@@ -245,6 +245,18 @@
   border-color: rgba(110, 35, 35, 0.2);
 }
 
+.switch-account-card {
+  grid-column: span 2;
+  background: linear-gradient(135deg, #1f526d 0%, #164052 100%);
+  border-color: rgba(112, 190, 220, 0.18);
+}
+
+.switch-account-card:hover,
+.switch-account-card:focus-visible {
+  border-color: rgba(112, 190, 220, 0.32);
+  background: linear-gradient(135deg, #265f7e 0%, #1b4d62 100%);
+}
+
 .logout-card:hover,
 .logout-card:focus-visible {
   border-color: rgba(110, 35, 35, 0.32);
@@ -516,6 +528,10 @@
   }
 
   .logout-card {
+    grid-column: auto;
+  }
+
+  .switch-account-card {
     grid-column: auto;
   }
 

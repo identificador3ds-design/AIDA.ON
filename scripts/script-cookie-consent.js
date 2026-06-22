@@ -34,6 +34,10 @@
         left: 50%;
         bottom: 18px;
         width: min(760px, calc(100% - 28px));
+        height: auto;
+        min-height: 0;
+        margin: 0;
+        box-sizing: border-box;
         transform: translateX(-50%);
         z-index: 3000;
         display: grid;

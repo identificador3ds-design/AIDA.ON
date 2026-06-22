@@ -3,20 +3,23 @@
     return;
   }
 
-  let recarregandoPorNovoServiceWorker = false;
+  const hostLocal = ["localhost", "127.0.0.1"].includes(window.location.hostname);
+  if (hostLocal) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker
+        .getRegistrations()
+        .then((registrations) => registrations.forEach((registration) => registration.unregister()))
+        .catch((error) => {
+          console.warn("Nao foi possivel desregistrar o service worker local:", error);
+        });
+    });
+    return;
+  }
+
   const currentScript = document.currentScript;
   const serviceWorkerUrl = currentScript
     ? new URL("../service-worker.js", currentScript.src)
     : new URL("../service-worker.js", window.location.href);
-
-  navigator.serviceWorker.addEventListener("controllerchange", () => {
-    if (recarregandoPorNovoServiceWorker) {
-      return;
-    }
-
-    recarregandoPorNovoServiceWorker = true;
-    window.location.reload();
-  });
 const favicon = document.getElementById('favicon');
 
 function updateFavicon() {

@@ -13,7 +13,7 @@ body {
   place-items: center;
   overflow: hidden;
 
-    background-image: url(../../assets/images/FundoVerde.png);
+    background-image: url(../assets/images/FundoVerde.png);
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;

@@ -11,7 +11,7 @@
 .maintenance-page::before {
   background:
     linear-gradient(180deg, rgba(8, 31, 29, 0.82), rgba(11, 43, 40, 0.9)),
-    url("../../assets/images/FundoAlternativo.png") center/cover no-repeat;
+    url("../assets/images/FundoAlternativo.png") center/cover no-repeat;
   opacity: 0.62;
 }
 

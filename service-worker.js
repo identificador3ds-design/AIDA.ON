@@ -1,5 +1,5 @@
-const STATIC_CACHE = "aida-static-v14";
-const RUNTIME_CACHE = "aida-runtime-v14";
+const STATIC_CACHE = "aida-static-v17";
+const RUNTIME_CACHE = "aida-runtime-v17";
 
 const APP_SHELL = [
   "./",
@@ -62,18 +62,6 @@ self.addEventListener("activate", (event) => {
         )
       )
       .then(() => self.clients.claim())
-      .then(() => self.clients.matchAll({ type: "window" }))
-      .then((clientList) =>
-        Promise.all(
-          clientList.map((client) => {
-            if ("navigate" in client) {
-              return client.navigate(client.url);
-            }
-
-            return Promise.resolve();
-          })
-        )
-      )
   );
 });
 

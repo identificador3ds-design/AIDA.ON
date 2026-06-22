@@ -37,7 +37,7 @@ body::before {
     height: 100%;
     background: 
     linear-gradient(180deg, rgba(7, 29, 27, 0.74), rgba(6, 26, 24, 0.88)),
-    url("../../assets/images/FundoAlternativo.png") center/cover no-repeat;
+    url("../assets/images/FundoAlternativo.png") center/cover no-repeat;
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;

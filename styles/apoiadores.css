@@ -2,7 +2,7 @@
   background:
     linear-gradient(to bottom, #0d312d 0%, rgba(13, 49, 45, 0) 18%),
     linear-gradient(180deg, rgba(15, 31, 34, 0.66), rgba(16, 64, 59, 0.56)),
-    url("../../assets/images/FUNDO2.png") center/cover no-repeat fixed;
+    url("../assets/images/FUNDO2.png") center/cover no-repeat fixed;
 }
 
 .page-apoiadores .cabecalho {
@@ -58,8 +58,8 @@
 
 .apoio-resumo {
   padding: 28px;
-  border-left: 1px solid rgba(229, 231, 235, 0.18);
-  background: linear-gradient(180deg, rgba(229, 231, 235, 0.08), rgba(209, 213, 219, 0.03));
+  border-left: 1px solid rgba(42, 55, 39, 0.2);
+  background: linear-gradient(180deg, rgba(24, 40, 31, 0.08), rgba(21, 32, 23, 0.03));
 }
 
 .apoio-resumo span {
@@ -88,7 +88,7 @@
   background:
     linear-gradient(to bottom, #0f3833 0%, rgba(15, 56, 51, 0) 16%),
     linear-gradient(180deg, rgba(15, 31, 34, 0.66), rgba(16, 64, 59, 0.56)),
-    url("../../assets/images/Frame 18.png") center/cover no-repeat;
+    url("../assets/images/Frame 18.png") center/cover no-repeat;
 }
 
 .apoio-section-head {
@@ -108,15 +108,15 @@
   grid-template-columns: minmax(170px, 0.35fr) minmax(0, 1fr) auto;
   gap: 18px;
   align-items: center;
-  border-top: 1px solid rgba(229, 231, 235, 0.14);
-  border-bottom: 1px solid rgba(229, 231, 235, 0.08);
+  border-top: 1px solid rgba(42, 55, 39, 0.2);
+  border-bottom: 1px solid rgba(31, 40, 29, 0.2);
   background: rgba(229, 231, 235, 0.05);
   transition: transform 0.25s ease, background 0.25s ease, border-color 0.25s ease;
 }
 
 .apoio-partner:hover {
   transform: translateY(-2px);
-  border-color: rgba(229, 231, 235, 0.2);
+  border-color: rgba(42, 55, 39, 0.2);
   background: rgba(229, 231, 235, 0.08);
 }
 
@@ -178,7 +178,7 @@
 
   .apoio-resumo {
     border-left: 0;
-    border-top: 1px solid rgba(229, 231, 235, 0.18);
+    border-top: 1px solid rgba(24, 48, 27, 0.18);
   }
 }
 
@@ -232,5 +232,123 @@
 
   .apoio-actions {
     width: 100%;
+  }
+}
+
+.page-apoiadores {
+  --bg-dark: #0c312e;
+  --bg-mid: #10403b;
+  --bg-light: #19675f;
+
+  background-color: var(--bg-dark);
+
+  background-image:
+    linear-gradient(
+      180deg,
+      rgba(12, 49, 46, 0.98) 0%,
+      rgba(12, 49, 46, 0.94) 28%,
+      rgba(16, 64, 59, 0.92) 58%,
+      rgba(25, 103, 95, 0.84) 100%
+    ),
+    linear-gradient(
+      90deg,
+      rgba(12, 49, 46, 0.96) 0%,
+      rgba(16, 64, 59, 0.84) 48%,
+      rgba(12, 49, 46, 0.88) 100%
+    ),
+    url("../assets/images/FUNDO2.png");
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+
+  background-blend-mode: normal, multiply, multiply;
+}
+
+/* Cabeçalho mantendo verde da identidade */
+.page-apoiadores .cabecalho {
+  background: rgba(25, 103, 95, 0.88);
+}
+
+/* Card lateral do hero */
+.apoio-resumo {
+  padding: 28px;
+  border-left: 1px solid rgba(25, 103, 95, 0.42);
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(25, 103, 95, 0.26),
+      rgba(16, 64, 59, 0.22),
+      rgba(12, 49, 46, 0.28)
+    );
+
+  box-shadow: 0 24px 80px rgba(12, 49, 46, 0.32);
+}
+
+/* Seção da lista de apoiadores */
+.apoio-lista {
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(12, 49, 46, 0.98) 0%,
+      rgba(16, 64, 59, 0.88) 34%,
+      rgba(25, 103, 95, 0.62) 100%
+    ),
+    url("../assets/images/Frame 18.png") center/cover no-repeat;
+}
+
+/* Cards dos apoiadores */
+.apoio-partner {
+  border-top: 1px solid rgba(25, 103, 95, 0.34);
+  border-bottom: 1px solid rgba(12, 49, 46, 0.42);
+  background: rgba(16, 64, 59, 0.34);
+}
+
+.apoio-partner:hover {
+  border-color: rgba(25, 103, 95, 0.62);
+  background: rgba(25, 103, 95, 0.28);
+}
+
+/* Seção de contato */
+.apoio-contato {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(16, 64, 59, 0.96) 0%,
+      rgba(12, 49, 46, 0.98) 100%
+    );
+}
+
+/* Linha superior da área de contato */
+.apoio-contato-inner {
+  border-top: 1px solid rgba(25, 103, 95, 0.42);
+}
+
+/* Footer mantendo a mesma identidade */
+.page-apoiadores footer,
+.page-apoiadores .rodape {
+  background: #0c312e;
+}
+
+/* Ajuste mobile */
+@media (max-width: 1000px) {
+  .apoio-resumo {
+    border-left: 0;
+    border-top: 1px solid rgba(25, 103, 95, 0.36);
+  }
+}
+
+@media (max-width: 900px) {
+  .page-apoiadores {
+    background:
+      linear-gradient(
+        to bottom,
+        rgba(12, 49, 46, 0.98),
+        rgba(16, 64, 59, 0.9),
+        rgba(25, 103, 95, 0.64)
+      ),
+      url("../assets/images/FUNDO2.png") center/cover no-repeat scroll;
   }
 }

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#10403b">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="AIDA.ON">
@@ -15,6 +16,14 @@
     <link rel="icon" id="favicon" type="image/png" href="../assets/images/AIDABranco.ico">
     <link rel="stylesheet" href="../styles/style-shared-theme.css">
     <link rel="stylesheet" href="../styles/style-analise.css">
+    <script>
+        if (["localhost", "127.0.0.1"].includes(location.hostname) && "serviceWorker" in navigator) {
+            navigator.serviceWorker.getRegistrations().then((regs) => regs.forEach((reg) => reg.unregister()));
+            if ("caches" in window) {
+                caches.keys().then((keys) => keys.forEach((key) => caches.delete(key)));
+            }
+        }
+    </script>
 </head>
 
 <body class="aida-shell analysis-page">
@@ -83,6 +92,10 @@
                 </div>
 
                 <a href="./index-seleciona.html" class="inline-link">Voltar para escolher outra imagem</a>
+
+                <div id="statusAnalise" class="analysis-runtime-status" aria-live="polite">
+                    Carregando script da analise...
+                </div>
             </section>
 
             
@@ -214,10 +227,7 @@
         Tutorial
     </button>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script src="../scripts/script-pwa-register.js"></script>
     <script src="../scripts/script-cookie-consent.js"></script>
-    <script src="../scripts/script-analise.js"></script>
+    <script src="../scripts/script-analise.js?v=20260616-analise-2"></script>
 </body>
 </html>

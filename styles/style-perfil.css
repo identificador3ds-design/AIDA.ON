@@ -1,6 +1,6 @@
 .profile-page::before {
   background:
-    linear-gradient(180deg, rgba(7, 29, 27, 0.78), rgba(11, 43, 40, 0.88)),
+    linear-gradient(180deg, rgba(7, 29, 27, 0.78), rgba(11, 43, 21, 0.88)),
     url("../assets/images/bg.png") center/cover no-repeat;
   opacity: 0.58;
 }
@@ -37,8 +37,8 @@
   place-items: center;
   flex: 0 0 106px;
   background:
-    radial-gradient(circle at 34% 28%, rgba(229, 231, 235, 0.22), rgba(143, 216, 183, 0.1) 42%, rgba(12, 49, 46, 0.92)),
-    linear-gradient(135deg, #19675f, #0c312e);
+    radial-gradient(circle at 34% 28%, #152c23 0%, #0f2823 52%, #265140 100%),
+    linear-gradient(135deg, #0f3d39, #0c312e);
   border: 1px solid rgba(229, 231, 235, 0.22);
   box-shadow: 0 18px 34px rgba(4, 8, 20, 0.28);
 }
@@ -83,7 +83,7 @@
   padding: 16px;
   border-radius: 18px;
   border: 1px solid rgba(229, 231, 235, 0.12);
-  background: rgba(229, 231, 235, 0.08);
+  background: #0f2823;
 }
 
 .profile-stat span,
@@ -106,12 +106,85 @@
   display: grid;
   grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
   gap: 22px;
-  align-items: start;
+  align-items: stretch;
 }
 
 .profile-details,
 .profile-actions-panel {
+  height: 100%;
   padding: 24px;
+}
+
+.profile-delete-zone {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 14px;
+}
+
+.delete-account-button {
+  width: auto;
+  min-width: 150px;
+  min-height: 42px;
+  padding: 0 14px;
+  flex: 0 0 auto;
+  background: linear-gradient(135deg, #a52f2f, #771f1f);
+  color: #ffffff;
+  border-color: rgba(255, 190, 190, 0.32);
+}
+
+.profile-delete-zone .delete-account-button {
+  min-width: 130px;
+  min-height: 42px;
+  padding: 0 10px;
+}
+
+.delete-account-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.52;
+}
+
+.profile-modal-dialog.delete-account-dialog {
+  width: min(410px, 100%);
+  padding: 22px 20px 18px;
+  border: 1px solid rgba(143, 216, 183, 0.24);
+  background: linear-gradient(135deg, #152c23 0%, #0f2823 52%, #265140 100%);
+}
+
+.delete-account-dialog .section-tag {
+  color: #8fd8b7;
+}
+
+.delete-account-dialog h2 {
+  margin-top: 8px;
+}
+
+.delete-account-description {
+  margin: 0 0 10px;
+  color: rgba(220, 242, 231, 0.82);
+  line-height: 1.55;
+}
+
+.delete-account-list {
+  display: grid;
+  gap: 7px;
+  margin: 0 0 16px;
+  padding-left: 22px;
+  color: rgba(226, 244, 235, 0.88);
+  line-height: 1.4;
+}
+
+.delete-account-list li::marker {
+  color: #8fd8b7;
+}
+
+.delete-account-warning {
+  margin: 0 0 18px;
+  padding: 12px 14px;
+  border: 1px solid rgba(255, 128, 128, 0.2);
+  border-radius: 12px;
+  background: rgba(75, 13, 13, 0.34);
+  color: #ffd1d1;
+  line-height: 1.45;
 }
 
 .section-heading {
@@ -166,8 +239,8 @@
   gap: 10px;
   border: 1px solid rgba(229, 231, 235, 0.14);
   border-radius: 16px;
-  background: linear-gradient(135deg, #e5e7eb 0%, #c8d7d4 52%, #97bfaf 100%);
-  color: #0f3833;
+  background: linear-gradient(135deg, #152c23 0%, #0f2823 52%, #265140 100%);
+  color: #ffffff;
   box-shadow: 0 14px 28px rgba(4, 8, 20, 0.18);
   cursor: pointer;
   text-decoration: none;
@@ -184,13 +257,13 @@
 
 .profile-action-secondary {
   color: var(--neutral-strong);
-  background: rgba(229, 231, 235, 0.08);
+  background: linear-gradient(135deg, #152c23 0%, #0f2823 52%, #265140 100%);
   box-shadow: none;
 }
 
 .switch-account-card {
   color: #e5f7ff;
-  background: linear-gradient(135deg, #225d75, #164052);
+  background: linear-gradient(135deg, #091e1a, #09342a);
 }
 
 .logout-card {
@@ -238,8 +311,8 @@
 .profile-modal-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(3, 10, 12, 0.62);
-  backdrop-filter: blur(6px);
+  background: rgba(10, 35, 19, 0.62);
+  backdrop-filter: blur(10px);
 }
 
 .profile-modal-dialog {
@@ -248,7 +321,7 @@
   width: min(430px, 100%);
   padding: 24px 22px 20px;
   border-radius: 24px;
-  background: linear-gradient(180deg, rgba(16, 64, 59, 0.98), rgba(8, 29, 28, 0.98));
+  background: linear-gradient(135deg, #152c23 0%, #0f2823 52%, #265140 100%);
 }
 
 .profile-modal-dialog h2 {
@@ -261,7 +334,7 @@
   top: 10px;
   right: 12px;
   border: 0;
-  background: transparent;
+  background: linear-gradient(135deg, #152c23 0%, #0f2823 52%, #265140 100%);
   color: rgba(244, 248, 255, 0.78);
   font-size: 1.8rem;
   line-height: 1;
@@ -289,8 +362,8 @@
   min-height: 48px;
   padding: 0 14px;
   border-radius: 14px;
-  border: 1px solid rgba(229, 231, 235, 0.12);
-  background: rgba(7, 29, 27, 0.44);
+  border: 1px solid rgba(229, 235, 231, 0.12);
+  background: rgba(7, 29, 11, 0.44);
   color: #f4f8ff;
 }
 
@@ -366,4 +439,221 @@
   .profile-edit-actions {
     grid-template-columns: 1fr;
   }
+
+  .delete-account-button {
+    width: 100%;
+  }
+
+  .profile-delete-zone .delete-account-button {
+    width: auto;
+  }
+}
+/* Correção de paleta dos cards do perfil */
+:root {
+  --profile-card-rgb-1: 21, 44, 35;
+  --profile-card-rgb-2: 15, 40, 35;
+  --profile-card-rgb-3: 38, 81, 64;
+
+  --profile-card-gradient: linear-gradient(
+    135deg,
+    rgba(var(--profile-card-rgb-1), 0.96) 0%,
+    rgba(var(--profile-card-rgb-2), 0.92) 52%,
+    rgba(var(--profile-card-rgb-3), 0.86) 100%
+  );
+
+  --profile-card-gradient-soft: linear-gradient(
+    135deg,
+    rgba(var(--profile-card-rgb-1), 0.78) 0%,
+    rgba(var(--profile-card-rgb-2), 0.68) 52%,
+    rgba(var(--profile-card-rgb-3), 0.58) 100%
+  );
+
+  --profile-card-gradient-strong: linear-gradient(
+    135deg,
+    rgba(var(--profile-card-rgb-1), 1) 0%,
+    rgba(var(--profile-card-rgb-2), 0.96) 52%,
+    rgba(var(--profile-card-rgb-3), 0.9) 100%
+  );
+}
+
+.profile-hero,
+.profile-details,
+.profile-actions-panel {
+  background: var(--profile-card-gradient);
+  border: 1px solid rgba(229, 231, 235, 0.12);
+  box-shadow: 0 18px 42px rgba(4, 8, 20, 0.22);
+}
+
+.profile-stat {
+  background: var(--profile-card-gradient-soft);
+}
+
+.profile-info-item {
+  background: var(--profile-card-gradient-soft);
+}
+
+.profile-action,
+.profile-action-secondary,
+.switch-account-card,
+.logout-card {
+  background: var(--profile-card-gradient-strong);
+  color: #ffffff;
+}
+
+.profile-modal-dialog,
+.profile-modal-close {
+  background: var(--profile-card-gradient-strong);
+}
+
+.switch-account-card,
+.logout-card {
+  border-color: rgba(229, 231, 235, 0.14);
+}
+/* Fundo da página alinhado com a paleta do site */
+.profile-page {
+  background:
+    radial-gradient(circle at 18% 12%, rgba(25, 103, 95, 0.32) 0%, transparent 34%),
+    radial-gradient(circle at 82% 4%, rgba(38, 81, 64, 0.28) 0%, transparent 32%),
+    linear-gradient(180deg, #0c312e 0%, #10403b 52%, #0c312e 100%);
+}
+
+.profile-page::before {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(12, 49, 46, 0.82) 0%,
+      rgba(16, 64, 59, 0.76) 48%,
+      rgba(25, 103, 95, 0.64) 100%
+    ),
+    url("../assets/images/bg.png") center/cover no-repeat;
+  opacity: 0.42;
+}
+
+/* Remove hover dos cards */
+.profile-hero,
+.profile-details,
+.profile-actions-panel,
+.profile-stat,
+.profile-info-item,
+.profile-action,
+.profile-action-secondary,
+.switch-account-card,
+.logout-card {
+  transition: none;
+}
+
+.profile-hero:hover,
+.profile-details:hover,
+.profile-actions-panel:hover,
+.profile-stat:hover,
+.profile-info-item:hover,
+.profile-action:hover,
+.profile-action-secondary:hover,
+.switch-account-card:hover,
+.logout-card:hover {
+  transform: none;
+  border-color: rgba(229, 231, 235, 0.12);
+  box-shadow: inherit;
+}
+
+.profile-action:hover,
+.profile-action:focus-visible {
+  transform: none;
+  border-color: rgba(229, 231, 235, 0.14);
+  box-shadow: 0 14px 28px rgba(4, 8, 20, 0.18);
+  outline: none;
+}
+
+.profile-action-secondary:hover,
+.profile-action-secondary:focus-visible {
+  transform: none;
+  box-shadow: none;
+}
+/* Impede mudança de cor dos cards no hover */
+.profile-hero,
+.profile-details,
+.profile-actions-panel {
+  --profile-hover-bg: var(--profile-card-gradient);
+  background: var(--profile-hover-bg);
+}
+
+.profile-stat,
+.profile-info-item {
+  --profile-hover-bg: var(--profile-card-gradient-soft);
+  background: var(--profile-hover-bg);
+}
+
+.profile-action,
+.profile-action-secondary,
+.switch-account-card,
+.logout-card {
+  --profile-hover-bg: var(--profile-card-gradient-strong);
+  background: var(--profile-hover-bg);
+  color: #ffffff;
+}
+
+/* Hover, focus e active mantendo exatamente a mesma cor */
+.profile-hero:hover,
+.profile-details:hover,
+.profile-actions-panel:hover,
+.profile-stat:hover,
+.profile-info-item:hover,
+.profile-action:hover,
+.profile-action:focus-visible,
+.profile-action:active,
+.profile-action-secondary:hover,
+.profile-action-secondary:focus-visible,
+.profile-action-secondary:active,
+.switch-account-card:hover,
+.switch-account-card:focus-visible,
+.switch-account-card:active,
+.logout-card:hover,
+.logout-card:focus-visible,
+.logout-card:active {
+  background: var(--profile-hover-bg);
+  color: inherit;
+  transform: none;
+  filter: none;
+  opacity: 1;
+}
+
+/* Botões/cards clicáveis mantendo texto branco */
+.profile-action:hover,
+.profile-action:focus-visible,
+.profile-action:active,
+.profile-action-secondary:hover,
+.profile-action-secondary:focus-visible,
+.profile-action-secondary:active,
+.switch-account-card:hover,
+.switch-account-card:focus-visible,
+.switch-account-card:active,
+.logout-card:hover,
+.logout-card:focus-visible,
+.logout-card:active {
+  color: #ffffff;
+}
+
+.delete-account-button,
+.delete-account-button:hover,
+.delete-account-button:focus-visible,
+.delete-account-button:active {
+  background: linear-gradient(135deg, #a52f2f, #771f1f);
+  color: #ffffff;
+}
+/* Mantém o botão Sair com o gradiente vermelho original */
+.logout-card {
+  background: linear-gradient(135deg, #6e2323, #4d1a1a);
+  color: #ffe1e1;
+  border-color: rgba(229, 231, 235, 0.14);
+}
+
+/* Impede mudança de cor no hover do botão Sair */
+.logout-card:hover,
+.logout-card:focus-visible,
+.logout-card:active {
+  background: linear-gradient(135deg, #6e2323, #4d1a1a);
+  color: #ffe1e1;
+  transform: none;
+  filter: none;
+  opacity: 1;
 }

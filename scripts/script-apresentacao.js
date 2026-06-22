@@ -31,7 +31,7 @@ const members = [
     name: "Pedro",
     role: "UX/UI Designer & Lead Frontend",
     description:
-      "Responsável pela coleta, seleção e organização dos dados do projeto, garantindo qualidade, diversidade e consistÃªncia para testes e análises.",
+      "Responsável pela coleta, seleção e organização dos dados do projeto, garantindo qualidade, diversidade e consistência para testes e análises.",
     image: "../assets/images/pedrao-exec.png",
   },
 ];

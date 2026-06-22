@@ -37,6 +37,71 @@ function limparSessaoLocal() {
   localStorage.removeItem("usuarioTipo");
 }
 
+function limparDadosLocaisUsuario() {
+  limparSessaoLocal();
+  localStorage.removeItem("AIDA_ImagemSelecionada");
+  sessionStorage.removeItem("AIDA_ImagemSelecionada");
+
+  if (window.indexedDB) {
+    indexedDB.deleteDatabase("AIDA_ImagemSelecionada_DB");
+  }
+}
+
+async function removerEvidenciasUsuario(userId) {
+  const { data, error } = await _supabase.storage.from("evidencias").list(userId, {
+    limit: 1000,
+  });
+
+  if (error) {
+    throw error;
+  }
+
+  const caminhos = (data || [])
+    .filter((item) => item?.name && item.name !== ".emptyFolderPlaceholder")
+    .map((item) => `${userId}/${item.name}`);
+
+  if (!caminhos.length) {
+    return;
+  }
+
+  const { error: removeError } = await _supabase.storage.from("evidencias").remove(caminhos);
+
+  if (removeError) {
+    throw removeError;
+  }
+}
+
+async function excluirContaEDados() {
+  const {
+    data: { user },
+    error: userError,
+  } = await _supabase.auth.getUser();
+
+  if (userError || !user) {
+    throw new Error("Sua sessao expirou. Entre novamente para excluir a conta.");
+  }
+
+  await removerEvidenciasUsuario(user.id);
+
+  const { error } = await _supabase.rpc("excluir_minha_conta");
+
+  if (error) {
+    throw new Error(
+      error.message?.includes("excluir_minha_conta")
+        ? "A exclusao ainda nao esta configurada no servidor. Contate o suporte."
+        : error.message || "Nao foi possivel excluir sua conta agora."
+    );
+  }
+
+  limparDadosLocaisUsuario();
+
+  try {
+    await _supabase.auth.signOut({ scope: "local" });
+  } catch (erro) {
+    console.warn("A conta foi excluida, mas a sessao local ja estava encerrada:", erro);
+  }
+}
+
 async function sairParaLogin(destino = "./index-login.html") {
   limparSessaoLocal();
 
@@ -246,6 +311,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   const editFeedback = document.getElementById("profile-edit-feedback");
   const logoutLink = document.getElementById("logout-link");
   const switchAccountLink = document.getElementById("switch-account-link");
+  const deleteAccountZone = document.getElementById("profile-delete-zone");
+  const deleteAccountButton = document.getElementById("delete-account-button");
+  const deleteAccountModal = document.getElementById("delete-account-modal");
+  const deleteAccountForm = document.getElementById("delete-account-form");
+  const deleteAccountConfirmation = document.getElementById("delete-account-confirmation");
+  const deleteAccountFeedback = document.getElementById("delete-account-feedback");
+  const confirmDeleteAccount = document.getElementById("confirm-delete-account");
   const adminLink = document.createElement("a");
   const rotuloPerfil = tipoSalvo === "admin" ? "Administrador" : "Usuario";
   let nomeExibicao = tipoSalvo === "admin" ? "Admin" : nomeSalvo || "Usuario";
@@ -316,6 +388,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (event.key === "Escape" && editModal && !editModal.hidden) {
       fecharModalEdicao();
     }
+
+    if (event.key === "Escape" && deleteAccountModal && !deleteAccountModal.hidden) {
+      fecharModalExclusao();
+    }
   });
 
   if (editForm && editNameInput && editEmailInput && editFeedback) {
@@ -363,6 +439,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   if (tipoSalvo === "admin") {
+    if (deleteAccountZone) {
+      deleteAccountZone.hidden = true;
+    }
+
     adminLink.href = "./index-admin.html";
     adminLink.className = "profile-action glass-card";
     adminLink.innerHTML = `
@@ -380,6 +460,65 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (actions) {
       actions.insertBefore(adminLink, actions.firstChild);
     }
+  }
+
+  const fecharModalExclusao = () => {
+    if (!deleteAccountModal || !deleteAccountForm || !deleteAccountFeedback) {
+      return;
+    }
+
+    deleteAccountModal.hidden = true;
+    deleteAccountForm.reset();
+    deleteAccountFeedback.hidden = true;
+    deleteAccountFeedback.textContent = "";
+    deleteAccountFeedback.classList.remove("error");
+
+    if (confirmDeleteAccount) {
+      confirmDeleteAccount.disabled = true;
+    }
+  };
+
+  if (deleteAccountButton && deleteAccountModal && deleteAccountConfirmation) {
+    deleteAccountButton.addEventListener("click", () => {
+      deleteAccountModal.hidden = false;
+      deleteAccountConfirmation.focus();
+    });
+  }
+
+  document.querySelectorAll("[data-close-delete-modal]").forEach((elemento) => {
+    elemento.addEventListener("click", fecharModalExclusao);
+  });
+
+  if (deleteAccountConfirmation && confirmDeleteAccount) {
+    deleteAccountConfirmation.addEventListener("input", () => {
+      confirmDeleteAccount.disabled = deleteAccountConfirmation.value.trim() !== "EXCLUIR";
+    });
+  }
+
+  if (deleteAccountForm && deleteAccountConfirmation && deleteAccountFeedback && confirmDeleteAccount) {
+    deleteAccountForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      if (deleteAccountConfirmation.value.trim() !== "EXCLUIR") {
+        return;
+      }
+
+      confirmDeleteAccount.disabled = true;
+      deleteAccountConfirmation.disabled = true;
+      deleteAccountFeedback.hidden = false;
+      deleteAccountFeedback.textContent = "Excluindo seus dados. Aguarde...";
+      deleteAccountFeedback.classList.remove("error");
+
+      try {
+        await excluirContaEDados();
+        window.location.replace("./index-login.html?conta_excluida=1");
+      } catch (erro) {
+        deleteAccountConfirmation.disabled = false;
+        confirmDeleteAccount.disabled = false;
+        deleteAccountFeedback.textContent = erro.message || "Nao foi possivel excluir sua conta agora.";
+        deleteAccountFeedback.classList.add("error");
+      }
+    });
   }
 
   if (logoutLink) {

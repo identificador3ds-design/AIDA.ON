@@ -47,24 +47,38 @@
       <section class="profile-details glass-card" aria-label="Informacoes do usuario">
         <div class="section-heading">
           <span class="section-tag">Dados</span>
-          <h2>Informacoes do usuario</h2>
+          <h2>Informações do usuario</h2>
         </div>
 
         <div class="profile-info-card">
           <div class="profile-info-item">
             <span class="profile-info-label">Nome</span>
-            <strong id="profile-info-name">Usuario</strong>
+            <strong id="profile-info-name">Usuário</strong>
           </div>
           <div class="profile-info-item">
             <span class="profile-info-label">Email</span>
             <strong id="profile-info-email">usuarioaida@gmail.com</strong>
           </div>
         </div>
+
+        <div class="profile-delete-zone" id="profile-delete-zone">
+          <button type="button" class="profile-action delete-account-button" id="delete-account-button">
+            <span class="action-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M4 7H20" />
+                <path d="M9 7V4H15V7" />
+                <path d="M7 7L8 20H16L17 7" />
+                <path d="M10 11V16M14 11V16" />
+              </svg>
+            </span>
+            <strong>Excluir dados</strong>
+          </button>
+        </div>
       </section>
 
       <section class="profile-actions-panel glass-card" aria-label="Acoes do perfil">
         <div class="section-heading">
-          <span class="section-tag">Acoes</span>
+          <span class="section-tag">Ações</span>
           <h2>Acesso rapido</h2>
         </div>
 
@@ -98,16 +112,6 @@
               </svg>
             </span>
             <strong>Analisar</strong>
-          </a>
-
-          <a href="./index-apresentacao.html" class="profile-action profile-action-secondary">
-            <span class="action-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none">
-                <path d="M10 6L4 12L10 18" />
-                <path d="M5 12H20" />
-              </svg>
-            </span>
-            <strong>Voltar</strong>
           </a>
 
           <a href="./index-privacidade.html?from=perfil" class="profile-action profile-action-secondary">
@@ -147,6 +151,7 @@
         </div>
       </section>
     </section>
+
   </main>
 
   <div class="profile-modal" id="profile-edit-modal" hidden>
@@ -167,6 +172,39 @@
         <div class="profile-edit-actions">
           <button type="button" class="profile-action profile-action-secondary" data-close-profile-modal>Cancelar</button>
           <button type="submit" class="profile-action">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="profile-modal" id="delete-account-modal" hidden>
+    <div class="profile-modal-backdrop" data-close-delete-modal></div>
+    <div class="profile-modal-dialog delete-account-dialog glass-panel" role="dialog" aria-modal="true" aria-labelledby="delete-account-title" aria-describedby="delete-account-description">
+      <button type="button" class="profile-modal-close" aria-label="Fechar confirmacao" data-close-delete-modal>&times;</button>
+      <span class="section-tag">Acao irreversivel</span>
+      <h2 id="delete-account-title">Excluir conta e todos os dados?</h2>
+      <p id="delete-account-description" class="delete-account-description">
+        Ao continuar, os seguintes dados serao excluidos permanentemente:
+      </p>
+      <ul class="delete-account-list">
+        <li>Nome, email e demais dados de cadastro</li>
+        <li>Conta de acesso e sessao do usuario</li>
+        <li>Todo o historico de analises</li>
+        <li>Imagens e arquivos de evidencias armazenados</li>
+        <li>Dados temporarios salvos neste navegador</li>
+      </ul>
+      <p class="delete-account-warning">
+        Esta acao nao pode ser desfeita. Digite <strong>EXCLUIR</strong> para confirmar.
+      </p>
+      <form id="delete-account-form" class="profile-edit-form">
+        <label class="profile-edit-field">
+          <span>Confirmacao</span>
+          <input type="text" id="delete-account-confirmation" autocomplete="off" placeholder="Digite EXCLUIR" required>
+        </label>
+        <p class="profile-edit-feedback" id="delete-account-feedback" role="status" aria-live="polite" hidden></p>
+        <div class="profile-edit-actions">
+          <button type="button" class="profile-action profile-action-secondary" data-close-delete-modal>Cancelar</button>
+          <button type="submit" class="profile-action delete-account-button" id="confirm-delete-account" disabled>Excluir definitivamente</button>
         </div>
       </form>
     </div>

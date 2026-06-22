@@ -48,7 +48,7 @@ body::before {
   inset: 0;
   background:
     linear-gradient(180deg, rgba(9, 19, 22, 0.18), rgba(16, 30, 34, 0.34)),
-    url("../../assets/images/FUNDO.png") center/cover no-repeat;
+    url("../assets/images/FUNDO.png") center/cover no-repeat;
   opacity: 0.2;
   filter: saturate(0.72) contrast(1.02);
   pointer-events: none;
@@ -330,7 +330,7 @@ section {
     linear-gradient(to top, #0f3833 0%, rgba(15, 56, 51, 0) 16%),
     linear-gradient(180deg, rgba(15, 31, 34, 0.66), rgba(16, 64, 59, 0.56)),
     radial-gradient(circle at 78% 18%, rgba(209, 213, 219, 0.1), transparent 22%),
-    url("../../assets/images/FUNDO2.png") center/cover no-repeat;
+    url("../assets/images/FUNDO2.png") center/cover no-repeat;
 }
 
 .hero::before,
@@ -506,7 +506,7 @@ section {
 .sobre {
   padding: 100px 0;
   background:
-    url("../../assets/images/Frame 18.png") center/cover no-repeat;
+    url("../assets/images/Frame 18.png") center/cover no-repeat;
   background-attachment: fixed;
 }
 
@@ -624,7 +624,7 @@ section {
     linear-gradient(to top, #0f3833 0%, rgba(15, 56, 51, 0) 16%),
     linear-gradient(180deg, rgba(15, 31, 34, 0.66), rgba(16, 64, 59, 0.56)),
     radial-gradient(circle at 78% 18%, rgba(209, 213, 219, 0.1), transparent 22%),
-    url("../../assets/images/FUNDO2.png") center/cover no-repeat;
+    url("../assets/images/FUNDO2.png") center/cover no-repeat;
 }
 
 .func-shell {
@@ -716,8 +716,8 @@ section {
     linear-gradient(to top, #0f3833 0%, rgba(15, 56, 51, 0) 16%),
     linear-gradient(180deg, rgba(15, 31, 34, 0.66), rgba(16, 64, 59, 0.56)),
     radial-gradient(circle at 78% 18%, rgba(209, 213, 219, 0.1), transparent 22%),
-    url("../../assets/images/Frame 18.png") center/cover no-repeat,
-    url("../../assets/images/FUNDO.png") center/cover no-repeat;
+    url("../assets/images/Frame 18.png") center/cover no-repeat,
+    url("../assets/images/FUNDO.png") center/cover no-repeat;
   background-attachment: fixed;
 }
 
@@ -833,8 +833,8 @@ section {
     linear-gradient(to top, #0c312e 0%, rgba(12, 49, 46, 0) 16%),
     linear-gradient(180deg, rgba(14, 38, 40, 0.58), rgba(12, 49, 46, 0.76)),
     radial-gradient(circle at 72% 22%, rgba(209, 213, 219, 0.08), transparent 24%),
-    url("../../assets/images/bg.png") center/cover no-repeat,
-    url("../../assets/images/FUNDO2.png") center/cover no-repeat;
+    url("../assets/images/bg.png") center/cover no-repeat,
+    url("../assets/images/FUNDO2.png") center/cover no-repeat;
   background-attachment: fixed;
 }
 
@@ -966,8 +966,8 @@ section {
 .ferramenta {
   padding: 100px 0;
   background:
-    url("../../assets/images/Frame 18.png") center/cover no-repeat,
-    url("../../assets/images/FUNDO.png") center/cover no-repeat;
+    url("../assets/images/Frame 18.png") center/cover no-repeat,
+    url("../assets/images/FUNDO.png") center/cover no-repeat;
 }
 
 .ferramenta-container {

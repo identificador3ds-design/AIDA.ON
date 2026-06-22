@@ -1,15 +1,32 @@
-import base64
 import os
+import sys
 import traceback
+from pathlib import Path
 
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+from werkzeug.utils import secure_filename
 
-from fft import executar_analise_completa_fft
-from grad import executar_analise_gradiente
-from m4 import executar_analise_m4
-from marca_dagua import verificar_marca_dagua
-from metadados import verificar_ia_nos_metadados
+
+AIDA_MODELO_DIR = Path(__file__).resolve().parents[3] / "aida_modelo"
+if str(AIDA_MODELO_DIR) not in sys.path:
+    sys.path.insert(0, str(AIDA_MODELO_DIR))
+
+try:
+    from analisar_imagem import analisar_imagem
+    from config import (
+        EXTENSOES_ACEITAS,
+        TAMANHO_MAX_BYTES,
+        TAMANHO_MAX_MB,
+        UPLOADS_DIR,
+        criar_estrutura,
+    )
+    from historico import buscar_analise_por_id
+except ImportError as exc:
+    raise RuntimeError(
+        "Nao foi possivel carregar o metodo novo. Verifique se a pasta "
+        "'aida_modelo' esta ao lado da pasta 'AIDA.ON'."
+    ) from exc
 
 
 def inteiro_ambiente(nome, padrao):
@@ -21,162 +38,124 @@ def inteiro_ambiente(nome, padrao):
 
 def obter_origens_permitidas():
     valor = os.environ.get("ALLOWED_ORIGINS", "*").strip()
-
     if valor == "*":
         return "*"
-
     origens = [origem.strip() for origem in valor.split(",") if origem.strip()]
     return origens or "*"
 
 
 app = Flask(__name__)
-app.config["MAX_CONTENT_LENGTH"] = inteiro_ambiente("MAX_REQUEST_BYTES", 12 * 1024 * 1024)
-
+app.config["MAX_CONTENT_LENGTH"] = inteiro_ambiente("MAX_REQUEST_BYTES", TAMANHO_MAX_BYTES)
 CORS(app, resources={r"/*": {"origins": obter_origens_permitidas()}})
 
-MAX_IMAGE_BYTES = inteiro_ambiente("MAX_IMAGE_BYTES", 8 * 1024 * 1024)
 
-METODOS_PRINCIPAIS = {
-    "FFT": executar_analise_completa_fft,
-    "M4": executar_analise_m4,
-    "GRAD": executar_analise_gradiente,
-}
+def erro(mensagem, status=400):
+    return jsonify({"sucesso": False, "erro": mensagem}), status
 
 
-def normalizar_flag_analise(valor, padrao=True):
-    if valor is None:
-        return padrao
-
-    if isinstance(valor, bool):
-        return valor
-
-    if isinstance(valor, str):
-        return valor.strip().lower() not in {"false", "0", "nao", "não", "off"}
-
-    return bool(valor)
+def historico_habilitado():
+    valor = request.form.get("historico", "true")
+    return str(valor).strip().lower() in {"true", "1", "sim", "on", "yes"}
 
 
-def decodificar_imagem_base64(valor):
-    if not isinstance(valor, str) or not valor.strip():
-        raise ValueError("Imagem invalida.")
+def caminho_upload_disponivel(nome_original, extensao):
+    nome_seguro = secure_filename(nome_original) or f"imagem{extensao}"
+    caminho = UPLOADS_DIR / nome_seguro
+    contador = 1
 
-    imagem_base64 = valor.strip()
-    dados_base64 = imagem_base64.split(",", 1)[1] if "," in imagem_base64 else imagem_base64
+    while caminho.exists():
+        caminho = UPLOADS_DIR / f"{Path(nome_seguro).stem}_{contador}{extensao}"
+        contador += 1
 
-    try:
-        img_bytes = base64.b64decode(dados_base64, validate=True)
-    except Exception as erro:
-        raise ValueError("Imagem em base64 invalida.") from erro
-
-    if not img_bytes:
-        raise ValueError("Imagem vazia.")
-
-    if len(img_bytes) > MAX_IMAGE_BYTES:
-        raise ValueError("Imagem excede o tamanho maximo permitido.")
-
-    return img_bytes, imagem_base64
+    return caminho
 
 
 @app.errorhandler(413)
 def payload_grande(_erro):
-    return jsonify({
-        "status": "erro",
-        "mensagem": "Arquivo ou requisicao excede o tamanho maximo permitido.",
-    }), 413
+    return erro(f"A imagem ultrapassa o limite de {TAMANHO_MAX_MB} MB.", 413)
 
 
 @app.route("/", methods=["GET"])
 def home():
-    return "Servidor AIDA.ON online e pronto para analise.", 200
+    return jsonify(
+        {
+            "sucesso": True,
+            "mensagem": "Servidor AIDA.ON online usando o metodo novo de identificacao.",
+            "modelo": str(AIDA_MODELO_DIR),
+        }
+    )
 
 
 @app.route("/analisar", methods=["POST"])
 def analisar():
+    criar_estrutura()
+
+    if "imagem" not in request.files:
+        return erro("Nenhuma imagem foi enviada.")
+
+    arquivo = request.files["imagem"]
+    if not arquivo or arquivo.filename == "":
+        return erro("Arquivo de imagem invalido.")
+
+    extensao = Path(arquivo.filename).suffix.lower()
+    if extensao not in EXTENSOES_ACEITAS:
+        return erro(f"Formato invalido. Use: {', '.join(sorted(EXTENSOES_ACEITAS))}")
+
+    arquivo.seek(0, 2)
+    tamanho = arquivo.tell()
+    arquivo.seek(0)
+    if tamanho > TAMANHO_MAX_BYTES:
+        return erro(f"A imagem ultrapassa o limite de {TAMANHO_MAX_MB} MB.")
+
+    salvar_historico = historico_habilitado()
+    caminho = caminho_upload_disponivel(arquivo.filename, extensao)
+    arquivo.save(caminho)
+
     try:
-        data = request.get_json(silent=True)
-
-        if not data or "imagem" not in data:
-            return jsonify({"status": "erro", "mensagem": "Nenhuma imagem enviada"}), 400
-
-        metodo_escolhido = data.get("metodo")
-        analisar_marca_dagua = normalizar_flag_analise(data.get("analisarMarcaDagua"), True)
-        analisar_metadados = normalizar_flag_analise(data.get("analisarMetadados"), True)
-
-        print(f"[DEBUG] Metodo recebido no backend: {metodo_escolhido}")
-        print(
-            f"[DEBUG] Opcoes auxiliares - marca d'agua: {analisar_marca_dagua}, "
-            f"metadados: {analisar_metadados}"
+        resultado = analisar_imagem(
+            caminho,
+            historico_habilitado=salvar_historico,
+            imagem_mantida=salvar_historico,
         )
 
-        if not metodo_escolhido:
-            return jsonify({"status": "erro", "mensagem": "Metodo nao especificado"}), 400
+        if not salvar_historico and caminho.exists():
+            caminho.unlink()
 
-        img_bytes, image_full_b64 = decodificar_imagem_base64(data.get("imagem"))
-
-        if analisar_marca_dagua:
-            print("[DEBUG] Verificando marca d'agua...")
-            foi_detectado_marca, nome_ia_marca, dados_marca = verificar_marca_dagua(img_bytes)
-
-            if foi_detectado_marca:
-                print("[DEBUG] Detectado por MARCA D'AGUA")
-                return jsonify({
-                    "status": "sucesso",
-                    "imagem_fft": image_full_b64,
-                    "probabilidade": "100%",
-                    "energia": "N/A",
-                    "metodo": f"Marca Visual ({nome_ia_marca})",
-                    "marca_visual": dados_marca,
-                    "veredito": "IA DETECTADA",
-                })
-        else:
-            print("[DEBUG] Verificacao de marca d'agua ignorada pelo usuario.")
-
-        if analisar_metadados:
-            print("[DEBUG] Verificando metadados...")
-            foi_detectado_meta, nome_ia_meta = verificar_ia_nos_metadados(img_bytes)
-
-            if foi_detectado_meta:
-                print("[DEBUG] Detectado por METADADOS")
-                return jsonify({
-                    "status": "sucesso",
-                    "imagem_fft": image_full_b64,
-                    "probabilidade": "100%",
-                    "energia": "N/A",
-                    "metodo": f"Metadados ({nome_ia_meta})",
-                    "veredito": "IA DETECTADA",
-                })
-        else:
-            print("[DEBUG] Verificacao de metadados ignorada pelo usuario.")
-
-        print(f"[DEBUG] Metodos disponiveis: {list(METODOS_PRINCIPAIS.keys())}")
-
-        if metodo_escolhido not in METODOS_PRINCIPAIS:
-            print(f"[DEBUG] Metodo '{metodo_escolhido}' nao encontrado.")
-            return jsonify({
-                "status": "erro",
-                "mensagem": f"Metodo '{metodo_escolhido}' nao suportado",
-            }), 400
-
-        print(f"[DEBUG] Executando metodo: {metodo_escolhido}")
-        resultado = METODOS_PRINCIPAIS[metodo_escolhido](img_bytes)
-
-        print(f"[DEBUG] Resultado - metodo retornado: {resultado.get('metodo')}")
-        print(f"[DEBUG] Resultado - probabilidade: {resultado.get('probabilidade')}")
-
-        return jsonify(resultado)
-
-    except ValueError as erro:
-        return jsonify({"status": "erro", "mensagem": str(erro)}), 400
-    except Exception as erro:
-        print(f"[DEBUG] Erro no processamento: {erro}")
+        return jsonify(
+            {
+                "sucesso": True,
+                "id_analise": resultado["id_analise"],
+                "resultado": resultado["resultado"],
+                "probabilidade_real": round(resultado["probabilidade_real"], 6),
+                "probabilidade_ia": round(resultado["probabilidade_ia"], 6),
+                "confianca": resultado["confianca"],
+                "explicacao": resultado["explicacao"],
+                "modelo_utilizado": resultado["modelo_utilizado"],
+                "historico_habilitado": salvar_historico,
+                "imagem_mantida_no_historico": salvar_historico,
+                "relatorio_json": resultado["relatorio_json"],
+                "relatorio_txt": resultado.get("relatorio_txt"),
+                "principais_metricas": resultado.get("principais_metricas", {}),
+            }
+        )
+    except Exception as exc:
+        if caminho.exists() and not salvar_historico:
+            caminho.unlink()
+        print("[AIDA.ON] Erro ao processar imagem com o metodo novo:", exc)
         traceback.print_exc()
-        return jsonify({
-            "status": "erro",
-            "mensagem": "Nao foi possivel processar a imagem agora.",
-        }), 500
+        return erro(str(exc), 500)
+
+
+@app.route("/analise/<id_analise>", methods=["GET"])
+def analise_por_id(id_analise):
+    registro = buscar_analise_por_id(id_analise)
+    if not registro:
+        return erro("Analise nao encontrada.", 404)
+    return jsonify({"sucesso": True, "analise": registro})
 
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
+    criar_estrutura()
+    port = inteiro_ambiente("PORT", 5000)
     debug = os.environ.get("FLASK_DEBUG", "false").strip().lower() in {"1", "true", "sim", "yes"}
     app.run(host="0.0.0.0", port=port, debug=debug)

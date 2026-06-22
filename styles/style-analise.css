@@ -1,7 +1,7 @@
 ﻿.analysis-page::before {
   background:
     linear-gradient(180deg, rgba(8, 31, 29, 0.82), rgba(11, 43, 40, 0.9)),
-  url("../../assets/images/FundoAlternativo.png") center/cover no-repeat;
+  url("../assets/images/FundoAlternativo.png") center/cover no-repeat;
   opacity: 0.72;
 }
 
@@ -357,6 +357,26 @@
   font-weight: 700;
   text-decoration: underline;
   text-underline-offset: 3px;
+}
+
+.analysis-runtime-status {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(229, 231, 235, 0.12);
+  background: rgba(8, 31, 29, 0.62);
+  color: var(--neutral);
+  line-height: 1.45;
+}
+
+.analysis-runtime-status[data-tipo="sucesso"] {
+  border-color: rgba(143, 216, 183, 0.38);
+  color: #d9ffef;
+}
+
+.analysis-runtime-status[data-tipo="erro"] {
+  border-color: rgba(255, 145, 145, 0.46);
+  color: #ffd6d6;
 }
 
 .grupo-botoes {

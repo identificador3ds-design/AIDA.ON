@@ -21,6 +21,8 @@ Este documento e um ponto de partida tecnico para adequacao do projeto. Ele nao 
 - Imagem selecionada migrada de `localStorage` para `sessionStorage`.
 - Historico de analise passou a ser opcional e desligado por padrao.
 - Limpeza do historico agora tenta remover tambem arquivos do bucket `evidencias`.
+- Perfil permite excluir cadastro, autenticacao, historico, evidencias e dados locais do usuario.
+- Funcao protegida de exclusao disponibilizada em `docs/supabase-excluir-conta.sql`.
 - Pagina de historico teve HTML duplicado corrigido e saidas de dados escapadas.
 - Backend Flask recebeu limite de payload, validacao basica de base64 e CORS configuravel por ambiente.
 - Senha administrativa hard-coded no JavaScript foi removida; o admin agora deve autenticar pelo Supabase.

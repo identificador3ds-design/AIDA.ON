@@ -1,6 +1,12 @@
 flask
 flask-cors
 numpy
-opencv-python-headless
+opencv-python
+pandas
 Pillow
+pillow-heif
+scikit-learn
+joblib
 matplotlib
+seaborn
+werkzeug

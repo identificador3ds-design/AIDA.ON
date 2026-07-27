@@ -6,6 +6,7 @@ const CHAVE_IMAGEM_SELECIONADA = "AIDA_ImagemSelecionada";
 const DB_IMAGEM_SELECIONADA = "AIDA_ImagemSelecionada_DB";
 const STORE_IMAGEM_SELECIONADA = "imagem";
 const URLS_API_ANALISAR = [
+  "COLE_AQUI_A_URL_DO_RENDER/analisar", // Exemplo: "https://sua-api.onrender.com/analisar"
   "http://127.0.0.1:5000/analisar",
   "http://localhost:5000/analisar",
 ];
@@ -256,7 +257,7 @@ async function executarAnalise(event) {
   const salvarNoHistorico = checkSalvarHistorico?.checked ?? true;
   const formData = new FormData();
   formData.append("imagem", imagemAtual);
-  formData.append("historico", salvarNoHistorico ? "true" : "false");
+  formData.append("historico_habilitado", salvarNoHistorico ? "true" : "false");
 
   try {
     registrarStatus("Enviando imagem para a API Python na porta 5000...");

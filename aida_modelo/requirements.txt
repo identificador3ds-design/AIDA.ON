@@ -1,0 +1,12 @@
+numpy
+pandas
+opencv-python
+Pillow
+pillow-heif
+scikit-learn
+joblib
+matplotlib
+seaborn
+flask
+flask-cors
+werkzeug

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>AIDA.ON API Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 760px; margin: 32px auto; padding: 0 16px; line-height: 1.45; }
+    label, button { display: block; margin-top: 12px; }
+    pre { background: #f4f4f4; padding: 12px; overflow: auto; }
+  </style>
+</head>
+<body>
+  <h1>AIDA.ON - teste técnico</h1>
+  <p>Envie uma imagem de até 15 MB. Formatos aceitos: JPG, JPEG, PNG, WEBP, BMP, HEIC e AVIF.</p>
+  <p>Privacidade: a imagem será usada para análise estatística. Se o histórico estiver desativado, ela será apagada após o processamento. Se estiver ativado, os dados da análise serão salvos para consulta posterior.</p>
+
+  <form id="formAnalise">
+    <label>Imagem <input type="file" name="imagem" accept=".jpg,.jpeg,.png,.webp,.bmp,.heic,.avif" required></label>
+    <label><input type="checkbox" name="historico" checked> Manter histórico e imagem enviada</label>
+    <button type="submit">Enviar para análise</button>
+  </form>
+
+  <h2>Resultado</h2>
+  <div id="resultado"></div>
+
+  <h2>Buscar análise</h2>
+  <input id="buscaId" placeholder="AIDA-2026-0001">
+  <button id="btnBuscar">Buscar por ID</button>
+  <pre id="buscaResultado"></pre>
+
+  <script>
+    document.getElementById("formAnalise").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const dados = new FormData();
+      dados.append("imagem", form.imagem.files[0]);
+      dados.append("historico", form.historico.checked ? "true" : "false");
+
+      const resp = await fetch("/analisar", { method: "POST", body: dados });
+      const json = await resp.json();
+      const area = document.getElementById("resultado");
+      if (!json.sucesso) {
+        area.innerHTML = `<strong>Erro:</strong> ${json.erro}`;
+        return;
+      }
+      area.innerHTML = `
+        <p><strong>ID:</strong> ${json.id_analise}</p>
+        <p><strong>Resultado:</strong> ${json.resultado}</p>
+        <p><strong>Chance REAL:</strong> ${(json.probabilidade_real * 100).toFixed(2)}%</p>
+        <p><strong>Chance IA/manipulada:</strong> ${(json.probabilidade_ia * 100).toFixed(2)}%</p>
+        <p><strong>Confiança:</strong> ${json.confianca}</p>
+        <p>${json.explicacao}</p>
+      `;
+    });
+
+    document.getElementById("btnBuscar").addEventListener("click", async () => {
+      const id = document.getElementById("buscaId").value.trim();
+      const resp = await fetch(`/analise/${encodeURIComponent(id)}`);
+      const json = await resp.json();
+      document.getElementById("buscaResultado").textContent = JSON.stringify(json, null, 2);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,2 @@
+-r aida_modelo/requirements.txt
+gunicorn

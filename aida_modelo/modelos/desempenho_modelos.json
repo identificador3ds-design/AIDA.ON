@@ -1,0 +1,45 @@
+{
+  "regressao_logistica": {
+    "modelo": "regressao_logistica",
+    "acuracia": 0.9125,
+    "precision_real": 0.9722222222222222,
+    "precision_ia": 0.8636363636363636,
+    "recall_real": 0.8536585365853658,
+    "recall_ia": 0.9743589743589743,
+    "f1_real": 0.9090909090909091,
+    "f1_ia": 0.9156626506024096,
+    "f1_macro": 0.9123767798466593,
+    "matriz_confusao": [
+      [
+        35,
+        6
+      ],
+      [
+        1,
+        38
+      ]
+    ]
+  },
+  "random_forest": {
+    "modelo": "random_forest",
+    "acuracia": 0.95,
+    "precision_real": 0.9302325581395349,
+    "precision_ia": 0.972972972972973,
+    "recall_real": 0.975609756097561,
+    "recall_ia": 0.9230769230769231,
+    "f1_real": 0.9523809523809523,
+    "f1_ia": 0.9473684210526315,
+    "f1_macro": 0.949874686716792,
+    "matriz_confusao": [
+      [
+        40,
+        1
+      ],
+      [
+        3,
+        36
+      ]
+    ]
+  },
+  "melhor_modelo": "random_forest"
+}

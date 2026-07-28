@@ -6,6 +6,7 @@ import tempfile
 import os
 import sys
 import uuid
+import traceback
 
 BASE_DIR = Path(__file__).resolve().parents[1]
 sys.path.append(str(BASE_DIR))
@@ -72,15 +73,15 @@ def analisar():
 
             resultado = analisar_imagem(
                 caminho_imagem=str(caminho_imagem),
-                id_analise=id_analise,
                 historico_habilitado=historico_habilitado
             )
 
         return jsonify(resultado), 200
 
-    except Exception:
+    except Exception as e:
+        traceback.print_exc()
         return jsonify({
-            "erro": "Erro interno ao analisar a imagem."
+            "erro": f"Erro interno ao analisar a imagem: {str(e)}"
         }), 500
 
 

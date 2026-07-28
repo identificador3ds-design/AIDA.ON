@@ -317,7 +317,7 @@ async function enviarParaApi(formData, signal) {
   }
 
   throw new Error(
-    "Nao consegui conectar na API Python em http://127.0.0.1:5000. Abra o backend com: python AIDA.ON/apps/metodo/app.py"
+    "Não foi possível conectar com a API Python. Verifique se o servidor no Render está online ou se o backend local está rodando."
   );
 }
 

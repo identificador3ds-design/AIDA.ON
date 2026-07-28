@@ -266,7 +266,7 @@ async function executarAnalise(event) {
 
     const dados = await resposta.json().catch(() => ({}));
 
-    if (!resposta.ok || !dados.sucesso) {
+    if (!resposta.ok || dados.erro) {
       throw new Error(dados.erro || `Falha no servidor (${resposta.status})`);
     }
 

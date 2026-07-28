@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
@@ -14,7 +14,7 @@
       <img src="../assets/images/LogoBranca.png" alt="Logo AIDA.ON">
     </a>
 
-    <a href="./index-login.html" class="privacy-back-link" id="privacyBackLink">Voltar</a>
+    <a href="/login" class="privacy-back-link" id="privacyBackLink">Voltar</a>
   </header>
 
   <main class="privacy-shell">
@@ -146,8 +146,9 @@
 
     if (privacyBackLink) {
       privacyBackLink.href =
-        privacySource === "perfil" ? "./index-perfil.html" : "./index-login.html";
+        privacySource === "perfil" ? "/perfil" : "/login";
     }
   </script>
 </body>
 </html>
+

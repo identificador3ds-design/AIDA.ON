@@ -1,6 +1,6 @@
-const ADMIN_EMAIL = "admin@gmail.com";
+﻿const ADMIN_EMAIL = "admin@gmail.com";
 const CHAVE_ADMIN_CONFIG = "AIDA_ADMIN_CONFIG";
-const DESTINOS_LIBERADOS = new Set(["./index-seleciona.html", "./index-analise.html"]);
+const DESTINOS_LIBERADOS = new Set(["/seleciona", "/analise"]);
 const CONFIG_ADMIN_PADRAO = {
   maintenanceMode: false,
   allowUploadPage: true,
@@ -37,12 +37,12 @@ function usuarioEhAdmin() {
 
 function obterDestinoSeguro() {
   const params = new URLSearchParams(window.location.search);
-  const destino = String(params.get("redirect") || "./index-seleciona.html").trim();
-  return DESTINOS_LIBERADOS.has(destino) ? destino : "./index-seleciona.html";
+  const destino = String(params.get("redirect") || "/seleciona").trim();
+  return DESTINOS_LIBERADOS.has(destino) ? destino : "/seleciona";
 }
 
 function descreverDestino(destino) {
-  if (destino === "./index-analise.html") {
+  if (destino === "/analise") {
     return "Etapa de analise";
   }
 
@@ -85,3 +85,4 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 });
+

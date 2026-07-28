@@ -156,7 +156,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const tipoUsuario = localStorage.getItem("usuarioTipo");
 
   if (!configuracaoAdmin.allowHistoryPage && tipoUsuario !== "admin") {
-      window.location.href = "./index-analise.html";
+      window.location.href = "/analise";
     return;
   }
 
@@ -168,7 +168,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       CHAVE_LOGIN_FEEDBACK,
       "Seu acesso foi bloqueado pelo administrador."
     );
-    window.location.href = "./index-login.html";
+    window.location.href = "/login";
     return;
   }
 
@@ -286,5 +286,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   carregarHistorico();
 });
+
 
 

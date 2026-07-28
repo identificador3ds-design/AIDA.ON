@@ -50,32 +50,32 @@ const MODULOS_SISTEMA = [
   {
     nome: "Login e cadastro",
     descricao: "Acesso principal do usuario e controle de novas entradas na plataforma.",
-    href: "./index-login.html",
+    href: "/login",
   },
   {
     nome: "Tela de apresentacao",
     descricao: "Pagina institucional com visao geral da proposta e entrada para a jornada.",
-    href: "./index-apresentacao.html",
+    href: "/apresentacao",
   },
   {
     nome: "Selecao de imagem",
     descricao: "Entrada do upload e troca de imagem antes da etapa tecnica.",
-    href: "./index-seleciona.html",
+    href: "/seleciona",
   },
   {
     nome: "Analise forense",
     descricao: "Tela operacional onde o usuario escolhe metodo, ve o processamento e o resultado.",
-    href: "./index-analise.html",
+    href: "/analise",
   },
   {
     nome: "Historico de analises",
     descricao: "Consulta dos registros salvos na conta e revisao de evidencias anteriores.",
-    href: "./index-historico.html",
+    href: "/historico",
   },
   {
     nome: "Perfil do usuario",
     descricao: "Pagina de conta com atalhos pessoais e acesso rapido para retorno ao site.",
-    href: "./index-perfil.html",
+    href: "/perfil",
   },
 ];
 
@@ -237,7 +237,7 @@ function redirecionarSeNaoAdmin() {
     Boolean(localStorage.getItem("usuarioEmail"));
 
   if (possuiSessaoComum) {
-    window.location.href = "./index-apresentacao.html";
+    window.location.href = "/apresentacao";
     return true;
   }
 
@@ -245,7 +245,7 @@ function redirecionarSeNaoAdmin() {
     CHAVE_ADMIN_REDIRECT_MESSAGE,
     "Acesso restrito. Entre com a conta administrativa para abrir o painel."
   );
-  window.location.href = "./index-login.html";
+  window.location.href = "/login";
   return true;
 }
 
@@ -1146,7 +1146,7 @@ async function fazerLogoutAdmin() {
     console.warn("Nao foi possivel encerrar a sessao do Supabase:", erro);
   }
 
-  window.location.href = "./index-login.html";
+  window.location.href = "/login";
 }
 
 function aplicarPreset(modo) {
@@ -1331,5 +1331,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   definirStatusConfiguracao("Central administrativa carregada.");
   await atualizarPainel();
 });
+
 
 

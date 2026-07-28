@@ -1,37 +1,37 @@
-const members = [
+﻿const members = [
   {
     name: "Alexandre",
     role: "Head of Documentation",
     description:
-      "Responsável pela documentação técnica do projeto, organizando metodologias, processos de desenvolvimento e relatórios para garantir clareza, replicação e evolução da pesquisa.",
+      "ResponsÃ¡vel pela documentaÃ§Ã£o tÃ©cnica do projeto, organizando metodologias, processos de desenvolvimento e relatÃ³rios para garantir clareza, replicaÃ§Ã£o e evoluÃ§Ã£o da pesquisa.",
     image: "../assets/images/alex-exec.png",
   },
   {
     name: "Arthur",
     role: "Head of Detection Methodologies",
     description:
-      "Responsável pelo desenvolvimento e aplicação de metodologias de detecção de conteúdo gerado ou manipulado por IA, buscando precisão, confiabilidade e inovação nas técnicas utilizadas.",
+      "ResponsÃ¡vel pelo desenvolvimento e aplicaÃ§Ã£o de metodologias de detecÃ§Ã£o de conteÃºdo gerado ou manipulado por IA, buscando precisÃ£o, confiabilidade e inovaÃ§Ã£o nas tÃ©cnicas utilizadas.",
     image: "../assets/images/thur-exec.png",
   },
   {
     name: "Eduardo",
     role: "Data Acquisition Lead",
     description:
-      "Responsável pela coleta, organização e preparação dos dados do projeto, garantindo qualidade, diversidade e consistência para testes e análises.",
+      "ResponsÃ¡vel pela coleta, organizaÃ§Ã£o e preparaÃ§Ã£o dos dados do projeto, garantindo qualidade, diversidade e consistÃªncia para testes e anÃ¡lises.",
     image: "../assets/images/nidu-exec.png",
   },
   {
     name: "Iago",
     role: "Project Manager & Lead Backend",
     description:
-      "Responsável pela coordenação do projeto e pelo desenvolvimento do backend, garantindo organização, integração e funcionamento eficiente da plataforma.",
+      "ResponsÃ¡vel pela coordenaÃ§Ã£o do projeto e pelo desenvolvimento do backend, garantindo organizaÃ§Ã£o, integraÃ§Ã£o e funcionamento eficiente da plataforma.",
     image: "../assets/images/iago-exec.png",
   },
   {
     name: "Pedro",
     role: "UX/UI Designer & Lead Frontend",
     description:
-      "Responsável pela coleta, seleção e organização dos dados do projeto, garantindo qualidade, diversidade e consistência para testes e análises.",
+      "ResponsÃ¡vel pela coleta, seleÃ§Ã£o e organizaÃ§Ã£o dos dados do projeto, garantindo qualidade, diversidade e consistÃªncia para testes e anÃ¡lises.",
     image: "../assets/images/pedrao-exec.png",
   },
 ];
@@ -111,7 +111,7 @@ function contaAtualSemAcesso() {
   return ["blocked", "deleted"].includes(status);
 }
 
-function montarLinkManutencao(destino = "./index-seleciona.html") {
+function montarLinkManutencao(destino = "/seleciona") {
   return `./index-manutencao.html?redirect=${encodeURIComponent(destino)}`;
 }
 
@@ -120,7 +120,7 @@ function abrirPainelAdmin(event) {
     event.preventDefault();
   }
 
-    window.location.href = "./index-admin.html";
+    window.location.href = "/admin";
 }
 
 function renderizarAvisoSistema() {
@@ -176,7 +176,7 @@ function ajustarAcessoPrincipalFerramenta() {
   const ctaPrincipal = document.querySelector('.btn-group-ferr .btn-main');
   const badgeNovidade = document.querySelector(".new-feature-badge");
   const admin = usuarioEhAdmin();
-  const destinoFerramenta = "./index-seleciona.html";
+  const destinoFerramenta = "/seleciona";
 
   if (!ctaPrincipal) {
     return;
@@ -282,7 +282,7 @@ function setUserName() {
   });
 
   document.querySelectorAll(".dropdown-content .dropa").forEach((link) => {
-    link.href = "./index-admin.html";
+    link.href = "/admin";
     link.textContent = "Painel admin";
   });
 }
@@ -748,7 +748,7 @@ document.addEventListener("DOMContentLoaded", () => {
       CHAVE_LOGIN_FEEDBACK,
       "Seu acesso foi bloqueado pelo administrador."
     );
-    window.location.href = "./index-login.html";
+    window.location.href = "/login";
     return;
   }
 
@@ -786,5 +786,6 @@ updateFavicon();
 
 
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateFavicon);
+
 
 

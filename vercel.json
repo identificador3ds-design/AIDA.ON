@@ -1,0 +1,50 @@
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    {
+      "source": "/admin",
+      "destination": "/pages/index-admin.html"
+    },
+    {
+      "source": "/analise",
+      "destination": "/pages/index-analise.html"
+    },
+    {
+      "source": "/apoiadores",
+      "destination": "/pages/index-apoiadores.html"
+    },
+    {
+      "source": "/analise",
+      "destination": "/pages/index-apresentacao.html"
+    },
+    {
+      "source": "/historico",
+      "destination": "/pages/index-historico.html"
+    },
+    {
+      "source": "/login",
+      "destination": "/pages/index-login.html"
+    },
+    {
+      "source": "/manutencao",
+      "destination": "/pages/index-manutencao.html"
+    },
+    {
+      "source": "/perfil",
+      "destination": "/pages/index-perfil.html"
+    },
+    {
+      "source": "/privacidade",
+      "destination": "/pages/index-privacidade.html"
+    },
+    {
+      "source": "/selecionar",
+      "destination": "/pages/index-seleciona.html"
+    },
+    {
+      "source": "/validador",
+      "destination": "/pages/validador_tac_aida.html"
+    }
+  ]
+}

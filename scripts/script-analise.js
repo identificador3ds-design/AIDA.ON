@@ -6,7 +6,7 @@ const CHAVE_IMAGEM_SELECIONADA = "AIDA_ImagemSelecionada";
 const DB_IMAGEM_SELECIONADA = "AIDA_ImagemSelecionada_DB";
 const STORE_IMAGEM_SELECIONADA = "imagem";
 const URLS_API_ANALISAR = [
-  "COLE_AQUI_A_URL_DO_RENDER/analisar", // Exemplo: "https://sua-api.onrender.com/analisar"
+  "https://aida-modelo-api.onrender.com/analisar", // Exemplo: "https://sua-api.onrender.com/analisar"
   "http://127.0.0.1:5000/analisar",
   "http://localhost:5000/analisar",
 ];
@@ -289,7 +289,7 @@ async function executarAnalise(event) {
       registrarStatus(erro.message || "Erro na analise.", "erro");
       alert(
         erro.message ||
-          "Nao foi possivel conectar com a API Python. Confirme se o servidor Flask esta rodando na porta 5000."
+        "Nao foi possivel conectar com a API Python. Confirme se o servidor Flask esta rodando na porta 5000."
       );
     }
   } finally {

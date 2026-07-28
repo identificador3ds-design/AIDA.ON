@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -133,9 +133,29 @@
 
                 <section class="container-explicacao glass-card">
                     <div class="method-copy">
-                        <span class="section-tag">Explicação</span>
+                        <span class="section-tag">Análise Detalhada</span>
                         <h3 id="tituloMetodo">Sobre o resultado</h3>
-                        <p id="textoMetodo">Aguardando processamento...</p>
+                        
+                        <div class="stats-container" id="statsContainer" style="display: none;">
+                            <div class="stat-box stat-real">
+                                <span class="stat-label">Probabilidade de ser Real</span>
+                                <strong class="stat-value" id="statReal">--%</strong>
+                                <div class="stat-bar-bg"><div class="stat-bar-fill" id="barReal"></div></div>
+                            </div>
+                            
+                            <div class="stat-box stat-ia">
+                                <span class="stat-label">Probabilidade de ser IA</span>
+                                <strong class="stat-value" id="statIA">--%</strong>
+                                <div class="stat-bar-bg"><div class="stat-bar-fill" id="barIA"></div></div>
+                            </div>
+                            
+                            <div class="stat-box stat-confidence">
+                                <span class="stat-label">Nível de Confiança</span>
+                                <strong class="stat-value" id="statConfidence">--</strong>
+                            </div>
+                        </div>
+
+                        <p id="textoMetodo" style="display: none;"></p>
                     </div>
 
                     <div id="blocoExemplosMetodo" class="bloco-exemplos" hidden>

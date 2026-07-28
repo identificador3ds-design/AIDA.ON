@@ -1,4 +1,4 @@
-﻿.analysis-page::before {
+.analysis-page::before {
   background:
     linear-gradient(180deg, rgba(8, 31, 29, 0.82), rgba(11, 43, 40, 0.9)),
   url("../assets/images/FundoAlternativo.png") center/cover no-repeat;
@@ -1211,4 +1211,80 @@ body.tutorial-active .tutorial-fab {
   }
 
 }
+}
 
+/* Styles para as estatísticas na análise */
+.stats-container {
+  display: grid;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.stat-box {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  padding: 18px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.25s ease, background 0.25s ease;
+}
+
+.stat-box:hover {
+  background: rgba(255, 255, 255, 0.05);
+  transform: translateY(-2px);
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  color: var(--text-soft);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.stat-value {
+  font-size: 2.2rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.stat-real .stat-value {
+  color: #8fd8b7;
+}
+
+.stat-ia .stat-value {
+  color: #ff9191;
+}
+
+.stat-confidence .stat-value {
+  color: #a5d8ff;
+  font-size: 1.6rem;
+}
+
+.stat-bar-bg {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  margin-top: 6px;
+  overflow: hidden;
+}
+
+.stat-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  width: 0%;
+  transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.stat-real .stat-bar-fill {
+  background: linear-gradient(90deg, #1b8467, #8fd8b7);
+}
+
+.stat-ia .stat-bar-fill {
+  background: linear-gradient(90deg, #b74c5c, #ff9191);
+}

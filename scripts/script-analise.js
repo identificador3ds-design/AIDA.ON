@@ -200,7 +200,9 @@ function setCarregando(ativo) {
 
 function exibirResultado(dados) {
   const probIA = Number(dados.probabilidade_ia || 0);
+  const probReal = Number(dados.probabilidade_real || 0);
   const pctIA = Math.round(probIA * 1000) / 10;
+  const pctReal = Math.round(probReal * 1000) / 10;
   const ehIA = dados.resultado === "IA/MANIPULADA";
 
   if (porcentagemIA) {
@@ -213,8 +215,26 @@ function exibirResultado(dados) {
       : "Imagem provavelmente real";
   }
 
+  const statsContainer = document.getElementById("statsContainer");
+  if (statsContainer) {
+    statsContainer.style.display = "grid";
+    
+    document.getElementById("statReal").textContent = `${pctReal.toFixed(1)}%`;
+    document.getElementById("statIA").textContent = `${pctIA.toFixed(1)}%`;
+    
+    setTimeout(() => {
+        document.getElementById("barReal").style.width = `${pctReal}%`;
+        document.getElementById("barIA").style.width = `${pctIA}%`;
+    }, 150);
+
+    const statConf = document.getElementById("statConfidence");
+    if (statConf) {
+      statConf.textContent = dados.confianca ? dados.confianca.toUpperCase() : "NÃO INFORMADA";
+    }
+  }
+
   if (textoMetodo) {
-    textoMetodo.textContent = montarDescricaoMetodo(dados);
+    textoMetodo.style.display = "none";
   }
 
   if (areaResultado) {

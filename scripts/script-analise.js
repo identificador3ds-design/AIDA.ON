@@ -234,7 +234,7 @@ async function executarAnalise(event) {
   }
 
   analiseEmAndamento = true;
-  registrarStatus("Botao analisar clicado. Preparando envio para a API...");
+  registrarStatus("Recebendo sua imagem");
 
   if (!imagemAtual) {
     if (previewStatus) {
@@ -260,9 +260,9 @@ async function executarAnalise(event) {
   formData.append("historico_habilitado", salvarNoHistorico ? "true" : "false");
 
   try {
-    registrarStatus("Enviando imagem para a API Python na porta 5000...");
+    registrarStatus("Processando");
     const resposta = await enviarParaApi(formData, abortController.signal);
-    registrarStatus(`API respondeu com status ${resposta.status}. Processando resultado...`);
+    registrarStatus("Obtendo resultados");
 
     const dados = await resposta.json().catch(() => ({}));
 
@@ -304,7 +304,7 @@ async function enviarParaApi(formData, signal) {
 
   for (const url of URLS_API_ANALISAR) {
     try {
-      registrarStatus(`Tentando conexao com ${url}...`);
+      registrarStatus("Aplicação do método de Análise");
       return await fetch(url, {
         method: "POST",
         body: formData,

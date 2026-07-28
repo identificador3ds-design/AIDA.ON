@@ -17,12 +17,7 @@ app = Flask(__name__)
 
 app.config["MAX_CONTENT_LENGTH"] = 15 * 1024 * 1024
 
-origens_permitidas = os.getenv(
-    "ALLOWED_ORIGINS",
-    "http://localhost:5500,http://127.0.0.1:5500"
-).split(",")
-
-CORS(app, origins=origens_permitidas)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 EXTENSOES_PERMITIDAS = {".jpg", ".jpeg", ".png", ".webp", ".heic", ".heif"}
 

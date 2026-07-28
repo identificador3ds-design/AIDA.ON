@@ -1,4 +1,4 @@
-﻿const ADMIN_EMAIL = "admin@gmail.com";
+const ADMIN_EMAIL = "admin@gmail.com";
 
 const favicon = document.getElementById("favicon");
 const menuToggle = document.querySelector(".menu-toggle");
@@ -29,7 +29,7 @@ function abrirPainelAdmin(event) {
     event.preventDefault();
   }
 
-  window.location.href = "/admin";
+  window.location.href = "./index-admin.html";
 }
 
 function setUserName() {
@@ -56,7 +56,7 @@ function setUserName() {
   }
 
   document.querySelectorAll(".dropdown-content .dropa").forEach((link) => {
-    link.href = "/admin";
+    link.href = "./index-admin.html";
     link.textContent = "Painel admin";
   });
 }
@@ -124,4 +124,3 @@ document.addEventListener("DOMContentLoaded", () => {
   setupNavigation();
   setupHeaderBehavior();
 });
-

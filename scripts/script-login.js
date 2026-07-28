@@ -1,4 +1,4 @@
-﻿// Conexao com o banco
+// Conexao com o banco
 const supabaseUrl = "https://nwzijdudhemuibsyzpub.supabase.co";
 const supabaseKey =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im53emlqZHVkaGVtdWlic3l6cHViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwMjk5MTAsImV4cCI6MjA4NzYwNTkxMH0.aDHymYEKtyY5m2eaOHoBy4QRpaAvtafi_PVDtrL9gQc";
@@ -216,7 +216,7 @@ function acessarAdminLocal() {
   mostrarAviso("Acesso administrativo liberado.");
 
   setTimeout(() => {
-    window.location.href = "/admin";
+    window.location.href = "./index-admin.html";
   }, 900);
 }
 
@@ -318,7 +318,7 @@ async function finalizarLoginUsuario(user, mensagemBoasVindas = true) {
   }
 
   setTimeout(() => {
-    window.location.href = "/apresentacao";
+    window.location.href = "./index-apresentacao.html";
   }, 1250);
 
   return true;
@@ -528,4 +528,3 @@ async function iniciarPaginaLogin() {
 }
 
 iniciarPaginaLogin();
-

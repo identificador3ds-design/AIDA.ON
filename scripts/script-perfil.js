@@ -1,4 +1,4 @@
-﻿const supabaseUrl = "https://nwzijdudhemuibsyzpub.supabase.co";
+const supabaseUrl = "https://nwzijdudhemuibsyzpub.supabase.co";
 const supabaseKey =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im53emlqZHVkaGVtdWlic3l6cHViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwMjk5MTAsImV4cCI6MjA4NzYwNTkxMH0.aDHymYEKtyY5m2eaOHoBy4QRpaAvtafi_PVDtrL9gQc";
 const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
@@ -102,7 +102,7 @@ async function excluirContaEDados() {
   }
 }
 
-async function sairParaLogin(destino = "/login") {
+async function sairParaLogin(destino = "./index-login.html") {
   limparSessaoLocal();
 
   try {
@@ -231,7 +231,7 @@ async function atualizarPerfilUsuario({ nome, email, tipoUsuarioAtual }) {
   if (tipoUsuarioAtual === "admin") {
     localStorage.setItem("usuarioNome", nome);
     localStorage.setItem("usuarioEmail", email);
-    return { ok: true, mensagem: "InformaÃ§Ãµes atualizadas com sucesso." };
+    return { ok: true, mensagem: "Informações atualizadas com sucesso." };
   }
 
   const {
@@ -241,7 +241,7 @@ async function atualizarPerfilUsuario({ nome, email, tipoUsuarioAtual }) {
   if (!user) {
     localStorage.setItem("usuarioNome", nome);
     localStorage.setItem("usuarioEmail", email);
-    return { ok: true, mensagem: "InformaÃ§Ãµes atualizadas localmente." };
+    return { ok: true, mensagem: "Informações atualizadas localmente." };
   }
 
   const emailAlterado = user.email !== email;
@@ -270,8 +270,8 @@ async function atualizarPerfilUsuario({ nome, email, tipoUsuarioAtual }) {
   return {
     ok: true,
     mensagem: emailAlterado
-      ? "InformaÃ§Ãµes atualizadas. Confira seu email para confirmar a troca de endereÃ§o."
-      : "InformaÃ§Ãµes atualizadas com sucesso.",
+      ? "Informações atualizadas. Confira seu email para confirmar a troca de endereço."
+      : "Informações atualizadas com sucesso.",
   };
 }
 
@@ -279,7 +279,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const configuracaoAdmin = obterAdminConfig();
 
   if (!configuracaoAdmin.allowProfilePage && !localStorage.getItem("usuarioTipo")?.includes("admin")) {
-    window.location.href = "/apresentacao";
+    window.location.href = "./index-apresentacao.html";
     return;
   }
 
@@ -289,7 +289,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       CHAVE_LOGIN_FEEDBACK,
       "Seu acesso foi bloqueado pelo administrador."
     );
-    window.location.href = "/login";
+    window.location.href = "./index-login.html";
     return;
   }
 
@@ -443,7 +443,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       deleteAccountZone.hidden = true;
     }
 
-    adminLink.href = "/admin";
+    adminLink.href = "./index-admin.html";
     adminLink.className = "profile-action glass-card";
     adminLink.innerHTML = `
       <span class="action-icon" aria-hidden="true">
@@ -524,7 +524,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (logoutLink) {
     logoutLink.addEventListener("click", (event) => {
       event.preventDefault();
-      sairParaLogin("/login");
+      sairParaLogin("./index-login.html");
     });
   }
 
@@ -535,6 +535,5 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 });
-
 
 

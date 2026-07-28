@@ -1,4 +1,4 @@
-﻿const STATIC_CACHE = "aida-static-v17";
+const STATIC_CACHE = "aida-static-v17";
 const RUNTIME_CACHE = "aida-runtime-v17";
 
 const APP_SHELL = [
@@ -10,31 +10,31 @@ const APP_SHELL = [
   "./scripts/script-pwa-register.js",
   "./scripts/script-cookie-consent.js",
   "./scripts/script-home.js",
-  "/login",
+  "pages/index-login.html",
   "./styles/style-login.css",
   "./scripts/script-login.js",
-  "/seleciona",
+  "pages/index-seleciona.html",
   "./styles/style-ferramenta.css",
   "./scripts/script-ferramenta.js",
-  "/manutencao",
+  "pages/index-manutencao.html",
   "./styles/style-manutencao.css",
   "./scripts/script-manutencao.js",
-  "/analise",
+  "pages/index-analise.html",
   "./styles/style-analise.css",
   "./scripts/script-analise.js",
-  "/admin",
+  "pages/index-admin.html",
   "./styles/style-administrador.css",
   "./scripts/script-administrador.js",
-  "/apresentacao",
+  "pages/index-apresentacao.html",
   "./styles/style-apresentacao.css",
   "./scripts/script-apresentacao.js",
-  "/historico",
+  "pages/index-historico.html",
   "./styles/style-historico.css",
   "./scripts/script-historico.js",
-  "/perfil",
+  "pages/index-perfil.html",
   "./styles/style-perfil.css",
   "./scripts/script-perfil.js",
-  "/privacidade",
+  "pages/index-privacidade.html",
   "./styles/style-privacidade.css",
   "./assets/images/LogoBranca.png",
   "./assets/images/AIDABranco.ico",
@@ -98,7 +98,7 @@ self.addEventListener("fetch", (event) => {
           }
 
           if (event.request.mode === "navigate") {
-            return caches.match("/seleciona");
+            return caches.match("pages/index-seleciona.html");
           }
 
           return Response.error();
@@ -131,4 +131,3 @@ self.addEventListener("fetch", (event) => {
     })
   );
 });
-

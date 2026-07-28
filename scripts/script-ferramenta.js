@@ -69,7 +69,7 @@ function usuarioEhAdmin() {
   return tipo === "admin" || email === ADMIN_EMAIL;
 }
 
-function redirecionarParaManutencao(destino = "/seleciona") {
+function redirecionarParaManutencao(destino = "./index-seleciona.html") {
   window.location.href = `./index-manutencao.html?redirect=${encodeURIComponent(destino)}`;
 }
 
@@ -141,7 +141,7 @@ document.addEventListener("DOMContentLoaded", () => {
       CHAVE_LOGIN_FEEDBACK,
       "Seu acesso foi bloqueado pelo administrador."
     );
-    window.location.href = "/login";
+    window.location.href = "./index-login.html";
     return;
   }
 
@@ -149,7 +149,7 @@ document.addEventListener("DOMContentLoaded", () => {
     configuracaoAdmin.maintenanceMode &&
     !usuarioEhAdmin()
   ) {
-    redirecionarParaManutencao("/seleciona");
+    redirecionarParaManutencao("./index-seleciona.html");
     return;
   }
 
@@ -158,7 +158,7 @@ document.addEventListener("DOMContentLoaded", () => {
     !configuracaoAdmin.maintenanceMode &&
     !usuarioEhAdmin()
   ) {
-    window.location.href = "/apresentacao";
+    window.location.href = "./index-apresentacao.html";
     return;
   }
 
@@ -175,7 +175,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const reader = new FileReader();
         reader.onload = async (evento) => {
           await salvarImagemSelecionada(evento.target.result);
-          window.location.href = "/analise";
+          window.location.href = "./index-analise.html";
         };
         reader.onerror = () => {
           alert("Nao foi possivel carregar a imagem selecionada. Tente outro arquivo.");
@@ -185,6 +185,5 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
-
 
 

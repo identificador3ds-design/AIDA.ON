@@ -1,4 +1,4 @@
-﻿(function () {
+(function () {
   const COOKIE_NAME = "aida_cookie_consent";
   const STORAGE_KEY = "AIDA_COOKIE_CONSENT";
   const ONE_YEAR_SECONDS = 60 * 60 * 24 * 365;
@@ -134,7 +134,7 @@
         <strong>Cookies e preferencias</strong>
         <p>
           Usamos cookies essenciais e armazenamento local para login, preferencias e funcionamento do AIDA.ON.
-          Veja detalhes no <a href="${location.pathname.includes("/pages/") ? "/privacidade" : "/privacidade"}">Aviso de Privacidade</a>.
+          Veja detalhes no <a href="${location.pathname.includes("/pages/") ? "./index-privacidade.html" : "pages/index-privacidade.html"}">Aviso de Privacidade</a>.
         </p>
       </div>
       <div class="cookie-consent-actions">
@@ -163,4 +163,3 @@
     criarBanner();
   }
 })();
-

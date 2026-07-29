@@ -32,83 +32,98 @@
       .cookie-consent {
         position: fixed;
         left: 50%;
-        bottom: 18px;
-        width: min(760px, calc(100% - 28px));
+        bottom: 24px;
+        width: min(600px, calc(100% - 32px));
         height: auto;
-        min-height: 0;
-        margin: 0;
         box-sizing: border-box;
         transform: translateX(-50%);
-        z-index: 3000;
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) auto;
-        gap: 16px;
-        align-items: center;
-        padding: 16px;
-        border: 1px solid rgba(229, 231, 235, 0.18);
-        border-radius: 18px;
-        background: rgba(8, 29, 28, 0.96);
-        color: #f4f8ff;
-        box-shadow: 0 18px 44px rgba(4, 8, 20, 0.36);
-        backdrop-filter: blur(12px);
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        padding: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 0;
+        background: rgba(7, 21, 19, 0.95);
+        color: #e2e8f0;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        border-left: 3px solid #4ade80;
+        backdrop-filter: blur(8px);
+        font-family: "Afacad", Arial, sans-serif;
       }
 
       .cookie-consent p {
         margin: 0;
-        color: rgba(229, 231, 235, 0.82);
+        color: #94a3b8;
         line-height: 1.5;
-        font-size: 0.95rem;
+        font-size: 0.9rem;
       }
 
       .cookie-consent strong {
         display: block;
-        margin-bottom: 4px;
+        margin-bottom: 6px;
         color: #ffffff;
         font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
       }
 
       .cookie-consent a {
-        color: #8fd8b7;
-        font-weight: 700;
-        text-decoration: underline;
-        text-underline-offset: 3px;
+        color: #4ade80;
+        font-weight: 600;
+        text-decoration: none;
+        border-bottom: 1px solid rgba(74, 222, 128, 0.3);
+      }
+      
+      .cookie-consent a:hover {
+        border-bottom-color: #4ade80;
       }
 
       .cookie-consent-actions {
         display: flex;
         align-items: center;
-        gap: 10px;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 4px;
       }
 
       .cookie-consent button {
-        min-height: 42px;
+        height: 38px;
         padding: 0 16px;
-        border: 1px solid rgba(229, 231, 235, 0.18);
-        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 0;
         cursor: pointer;
-        color: #0f3833;
-        background: linear-gradient(135deg, #e5e7eb, #97bfaf);
-        font: inherit;
+        color: #000000;
+        background: #4ade80;
+        font-family: inherit;
         font-weight: 700;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        transition: all 0.2s;
+      }
+
+      .cookie-consent button:hover {
+        background: #22c55e;
       }
 
       .cookie-consent button.secondary {
-        color: #f4f8ff;
-        background: rgba(229, 231, 235, 0.08);
+        color: #e2e8f0;
+        background: transparent;
       }
 
-      @media (max-width: 660px) {
-        .cookie-consent {
-          grid-template-columns: 1fr;
-        }
+      .cookie-consent button.secondary:hover {
+        border-color: rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.05);
+      }
 
-        .cookie-consent-actions,
-        .cookie-consent button {
-          width: 100%;
-        }
-
+      @media (max-width: 500px) {
         .cookie-consent-actions {
           flex-direction: column-reverse;
+          width: 100%;
+        }
+        .cookie-consent button {
+          width: 100%;
         }
       }
     `;
@@ -131,15 +146,15 @@
     banner.setAttribute("aria-label", "Aviso de cookies");
     banner.innerHTML = `
       <div>
-        <strong>Cookies e preferencias</strong>
+        <strong>AVISO DE COOKIES</strong>
         <p>
-          Usamos cookies essenciais e armazenamento local para login, preferencias e funcionamento do AIDA.ON.
-          Veja detalhes no <a href="${location.pathname.includes("/pages/") ? "./index-privacidade.html" : "pages/index-privacidade.html"}">Aviso de Privacidade</a>.
+          Utilizamos armazenamento local para manter sua sessão e funcionamento do AIDA.ON. 
+          Detalhes no <a href="${location.pathname.includes("/pages/") ? "./index-privacidade.html" : "pages/index-privacidade.html"}">Aviso de Privacidade</a>.
         </p>
       </div>
       <div class="cookie-consent-actions">
         <button type="button" class="secondary" data-cookie-choice="essential">Apenas essenciais</button>
-        <button type="button" data-cookie-choice="accepted">Aceitar cookies</button>
+        <button type="button" data-cookie-choice="accepted">Aceitar todos</button>
       </div>
     `;
 

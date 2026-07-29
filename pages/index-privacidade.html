@@ -17,126 +17,96 @@
     <a href="./index-login.html" class="privacy-back-link" id="privacyBackLink">Voltar</a>
   </header>
 
-  <main class="privacy-shell">
-    <section class="privacy-hero">
-      <div class="privacy-hero-copy">
-        <span class="privacy-kicker">LGPD e transparencia</span>
-        <h1>Aviso de Privacidade</h1>
+<main class="privacy-main">
+    <aside class="privacy-sidebar">
+      <span class="sidebar-title">Índice</span>
+      <a href="#introducao">1. Introdução</a>
+      <a href="#dados-coletados">2. Dados Coletados</a>
+      <a href="#finalidades">3. Finalidades e Bases Legais</a>
+      <a href="#armazenamento">4. Armazenamento e Retenção</a>
+      <a href="#compartilhamento">5. Compartilhamento</a>
+      <a href="#direitos">6. Direitos do Titular</a>
+      <a href="#seguranca">7. Segurança da Informação</a>
+      <a href="#contato">8. Contato</a>
+    </aside>
+
+    <div class="privacy-content">
+      <div class="privacy-content-header">
+        <h1>Política de Privacidade</h1>
         <p>
-          Este documento explica como o AIDA.ON trata dados de conta, imagens enviadas,
-          resultados de analise, historico opcional e preferencias de cookies.
+          Este documento descreve como o AIDA.ON, em conformidade com a Lei Geral de Proteção de Dados (LGPD - Lei nº 13.709/2018), coleta, armazena, utiliza e protege os seus dados pessoais e as imagens submetidas para análise.
         </p>
+        <p style="margin-top: 12px; font-size: 0.9rem; color: var(--privacy-muted);">Última atualização: 09 de Junho de 2026</p>
       </div>
 
-      <aside class="privacy-summary" aria-label="Resumo rapido">
-        <strong>Resumo rapido</strong>
-        <p>Usamos dados para autenticar sua conta, processar imagens e manter a plataforma funcionando.</p>
-        <p>O historico so e salvo quando voce marca essa opcao na analise.</p>
-        <span>Atualizado em 09/06/2026</span>
-      </aside>
-    </section>
-
-    <section class="privacy-grid" aria-label="Topicos principais de privacidade">
-      <article class="privacy-card">
-        <span>01</span>
-        <h2>Dados da conta</h2>
-        <p>
-          Tratamos nome, email, dados de autenticacao e identificadores tecnicos criados
-          pelo Supabase Auth para permitir cadastro, login e protecao de acesso.
-        </p>
-      </article>
-
-      <article class="privacy-card">
-        <span>02</span>
-        <h2>Imagens analisadas</h2>
-        <p>
-          A imagem selecionada e usada para gerar o resultado tecnico. Ela pode conter
-          pessoas, objetos, locais e metadados, por isso evite enviar conteudo sensivel.
-        </p>
-      </article>
-
-      <article class="privacy-card">
-        <span>03</span>
-        <h2>Historico opcional</h2>
-        <p>
-          O historico na nuvem e criado somente quando a opcao de salvar analise estiver
-          ligada. Quando desligada, a imagem e usada apenas para processar a resposta.
-        </p>
-      </article>
-
-      <article class="privacy-card">
-        <span>04</span>
-        <h2>Cookies e preferencias</h2>
-        <p>
-          Usamos cookies ou armazenamento local para guardar escolhas simples, como aceite
-          de cookies, sessao, preferencias do app, tutorial visto e instalacao do PWA.
-        </p>
-      </article>
-    </section>
-
-    <section class="privacy-document">
-      <div class="privacy-section" id="finalidades">
-        <span class="privacy-section-number">Finalidades</span>
-        <div>
-          <h2>Por que usamos esses dados</h2>
-          <ul>
-            <li>Permitir login, cadastro e identificacao do usuario autenticado.</li>
-            <li>Processar a imagem enviada e devolver um resultado compreensivel.</li>
-            <li>Salvar historico apenas quando o usuario escolher essa opcao.</li>
-            <li>Manter seguranca, controle de acesso, avisos administrativos e funcionamento do PWA.</li>
-          </ul>
-        </div>
+      <div class="doc-section" id="introducao">
+        <h2>1. Introdução</h2>
+        <p>O <strong>AIDA.ON</strong> é uma plataforma dedicada à análise forense de imagens, focada na detecção de indícios de manipulação ou geração por Inteligência Artificial (IA). Reconhecemos a importância da privacidade e estabelecemos o compromisso de máxima transparência no tratamento de quaisquer informações submetidas aos nossos servidores.</p>
       </div>
 
-      <div class="privacy-section" id="bases-legais">
-        <span class="privacy-section-number">Bases legais</span>
-        <div>
-          <h2>Hipoteses de tratamento</h2>
-          <p>
-            Para cadastro e uso da plataforma, usamos execucao de contrato ou procedimentos
-            preliminares. Para historico opcional, usamos consentimento. Para seguranca,
-            prevencao de abuso e funcionamento essencial, pode haver legitimo interesse
-            com minimizacao dos dados.
-          </p>
-        </div>
+      <div class="doc-section" id="dados-coletados">
+        <h2>2. Dados Coletados</h2>
+        <p>Para garantir a segurança, rastreabilidade e funcionalidade da plataforma, coletamos os seguintes tipos de informações:</p>
+        <ul>
+          <li><strong>Dados Cadastrais:</strong> Nome completo, endereço de e-mail e credenciais de autenticação. Esses dados são obtidos no momento do cadastro ou via login social (ex: Google).</li>
+          <li><strong>Dados de Utilização:</strong> Endereços IP, informações do navegador, registros de acesso (logs) e interações com a interface, armazenados temporariamente para fins de segurança e auditoria.</li>
+          <li><strong>Dados de Análise (Imagens):</strong> Os arquivos de imagem enviados para detecção forense. <em>Nota importante:</em> O AIDA.ON analisa estritamente os metadados e os padrões de ruído (via FFT e PSEM). Os usuários são fortemente desaconselhados a enviar imagens que contenham dados pessoais sensíveis, documentos não anonimizados ou material ilegal.</li>
+        </ul>
       </div>
 
-      <div class="privacy-section" id="terceiros">
-        <span class="privacy-section-number">Terceiros</span>
-        <div>
-          <h2>Servicos envolvidos</h2>
-          <ul>
-            <li>Supabase: autenticacao, tabela de usuarios, historico e armazenamento de evidencias salvas.</li>
-            <li>Google: login social quando o usuario escolhe entrar com Google.</li>
-            <li>Backend AIDA.ON: processamento temporario da imagem enviada para analise.</li>
-          </ul>
-        </div>
+      <div class="doc-section" id="finalidades">
+        <h2>3. Finalidades e Bases Legais</h2>
+        <p>Tratamos seus dados estritamente dentro das hipóteses previstas pela LGPD (Art. 7º):</p>
+        <ul>
+          <li><strong>Execução de Contrato:</strong> Seus dados de conta são necessários para criar seu perfil, fornecer acesso autenticado e processar as imagens enviadas. A análise da imagem é a finalidade principal do serviço.</li>
+          <li><strong>Consentimento:</strong> O armazenamento do histórico de laudos e imagens no banco de dados só ocorre se o usuário ativar expressamente a opção "Salvar Análise". Sem essa permissão, as imagens são processadas de forma volátil (apenas na memória do servidor) e descartadas imediatamente após a geração do resultado.</li>
+          <li><strong>Legítimo Interesse:</strong> Coleta de logs de acesso e métricas operacionais para prevenção de fraudes, mitigação de abusos na plataforma (DDoS) e aprimoramento constante do nosso algoritmo de detecção.</li>
+        </ul>
       </div>
 
-      <div class="privacy-section" id="retencao">
-        <span class="privacy-section-number">Retencao</span>
-        <div>
-          <h2>Por quanto tempo guardamos</h2>
-          <p>
-            Dados de conta permanecem enquanto a conta existir. O historico salvo permanece
-            disponivel para consulta ate ser removido pelo usuario ou por rotina administrativa.
-            Preferencias locais podem ser limpas pelo navegador.
-          </p>
-        </div>
+      <div class="doc-section" id="armazenamento">
+        <h2>4. Armazenamento e Retenção</h2>
+        <p>Os dados são custodiados utilizando infraestrutura em nuvem de alta segurança. Os prazos de retenção seguem os seguintes critérios:</p>
+        <ul>
+          <li><strong>Dados da Conta:</strong> Permanecem armazenados enquanto a conta estiver ativa. Caso o usuário solicite a exclusão da conta, todos os vínculos pessoais serão apagados permanentemente.</li>
+          <li><strong>Imagens não salvas:</strong> Processadas em memória RAM (volátil) e excluídas instantaneamente do servidor de inferência em Python assim que o laudo é retornado.</li>
+          <li><strong>Imagens do Histórico:</strong> Armazenadas de forma segura em buckets do Supabase, acessíveis apenas pelo proprietário da conta, até que o mesmo decida excluí-las manualmente pelo painel de histórico.</li>
+        </ul>
       </div>
 
-      <div class="privacy-section" id="direitos">
-        <span class="privacy-section-number">Direitos</span>
-        <div>
-          <h2>Seus direitos</h2>
-          <p>
-            Voce pode solicitar acesso, correcao, eliminacao, informacoes sobre compartilhamento
-            e revogacao de consentimento quando aplicavel. O canal inicial do projeto e
-            contato@aida.com.
-          </p>
-        </div>
+      <div class="doc-section" id="compartilhamento">
+        <h2>5. Compartilhamento de Dados</h2>
+        <p>O AIDA.ON <strong>não comercializa</strong> ou licencia dados de seus usuários para terceiros. O compartilhamento ocorre estritamente com provedores de infraestrutura técnica que seguem os mesmos rigores da LGPD:</p>
+        <ul>
+          <li><strong>Supabase:</strong> Atua como nosso serviço principal de backend, gerenciando a autenticação (Identity Provider), o banco de dados e o armazenamento de imagens persistidas.</li>
+          <li><strong>Google:</strong> Provedor de <em>Single Sign-On</em> (SSO), caso o usuário opte por autenticar-se utilizando a conta do Google.</li>
+        </ul>
       </div>
-    </section>
+
+      <div class="doc-section" id="direitos">
+        <h2>6. Direitos do Titular (LGPD)</h2>
+        <p>Conforme garantido pelo Artigo 18 da LGPD, o titular dos dados possui o direito, a qualquer momento e mediante requisição, de obter:</p>
+        <ul>
+          <li><strong>Confirmação e Acesso:</strong> Saber se tratamos seus dados e acessar as informações que possuímos sobre você.</li>
+          <li><strong>Correção:</strong> Solicitar a alteração de dados incompletos, inexatos ou desatualizados.</li>
+          <li><strong>Anonimização, Bloqueio ou Eliminação:</strong> Exigir a exclusão completa de sua conta, histórico e dados associados, ação que pode ser realizada diretamente pelo próprio usuário na aba "Minha Conta".</li>
+          <li><strong>Portabilidade:</strong> Solicitar a exportação dos seus laudos e dados em formato estruturado.</li>
+          <li><strong>Revogação do Consentimento:</strong> Desativar o salvamento de histórico para futuras análises de forma autônoma.</li>
+        </ul>
+      </div>
+
+      <div class="doc-section" id="seguranca">
+        <h2>7. Segurança da Informação</h2>
+        <p>Implementamos controles rigorosos de segurança técnica e administrativa para proteger os dados pessoais contra acessos não autorizados, perdas, destruição ou vazamento. Isso inclui comunicações criptografadas (HTTPS/TLS 1.2+), hashes seguros para autenticação, controle de acesso baseado em funções (RLS) no banco de dados e isolamento da arquitetura de IA.</p>
+      </div>
+
+      <div class="doc-section" id="contato">
+        <h2>8. Contato e Encarregado (DPO)</h2>
+        <p>Se você tiver quaisquer dúvidas sobre esta Política de Privacidade, solicitações sobre seus dados pessoais ou reclamações sobre o tratamento, entre em contato diretamente com o nosso Encarregado pelo Tratamento de Dados Pessoais através do canal oficial:</p>
+        <p><strong>E-mail:</strong> privacidade@aida.com.br</p>
+        <p>Responderemos às solicitações formais dentro do prazo regulamentado pelas diretrizes da ANPD (Autoridade Nacional de Proteção de Dados).</p>
+      </div>
+    </div>
   </main>
 
   <script src="../scripts/script-cookie-consent.js"></script>

@@ -1,4 +1,4 @@
-﻿@import url("https://fonts.googleapis.com/css2?family=Afacad:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Afacad:wght@400;500;600;700&display=swap");
 
 :root {
   --bg-dark: #0c312e;
@@ -570,52 +570,7 @@ section {
   margin-bottom: 10px;
 }
 
-.rolarpg {
-  position: fixed;
-  right: 24px;
-  bottom: 24px;
-  width: 96px;
-  height: 96px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 100;
-  opacity: 0.88;
-  transition: opacity 0.25s ease, visibility 0.25s ease, transform 0.25s ease;
-}
 
-.rolarpg.hidden {
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(10px);
-}
-
-.imgrpg {
-  width: 100%;
-  animation: girar 12s linear infinite;
-}
-
-.seta {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.seta img {
-  width: 24px;
-}
-
-@keyframes girar {
-  from {
-    transform: rotate(0);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
-}
 
 .secfunc {
   padding: 100px 0;
@@ -1266,12 +1221,7 @@ section {
     border-radius: 32px;
   }
 
-  .rolarpg {
-    width: 74px;
-    height: 74px;
-    right: 16px;
-    bottom: 16px;
-  }
+
 
   .btn-main,
   .btn-watch,

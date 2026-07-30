@@ -445,20 +445,6 @@ function setupHeaderBehavior() {
   });
 }
 
-function setupScrollBadge() {
-  if (!scrollBadge || !toolSection) {
-    return;
-  }
-
-  const toggleBadge = () => {
-    const sectionTop = toolSection.getBoundingClientRect().top;
-    scrollBadge.classList.toggle("hidden", sectionTop < window.innerHeight * 0.8);
-  };
-
-  toggleBadge();
-  window.addEventListener("scroll", toggleBadge, { passive: true });
-}
-
 function setupIconLoop() {
   const icons = document.querySelectorAll(".icon-wrapper");
 
@@ -752,14 +738,85 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
+  const isLogged = localStorage.getItem("usuarioNome") || localStorage.getItem("usuarioEmail");
+
+  if (!isLogged) {
+    document.body.classList.add("locked-scroll");
+    
+    if (navbar) {
+      navbar.innerHTML = '<span class="ancoranav" style="cursor:default; color:var(--text); padding-right:16px;">Você sabe a verdade por trás do que vê?</span>';
+    }
+    
+    const mobileButton = document.getElementById("nome-usuario");
+    const desktopButton = document.getElementById("nome-usuario2");
+    [mobileButton, desktopButton].forEach(btn => {
+      if (btn) {
+        btn.textContent = "Fazer Login";
+        const clone = btn.cloneNode(true);
+        btn.parentNode.replaceChild(clone, btn);
+        clone.addEventListener("click", (e) => {
+          e.preventDefault();
+          window.location.href = "./index-login.html";
+        });
+        
+        const dropdownContent = clone.nextElementSibling;
+        if (dropdownContent && dropdownContent.classList.contains("dropdown-content")) {
+          dropdownContent.style.display = "none";
+        }
+      }
+    });
+    
+    const btnWatch = document.querySelector(".hero-actions .btn-watch");
+    if (btnWatch) btnWatch.style.display = "none";
+    
+    const btnMain = document.querySelector(".hero-actions .btn-main");
+    if (btnMain) btnMain.href = "./index-login.html";
+    
+    const overlay = document.getElementById("unlogged-login-overlay");
+    const overlayBackdrop = document.querySelector(".login-overlay-backdrop");
+    const overlayCard = document.querySelector(".login-overlay-card");
+    
+    if (overlay && overlayBackdrop && overlayCard) {
+      overlay.classList.remove("hidden");
+      let scrollProgress = 0;
+      
+      const handleScroll = (deltaY) => {
+        scrollProgress += deltaY * 0.003;
+        if (scrollProgress < 0) scrollProgress = 0;
+        if (scrollProgress > 1) scrollProgress = 1;
+        
+        overlayBackdrop.style.backgroundColor = `rgba(0, 0, 0, ${scrollProgress * 0.7})`;
+        overlayBackdrop.style.backdropFilter = `blur(${scrollProgress * 8}px)`;
+        
+        const translateY = 150 - (scrollProgress * 150);
+        overlayCard.style.transform = `translateY(${translateY}vh)`;
+      };
+
+      window.addEventListener("wheel", (e) => {
+        handleScroll(e.deltaY);
+      }, { passive: false });
+      
+      let lastTouchY = 0;
+      window.addEventListener("touchstart", (e) => {
+        lastTouchY = e.touches[0].clientY;
+      }, { passive: false });
+      
+      window.addEventListener("touchmove", (e) => {
+        const currentY = e.touches[0].clientY;
+        const deltaY = lastTouchY - currentY;
+        lastTouchY = currentY;
+        handleScroll(deltaY);
+      }, { passive: false });
+    }
+  }
+
   registerGsapPlugins();
   renderizarAvisoSistema();
   ajustarAcessoPrincipalFerramenta();
-  setUserName();
+  if (isLogged) setUserName();
   setupNavigation();
   updateActiveNav();
   setupHeaderBehavior();
-  setupScrollBadge();
   setupIconLoop();
   renderMobileTeamCards();
   setupTeamControls();

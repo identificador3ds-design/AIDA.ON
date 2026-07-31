@@ -778,21 +778,36 @@ document.addEventListener("DOMContentLoaded", () => {
     
     if (overlay && overlayBackdrop && overlayCard) {
       overlay.classList.remove("hidden");
-      let scrollProgress = 0;
+      let isCardVisible = false;
       
+      const showCard = () => {
+        if (isCardVisible) return;
+        isCardVisible = true;
+        overlayCard.style.transform = `translateY(0)`;
+        overlayBackdrop.style.backgroundColor = `rgba(0, 0, 0, 0.7)`;
+        overlayBackdrop.style.backdropFilter = `blur(8px)`;
+      };
+
+      const hideCard = () => {
+        if (!isCardVisible) return;
+        isCardVisible = false;
+        overlayCard.style.transform = `translateY(150vh)`;
+        overlayBackdrop.style.backgroundColor = `transparent`;
+        overlayBackdrop.style.backdropFilter = `blur(0px)`;
+      };
+      
+      overlayBackdrop.addEventListener("click", hideCard);
+
       const handleScroll = (deltaY) => {
-        scrollProgress += deltaY * 0.003;
-        if (scrollProgress < 0) scrollProgress = 0;
-        if (scrollProgress > 1) scrollProgress = 1;
-        
-        overlayBackdrop.style.backgroundColor = `rgba(0, 0, 0, ${scrollProgress * 0.7})`;
-        overlayBackdrop.style.backdropFilter = `blur(${scrollProgress * 8}px)`;
-        
-        const translateY = 150 - (scrollProgress * 150);
-        overlayCard.style.transform = `translateY(${translateY}vh)`;
+        if (deltaY > 15) {
+          showCard();
+        } else if (deltaY < -15) {
+          hideCard();
+        }
       };
 
       window.addEventListener("wheel", (e) => {
+        e.preventDefault();
         handleScroll(e.deltaY);
       }, { passive: false });
       
@@ -802,6 +817,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }, { passive: false });
       
       window.addEventListener("touchmove", (e) => {
+        e.preventDefault();
         const currentY = e.touches[0].clientY;
         const deltaY = lastTouchY - currentY;
         lastTouchY = currentY;

@@ -241,6 +241,11 @@ function exibirResultado(dados) {
     areaResultado.style.display = "block";
     areaResultado.scrollIntoView({ behavior: "smooth", block: "start" });
   }
+
+  const isLogged = localStorage.getItem("usuarioNome") || localStorage.getItem("usuarioEmail");
+  if (!isLogged) {
+    localStorage.setItem("AIDA_AnaliseUnlogged", "true");
+  }
 }
 
 async function executarAnalise(event) {
@@ -435,14 +440,96 @@ document.addEventListener("DOMContentLoaded", async () => {
     checkSalvarHistorico.checked = !["localhost", "127.0.0.1"].includes(window.location.hostname);
   }
 
+  const isLogged = localStorage.getItem("usuarioNome") || localStorage.getItem("usuarioEmail");
+  if (!isLogged) {
+    const retencaoGroup = document.getElementById("retencaoAnaliseGroup");
+    if (retencaoGroup) retencaoGroup.style.display = "none";
+
+    const btnHistorico = document.querySelector('.top-link[href="./index-historico.html"]');
+    if (btnHistorico) btnHistorico.style.display = "none";
+
+    const btnMinhaConta = document.getElementById("nome-usuario2");
+    if (btnMinhaConta) {
+      btnMinhaConta.textContent = "Fazer Login";
+      const clone = btnMinhaConta.cloneNode(true);
+      btnMinhaConta.parentNode.replaceChild(clone, btnMinhaConta);
+      clone.addEventListener("click", (e) => {
+        e.preventDefault();
+        window.location.href = "./index-login.html";
+      });
+      
+      const dropdownContent = clone.nextElementSibling;
+      if (dropdownContent && dropdownContent.classList.contains("dropdown-content")) {
+        dropdownContent.style.display = "none";
+      }
+    }
+  }
+
   if (btnVerificar) {
     btnVerificar.disabled = false;
     btnVerificar.setAttribute("data-aida-handler", "ativo");
   }
 
+  function exibirLoginOverlay(e) {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    let overlay = document.getElementById("unlogged-login-overlay");
+    if (!overlay) {
+      overlay = document.createElement("div");
+      overlay.id = "unlogged-login-overlay";
+      overlay.className = "login-overlay hidden";
+      overlay.innerHTML = `
+        <div class="login-overlay-backdrop"></div>
+        <div class="login-overlay-card">
+            <h2>Faça login para continuar</h2>
+            <p>Você atingiu o limite de análises sem conta.</p>
+            <a href="./index-login.html" class="aida-button">Fazer Login</a>
+        </div>
+      `;
+      document.body.appendChild(overlay);
+      
+      const backdrop = overlay.querySelector(".login-overlay-backdrop");
+      const card = overlay.querySelector(".login-overlay-card");
+      
+      backdrop.addEventListener("click", () => {
+        card.style.transform = "translateY(150vh)";
+        backdrop.style.backgroundColor = "transparent";
+        backdrop.style.backdropFilter = "blur(0px)";
+        setTimeout(() => overlay.classList.add("hidden"), 400);
+      });
+    }
+    
+    overlay.classList.remove("hidden");
+    
+    setTimeout(() => {
+      const backdrop = overlay.querySelector(".login-overlay-backdrop");
+      const card = overlay.querySelector(".login-overlay-card");
+      card.style.transform = "translateY(0)";
+      backdrop.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
+      backdrop.style.backdropFilter = "blur(8px)";
+    }, 10);
+  }
+
   if (btnTrocar && inputTrocarImagem) {
-    btnTrocar.addEventListener("click", () => inputTrocarImagem.click());
+    btnTrocar.addEventListener("click", (e) => {
+      if (!isLogged && localStorage.getItem("AIDA_AnaliseUnlogged") === "true") {
+        exibirLoginOverlay(e);
+      } else {
+        inputTrocarImagem.click();
+      }
+    });
     inputTrocarImagem.addEventListener("change", () => trocarImagem(inputTrocarImagem.files[0]));
+  }
+
+  const linkNovaAnalise = document.querySelector('a[href="./index-seleciona.html"]');
+  if (linkNovaAnalise) {
+    linkNovaAnalise.addEventListener("click", (e) => {
+      if (!isLogged && localStorage.getItem("AIDA_AnaliseUnlogged") === "true") {
+        exibirLoginOverlay(e);
+      }
+    });
   }
 
   const imagemSalva = await obterImagemSelecionada();

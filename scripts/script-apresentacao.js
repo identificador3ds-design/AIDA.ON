@@ -741,8 +741,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const isLogged = localStorage.getItem("usuarioNome") || localStorage.getItem("usuarioEmail");
 
   if (!isLogged) {
-    document.body.classList.add("locked-scroll");
-    
     if (navbar) {
       navbar.innerHTML = '<span class="ancoranav" style="cursor:default; color:var(--text); padding-right:16px;">Você sabe a verdade por trás do que vê?</span>';
     }
@@ -765,65 +763,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
     });
-    
-    const btnWatch = document.querySelector(".hero-actions .btn-watch");
-    if (btnWatch) btnWatch.style.display = "none";
-    
-    const btnMain = document.querySelector(".hero-actions .btn-main");
-    if (btnMain) btnMain.href = "./index-login.html";
-    
-    const overlay = document.getElementById("unlogged-login-overlay");
-    const overlayBackdrop = document.querySelector(".login-overlay-backdrop");
-    const overlayCard = document.querySelector(".login-overlay-card");
-    
-    if (overlay && overlayBackdrop && overlayCard) {
-      overlay.classList.remove("hidden");
-      let isCardVisible = false;
-      
-      const showCard = () => {
-        if (isCardVisible) return;
-        isCardVisible = true;
-        overlayCard.style.transform = `translateY(0)`;
-        overlayBackdrop.style.backgroundColor = `rgba(0, 0, 0, 0.7)`;
-        overlayBackdrop.style.backdropFilter = `blur(8px)`;
-      };
-
-      const hideCard = () => {
-        if (!isCardVisible) return;
-        isCardVisible = false;
-        overlayCard.style.transform = `translateY(150vh)`;
-        overlayBackdrop.style.backgroundColor = `transparent`;
-        overlayBackdrop.style.backdropFilter = `blur(0px)`;
-      };
-      
-      overlayBackdrop.addEventListener("click", hideCard);
-
-      const handleScroll = (deltaY) => {
-        if (deltaY > 15) {
-          showCard();
-        } else if (deltaY < -15) {
-          hideCard();
-        }
-      };
-
-      window.addEventListener("wheel", (e) => {
-        e.preventDefault();
-        handleScroll(e.deltaY);
-      }, { passive: false });
-      
-      let lastTouchY = 0;
-      window.addEventListener("touchstart", (e) => {
-        lastTouchY = e.touches[0].clientY;
-      }, { passive: false });
-      
-      window.addEventListener("touchmove", (e) => {
-        e.preventDefault();
-        const currentY = e.touches[0].clientY;
-        const deltaY = lastTouchY - currentY;
-        lastTouchY = currentY;
-        handleScroll(deltaY);
-      }, { passive: false });
-    }
   }
 
   registerGsapPlugins();

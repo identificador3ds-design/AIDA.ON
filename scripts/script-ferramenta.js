@@ -1,4 +1,4 @@
-﻿const ADMIN_EMAIL = "admin@gmail.com";
+const ADMIN_EMAIL = "admin@gmail.com";
 const CHAVE_ADMIN_CONFIG = "AIDA_ADMIN_CONFIG";
 const CHAVE_LOGIN_FEEDBACK = "AIDA_LOGIN_FEEDBACK";
 const CHAVE_IMAGEM_SELECIONADA = "AIDA_ImagemSelecionada";
@@ -163,9 +163,56 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   if (btnAcaoSelecionar && inputFileBotao) {
-    btnAcaoSelecionar.addEventListener("click", () => {
-      inputFileBotao.value = "";
-      inputFileBotao.click();
+    function exibirLoginOverlay(e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      let overlay = document.getElementById("unlogged-login-overlay");
+      if (!overlay) {
+        overlay = document.createElement("div");
+        overlay.id = "unlogged-login-overlay";
+        overlay.className = "login-overlay hidden";
+        overlay.innerHTML = `
+          <div class="login-overlay-backdrop"></div>
+          <div class="login-overlay-card">
+              <h2>Faça login para continuar</h2>
+              <p>Você atingiu o limite de análises sem conta.</p>
+              <a href="./index-login.html" class="btn-estilizado" style="text-decoration:none; display:inline-block; padding:10px 20px;">Fazer Login</a>
+          </div>
+        `;
+        document.body.appendChild(overlay);
+        
+        const backdrop = overlay.querySelector(".login-overlay-backdrop");
+        const card = overlay.querySelector(".login-overlay-card");
+        
+        backdrop.addEventListener("click", () => {
+          card.style.transform = "translateY(150vh)";
+          backdrop.style.backgroundColor = "transparent";
+          backdrop.style.backdropFilter = "blur(0px)";
+          setTimeout(() => overlay.classList.add("hidden"), 400);
+        });
+      }
+      
+      overlay.classList.remove("hidden");
+      
+      setTimeout(() => {
+        const backdrop = overlay.querySelector(".login-overlay-backdrop");
+        const card = overlay.querySelector(".login-overlay-card");
+        card.style.transform = "translateY(0)";
+        backdrop.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
+        backdrop.style.backdropFilter = "blur(8px)";
+      }, 10);
+    }
+
+    btnAcaoSelecionar.addEventListener("click", (e) => {
+      const isLogged = localStorage.getItem("usuarioNome") || localStorage.getItem("usuarioEmail");
+      if (!isLogged && localStorage.getItem("AIDA_AnaliseUnlogged") === "true") {
+        exibirLoginOverlay(e);
+      } else {
+        inputFileBotao.value = "";
+        inputFileBotao.click();
+      }
     });
 
     inputFileBotao.addEventListener("change", () => {

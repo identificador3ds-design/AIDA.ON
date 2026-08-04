@@ -1,12 +1,19 @@
-numpy
-pandas
-opencv-python
-Pillow
-pillow-heif
-scikit-learn
-joblib
-matplotlib
-seaborn
-flask
-flask-cors
-werkzeug
+# Processamento de imagens e dados
+numpy>=1.24
+pandas>=2.0
+opencv-python>=4.8
+Pillow>=10.0
+pillow-heif>=0.16
+
+# Machine learning
+scikit-learn>=1.3
+joblib>=1.3
+
+# Graficos e relatorios
+matplotlib>=3.7
+seaborn>=0.13
+
+# API web
+Flask>=3.0
+Flask-Cors>=4.0
+Werkzeug>=3.0

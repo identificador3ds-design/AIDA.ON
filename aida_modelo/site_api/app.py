@@ -6,7 +6,6 @@ import tempfile
 import os
 import sys
 import uuid
-import traceback
 
 BASE_DIR = Path(__file__).resolve().parents[1]
 sys.path.append(str(BASE_DIR))
@@ -17,7 +16,7 @@ app = Flask(__name__)
 
 app.config["MAX_CONTENT_LENGTH"] = 15 * 1024 * 1024
 
-CORS(app, resources={r"/*": {"origins": "*"}})
+CORS(app)
 
 EXTENSOES_PERMITIDAS = {".jpg", ".jpeg", ".png", ".webp", ".heic", ".heif"}
 
@@ -68,15 +67,15 @@ def analisar():
 
             resultado = analisar_imagem(
                 caminho_imagem=str(caminho_imagem),
+                id_analise=id_analise,
                 historico_habilitado=historico_habilitado
             )
 
         return jsonify(resultado), 200
 
-    except Exception as e:
-        traceback.print_exc()
+    except Exception:
         return jsonify({
-            "erro": f"Erro interno ao analisar a imagem: {str(e)}"
+            "erro": "Erro interno ao analisar a imagem."
         }), 500
 
 
@@ -86,3 +85,7 @@ def buscar_analise(id_analise):
         "mensagem": "Esta rota deverá buscar a análise no Supabase.",
         "id": id_analise
     })
+
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000, debug=True)

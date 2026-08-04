@@ -67,7 +67,7 @@ O pacote `pillow-heif` foi incluído para suporte a HEIC e AVIF. Se uma imagem e
 
 `config.py`: centraliza caminhos, extensões aceitas, limite de 15 MB, random state, divisão treino/teste e nomes dos arquivos salvos.
 
-`extratores/`: contém os quatro grupos de métricas: FFT + Benford global, FFT + Benford 5x5, gradientes/textura e LSB.
+`extratores/`: contém FFT + Benford global, FFT + Benford 5x5, gradientes/textura, LSB e as métricas de Laplaciano, DoG e TSR.
 
 `gerar_csv.py`: percorre `dataset/reais` e `dataset/ia`, aplica todos os extratores e salva `metricas/metricas_aida.csv` em `utf-8-sig`.
 
@@ -80,6 +80,8 @@ O pacote `pillow-heif` foi incluído para suporte a HEIC e AVIF. Se uma imagem e
 `site_api/app.py`: API Flask com `POST /analisar` e `GET /analise/<id_analise>`.
 
 ## Gerar CSV
+
+Sempre gere novamente o CSV e retreine os modelos após adicionar ou alterar extratores, para que as novas métricas participem das previsões.
 
 ```powershell
 python gerar_csv.py

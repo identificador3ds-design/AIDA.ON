@@ -49,7 +49,12 @@ def _explicacao(resultado, confianca):
     return f"{base} A confiança da decisão foi {confianca}; o resultado não deve ser tratado como prova absoluta."
 
 
-def analisar_imagem(caminho_imagem, historico_habilitado=True, imagem_mantida=True):
+def analisar_imagem(
+    caminho_imagem,
+    historico_habilitado=True,
+    imagem_mantida=True,
+    id_analise=None,
+):
     criar_estrutura()
     caminho = validar_arquivo_imagem(caminho_imagem)
     pacote, colunas, imputer, scaler = _carregar_predicao()
@@ -73,7 +78,7 @@ def analisar_imagem(caminho_imagem, historico_habilitado=True, imagem_mantida=Tr
 
     resultado = "IA/MANIPULADA" if prob_ia >= 0.5 else "REAL"
     confianca = _confianca(prob_ia)
-    id_analise = gerar_id_analise()
+    id_analise = id_analise or gerar_id_analise()
     data_hora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     resposta = {
         "id_analise": id_analise,

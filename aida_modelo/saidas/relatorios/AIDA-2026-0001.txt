@@ -1,0 +1,95 @@
+ID da análise: AIDA-2026-0001
+Imagem: real1.png
+Caminho: dataset\reais\real1.png
+Data e hora: 2026-06-02 09:26:36
+Resultado final: REAL
+Probabilidade REAL: 91.00%
+Probabilidade IA/manipulada: 9.00%
+Confiança: alta
+Explicação: A imagem apresentou padrões estatísticos parecidos com os exemplos reais usados no treinamento. A confiança da decisão foi alta; o resultado não deve ser tratado como prova absoluta.
+Modelo utilizado: random_forest
+
+Principais métricas extraídas:
+- fft_energia_baixa: 0.08763861772013909
+- fft_energia_media: 0.48407825341706884
+- fft_energia_alta: 0.42828312886279196
+- fft_razao_alta_baixa: 4.886922454956599
+- fft_frequencia_dominante_norm: 0.0
+- fft_inclinacao_perfil_radial: -0.745216073624518
+- fft_magnitude_media: 2.132005998950826
+- fft_magnitude_desvio: 1.3670815935268956
+- fft_benford_mae: 0.026360770873872827
+- fft_benford_rmse: 0.029049958315701643
+- fft_benford_correlacao: 0.9451344961040696
+- fft_benford_chi2: 0.07158504295643729
+- fft_benford_digito_1: 0.2788681381693075
+- fft_benford_digito_2: 0.21762609509845907
+- fft_benford_digito_3: 0.17773438917639886
+- fft_benford_digito_4: 0.12120299332960739
+- fft_benford_digito_5: 0.05702133219135825
+- fft_benford_digito_6: 0.04021833015177139
+- fft_benford_digito_7: 0.03731500366544969
+- fft_benford_digito_8: 0.035892373687152056
+- fft_benford_digito_9: 0.03412134453049582
+- sobel_benford_mae: 0.02769982214293471
+- sobel_benford_rmse: 0.03609144538928573
+- sobel_benford_correlacao: 0.9714836495153554
+- sobel_benford_chi2: 0.08456056782400541
+- sobel_benford_digito_1: 0.38706874325601826
+- sobel_benford_digito_2: 0.15319461818320712
+- sobel_benford_digito_3: 0.12014552677062346
+- sobel_benford_digito_4: 0.07399520640165007
+- sobel_benford_digito_5: 0.11779169809879396
+- sobel_benford_digito_6: 0.04201082856679048
+- sobel_benford_digito_7: 0.05630090810996629
+- sobel_benford_digito_8: 0.02535737135108811
+- sobel_benford_digito_9: 0.024135099261862247
+- laplaciano_benford_mae: 0.08786657667890527
+- laplaciano_benford_rmse: 0.10871711276369003
+- laplaciano_benford_correlacao: 0.4601823202404205
+- laplaciano_benford_chi2: 1.109996388737611
+- laplaciano_benford_digito_1: 0.22927723324567695
+- laplaciano_benford_digito_2: 0.0834595054054772
+- laplaciano_benford_digito_3: 0.3614843148192419
+- laplaciano_benford_digito_4: 0.02856004462506973
+- laplaciano_benford_digito_5: 0.04080006375009961
+- laplaciano_benford_digito_6: 0.015916274869179483
+- laplaciano_benford_digito_7: 0.21684596382181848
+- laplaciano_benford_digito_8: 0.010975642149440858
+- laplaciano_benford_digito_9: 0.012680957313995803
+- diferenca_pixels_benford_mae: 0.09844308977573357
+- diferenca_pixels_benford_rmse: 0.13479778726017322
+- diferenca_pixels_benford_correlacao: 0.3752803269008813
+- diferenca_pixels_benford_chi2: 1.390149186953883
+- diferenca_pixels_benford_digito_1: 0.2013406980774478
+- diferenca_pixels_benford_digito_2: 0.07060419908407756
+- diferenca_pixels_benford_digito_3: 0.47355845458366824
+- diferenca_pixels_benford_digito_4: 0.029749043148649346
+- diferenca_pixels_benford_digito_5: 0.030707738143524014
+- diferenca_pixels_benford_digito_6: 0.016231443720916512
+- diferenca_pixels_benford_digito_7: 0.15236613299311952
+- diferenca_pixels_benford_digito_8: 0.010936497518454878
+- diferenca_pixels_benford_digito_9: 0.014505792730142108
+- fft5x5_bloco_01_energia_alta: 0.3796785436819703
+- fft5x5_bloco_01_benford_correlacao: 0.9636252236885261
+- fft5x5_bloco_02_energia_alta: 0.34181222541878464
+- fft5x5_bloco_02_benford_correlacao: 0.9666434538369439
+- fft5x5_bloco_03_energia_alta: 0.35459047234566715
+- fft5x5_bloco_03_benford_correlacao: 0.9811298928230917
+- fft5x5_bloco_04_energia_alta: 0.3462151086711071
+- fft5x5_bloco_04_benford_correlacao: 0.9911384917215615
+- fft5x5_bloco_05_energia_alta: 0.4123236094110119
+- fft5x5_bloco_05_benford_correlacao: 0.9312491970799761
+- fft5x5_bloco_06_energia_alta: 0.3476222794619092
+- fft5x5_bloco_06_benford_correlacao: 0.955132814706468
+- fft5x5_bloco_07_energia_alta: 0.3500131825820156
+- fft5x5_bloco_07_benford_correlacao: 0.9966141337744701
+- fft5x5_bloco_08_energia_alta: 0.3623921534868768
+- fft5x5_bloco_08_benford_correlacao: 0.9911406579266974
+- fft5x5_bloco_09_energia_alta: 0.34601868599767566
+- fft5x5_bloco_09_benford_correlacao: 0.9846769286322543
+- fft5x5_bloco_10_energia_alta: 0.3789335098925809
+- fft5x5_bloco_10_benford_correlacao: 0.9634039210827158
+
+Observação: este resultado é uma previsão estatística baseada no modelo treinado,
+não uma prova absoluta sobre a origem da imagem.

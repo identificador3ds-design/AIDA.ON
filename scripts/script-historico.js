@@ -1,4 +1,4 @@
-﻿const supabaseUrl = "https://nwzijdudhemuibsyzpub.supabase.co";
+const supabaseUrl = "https://nwzijdudhemuibsyzpub.supabase.co";
 const supabaseKey =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im53emlqZHVkaGVtdWlic3l6cHViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwMjk5MTAsImV4cCI6MjA4NzYwNTkxMH0.aDHymYEKtyY5m2eaOHoBy4QRpaAvtafi_PVDtrL9gQc";
 const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
@@ -18,6 +18,7 @@ const favicon = document.getElementById('favicon');
 
 function updateFavicon() {
 
+  if (!favicon) return;
   if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
     favicon.href = '../assets/images/AIDABranco.ico';
   } else {
@@ -180,15 +181,17 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   let historicoNuvem = [];
 
+  // Botão Voltar agora gerido diretamente no HTML via onclick
+
   const carregarHistorico = async () => {
-    lista.innerHTML = '<div class="mensagem-vazia">Buscando evidências na nuvem...</div>';
+    lista.innerHTML = '<div style="padding: 30px; text-align: center; color: var(--neutral);">Buscando evidências na nuvem...</div>';
 
     const {
       data: { user },
     } = await _supabase.auth.getUser();
 
     if (!user) {
-      lista.innerHTML = '<div class="mensagem-vazia">Você precisa estar logado para ver o histórico.</div>';
+      lista.innerHTML = '<div style="padding: 30px; text-align: center; color: var(--neutral);">Você precisa estar logado para ver o histórico.</div>';
       return;
     }
 
@@ -199,14 +202,16 @@ document.addEventListener("DOMContentLoaded", async () => {
       .order("data_analise", { ascending: false });
 
     if (error) {
-      lista.innerHTML = '<div class="mensagem-vazia">Erro ao conectar com o banco de dados.</div>';
+      lista.innerHTML = '<div style="padding: 30px; text-align: center; color: var(--neutral);">Erro ao conectar com o banco de dados.</div>';
+      alert("Erro ao buscar histórico: " + error.message);
       return;
     }
 
     historicoNuvem = registros || [];
 
     if (!historicoNuvem.length) {
-      lista.innerHTML = '<div class="mensagem-vazia">Nenhuma análise encontrada no banco de dados.</div>';
+      lista.innerHTML = '<div style="padding: 30px; text-align: center; color: var(--neutral);">Nenhuma análise encontrada no banco de dados.</div>';
+      // alert("Nenhum histórico encontrado para o usuário: " + user.id);
       return;
     }
 
@@ -214,18 +219,19 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     historicoNuvem.forEach((item, index) => {
       const dataFormatada = new Date(item.data_analise).toLocaleString("pt-BR");
-      const card = document.createElement("article");
-      card.className = "card-historico-item glass-card";
+      const card = document.createElement("a");
+      card.href = "javascript:void(0)";
+      card.className = "action-item btn-detalhes";
+      card.dataset.index = index;
       card.innerHTML = `
-        <div class="thumb-container">
-          <img src="${escaparHtml(item.imagem_original)}" alt="Imagem analisada">
+        <div class="action-item-icon history-thumb">
+          <img src="${escaparHtml(item.imagem_original)}" alt="Evidência">
         </div>
-        <div class="info-historico">
-          <span class="data-badge">${escaparHtml(dataFormatada)}</span>
-          <h4>${escaparHtml(item.metodo)}</h4>
-          <div class="status-badge">${escaparHtml(item.probabilidade)}</div>
+        <div class="action-item-text">
+          <span class="action-title">${escaparHtml(item.metodo)} <span style="font-size: 0.8rem; opacity: 0.8; margin-left: 6px;">${escaparHtml(item.probabilidade)}</span></span>
+          <span class="action-desc">${escaparHtml(dataFormatada)}</span>
         </div>
-        <button class="aida-button secondary btn-detalhes" data-index="${index}">Examinar resultado</button>
+        <svg class="chevron" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"></path></svg>
       `;
       lista.appendChild(card);
     });

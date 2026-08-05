@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AIDA.ON - Historico de Analises</title>
-    <link rel="icon" type="image/png" href="../assets/images/AIDABranco.ico">
+    <link id="favicon" rel="icon" type="image/png" href="../assets/images/AIDABranco.ico">
     <link rel="stylesheet" href="../styles/style-shared-theme.css">
     <link rel="stylesheet" href="../styles/style-analise.css">
+    <link rel="stylesheet" href="../styles/style-perfil.css">
     <link rel="stylesheet" href="../styles/style-historico.css">
 </head>
 <body class="aida-shell analysis-page">
@@ -14,35 +15,34 @@
         <a href="../index.html" aria-label="Pagina inicial">
             <img src="../assets/images/LogoBranca.png" alt="Logo AIDA.ON" class="brand-logo">
         </a>
-
         <div class="history-header-actions">
-            <a href="./index-privacidade.html" class="top-link">Privacidade</a>
-            <a href="./index-seleciona.html" class="top-link">Nova analise</a>
+            <a href="javascript:void(0)" onclick="if(window.history.length > 1) { window.history.back(); } else { window.location.href='./index-perfil.html'; }" class="top-link">Voltar</a>
         </div>
     </header>
 
-    <main class="page-frame history-main">
-        <section class="card-analise glass-panel history-panel">
-            <div class="history-header">
-                <div>
-                    <span class="page-kicker">Evidencias</span>
-                    <h1 class="page-title">Historico de analises</h1>
-                    <p class="page-copy">Revise apenas as analises que voce escolheu salvar na sua conta.</p>
+    <main class="page-frame profile-main">
+        <div class="profile-container">
+            <section class="profile-section">
+                <div class="section-header" style="justify-content: space-between; align-items: flex-end;">
+                    <div>
+                        <h2>Histórico de Análises</h2>
+                        <p style="margin: 8px 0 0; font-size: 0.9rem; color: var(--neutral);">Revise as análises salvas na sua conta.</p>
+                    </div>
+                    <button id="btnLimparHistorico" class="btn-danger-outline" style="padding: 6px 12px; font-size: 0.85rem;">Limpar Histórico</button>
                 </div>
-                <button id="btnLimparHistorico" class="aida-button danger">Limpar registros</button>
-            </div>
-
-            <div id="listaHistorico" class="grid-historico">
-                <div class="mensagem-vazia">Nenhuma analise encontrada no banco de dados.</div>
-            </div>
-        </section>
+                
+                <div id="listaHistorico" class="action-list">
+                    <div style="padding: 30px; text-align: center; color: var(--neutral);">Buscando evidências...</div>
+                </div>
+            </section>
+        </div>
     </main>
 
     <div id="modalDetalhes" class="modal-overlay" style="display: none;">
         <div class="modal-shell glass-panel">
             <button class="btn-fechar-modal" type="button" aria-label="Fechar modal">&times;</button>
-            <h3 id="modalTitulo">Evidencia</h3>
-            <img id="modalImgProcessada" src="" alt="Resultado da evidencia">
+            <h3 id="modalTitulo" style="color: var(--highlight); margin-top: 0;">Evidência</h3>
+            <img id="modalImgProcessada" src="" alt="Resultado da evidencia" style="width: 100%; border-radius: 12px; background: rgba(0,0,0,0.5);">
         </div>
     </div>
 

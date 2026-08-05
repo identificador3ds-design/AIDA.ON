@@ -302,9 +302,14 @@ async function executarAnalise(event) {
     }
 
     if (salvarNoHistorico) {
-      salvarHistoricoSupabase(imagemAtual, dados).catch((erro) => {
-        console.warn("Nao foi possivel sincronizar com o Supabase:", erro);
-      });
+      salvarHistoricoSupabase(imagemAtual, dados)
+        .then(() => {
+          registrarStatus("Histórico salvo com sucesso na nuvem.", "sucesso");
+        })
+        .catch((erro) => {
+          console.warn("Nao foi possivel sincronizar com o Supabase:", erro);
+          alert("Não foi possível salvar a imagem no histórico. Detalhes: " + erro.message);
+        });
     }
   } catch (erro) {
     if (erro.name !== "AbortError") {
@@ -366,32 +371,49 @@ function montarDescricaoMetodo(dados) {
 }
 
 async function salvarHistoricoSupabase(arquivo, dadosAnalisados) {
-  if (!window.supabase) return;
+  if (typeof _supabase === 'undefined') return;
+
+  const { data: { user }, error: authError } = await _supabase.auth.getUser();
+  if (authError) throw new Error("Erro de autenticacao: " + authError.message);
+  if (!user) throw new Error("Usuário não está logado no Supabase.");
+
+  // 1. Upload da imagem para o bucket "evidencias"
+  const fileName = `${Date.now()}_${arquivo.name}`;
+  const filePath = `${user.id}/${fileName}`;
+  
+  const { error: uploadError } = await _supabase.storage
+    .from("evidencias")
+    .upload(filePath, arquivo);
+
+  if (uploadError) {
+    throw new Error(`Erro ao subir imagem: ${uploadError.message}`);
+  }
+
+  // Obter URL pública
+  const { data: publicUrlData } = _supabase.storage
+    .from("evidencias")
+    .getPublicUrl(filePath);
+
+  const imagem_original = publicUrlData.publicUrl;
+
+  const probIA = Number(dadosAnalisados.probabilidade_ia || 0);
+  const probabilidadeFormatada = `${(probIA * 100).toFixed(1)}%`;
 
   const payload = {
-    id_analise: dadosAnalisados.id_analise || `AIDA-${new Date().getFullYear()}-XXXX`,
-    data_hora: new Date().toISOString(),
-    nome_arquivo: arquivo.name,
-    resultado: dadosAnalisados.resultado,
-    probabilidade_real: dadosAnalisados.probabilidade_real,
-    probabilidade_ia: dadosAnalisados.probabilidade_ia,
-    confianca: dadosAnalisados.confianca,
-    modelo_utilizado: dadosAnalisados.modelo_utilizado || "ML Unificado",
+    user_id: user.id,
+    data_analise: new Date().toISOString(),
+    imagem_original: imagem_original,
+    metodo: dadosAnalisados.modelo_utilizado || "ML Unificado",
+    probabilidade: probabilidadeFormatada,
+    resultado_img: null // ou a imagem tratada se a API fornecesse
   };
 
-  const resposta = await fetch(`${supabaseUrl}/rest/v1/historico_analises`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      apikey: supabaseKey,
-      Authorization: `Bearer ${supabaseKey}`,
-      Prefer: "return=minimal",
-    },
-    body: JSON.stringify(payload),
-  });
+  const { error: insertError } = await _supabase
+    .from("historico_analises")
+    .insert([payload]);
 
-  if (!resposta.ok) {
-    throw new Error(`Erro na persistencia do Supabase: ${resposta.statusText}`);
+  if (insertError) {
+    throw new Error(`Erro na persistencia do Supabase: ${insertError.message}`);
   }
 }
 

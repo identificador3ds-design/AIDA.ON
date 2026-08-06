@@ -219,19 +219,24 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     historicoNuvem.forEach((item, index) => {
       const dataFormatada = new Date(item.data_analise).toLocaleString("pt-BR");
-      const card = document.createElement("a");
-      card.href = "javascript:void(0)";
-      card.className = "action-item btn-detalhes";
-      card.dataset.index = index;
+      const card = document.createElement("div");
+      card.className = "action-item";
       card.innerHTML = `
-        <div class="action-item-icon history-thumb">
-          <img src="${escaparHtml(item.imagem_original)}" alt="Evidência">
-        </div>
-        <div class="action-item-text">
-          <span class="action-title">${escaparHtml(item.metodo)} <span style="font-size: 0.8rem; opacity: 0.8; margin-left: 6px;">${escaparHtml(item.probabilidade)}</span></span>
-          <span class="action-desc">${escaparHtml(dataFormatada)}</span>
-        </div>
-        <svg class="chevron" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"></path></svg>
+        <a href="javascript:void(0)" class="btn-detalhes" data-index="${index}" style="display: flex; align-items: center; gap: 16px; flex: 1; text-decoration: none;">
+          <div class="action-item-icon history-thumb">
+            <img src="${escaparHtml(item.imagem_original)}" alt="Evidência">
+          </div>
+          <div class="action-item-text">
+            <span class="action-title">${escaparHtml(item.metodo)} <span style="font-size: 0.8rem; opacity: 0.8; margin-left: 6px;">${escaparHtml(item.probabilidade)}</span></span>
+            <span class="action-desc">${escaparHtml(dataFormatada)}</span>
+          </div>
+        </a>
+        <button class="btn-apagar-item" data-id="${item.id}" data-url="${item.imagem_original}" title="Apagar análise" style="background: none; border: none; color: #ff6b6b; cursor: pointer; padding: 8px; transition: opacity 0.2s;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+             <polyline points="3 6 5 6 21 6"></polyline>
+             <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+          </svg>
+        </button>
       `;
       lista.appendChild(card);
     });
@@ -242,6 +247,35 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.getElementById("modalImgProcessada").src = item.resultado_img || item.imagem_original;
         document.getElementById("modalTitulo").textContent = `Método: ${item.metodo}`;
         modal.style.display = "flex";
+      });
+    });
+
+    lista.querySelectorAll(".btn-apagar-item").forEach((button) => {
+      button.addEventListener("click", async (e) => {
+        e.stopPropagation();
+        const id = button.dataset.id;
+        const url = button.dataset.url;
+        
+        const confirmed = window.confirm("Deseja realmente apagar esta análise?");
+        if (!confirmed) return;
+        
+        button.style.opacity = "0.5";
+        button.disabled = true;
+        
+        if (url && url.includes("/evidencias/")) {
+          const path = url.split("/evidencias/")[1];
+          await _supabase.storage.from("evidencias").remove([path]);
+        }
+        
+        const { error } = await _supabase.from("historico_analises").delete().eq("id", id);
+        
+        if (error) {
+          alert("Erro ao apagar análise: " + error.message);
+          button.style.opacity = "1";
+          button.disabled = false;
+        } else {
+          carregarHistorico();
+        }
       });
     });
   };

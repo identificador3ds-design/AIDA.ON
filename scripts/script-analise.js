@@ -2,6 +2,8 @@ const supabaseUrl = "https://nwzijdudhemuibsyzpub.supabase.co";
 const supabaseKey =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im53emlqZHVkaGVtdWlic3l6cHViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwMjk5MTAsImV4cCI6MjA4NzYwNTkxMH0.aDHymYEKtyY5m2eaOHoBy4QRpaAvtafi_PVDtrL9gQc";
 
+const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
 const CHAVE_IMAGEM_SELECIONADA = "AIDA_ImagemSelecionada";
 const DB_IMAGEM_SELECIONADA = "AIDA_ImagemSelecionada_DB";
 const STORE_IMAGEM_SELECIONADA = "imagem";
@@ -397,7 +399,8 @@ async function salvarHistoricoSupabase(arquivo, dadosAnalisados) {
   const imagem_original = publicUrlData.publicUrl;
 
   const probIA = Number(dadosAnalisados.probabilidade_ia || 0);
-  const probabilidadeFormatada = `${(probIA * 100).toFixed(1)}%`;
+  const probReal = Number(dadosAnalisados.probabilidade_real || 0);
+  const probabilidadeFormatada = `IA: ${(probIA * 100).toFixed(1)}% | Real: ${(probReal * 100).toFixed(1)}%`;
 
   const payload = {
     user_id: user.id,

@@ -1288,3 +1288,81 @@ body.tutorial-active .tutorial-fab {
 .stat-ia .stat-bar-fill {
   background: linear-gradient(90deg, #b74c5c, #ff9191);
 }
+
+/* Detalhes do resultado: motivos da abstencao, leitura por modulo, limitacoes
+   e a ressalva obrigatoria do §8.2. */
+#textoMetodo {
+  margin-top: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.detalhe-titulo {
+  margin: 10px 0 0;
+  font-size: 0.9rem;
+  color: var(--text-soft);
+}
+
+.detalhe-lista {
+  margin: 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.detalhe-modulos {
+  list-style: none;
+  padding-left: 0;
+}
+
+.detalhe-modulos li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* A ressalva nao pode passar por texto decorativo: ela e parte do resultado. */
+.detalhe-ressalva {
+  margin: 14px 0 0;
+  padding: 12px 14px;
+  border-left: 3px solid var(--accent, #8fd8b7);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 0 10px 10px 0;
+  font-size: 0.9rem;
+  font-style: italic;
+  line-height: 1.5;
+  opacity: 0.9;
+}
+
+.exemplo-metodo {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.exemplo-metodo img {
+  width: 100%;
+  /* Os mapas sao quadrados: reservar a proporcao evita o salto de layout entre
+     o esqueleto e a imagem carregada. */
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.exemplo-metodo figcaption {
+  font-size: 0.82rem;
+  line-height: 1.4;
+  color: var(--text-soft);
+}

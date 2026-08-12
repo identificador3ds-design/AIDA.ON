@@ -7,10 +7,18 @@ const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 const CHAVE_IMAGEM_SELECIONADA = "AIDA_ImagemSelecionada";
 const DB_IMAGEM_SELECIONADA = "AIDA_ImagemSelecionada_DB";
 const STORE_IMAGEM_SELECIONADA = "imagem";
-const URLS_API_ANALISAR = [
-  "https://aida-modelo-api.onrender.com/analisar", // Exemplo: "https://sua-api.onrender.com/analisar"
-  "http://127.0.0.1:5000/analisar",
-  "http://localhost:5000/analisar",
+// Bases da API, nao URLs de /analisar: os mapas de evidencia vem como caminhos
+// relativos ("/evidencia/<id>/<mapa>") e precisam ser prefixados pela mesma base
+// que atendeu a analise.
+//
+// A API do Render (aida-modelo-api) ficou para tras: ela responde em dois estados
+// e nao conhece INCONCLUSIVO nem fora_de_dominio. Apontar para ela faria o codigo
+// abaixo nunca exercitar a abstencao. A porta local e 7860 (app_port do Space),
+// nao 5000 — 5000 era o Flask antigo, de contrato incompativel.
+const BASES_API = [
+  "https://aidaon-aida-api.hf.space",
+  "http://127.0.0.1:7860",
+  "http://localhost:7860",
 ];
 
 const favicon = document.getElementById("favicon");
@@ -200,44 +208,100 @@ function setCarregando(ativo) {
   if (btnTrocar) btnTrocar.disabled = ativo;
 }
 
-function exibirResultado(dados) {
-  const probIA = Number(dados.probabilidade_ia || 0);
-  const probReal = Number(dados.probabilidade_real || 0);
+// A API tem TRES estados, mais o caso "fora do escopo". A versao anterior desta
+// funcao testava apenas `resultado === "IA/MANIPULADA"` e caia no ramo
+// "provavelmente real" para todo o resto — ou seja, quando o sistema respondia
+// INCONCLUSIVO, a tela afirmava que a imagem era real.
+const ESTADOS = {
+  "IA/MANIPULADA": {
+    titulo: "Indícios de imagem gerada ou manipulada por IA",
+    cor: "#c62828",
+    mostrarProbabilidades: true,
+  },
+  REAL: {
+    titulo: "Indícios de fotografia real",
+    cor: "#2e7d32",
+    mostrarProbabilidades: true,
+  },
+  INCONCLUSIVO: {
+    titulo: "Resultado inconclusivo",
+    cor: "#e08a1e",
+    mostrarProbabilidades: true,
+  },
+  FORA_DE_DOMINIO: {
+    titulo: "Fora do escopo da ferramenta",
+    cor: "#6b7280",
+    // Quando a imagem nao e fotografica, a probabilidade nao tem significado:
+    // exibi-la convida o usuario a interpretar um numero sem sentido.
+    mostrarProbabilidades: false,
+  },
+};
+
+function estadoDe(dados) {
+  if (dados.fora_de_dominio) return ESTADOS.FORA_DE_DOMINIO;
+  return ESTADOS[dados.resultado] || ESTADOS.INCONCLUSIVO;
+}
+
+function escapar(texto) {
+  const div = document.createElement("div");
+  div.textContent = String(texto ?? "");
+  return div.innerHTML;
+}
+
+function exibirResultado(dados, baseApi) {
+  const estado = estadoDe(dados);
+
+  // O contrato e explicito: exiba probabilidade_ia_EXIBICAO. O limiar operacional
+  // vem do indice de Youden e nao cai em 0,50; mostrar a probabilidade calibrada
+  // produz telas como "28% de IA" ao lado do veredito "IA/MANIPULADA".
+  const probIA = Number(
+    dados.probabilidade_ia_exibicao ?? dados.probabilidade_ia ?? 0
+  );
+  const probReal = Number(
+    dados.probabilidade_real_exibicao ?? dados.probabilidade_real ?? 1 - probIA
+  );
   const pctIA = Math.round(probIA * 1000) / 10;
   const pctReal = Math.round(probReal * 1000) / 10;
-  const ehIA = dados.resultado === "IA/MANIPULADA";
 
   if (porcentagemIA) {
-    porcentagemIA.textContent = `${pctIA.toFixed(1)}%`;
+    porcentagemIA.textContent = estado.mostrarProbabilidades
+      ? `${pctIA.toFixed(1)}%`
+      : "não se aplica";
+    const badge = porcentagemIA.closest(".status-badge");
+    if (badge) {
+      badge.style.borderLeft = `5px solid ${estado.cor}`;
+      badge.style.paddingLeft = "10px";
+    }
   }
 
   if (tituloMetodo) {
-    tituloMetodo.textContent = ehIA
-      ? "Imagem provavelmente gerada por IA ou manipulada"
-      : "Imagem provavelmente real";
+    // A API ja manda um titulo pronto; o mapa local e so a rede de seguranca.
+    tituloMetodo.textContent = dados.titulo || estado.titulo;
+    tituloMetodo.style.color = estado.cor;
   }
 
   const statsContainer = document.getElementById("statsContainer");
   if (statsContainer) {
-    statsContainer.style.display = "grid";
-    
-    document.getElementById("statReal").textContent = `${pctReal.toFixed(1)}%`;
-    document.getElementById("statIA").textContent = `${pctIA.toFixed(1)}%`;
-    
-    setTimeout(() => {
+    statsContainer.style.display = estado.mostrarProbabilidades ? "grid" : "none";
+
+    if (estado.mostrarProbabilidades) {
+      document.getElementById("statReal").textContent = `${pctReal.toFixed(1)}%`;
+      document.getElementById("statIA").textContent = `${pctIA.toFixed(1)}%`;
+
+      setTimeout(() => {
         document.getElementById("barReal").style.width = `${pctReal}%`;
         document.getElementById("barIA").style.width = `${pctIA}%`;
-    }, 150);
+      }, 150);
 
-    const statConf = document.getElementById("statConfidence");
-    if (statConf) {
-      statConf.textContent = dados.confianca ? dados.confianca.toUpperCase() : "NÃO INFORMADA";
+      const statConf = document.getElementById("statConfidence");
+      if (statConf) {
+        statConf.textContent = dados.confianca ? dados.confianca.toUpperCase() : "NÃO INFORMADA";
+      }
     }
   }
 
-  if (textoMetodo) {
-    textoMetodo.style.display = "none";
-  }
+  renderizarDetalhes(dados, estado);
+  renderizarEvidencias(dados, baseApi);
 
   if (areaResultado) {
     areaResultado.style.display = "block";
@@ -248,6 +312,111 @@ function exibirResultado(dados) {
   if (!isLogged) {
     localStorage.setItem("AIDA_AnaliseUnlogged", "true");
   }
+}
+
+function renderizarDetalhes(dados, estado) {
+  if (!textoMetodo) return;
+
+  const partes = [];
+
+  if (dados.explicacao) {
+    partes.push(`<p>${escapar(dados.explicacao)}</p>`);
+  }
+
+  // Por que o sistema se absteve. Sem isto, "inconclusivo" parece falha da
+  // ferramenta em vez de recusa deliberada de decidir sem base.
+  const motivos = Array.isArray(dados.motivos) ? dados.motivos : [];
+  if (motivos.length) {
+    partes.push(
+      `<p class="detalhe-titulo"><strong>Por que não foi possível decidir</strong></p>
+       <ul class="detalhe-lista">${motivos.map((m) => `<li>${escapar(m)}</li>`).join("")}</ul>`
+    );
+  }
+
+  // O desacordo entre modulos explica boa parte dos casos inconclusivos.
+  const scores = dados.scores_modulos && Object.entries(dados.scores_modulos);
+  if (scores && scores.length) {
+    const linhas = scores
+      .map(([nome, valor]) => `<li><span>${escapar(nome)}</span><span>${(Number(valor) * 100).toFixed(1)}%</span></li>`)
+      .join("");
+    const fusao = dados.fusao || {};
+    const nota = fusao.calibrado === false
+      ? " (fusão sem calibração — resultado menos confiável)"
+      : "";
+    partes.push(
+      `<p class="detalhe-titulo"><strong>Leitura por módulo${escapar(nota)}</strong></p>
+       <ul class="detalhe-lista detalhe-modulos">${linhas}</ul>`
+    );
+  }
+
+  const limitacoes = Array.isArray(dados.limitacoes) ? dados.limitacoes : [];
+  if (limitacoes.length) {
+    partes.push(
+      `<p class="detalhe-titulo"><strong>Limitações deste arquivo</strong></p>
+       <ul class="detalhe-lista">${limitacoes.map((l) => `<li>${escapar(l)}</li>`).join("")}</ul>`
+    );
+  }
+
+  // §8.2: a ressalva e obrigatoria e nao pode ser omitida da interface.
+  const ressalva =
+    dados.ressalva ||
+    "Este resultado é um indício probabilístico, não uma prova. Não identifica autoria e não substitui a verificação da fonte da imagem.";
+  partes.push(`<p class="detalhe-ressalva">${escapar(ressalva)}</p>`);
+
+  textoMetodo.innerHTML = partes.join("");
+  textoMetodo.style.display = "block";
+}
+
+// Os mapas de explicabilidade (§8.3) vao para o bloco de exemplos que ja existe
+// na pagina.
+const LEGENDAS_MAPAS = {
+  gradiente: "Gradiente — onde a imagem varia mais bruscamente.",
+  bordas: "Bordas detectadas — confere se o modelo reage à cena, não a artefato.",
+  ruido_residual: "Ruído residual — câmeras deixam ruído homogêneo.",
+  espectro_magnitude: "Espectro (magnitude) — picos regulares podem indicar geração.",
+  espectro_fase: "Espectro (fase) — mais estável sob compressão.",
+  clip_tokens: "Atenção do CLIP — regiões que mais pesam na representação visual.",
+};
+
+function renderizarEvidencias(dados, baseApi) {
+  const bloco = document.getElementById("blocoExemplosMetodo");
+  const grade = document.getElementById("exemplosMetodo");
+  const titulo = document.getElementById("tituloExemplosMetodo");
+  const descricao = document.getElementById("descricaoExemplosMetodo");
+  if (!bloco || !grade) return;
+
+  const urls = (dados.evidencias && dados.evidencias.urls) || {};
+  const nomes = Object.keys(urls);
+  if (!nomes.length || !baseApi) {
+    bloco.hidden = true;
+    grade.innerHTML = "";
+    return;
+  }
+
+  if (titulo) titulo.textContent = "Evidências visuais da análise";
+  if (descricao) {
+    descricao.textContent =
+      "Estes mapas mostram onde o sinal medido é mais forte — não onde houve " +
+      "manipulação. Servem para inspeção, não como prova.";
+  }
+
+  bloco.hidden = false;
+
+  // Sem loading="lazy": a imagem nao tem dimensao intrinseca antes de carregar e
+  // colapsa para ~2px de altura, e o Chrome nunca considera o elemento visivel o
+  // bastante para disparar o pedido — os seis mapas ficavam permanentemente em
+  // branco, sem sequer uma requisicao. Sao seis PNGs pequenos, exibidos so depois
+  // de uma analise que o usuario pediu; nao ha o que adiar.
+  grade.innerHTML = nomes
+    .map((nome) => {
+      const src = `${baseApi}${urls[nome]}`;
+      const legenda = LEGENDAS_MAPAS[nome] || nome;
+      return `<figure class="exemplo-metodo">
+        <img src="${escapar(src)}" alt="${escapar(legenda)}" decoding="async">
+        <figcaption>${escapar(legenda)}</figcaption>
+      </figure>`;
+    })
+    .join("");
 }
 
 async function executarAnalise(event) {
@@ -288,7 +457,7 @@ async function executarAnalise(event) {
 
   try {
     registrarStatus("Processando");
-    const resposta = await enviarParaApi(formData, abortController.signal);
+    const { resposta, base } = await enviarParaApi(formData, abortController.signal);
     registrarStatus("Obtendo resultados");
 
     const dados = await resposta.json().catch(() => ({}));
@@ -297,7 +466,7 @@ async function executarAnalise(event) {
       throw new Error(dados.erro || `Falha no servidor (${resposta.status})`);
     }
 
-    exibirResultado(dados);
+    exibirResultado(dados, base);
     registrarStatus("Analise concluida com sucesso.", "sucesso");
     if (previewStatus) {
       previewStatus.textContent = "Analise concluida";
@@ -331,45 +500,27 @@ async function executarAnalise(event) {
   }
 }
 
+// Devolve tambem a base que respondeu: os mapas de evidencia sao caminhos
+// relativos e so fazem sentido prefixados pela mesma origem.
 async function enviarParaApi(formData, signal) {
-  let ultimoErro = null;
-
-  for (const url of URLS_API_ANALISAR) {
+  for (const base of BASES_API) {
     try {
       registrarStatus("Aplicação do método de Análise");
-      return await fetch(url, {
+      const resposta = await fetch(`${base}/analisar`, {
         method: "POST",
         body: formData,
         signal,
       });
+      return { resposta, base };
     } catch (erro) {
-      ultimoErro = erro;
-      registrarStatus(`Falha ao conectar em ${url}: ${erro.message}`, "erro");
+      if (erro.name === "AbortError") throw erro;
+      registrarStatus(`Falha ao conectar em ${base}: ${erro.message}`, "erro");
     }
   }
 
   throw new Error(
-    "Não foi possível conectar com a API Python. Verifique se o servidor no Render está online ou se o backend local está rodando."
+    "Não foi possível conectar com a API do AIDA. Verifique se o Space no Hugging Face está online ou se o backend local está rodando na porta 7860."
   );
-}
-
-function montarDescricaoMetodo(dados) {
-  const probReal = Number(dados.probabilidade_real || 0);
-  const probIA = Number(dados.probabilidade_ia || 0);
-  const linhas = [
-    dados.explicacao || "Analise estatistica concluida pelo modelo AIDA.ON.",
-    "",
-    `Modelo utilizado: ${dados.modelo_utilizado || "Modelo AIDA.ON"}.`,
-    `Probabilidade de imagem real: ${(probReal * 100).toFixed(1)}%.`,
-    `Probabilidade de IA/manipulacao: ${(probIA * 100).toFixed(1)}%.`,
-    `Confianca: ${dados.confianca || "nao informada"}.`,
-  ];
-
-  if (dados.id_analise) {
-    linhas.push(`ID da analise: ${dados.id_analise}.`);
-  }
-
-  return linhas.join("\n");
 }
 
 async function salvarHistoricoSupabase(arquivo, dadosAnalisados) {
@@ -398,15 +549,29 @@ async function salvarHistoricoSupabase(arquivo, dadosAnalisados) {
 
   const imagem_original = publicUrlData.publicUrl;
 
-  const probIA = Number(dadosAnalisados.probabilidade_ia || 0);
-  const probReal = Number(dadosAnalisados.probabilidade_real || 0);
-  const probabilidadeFormatada = `IA: ${(probIA * 100).toFixed(1)}% | Real: ${(probReal * 100).toFixed(1)}%`;
+  // O historico guardava so o par de probabilidades, sem o veredito. Uma analise
+  // INCONCLUSIVA ficava indistinguivel de uma decidida, e a tela do historico
+  // apresentava os numeros como se fossem uma conclusao. O veredito vai junto.
+  const estado = estadoDe(dadosAnalisados);
+  const probIA = Number(
+    dadosAnalisados.probabilidade_ia_exibicao ?? dadosAnalisados.probabilidade_ia ?? 0
+  );
+  const probReal = Number(
+    dadosAnalisados.probabilidade_real_exibicao ?? dadosAnalisados.probabilidade_real ?? 1 - probIA
+  );
+
+  const veredito = dadosAnalisados.fora_de_dominio
+    ? "FORA DE ESCOPO"
+    : dadosAnalisados.resultado || "INCONCLUSIVO";
+  const probabilidadeFormatada = estado.mostrarProbabilidades
+    ? `${veredito} — IA: ${(probIA * 100).toFixed(1)}% | Real: ${(probReal * 100).toFixed(1)}%`
+    : `${veredito} — probabilidades não se aplicam`;
 
   const payload = {
     user_id: user.id,
     data_analise: new Date().toISOString(),
     imagem_original: imagem_original,
-    metodo: dadosAnalisados.modelo_utilizado || "ML Unificado",
+    metodo: dadosAnalisados.versao_modelo || (dadosAnalisados.fusao && dadosAnalisados.fusao.metodo) || "AIDA",
     probabilidade: probabilidadeFormatada,
     resultado_img: null // ou a imagem tratada se a API fornecesse
   };

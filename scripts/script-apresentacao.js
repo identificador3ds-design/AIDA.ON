@@ -3,7 +3,7 @@ const members = [
     name: "Alexandre",
     description:
       "Responsável pela documentação técnica do projeto, organizando metodologias, processos de desenvolvimento e relatórios para garantir clareza, replicação e evolução da pesquisa.",
-    image: "../assets/images/team-107.svg",
+    image: "../assets/images/team-111.svg",
   },
   {
     name: "Arthur",
@@ -21,13 +21,13 @@ const members = [
     name: "Iago",
     description:
       "Responsável pela coordenação do projeto e pelo desenvolvimento do backend, garantindo organização, integração e funcionamento eficiente da plataforma.",
-    image: "../assets/images/team-111.svg",
+    image: "../assets/images/team-112.svg",
   },
   {
     name: "Pedro",
     description:
       "Responsável pela coleta, seleção e organização dos dados do projeto, garantindo qualidade, diversidade e consistência para testes e análises.",
-    image: "../assets/images/team-112.svg",
+    image: "../assets/images/team-107.svg",
   },
 ];
 

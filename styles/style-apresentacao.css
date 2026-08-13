@@ -438,7 +438,7 @@ section {
 .sobre-card p,
 .card-content p,
 .func-card p,
-.card-team p,
+.team-description,
 .func-badge p {
   font-size: 1.14rem;
   line-height: 1.58;
@@ -539,8 +539,7 @@ section {
 }
 
 .sobre-card,
-.card-content,
-.card-team {
+.card-content {
   padding: 28px;
   border-radius: var(--radius-lg);
   border: 1px solid rgba(229, 231, 235, 0.12);
@@ -564,8 +563,7 @@ section {
 
 .sobre-card h3,
 .card-content h3,
-.func-card h3,
-.card-team h3 {
+.func-card h3 {
   font-size: 1.52rem;
   margin-bottom: 10px;
 }
@@ -721,7 +719,6 @@ section {
 
 .sobre-card:hover,
 .card-content:hover,
-.card-team:hover,
 .team-mobile-card:hover {
   transform: translateY(-6px);
   background:
@@ -827,10 +824,8 @@ section {
 }
 
 .team-photo {
-  overflow: hidden;
-  border-radius: var(--radius-xl);
-  background: linear-gradient(180deg, rgba(229, 231, 235, 0.12), rgba(143, 216, 183, 0.06));
-  box-shadow: var(--shadow-md);
+  background: none;
+  box-shadow: none;
 }
 
 .team-info {
@@ -844,17 +839,12 @@ section {
   color: rgba(255, 255, 255, 0.08);
 }
 
-.card-team h4 {
-  margin-bottom: 12px;
-  font-size: 1.34rem;
-  color: var(--highlight);
+.fototeam {
+  width: 100%;
+  height: auto;
 }
 
-.card-team h3 {
-  display: none;
-}
-
-.card-team p {
+.team-description {
   font-size: 1.24rem;
   line-height: 1.7;
 }
@@ -912,12 +902,6 @@ section {
 .team-mobile-card-body h3 {
   font-size: 1.7rem;
   margin-bottom: 8px;
-}
-
-.team-mobile-card-body h4 {
-  color: var(--highlight);
-  font-size: 1.16rem;
-  margin-bottom: 12px;
 }
 
 .team-mobile-card-body p {
@@ -1190,13 +1174,12 @@ section {
   .sobre-card p,
   .card-content p,
   .func-card p,
-  .card-team p {
+  .team-description {
     font-size: 1rem;
   }
 
   .sobre-card,
   .card-content,
-  .card-team,
   .func-shell {
     padding: 24px 20px;
   }

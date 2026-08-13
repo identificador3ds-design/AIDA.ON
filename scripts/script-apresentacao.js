@@ -1,38 +1,33 @@
 const members = [
   {
     name: "Alexandre",
-    role: "Head of Documentation",
     description:
       "Responsável pela documentação técnica do projeto, organizando metodologias, processos de desenvolvimento e relatórios para garantir clareza, replicação e evolução da pesquisa.",
-    image: "../assets/images/alex-exec.png",
+    image: "../assets/images/team-107.svg",
   },
   {
     name: "Arthur",
-    role: "Head of Detection Methodologies",
     description:
       "Responsável pelo desenvolvimento e aplicação de metodologias de detecção de conteúdo gerado ou manipulado por IA, buscando precisão, confiabilidade e inovação nas técnicas utilizadas.",
-    image: "../assets/images/thur-exec.png",
+    image: "../assets/images/team-108.svg",
   },
   {
     name: "Eduardo",
-    role: "Data Acquisition Lead",
     description:
       "Responsável pela coleta, organização e preparação dos dados do projeto, garantindo qualidade, diversidade e consistência para testes e análises.",
-    image: "../assets/images/nidu-exec.png",
+    image: "../assets/images/team-110.svg",
   },
   {
     name: "Iago",
-    role: "Project Manager & Lead Backend",
     description:
       "Responsável pela coordenação do projeto e pelo desenvolvimento do backend, garantindo organização, integração e funcionamento eficiente da plataforma.",
-    image: "../assets/images/iago-exec.png",
+    image: "../assets/images/team-111.svg",
   },
   {
     name: "Pedro",
-    role: "UX/UI Designer & Lead Frontend",
     description:
       "Responsável pela coleta, seleção e organização dos dados do projeto, garantindo qualidade, diversidade e consistência para testes e análises.",
-    image: "../assets/images/pedrao-exec.png",
+    image: "../assets/images/team-112.svg",
   },
 ];
 
@@ -59,8 +54,6 @@ const toolSection = document.querySelector("#ferramentaaida");
 
 const photo = document.getElementById("memberPhoto");
 const bigName = document.getElementById("memberBigName");
-const memberName = document.getElementById("memberName");
-const memberRole = document.getElementById("memberRole");
 const memberDescription = document.getElementById("memberDescription");
 const teamMobileCarousel = document.getElementById("teamMobileCarousel");
 
@@ -315,14 +308,7 @@ function updateActiveNav() {
 }
 
 function changeMember(index) {
-  if (
-    index === currentIndex ||
-    !photo ||
-    !bigName ||
-    !memberName ||
-    !memberRole ||
-    !memberDescription
-  ) {
+  if (index === currentIndex || !photo || !bigName || !memberDescription) {
     return;
   }
 
@@ -333,8 +319,6 @@ function changeMember(index) {
     photo.src = member.image;
     photo.alt = `Foto de ${member.name}`;
     bigName.textContent = member.name.toUpperCase();
-    memberName.textContent = member.name;
-    memberRole.textContent = member.role;
     memberDescription.textContent = member.description;
 
     document.querySelectorAll(".icon").forEach((icon, iconIndex) => {
@@ -349,7 +333,7 @@ function changeMember(index) {
 
   gsap
     .timeline()
-    .to([photo, ".card-team"], {
+    .to([photo, ".team-description"], {
       opacity: 0,
       y: 18,
       duration: 0.18,
@@ -357,7 +341,7 @@ function changeMember(index) {
       ease: "power2.out",
     })
     .add(applyContent)
-    .to([photo, ".card-team"], {
+    .to([photo, ".team-description"], {
       opacity: 1,
       y: 0,
       duration: 0.24,
@@ -378,7 +362,6 @@ function renderMobileTeamCards() {
           <img src="${member.image}" alt="Foto de ${member.name}">
           <div class="team-mobile-card-body">
             <h3>${member.name}</h3>
-            <h4>${member.role}</h4>
             <p>${member.description}</p>
           </div>
         </article>
@@ -661,7 +644,7 @@ function setupSiteScrollAnimations() {
       start: "top 70%",
     });
 
-    animateGroup(".team-info > .section-label, .team-info > .team-big-name, .team-info > .card-team", {
+    animateGroup(".team-info > .section-label, .team-info > .team-big-name, .team-info > .team-description", {
       trigger: ".team-section",
       x: 28,
       y: 0,

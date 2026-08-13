@@ -1,19 +1,22 @@
-<!DOCTYPE html>
-<html lang="pt-br">
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#10403b">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="AIDA.ON">
+
     <link rel="manifest" href="../manifest.webmanifest">
     <link rel="apple-touch-icon" href="../assets/images/pwa-icon-180.png">
-    <title>AIDA - Selecionar Imagem</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../styles/style-ferramenta.css">
+
+    <title>AIDA.ON - Selecionar Imagem</title>
     <link rel="icon" id="favicon" type="image/png" href="../assets/images/AIDABranco.ico">
+    <link rel="stylesheet" href="../styles/style-shared-theme.css">
+    <link rel="stylesheet" href="../styles/style-ferramenta.css">
     <script>
         if (["localhost", "127.0.0.1"].includes(location.hostname) && "serviceWorker" in navigator) {
             navigator.serviceWorker.getRegistrations().then((regs) => regs.forEach((reg) => reg.unregister()));
@@ -24,31 +27,190 @@
     </script>
 </head>
 
-<body>
+<body class="aida-shell selecao-page">
+    <header class="page-header">
+        <a href="../index.html" aria-label="Página inicial">
+            <img src="../assets/images/LogoBranca.png" alt="Logo AIDA.ON" class="brand-logo">
+        </a>
 
-    <div class="main-wrapper">
+        <div class="selecao-header-actions">
+            <a href="./index-historico.html" class="top-link">Histórico</a>
+            <a href="./index-perfil.html" class="top-link">Minha conta</a>
+        </div>
+    </header>
 
-        <header class="top-header">
-            <img src="../assets/images/LogoBranca.png" alt="AIDA Logo" class="logo-aida">
-        </header>
+    <main class="page-frame selecao-main">
+        <section class="selecao-panel glass-panel">
+            <div class="selecao-intro">
+                <span class="page-kicker">Nova análise</span>
+                <h1 class="page-title">Escolha a imagem para analisar</h1>
+                <p class="page-copy">
+                    Selecione uma foto do seu dispositivo. A AIDA processa a imagem e explica, em
+                    linguagem simples, os indícios de que ela pode ter sido gerada por IA.
+                </p>
+            </div>
 
-        <main class="center-stage">
-            <section class="card-selecao">
-                <p class="texto-instrucao">Selecione sua imagem...</p>
+            <ol class="selecao-steps" aria-label="Passos da análise">
+                <li class="selecao-step">
+                    <span aria-hidden="true">1</span>
+                    <strong>Escolha a imagem</strong>
+                </li>
+                <li class="selecao-step">
+                    <span aria-hidden="true">2</span>
+                    <strong>Veja o resultado</strong>
+                </li>
+            </ol>
 
-                <input type="file" id="inputFileBotao" accept="image/*" hidden>
+            <div class="selecao-upload glass-card" id="areaSoltar">
+                <div class="selecao-upload-icon" aria-hidden="true">
+                    <svg viewBox="0 0 640 640" role="presentation" focusable="false">
+                        <path fill="currentColor"
+                              d="M128 128C128 92.7 156.7 64 192 64L341.5 64C358.5 64 374.8 70.7 386.8 82.7L493.3 189.3C505.3 201.3 512 217.6 512 234.6L512 512C512 547.3 483.3 576 448 576L192 576C156.7 576 128 547.3 128 512L128 128zM336 112L336 224C336 232.8 343.2 240 352 240L464 240L336 112zM337 305C330.8 298.8 320.6 298.8 314.4 305L242.4 377C236.2 383.2 236.2 393.4 242.4 399.6C248.6 405.8 258.8 405.8 265 399.6L310 354.6L310 480C310 488.8 317.2 496 326 496C334.8 496 342 488.8 342 480L342 354.6L387 399.6C393.2 405.8 403.4 405.8 409.6 399.6C415.8 393.4 415.8 383.2 409.6 377L337 305z" />
+                    </svg>
+                </div>
 
-                <button type="button" id="btnAcaoSelecionar" class="btn-estilizado">SELECIONAR</button>
-            </section>
-        </main>
+                <div class="selecao-upload-copy">
+                    <span class="section-tag">Upload</span>
+                    <h2>Selecione sua imagem</h2>
+                    <p id="textoUpload">
+                        Escolha um arquivo do seu celular ou arraste a imagem para cá, se estiver no computador.
+                    </p>
+                </div>
 
-    </div>
+                <!-- Sem as extensões explícitas o seletor do Windows esconde
+                     .heic/.avif: o sistema não os registra como "image/*". -->
+                <input type="file" id="inputFileBotao"
+                       accept="image/*,.heic,.heif,.avif,.jpg,.jpeg,.png,.webp,.bmp" hidden>
+
+                <button type="button" id="btnAcaoSelecionar" class="aida-button">Selecionar imagem</button>
+
+                <p class="selecao-formats">Formatos aceitos: JPG, PNG, WEBP, BMP, HEIC e AVIF.</p>
+
+                <p id="erroUpload" class="selecao-erro" role="alert" hidden></p>
+            </div>
+
+            <!-- Recolhido por padrao: a tarefa da tela e escolher a imagem. Quem
+                 quiser entender o que a analise faz abre o bloco. Os sete mapas
+                 (~400 KB) ficam em data-src e o script os carrega na primeira
+                 abertura: dentro de um <details> fechado o loading="lazy" nunca
+                 dispara, nem depois de aberto. -->
+            <details class="metodos-detalhes" id="detalhesMetodos">
+                <summary class="metodos-summary">
+                    <span class="metodos-summary-texto">
+                        <span class="section-tag">Como funciona</span>
+                        <strong>Veja os métodos usados na análise</strong>
+                    </span>
+                </summary>
+
+                <div class="metodos-corpo">
+                    <p class="metodos-intro">
+                        A AIDA não olha só para a foto: ela mede seis sinais diferentes e compara o
+                        que cada um encontra. Abaixo, a mesma imagem passada por todos eles.
+                    </p>
+
+                    <figure class="metodo-original">
+                        <img data-src="../assets/images/metodos/exemplo_original.webp"
+                             alt="Fotografia de referência usada nos exemplos: uma árvore à frente de um lago."
+                             width="420" height="420" decoding="async">
+                        <figcaption>Imagem original, antes de qualquer método.</figcaption>
+                    </figure>
+
+                    <ul class="metodos-grade">
+                        <li class="metodo-card">
+                            <img data-src="../assets/images/metodos/exemplo_gradiente.webp"
+                                 alt="Mapa de gradiente sobreposto à foto de referência."
+                                 width="420" height="420" decoding="async">
+                            <div class="metodo-texto">
+                                <strong>Gradiente</strong>
+                                <span>
+                                    Intensidade de variação local. As regiões claras concentram transições
+                                    abruptas; suavidade demais em áreas texturizadas é um dos indícios medidos.
+                                </span>
+                            </div>
+                        </li>
+
+                        <li class="metodo-card">
+                            <img data-src="../assets/images/metodos/exemplo_bordas.webp"
+                                 alt="Mapa de bordas detectadas sobreposto à foto de referência."
+                                 width="420" height="420" decoding="async">
+                            <div class="metodo-texto">
+                                <strong>Bordas</strong>
+                                <span>
+                                    Contornos detectados. Serve para conferir se a análise está reagindo à
+                                    estrutura da cena e não a um artefato de compressão.
+                                </span>
+                            </div>
+                        </li>
+
+                        <li class="metodo-card">
+                            <img data-src="../assets/images/metodos/exemplo_ruido_residual.webp"
+                                 alt="Mapa de ruído residual sobreposto à foto de referência."
+                                 width="420" height="420" decoding="async">
+                            <div class="metodo-texto">
+                                <strong>Ruído residual</strong>
+                                <span>
+                                    O que sobra depois de filtrar a imagem. Câmeras deixam ruído de sensor
+                                    razoavelmente homogêneo; blocos destoantes merecem atenção.
+                                </span>
+                            </div>
+                        </li>
+
+                        <li class="metodo-card">
+                            <img data-src="../assets/images/metodos/exemplo_espectro_magnitude.webp"
+                                 alt="Magnitude do espectro de Fourier da foto de referência."
+                                 width="420" height="420" decoding="async">
+                            <div class="metodo-texto">
+                                <strong>Espectro — magnitude</strong>
+                                <span>
+                                    A imagem vista como frequências, em escala logarítmica. Picos regulares
+                                    podem vir tanto de geradores quanto de reamostragem e compressão.
+                                </span>
+                            </div>
+                        </li>
+
+                        <li class="metodo-card">
+                            <img data-src="../assets/images/metodos/exemplo_espectro_fase.webp"
+                                 alt="Fase do espectro de Fourier da foto de referência."
+                                 width="420" height="420" decoding="async">
+                            <div class="metodo-texto">
+                                <strong>Espectro — fase</strong>
+                                <span>
+                                    A outra metade da leitura em frequência, mais estável que a magnitude
+                                    quando a imagem passa por compressão.
+                                </span>
+                            </div>
+                        </li>
+
+                        <li class="metodo-card">
+                            <img data-src="../assets/images/metodos/exemplo_clip_tokens.webp"
+                                 alt="Mapa de atenção do CLIP sobreposto à foto de referência."
+                                 width="420" height="420" decoding="async">
+                            <div class="metodo-texto">
+                                <strong>Atenção do CLIP</strong>
+                                <span>
+                                    As regiões que mais pesam na leitura da rede neural. É um mapa de
+                                    atenção aproximado, não uma localização de manipulação.
+                                </span>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <p class="metodos-aviso">
+                        Estes mapas mostram onde o sinal medido é mais forte — não onde houve
+                        manipulação. Servem para inspeção, não como prova.
+                    </p>
+                </div>
+            </details>
+
+            <p class="selecao-note">
+                A imagem só fica salva na sua conta se você marcar essa opção na próxima etapa.
+                Veja o <a href="./index-privacidade.html">Aviso de Privacidade</a>.
+            </p>
+        </section>
+    </main>
 
     <script src="../scripts/script-cookie-consent.js"></script>
-    <script src="../scripts/script-ferramenta.js?v=20260803-analise-3"></script>
-
+    <script src="../scripts/script-ferramenta.js?v=20260813-metodos"></script>
 </body>
 
 </html>
-
-

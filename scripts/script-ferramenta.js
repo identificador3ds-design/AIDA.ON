@@ -128,7 +128,34 @@ async function salvarImagemSelecionada(imagemBase64) {
   }
 }
 
+// Os exemplos de cada metodo so descem na primeira vez que o bloco abre. Dentro
+// de um <details> fechado o loading="lazy" nao dispara nem apos a abertura, e
+// deixar os sete mapas no src custaria ~400 KB a quem so quer enviar a imagem.
+function prepararExemplosMetodos() {
+  const bloco = document.getElementById("detalhesMetodos");
+
+  if (!bloco) {
+    return;
+  }
+
+  const carregar = () => {
+    bloco.querySelectorAll("img[data-src]").forEach((img) => {
+      img.src = img.dataset.src;
+      img.removeAttribute("data-src");
+    });
+  };
+
+  if (bloco.open) {
+    carregar();
+    return;
+  }
+
+  bloco.addEventListener("toggle", carregar, { once: true });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
+  prepararExemplosMetodos();
+
   const btnAcaoSelecionar = document.getElementById("btnAcaoSelecionar");
   const inputFileBotao = document.getElementById("inputFileBotao");
   const configuracaoAdmin = obterAdminConfig();
@@ -215,21 +242,116 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    inputFileBotao.addEventListener("change", () => {
-      const arquivo = inputFileBotao.files[0];
+    const areaSoltar = document.getElementById("areaSoltar");
+    const erroUpload = document.getElementById("erroUpload");
 
-      if (arquivo) {
-        const reader = new FileReader();
-        reader.onload = async (evento) => {
-          await salvarImagemSelecionada(evento.target.result);
-          window.location.href = "./index-analise.html";
-        };
-        reader.onerror = () => {
-          alert("Nao foi possivel carregar a imagem selecionada. Tente outro arquivo.");
-        };
-        reader.readAsDataURL(arquivo);
+    function mostrarErro(mensagem) {
+      if (!erroUpload) {
+        alert(mensagem);
+        return;
       }
+      erroUpload.textContent = mensagem;
+      erroUpload.hidden = false;
+    }
+
+    function limparErro() {
+      if (erroUpload) {
+        erroUpload.hidden = true;
+      }
+    }
+
+    // O Windows nao registra .heic/.avif como image/*, entao `type` vem vazio
+    // para justamente os formatos que mais causam duvida. Nesses casos a
+    // extensao e a unica pista, e recusar por `type` barraria arquivo valido.
+    const EXTENSOES_ACEITAS = ["heic", "heif", "avif", "jpg", "jpeg", "png", "webp", "bmp"];
+
+    function pareceImagem(arquivo) {
+      if (arquivo.type) {
+        return arquivo.type.startsWith("image/");
+      }
+      const extensao = (arquivo.name || "").split(".").pop()?.toLowerCase();
+      return EXTENSOES_ACEITAS.includes(extensao);
+    }
+
+    function processarArquivo(arquivo) {
+      if (!arquivo) {
+        return;
+      }
+
+      if (!pareceImagem(arquivo)) {
+        mostrarErro("Esse arquivo não é uma imagem. Escolha um JPG, PNG, WEBP, BMP, HEIC ou AVIF.");
+        return;
+      }
+
+      limparErro();
+
+      const reader = new FileReader();
+      reader.onload = async (evento) => {
+        await salvarImagemSelecionada(evento.target.result);
+        // Guarda o nome original. O data URL sozinho perde a extensão, e um
+        // .heic acabava chegando ao backend renomeado como ".png" — o que
+        // funcionava por sorte (o decodificador identifica pelo conteúdo),
+        // mas quebrava a validação por extensão.
+        try {
+          sessionStorage.setItem("AIDA_NomeArquivoSelecionado", arquivo.name || "");
+        } catch (erro) {
+          /* espaço esgotado: o nome é opcional, seguimos sem ele */
+        }
+        window.location.href = "./index-analise.html";
+      };
+      reader.onerror = () => {
+        mostrarErro("Não foi possível carregar essa imagem. Tente outro arquivo.");
+      };
+      reader.readAsDataURL(arquivo);
+    }
+
+    inputFileBotao.addEventListener("change", () => {
+      processarArquivo(inputFileBotao.files[0]);
     });
+
+    if (areaSoltar) {
+      // Fora do cartao, um arquivo solto faria o navegador abri-lo e descartar a
+      // pagina. Barrar no documento evita perder a sessao por mira ruim.
+      ["dragover", "drop"].forEach((evento) => {
+        document.addEventListener(evento, (e) => {
+          if (!areaSoltar.contains(e.target)) {
+            e.preventDefault();
+          }
+        });
+      });
+
+      // Sem o preventDefault no dragover o navegador abre o arquivo solto em vez
+      // de entregar o evento a pagina.
+      ["dragenter", "dragover"].forEach((evento) => {
+        areaSoltar.addEventListener(evento, (e) => {
+          e.preventDefault();
+          areaSoltar.classList.add("arrastando");
+        });
+      });
+
+      ["dragleave", "dragend"].forEach((evento) => {
+        areaSoltar.addEventListener(evento, () => {
+          areaSoltar.classList.remove("arrastando");
+        });
+      });
+
+      areaSoltar.addEventListener("drop", (e) => {
+        e.preventDefault();
+        areaSoltar.classList.remove("arrastando");
+
+        const bloqueado =
+          !localStorage.getItem("usuarioNome") &&
+          !localStorage.getItem("usuarioEmail") &&
+          localStorage.getItem("AIDA_AnaliseUnlogged") === "true";
+
+        if (bloqueado) {
+          exibirLoginOverlay();
+          return;
+        }
+
+        processarArquivo(e.dataTransfer?.files?.[0]);
+      });
+    }
   }
 });
 

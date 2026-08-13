@@ -1,5 +1,5 @@
-const STATIC_CACHE = "aida-static-v18";
-const RUNTIME_CACHE = "aida-runtime-v18";
+const STATIC_CACHE = "aida-static-v20";
+const RUNTIME_CACHE = "aida-runtime-v20";
 
 const APP_SHELL = [
   "./",

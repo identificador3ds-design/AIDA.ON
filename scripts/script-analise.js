@@ -141,12 +141,24 @@ async function obterImagemSelecionada() {
   }
 }
 
-function dataUrlParaArquivo(dataUrl, nomePadrao = "imagem-aida.png") {
+// O padrao vai sem extensao de proposito: quando nao ha nome original, a unica
+// pista de formato e o MIME, e o bloco abaixo so recorre a ele nesse caso.
+function dataUrlParaArquivo(dataUrl, nomePadrao = "imagem-aida") {
   const partes = dataUrl.split(",");
   const cabecalho = partes[0] || "";
   const conteudo = partes[1] || "";
   const mime = cabecalho.match(/data:(.*?);base64/)?.[1] || "image/png";
-  const extensao = mime.split("/")[1]?.replace("jpeg", "jpg") || "png";
+
+  // A extensao do nome original vale mais que a derivada do MIME. Windows nao
+  // registra .heic/.avif como image/*, entao File.type chega vazio (ou
+  // application/octet-stream) e o data URL perde o formato: derivar do MIME
+  // rebatizava um .heic como ".png" e um .avif como ".octet-stream". So caimos
+  // no MIME quando o nome nao traz extensao alguma.
+  const extensaoOriginal = nomePadrao.match(/\.([^.]+)$/)?.[1]?.toLowerCase();
+  const extensao =
+    extensaoOriginal ||
+    mime.split("/")[1]?.replace("jpeg", "jpg") ||
+    "png";
   const binario = atob(conteudo);
   const bytes = new Uint8Array(binario.length);
 
@@ -170,7 +182,12 @@ function mostrarImagem(dataUrl) {
   registrarStatus("Imagem recuperada. Pronto para analisar.");
 
   try {
-    imagemAtual = dataUrlParaArquivo(dataUrl);
+    // Recupera o nome original guardado na tela de selecao: o data URL perde a
+    // extensao, e um .heic chegava ao backend renomeado como ".png".
+    const nomeOriginal = sessionStorage.getItem("AIDA_NomeArquivoSelecionado");
+    imagemAtual = nomeOriginal
+      ? dataUrlParaArquivo(dataUrl, nomeOriginal)
+      : dataUrlParaArquivo(dataUrl);
   } catch (erro) {
     console.error("Nao foi possivel preparar a imagem para analise:", erro);
     imagemAtual = null;
@@ -224,7 +241,7 @@ const ESTADOS = {
     mostrarProbabilidades: true,
   },
   INCONCLUSIVO: {
-    titulo: "Resultado inconclusivo",
+    titulo: "",
     cor: "#e08a1e",
     mostrarProbabilidades: true,
   },
@@ -236,6 +253,9 @@ const ESTADOS = {
     mostrarProbabilidades: false,
   },
 };
+
+// Titulos que a tela nao exibe mais, venham de onde vierem.
+const TITULOS_OCULTOS = new Set(["resultado inconclusivo"]);
 
 function estadoDe(dados) {
   if (dados.fora_de_dominio) return ESTADOS.FORA_DE_DOMINIO;
@@ -276,8 +296,16 @@ function exibirResultado(dados, baseApi) {
 
   if (tituloMetodo) {
     // A API ja manda um titulo pronto; o mapa local e so a rede de seguranca.
-    tituloMetodo.textContent = dados.titulo || estado.titulo;
+    // O titulo do estado inconclusivo foi removido da tela, e APIs antigas ainda
+    // mandam a frase — por isso o descarte explicito aqui, e nao so no mapa.
+    const tituloApi = String(dados.titulo || "").trim();
+    const texto = TITULOS_OCULTOS.has(tituloApi.toLowerCase())
+      ? estado.titulo
+      : tituloApi || estado.titulo;
+
+    tituloMetodo.textContent = texto;
     tituloMetodo.style.color = estado.cor;
+    tituloMetodo.hidden = !texto;
   }
 
   const statsContainer = document.getElementById("statsContainer");
@@ -302,6 +330,7 @@ function exibirResultado(dados, baseApi) {
 
   renderizarDetalhes(dados, estado);
   renderizarEvidencias(dados, baseApi);
+  renderizarProveniencia(dados);
 
   if (areaResultado) {
     areaResultado.style.display = "block";
@@ -333,6 +362,11 @@ function renderizarDetalhes(dados, estado) {
     );
   }
 
+  // O que segue e leitura tecnica: fica recolhido, como os mapas de evidencia.
+  // Motivos e ressalva ficam de fora deste bloco de proposito — sao o que
+  // explica e qualifica o veredito, e nao podem depender de um clique.
+  const tecnicos = [];
+
   // O desacordo entre modulos explica boa parte dos casos inconclusivos.
   const scores = dados.scores_modulos && Object.entries(dados.scores_modulos);
   if (scores && scores.length) {
@@ -343,7 +377,7 @@ function renderizarDetalhes(dados, estado) {
     const nota = fusao.calibrado === false
       ? " (fusão sem calibração — resultado menos confiável)"
       : "";
-    partes.push(
+    tecnicos.push(
       `<p class="detalhe-titulo"><strong>Leitura por módulo${escapar(nota)}</strong></p>
        <ul class="detalhe-lista detalhe-modulos">${linhas}</ul>`
     );
@@ -351,9 +385,18 @@ function renderizarDetalhes(dados, estado) {
 
   const limitacoes = Array.isArray(dados.limitacoes) ? dados.limitacoes : [];
   if (limitacoes.length) {
-    partes.push(
+    tecnicos.push(
       `<p class="detalhe-titulo"><strong>Limitações deste arquivo</strong></p>
        <ul class="detalhe-lista">${limitacoes.map((l) => `<li>${escapar(l)}</li>`).join("")}</ul>`
+    );
+  }
+
+  if (tecnicos.length) {
+    partes.push(
+      `<details class="detalhe-tecnico">
+         <summary class="detalhe-tecnico-summary">Detalhes técnicos</summary>
+         <div class="detalhe-tecnico-corpo">${tecnicos.join("")}</div>
+       </details>`
     );
   }
 
@@ -383,7 +426,12 @@ function renderizarEvidencias(dados, baseApi) {
   const grade = document.getElementById("exemplosMetodo");
   const titulo = document.getElementById("tituloExemplosMetodo");
   const descricao = document.getElementById("descricaoExemplosMetodo");
+  const recolhivel = document.getElementById("detalhesExemplosMetodo");
   if (!bloco || !grade) return;
+
+  // Cada analise recomeca recolhida: deixar aberto o que o usuario expandiu na
+  // imagem anterior mostraria os mapas novos sem que ele tenha pedido.
+  if (recolhivel) recolhivel.open = false;
 
   const urls = (dados.evidencias && dados.evidencias.urls) || {};
   const nomes = Object.keys(urls);
@@ -417,6 +465,181 @@ function renderizarEvidencias(dados, baseApi) {
       </figure>`;
     })
     .join("");
+}
+
+// --- Proveniência digital -------------------------------------------------- //
+// A camada de proveniência responde uma pergunta diferente da análise visual:
+// "o arquivo diz de onde veio?". As duas leituras aparecem lado a lado e nunca
+// somadas — somar porcentagens de fontes distintas não é probabilidade.
+const ESTADOS_PROVENIENCIA = {
+  AI_PROVENANCE_CONFIRMED: {
+    rotulo: "Evidência muito forte de geração por IA",
+    forca: "forte",
+    resumo: "O próprio arquivo carrega uma credencial assinada declarando que foi gerado por IA.",
+  },
+  AI_EDIT_PROVENANCE: {
+    rotulo: "Evidência forte de edição com IA",
+    forca: "forte",
+    resumo: "A credencial assinada declara que partes da imagem foram criadas ou alteradas por IA generativa.",
+  },
+  AI_PROVENANCE_LIKELY: {
+    rotulo: "Evidência consistente de IA",
+    forca: "media",
+    resumo: "Os metadados declaram origem em IA, mas sem assinatura criptográfica que garanta a declaração.",
+  },
+  METADATA_AI_SIGNAL: {
+    rotulo: "Sinal de ferramenta generativa",
+    forca: "media",
+    resumo: "Os metadados mencionam uma ferramenta de IA. É indício, não prova: esses campos são texto livre.",
+  },
+  C2PA_PRESENT: {
+    rotulo: "Credencial encontrada, sem declaração sobre IA",
+    forca: "neutra",
+    resumo: "O arquivo tem Content Credentials, mas elas não dizem se houve IA na criação.",
+  },
+  C2PA_INVALID: {
+    rotulo: "Credencial presente, porém inválida",
+    forca: "media",
+    resumo: "Há uma credencial no arquivo, mas ela não passou na verificação de integridade.",
+  },
+  CAPTURE_PROVENANCE_CONFIRMED: {
+    rotulo: "Captura por câmera verificada",
+    forca: "real",
+    resumo: "Uma credencial assinada declara que a imagem foi capturada por câmera.",
+  },
+  NO_PROVENANCE_FOUND: {
+    rotulo: "Nenhuma informação de proveniência",
+    forca: "neutra",
+    resumo:
+      "Nenhuma informação de proveniência foi encontrada. Isso não significa que a imagem " +
+      "seja real: print, recorte, recompressão, envio por aplicativo de mensagens e " +
+      "exportação removem esses dados.",
+  },
+  UNKNOWN: {
+    rotulo: "Não foi possível concluir",
+    forca: "neutra",
+    resumo: "O arquivo não pôde ser lido o suficiente para uma conclusão sobre a origem.",
+  },
+};
+
+function porcentagem(valor) {
+  return `${(Number(valor) * 100).toFixed(1)}%`;
+}
+
+function itemProveniencia(termo, valor) {
+  return `<div class="proveniencia-item">
+    <dt>${escapar(termo)}</dt>
+    <dd>${escapar(valor)}</dd>
+  </div>`;
+}
+
+function renderizarProveniencia(dados) {
+  const bloco = document.getElementById("blocoProveniencia");
+  if (!bloco) return;
+
+  const prov = dados.proveniencia;
+  if (!prov) {
+    // API antiga, sem a camada. Esconder é melhor que mostrar campos vazios.
+    bloco.hidden = true;
+    return;
+  }
+
+  bloco.hidden = false;
+
+  const info = ESTADOS_PROVENIENCIA[prov.status] || ESTADOS_PROVENIENCIA.UNKNOWN;
+  const selo = document.getElementById("provenienciaSelo");
+  if (selo) {
+    selo.textContent = info.rotulo;
+    selo.dataset.forca = info.forca;
+  }
+
+  const resumo = document.getElementById("provenienciaResumo");
+  if (resumo) resumo.textContent = info.resumo;
+
+  const divergencia = document.getElementById("provenienciaDivergencia");
+  if (divergencia) {
+    if (prov.divergencia) {
+      divergencia.hidden = false;
+      divergencia.textContent =
+        "As duas fontes discordam: a proveniência do arquivo e a análise do conteúdo " +
+        "apontam para lados opostos. Nenhuma das duas foi descartada — ambas estão " +
+        "registradas abaixo.";
+    } else {
+      divergencia.hidden = true;
+    }
+  }
+
+  const atribuicao = prov.atribuicao || {};
+  const itens = [];
+
+  const conteudo = dados.probabilidade_ia_conteudo;
+  if (typeof conteudo === "number") {
+    itens.push(itemProveniencia("Análise de conteúdo", porcentagem(conteudo)));
+  }
+  itens.push(itemProveniencia("Força da proveniência", info.rotulo));
+
+  if (atribuicao.gerador && atribuicao.gerador !== "desconhecido") {
+    itens.push(itemProveniencia("Origem provável", atribuicao.gerador));
+    itens.push(itemProveniencia(
+      "Confiança da atribuição",
+      porcentagem(atribuicao.confianca || 0)
+    ));
+  } else {
+    itens.push(itemProveniencia("Origem provável", "Não identificada"));
+  }
+
+  itens.push(itemProveniencia(
+    "Content Credentials",
+    prov.c2pa_presente
+      ? (prov.c2pa_valido ? "Encontradas e verificadas" : "Encontradas, mas não verificadas")
+      : "Não encontradas"
+  ));
+
+  if (prov.softwares && prov.softwares.length) {
+    itens.push(itemProveniencia("Software identificado", prov.softwares.slice(0, 2).join(", ")));
+  }
+
+  const grade = document.getElementById("provenienciaGrade");
+  if (grade) grade.innerHTML = itens.join("");
+
+  const fusao = document.getElementById("provenienciaFusao");
+  if (fusao) {
+    // Explicação honesta do mecanismo: nada aqui é soma de porcentagens.
+    const partes = [
+      "As duas leituras não são somadas. A proveniência entra como um peso que " +
+      "desloca a probabilidade da análise de conteúdo, na escala de chances " +
+      "(log-odds), e o quanto ela desloca depende da força da evidência — uma " +
+      "credencial assinada pesa muito mais que um campo de texto nos metadados.",
+    ];
+    if (typeof conteudo === "number") {
+      partes.push(
+        `Neste caso: conteúdo ${porcentagem(conteudo)} → resultado final ` +
+        `${porcentagem(dados.probabilidade_ia)}.`
+      );
+    }
+    partes.push(
+      "A ausência de proveniência nunca reduz a probabilidade de IA: essas " +
+      "informações se perdem com facilidade e sua falta não é sinal de autenticidade."
+    );
+    fusao.textContent = partes.join(" ");
+  }
+
+  const lista = document.getElementById("provenienciaEvidencias");
+  if (lista) {
+    const evidencias = prov.evidencias || [];
+    lista.innerHTML = evidencias.length
+      ? evidencias
+          .map((e) => `<div class="proveniencia-evidencia">
+              <span class="proveniencia-fonte">${escapar(e.confiabilidade || e.fonte)}</span>
+              <strong>${escapar(e.chave)}</strong>
+              <span>${escapar(String(e.valor).slice(0, 160))}</span>
+            </div>`)
+          .join("")
+      : `<p class="proveniencia-nota">Nenhuma evidência de proveniência foi encontrada no arquivo.</p>`;
+  }
+
+  const detalhes = document.getElementById("provenienciaDetalhes");
+  if (detalhes) detalhes.open = false;
 }
 
 async function executarAnalise(event) {
@@ -576,9 +799,48 @@ async function salvarHistoricoSupabase(arquivo, dadosAnalisados) {
     resultado_img: null // ou a imagem tratada se a API fornecesse
   };
 
-  const { error: insertError } = await _supabase
+  // Proveniência no histórico. Guardamos só o que permite reconstruir a decisão
+  // depois — estado, força, credencial e atribuição —, não o manifesto inteiro.
+  const prov = dadosAnalisados.proveniencia;
+  const camposProveniencia = prov
+    ? {
+        provenance_status: prov.status || null,
+        provenance_score: typeof prov.score === "number" ? prov.score : null,
+        provenance_confidence: prov.confianca || null,
+        c2pa_present: !!prov.c2pa_presente,
+        c2pa_valid: prov.c2pa_valido === true,
+        ai_generated_claim: !!prov.declaracao_ia,
+        generator: (prov.atribuicao && prov.atribuicao.gerador) || null,
+        generator_confidence:
+          prov.atribuicao && typeof prov.atribuicao.confianca === "number"
+            ? prov.atribuicao.confianca
+            : null,
+        software: (prov.softwares && prov.softwares[0]) || null,
+        probabilidade_conteudo:
+          typeof dadosAnalisados.probabilidade_ia_conteudo === "number"
+            ? dadosAnalisados.probabilidade_ia_conteudo
+            : null,
+        model_version: dadosAnalisados.versao_modelo || null,
+      }
+    : {};
+
+  // Enquanto a migração de colunas não roda (docs/migracao-proveniencia.sql), o
+  // insert completo falha com PGRST204. Cair para o payload antigo mantém o
+  // histórico funcionando em vez de derrubá-lo em produção.
+  let { error: insertError } = await _supabase
     .from("historico_analises")
-    .insert([payload]);
+    .insert([{ ...payload, ...camposProveniencia }]);
+
+  if (insertError && /column|schema cache|PGRST204/i.test(insertError.message || "")) {
+    console.warn(
+      "[AIDA.ON] Colunas de proveniência ausentes no histórico; gravando sem elas. " +
+      "Rode docs/migracao-proveniencia.sql no Supabase.",
+      insertError.message
+    );
+    ({ error: insertError } = await _supabase
+      .from("historico_analises")
+      .insert([payload]));
+  }
 
   if (insertError) {
     throw new Error(`Erro na persistencia do Supabase: ${insertError.message}`);

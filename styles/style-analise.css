@@ -261,6 +261,20 @@
   z-index: 1;
 }
 
+/* O card do resultado acompanha a imagem, nao a coluna vizinha. Como as duas
+   colunas sao linhas da mesma grade, o padrao `stretch` esticava a moldura ate
+   a altura do texto da analise e deixava um vazio enorme em volta da foto. */
+.container-imagem-processada .result-visual {
+  min-height: 0;
+  padding: 12px;
+}
+
+.container-imagem-processada .imagem-preview {
+  width: auto;
+  max-width: 100%;
+  max-height: min(70vh, 620px);
+}
+
 .container-controles {
   display: flex;
   flex-direction: column;
@@ -466,6 +480,7 @@
   display: grid;
   grid-template-columns: minmax(0, 0.96fr) minmax(0, 1.04fr);
   gap: 22px;
+  align-items: start;
 }
 
 .container-imagem-processada {
@@ -477,6 +492,126 @@
   display: flex;
   flex-direction: column;
   gap: 18px;
+}
+
+/* Proveniência ------------------------------------------------------------ */
+
+.container-proveniencia {
+  grid-column: 1 / -1;
+  padding: 22px;
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+}
+
+.proveniencia-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.proveniencia-selo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(229, 231, 235, 0.16);
+  background: rgba(229, 231, 235, 0.06);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.proveniencia-selo[data-forca="forte"] {
+  border-color: rgba(198, 40, 40, 0.5);
+  background: rgba(198, 40, 40, 0.16);
+  color: #f3a3a3;
+}
+
+.proveniencia-selo[data-forca="media"] {
+  border-color: rgba(224, 138, 30, 0.5);
+  background: rgba(224, 138, 30, 0.14);
+  color: #f0c07a;
+}
+
+.proveniencia-selo[data-forca="real"] {
+  border-color: rgba(46, 125, 50, 0.5);
+  background: rgba(46, 125, 50, 0.16);
+  color: #9fd6a6;
+}
+
+.proveniencia-grade {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 12px;
+}
+
+.proveniencia-item {
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(229, 231, 235, 0.1);
+  background: rgba(7, 31, 30, 0.5);
+  min-width: 0;
+}
+
+.proveniencia-item dt {
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-soft);
+}
+
+.proveniencia-item dd {
+  margin: 6px 0 0;
+  font-weight: 700;
+  color: var(--neutral-strong);
+  overflow-wrap: anywhere;
+}
+
+.proveniencia-divergencia {
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(224, 138, 30, 0.4);
+  background: rgba(224, 138, 30, 0.12);
+  color: #f0c07a;
+  line-height: 1.55;
+}
+
+.proveniencia-nota {
+  margin: 0;
+  color: var(--text-soft);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.proveniencia-evidencia {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(229, 231, 235, 0.07);
+  font-size: 0.86rem;
+  color: var(--text-soft);
+}
+
+.proveniencia-evidencia:last-child {
+  border-bottom: none;
+}
+
+.proveniencia-evidencia strong {
+  color: var(--neutral-strong);
+}
+
+.proveniencia-fonte {
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: rgba(143, 216, 183, 0.12);
+  color: var(--highlight);
+  font-size: 0.76rem;
+  font-weight: 700;
 }
 
 .method-copy h3 {
@@ -1365,4 +1500,79 @@ body.tutorial-active .tutorial-fab {
   font-size: 0.82rem;
   line-height: 1.4;
   color: var(--text-soft);
+}
+
+/* Blocos recolhiveis: os mapas de evidencia e a leitura tecnica. O veredito, os
+   motivos da abstencao e a ressalva ficam sempre visiveis. */
+.exemplos-detalhes {
+  display: grid;
+  gap: 16px;
+}
+
+.exemplos-summary,
+.detalhe-tecnico-summary {
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+}
+
+.exemplos-summary::-webkit-details-marker,
+.detalhe-tecnico-summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Seta propria: o marcador nativo varia demais entre navegadores. */
+.exemplos-summary::before,
+.detalhe-tecnico-summary::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform 0.2s ease;
+  opacity: 0.7;
+  flex: none;
+}
+
+.exemplos-detalhes[open] > .exemplos-summary::before,
+.detalhe-tecnico[open] > .detalhe-tecnico-summary::before {
+  transform: rotate(45deg);
+}
+
+.exemplos-summary:hover,
+.exemplos-summary:focus-visible,
+.detalhe-tecnico-summary:hover,
+.detalhe-tecnico-summary:focus-visible {
+  color: var(--text);
+  opacity: 0.85;
+}
+
+.titulo-exemplos {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.detalhe-tecnico {
+  margin-top: 6px;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+}
+
+.detalhe-tecnico-summary {
+  font-size: 0.9rem;
+  color: var(--text-soft);
+}
+
+.detalhe-tecnico-corpo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
 }

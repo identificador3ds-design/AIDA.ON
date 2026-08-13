@@ -1,170 +1,425 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Montserrat', sans-serif;
+﻿/* Página de seleção de imagem.
+   Depende de style-shared-theme.css (variáveis, .glass-panel, .aida-button...). */
+
+.selecao-page::before {
+  background:
+    linear-gradient(180deg, rgba(8, 31, 29, 0.82), rgba(11, 43, 40, 0.9)),
+    url("../assets/images/FundoAlternativo.png") center/cover no-repeat;
+  opacity: 0.72;
 }
 
-body {
-  margin: 0;
-  background: #0c2f2b;
-  color: white;
+.selecao-header-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 14px;
+}
+
+.selecao-main {
+  padding: 8px 0 56px;
   display: grid;
   place-items: center;
-  overflow: hidden;
-
-    background-image: url(../assets/images/FundoVerde.png);
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
+  /* Centraliza verticalmente descontando o cabeçalho, sem travar a altura:
+     se o conteúdo crescer (telas baixas), a página rola normalmente. */
+  min-height: calc(100vh - 170px);
+  min-height: calc(100dvh - 170px);
+  position: relative;
+  z-index: 1;
 }
 
-.main-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center; 
-    min-height: 100vh; 
-    width: 100%;
+.selecao-panel {
+  width: 100%;
+  max-width: 760px;
+  padding: clamp(24px, 4vw, 40px);
+  display: grid;
+  gap: clamp(18px, 2.4vw, 24px);
+  animation: rise-up 0.72s ease both;
 }
 
-.top-header {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    margin-bottom: 20px; 
+.selecao-intro {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  min-width: 0;
+  text-align: center;
 }
 
-.logo-aida {
-    padding-top: 20px;
-    width: 350px; 
-    height: auto;
-    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2));
-
+.selecao-intro .page-title {
+  /* Menor que o padrão do tema: aqui o título divide o painel com o cartão de
+     upload, e o tamanho cheio empurrava o botão para fora da primeira dobra. */
+  font-size: clamp(1.9rem, 3.2vw, 2.9rem);
+  max-width: 18ch;
 }
 
-.center-stage {
-    flex-grow: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding-bottom: 50px;
-
+.selecao-intro .page-copy {
+  max-width: 58ch;
 }
 
-.card-selecao {
-    background-color: rgba(0, 0, 0, 0.18);
-    padding: 60px 80px; 
-    border-radius: 25px;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
-    text-align: center;
-    width: 500px; 
-    max-width: 90%; 
-    backdrop-filter: blur(5px);
+/* Passos ------------------------------------------------------------------ */
 
-}
-
-.texto-instrucao {
-    font-size: 1.25rem;
-    font-weight: 400;
-    margin-bottom: 35px;
-    letter-spacing: 0.5px;
-}
-
-.btn-estilizado {
-    background: linear-gradient(135deg, #134943, #127369);
-    color: #c5dddb;
-    border: none;
-    padding: 15px 45px;
-    border-radius: 12px;
-    font-weight: 700;
-    font-size: 1rem;
-    letter-spacing: 1.5px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.2);
-    border: 0.1px solid #127369;
-}
-
-.btn-estilizado:hover {
-    transform: translateY(-3px);
-}
-
-.btn-estilizado:active {
-    transform: translateY(0);
-}
-
-@media (max-width: 768px) {
-    .top-header {
-        padding-top: 30px;
-    }
-
-    .logo-aida {
-        max-width: 220px;
-    }
-
-    .card-selecao {
-        padding: 40px 30px;
-    }
-
-    .texto-instrucao {
-        font-size: 1.1rem;
-        margin-bottom: 25px;
-    }
-
-    .btn-estilizado {
-        padding: 12px 35px;
-        font-size: 0.9rem;
-}
-
-.login-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 2000;
+.selecao-steps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
   display: flex;
-  align-items: flex-end;
+  flex-wrap: wrap;
   justify-content: center;
-  pointer-events: none;
+  gap: 12px;
 }
 
-.login-overlay.hidden {
+.selecao-step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(229, 231, 235, 0.12);
+  background: rgba(229, 231, 235, 0.07);
+  color: var(--neutral-strong);
+  font-weight: 600;
+}
+
+.selecao-step span {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(143, 216, 183, 0.16);
+  color: var(--highlight);
+  font-weight: 700;
+}
+
+.selecao-step strong {
+  font-size: 0.98rem;
+}
+
+/* Cartão de upload -------------------------------------------------------- */
+
+.selecao-upload {
+  padding: clamp(22px, 3.2vw, 32px);
+  display: grid;
+  justify-items: center;
+  gap: 16px;
+  text-align: center;
+  border-style: dashed;
+  border-color: rgba(143, 216, 183, 0.28);
+  min-width: 0;
+}
+
+.selecao-upload:hover {
+  border-color: rgba(143, 216, 183, 0.42);
+}
+
+.selecao-upload-icon {
+  width: clamp(60px, 12vw, 76px);
+  height: clamp(60px, 12vw, 76px);
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  border: 1px solid rgba(143, 216, 183, 0.22);
+  background: var(--highlight-soft);
+  color: var(--highlight);
+}
+
+.selecao-upload-icon svg {
+  width: 46%;
+  height: auto;
+  display: block;
+}
+
+.selecao-upload-copy {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.selecao-upload-copy h2 {
+  margin: 0;
+  font-size: clamp(1.35rem, 2.6vw, 1.75rem);
+  letter-spacing: -0.02em;
+}
+
+.selecao-upload-copy p {
+  margin: 0;
+  max-width: 42ch;
+  color: var(--text-soft);
+  line-height: 1.6;
+}
+
+.section-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--highlight);
+}
+
+.section-tag::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--highlight);
+}
+
+.selecao-upload .aida-button {
+  min-width: min(280px, 100%);
+  padding: 0 32px;
+  letter-spacing: 0.04em;
+}
+
+.selecao-formats {
+  margin: 0;
+  font-size: 0.92rem;
+  color: var(--text-soft);
+}
+
+/* Estado de arrasto: o cartao inteiro e alvo do arquivo solto. */
+.selecao-upload.arrastando {
+  border-color: rgba(143, 216, 183, 0.75);
+  background: rgba(143, 216, 183, 0.08);
+}
+
+.selecao-erro {
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(224, 138, 30, 0.35);
+  background: rgba(224, 138, 30, 0.12);
+  color: #f0c07a;
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+/* Métodos ----------------------------------------------------------------- */
+
+.metodos-detalhes {
+  border-radius: 18px;
+  border: 1px solid rgba(229, 231, 235, 0.12);
+  background: rgba(229, 231, 235, 0.04);
+  padding: 14px 18px;
+}
+
+.metodos-summary {
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.metodos-summary::-webkit-details-marker {
   display: none;
 }
 
-.login-overlay-backdrop {
-  position: absolute;
-  inset: 0;
-  background-color: transparent;
-  pointer-events: auto;
-  transition: background-color 0.4s ease, backdrop-filter 0.4s ease;
+.metodos-summary-texto {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
 }
 
-.login-overlay-card {
-  position: relative;
-  width: 100%;
-  max-width: 500px;
-  background: rgba(12, 49, 46, 0.98);
+.metodos-summary-texto strong {
+  font-size: 1.02rem;
+  color: var(--neutral-strong);
+}
+
+/* Seta propria: o marcador nativo varia demais entre navegadores. */
+.metodos-summary::after {
+  content: "";
+  margin-left: auto;
+  flex: none;
+  width: 9px;
+  height: 9px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg) translate(-2px, -2px);
+  transition: transform 0.2s ease;
+  opacity: 0.65;
+}
+
+.metodos-detalhes[open] > .metodos-summary::after {
+  transform: rotate(-135deg) translate(-2px, -2px);
+}
+
+.metodos-summary:hover,
+.metodos-summary:focus-visible {
+  opacity: 0.85;
+}
+
+.metodos-corpo {
+  display: grid;
+  gap: 18px;
+  margin-top: 18px;
+}
+
+.metodos-intro,
+.metodos-aviso {
+  margin: 0;
+  color: var(--text-soft);
+  line-height: 1.6;
+}
+
+.metodos-aviso {
+  padding-top: 14px;
+  border-top: 1px solid rgba(229, 231, 235, 0.1);
+  font-size: 0.92rem;
+}
+
+.metodo-original {
+  margin: 0;
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+}
+
+.metodo-original img {
+  width: min(240px, 60%);
+  height: auto;
+  border-radius: 14px;
   border: 1px solid rgba(229, 231, 235, 0.12);
-  border-radius: 24px 24px 0 0;
-  padding: 40px;
-  text-align: center;
-  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.5);
-  transform: translateY(150vh);
-  pointer-events: auto;
-  margin-bottom: 0;
-  z-index: 2001;
-  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-.login-overlay-card h2 {
-  font-size: 2rem;
-  margin-bottom: 16px;
-  color: #8fd8b7;
+.metodo-original figcaption {
+  color: var(--text-soft);
+  font-size: 0.88rem;
 }
 
-.login-overlay-card p {
-  font-size: 1.1rem;
-  margin-bottom: 24px;
-  color: #d1d5db;
+.metodos-grade {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 14px;
+}
+
+.metodo-card {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 16px;
+  border: 1px solid rgba(229, 231, 235, 0.1);
+  background: rgba(7, 31, 30, 0.5);
+  min-width: 0;
+}
+
+.metodo-card img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 12px;
+  display: block;
+}
+
+.metodo-texto {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.metodo-texto strong {
+  color: var(--neutral-strong);
+  font-size: 0.98rem;
+}
+
+.metodo-texto span {
+  color: var(--text-soft);
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
+.selecao-note {
+  margin: 0;
+  color: var(--text-soft);
+  line-height: 1.6;
+}
+
+.selecao-note a {
+  color: var(--highlight);
+  font-weight: 700;
+  border-bottom: 1px solid rgba(143, 216, 183, 0.28);
+}
+
+@keyframes rise-up {
+  from {
+    opacity: 0;
+    transform: translateY(26px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsivo -------------------------------------------------------------- */
+
+@media (max-width: 900px) {
+  .selecao-main {
+    min-height: 0;
+    padding-bottom: 40px;
+  }
+}
+
+@media (max-width: 640px) {
+  .page-header .selecao-header-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .selecao-header-actions .top-link {
+    flex: 1 1 auto;
+    justify-content: center;
+    min-width: 140px;
+  }
+
+  .selecao-step {
+    flex: 1 1 100%;
+  }
+
+  .selecao-upload-copy p,
+  .selecao-formats {
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .selecao-panel {
+    border-radius: var(--radius-lg);
+  }
+
+  .selecao-upload {
+    padding: 22px 16px;
+  }
+
+  .selecao-upload-copy h2 {
+    font-size: 1.25rem;
+  }
+
+  .selecao-header-actions .top-link {
+    min-width: 0;
+    padding: 10px 14px;
+  }
+}
+
+/* Telas baixas (celular deitado): evita o cartão ocupar a tela toda. */
+@media (max-height: 620px) and (min-width: 641px) {
+  .selecao-main {
+    min-height: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .selecao-panel {
+    animation: none;
+  }
 }

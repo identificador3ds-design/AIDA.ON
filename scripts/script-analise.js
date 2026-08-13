@@ -178,13 +178,65 @@ function arquivoParaDataUrl(arquivo) {
   });
 }
 
+// Nenhum navegador de desktop decodifica HEIC/HEIF, e TIFF só em parte. O
+// backend lê esses formatos via pillow-heif, então a análise roda normalmente —
+// quem falha é apenas o <img>, que ficava com o ícone de imagem quebrada e dava
+// a impressão de que a análise tinha dado errado. Converter no cliente exigiria
+// um decodificador WASM de ~2 MB; enquanto não houver prévia vinda da API, o
+// caminho honesto é dizer que a visualização não existe, sem sugerir falha.
+const EXTENSOES_SEM_PREVIA_NO_NAVEGADOR = ["heic", "heif", "tif", "tiff"];
+
+function extensaoDe(nome) {
+  return (nome || "").split(".").pop()?.toLowerCase() || "";
+}
+
+function marcarPreviaIndisponivel(img, extensao) {
+  if (!img || img.dataset.previaIndisponivel === "true") return;
+  img.dataset.previaIndisponivel = "true";
+  img.removeAttribute("src");
+  img.hidden = true;
+
+  const aviso = document.createElement("p");
+  aviso.className = "previa-indisponivel";
+  // Só afirma que o formato não tem suporte quando ele realmente não tem. Um
+  // PNG que falhou por estar truncado renderiza em qualquer navegador, e culpar
+  // o formato mandaria o usuário procurar o problema no lugar errado.
+  aviso.textContent = EXTENSOES_SEM_PREVIA_NO_NAVEGADOR.includes(extensao)
+    ? `O navegador não exibe arquivos ${extensao.toUpperCase()}. A imagem foi enviada e analisada normalmente.`
+    : "O navegador não conseguiu exibir esta imagem. A análise segue normalmente.";
+  img.insertAdjacentElement("afterend", aviso);
+}
+
+function aplicarPrevia(img, dataUrl, extensao) {
+  if (!img) return;
+
+  // Troca de imagem: limpa o aviso da anterior antes de decidir de novo.
+  const avisoAnterior = img.parentElement?.querySelector(".previa-indisponivel");
+  if (avisoAnterior) avisoAnterior.remove();
+  img.dataset.previaIndisponivel = "false";
+
+  // Formato conhecidamente sem suporte: nem chega a atribuir o src. Um HEIC de
+  // 5 MB vira ~6,7 MB de base64 que o navegador descartaria de qualquer forma.
+  if (EXTENSOES_SEM_PREVIA_NO_NAVEGADOR.includes(extensao)) {
+    marcarPreviaIndisponivel(img, extensao);
+    return;
+  }
+
+  // Rede de seguranca para o que a lista acima nao previu: `onerror` antes do
+  // `src`, porque com data URL a falha dispara de imediato.
+  img.onerror = () => marcarPreviaIndisponivel(img, extensao);
+  img.src = dataUrl;
+  img.hidden = false;
+}
+
 function mostrarImagem(dataUrl) {
   registrarStatus("Imagem recuperada. Pronto para analisar.");
 
+  // Recupera o nome original guardado na tela de selecao: o data URL perde a
+  // extensao, e um .heic chegava ao backend renomeado como ".png".
+  const nomeOriginal = sessionStorage.getItem("AIDA_NomeArquivoSelecionado");
+
   try {
-    // Recupera o nome original guardado na tela de selecao: o data URL perde a
-    // extensao, e um .heic chegava ao backend renomeado como ".png".
-    const nomeOriginal = sessionStorage.getItem("AIDA_NomeArquivoSelecionado");
     imagemAtual = nomeOriginal
       ? dataUrlParaArquivo(dataUrl, nomeOriginal)
       : dataUrlParaArquivo(dataUrl);
@@ -198,17 +250,14 @@ function mostrarImagem(dataUrl) {
     return;
   }
 
-  if (imagemPreview) {
-    imagemPreview.src = dataUrl;
-    imagemPreview.hidden = false;
-  }
-
-  if (imagemProcessada) {
-    imagemProcessada.src = dataUrl;
-  }
+  const extensao = extensaoDe(nomeOriginal);
+  aplicarPrevia(imagemPreview, dataUrl, extensao);
+  aplicarPrevia(imagemProcessada, dataUrl, extensao);
 
   if (previewStatus) {
-    previewStatus.textContent = "Imagem pronta";
+    previewStatus.textContent = EXTENSOES_SEM_PREVIA_NO_NAVEGADOR.includes(extensao)
+      ? "Imagem pronta (sem prévia neste formato)"
+      : "Imagem pronta";
   }
 
   if (btnVerificar) {

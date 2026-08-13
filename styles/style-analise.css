@@ -261,6 +261,21 @@
   z-index: 1;
 }
 
+/* Ocupa o lugar da previa quando o navegador nao decodifica o formato
+   (HEIC/HEIF/TIFF). Fica visivelmente informativo, e nao um estado de erro: a
+   analise em si funcionou. */
+.previa-indisponivel {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  padding: 0 18px;
+  max-width: 42ch;
+  text-align: center;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: rgba(229, 231, 235, 0.62);
+}
+
 /* O card do resultado acompanha a imagem, nao a coluna vizinha. Como as duas
    colunas sao linhas da mesma grade, o padrao `stretch` esticava a moldura ate
    a altura do texto da analise e deixava um vazio enorme em volta da foto. */

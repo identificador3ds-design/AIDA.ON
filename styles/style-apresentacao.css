@@ -779,6 +779,14 @@ section {
   filter: invert(1) drop-shadow(0 0 12px rgba(229, 231, 235, 0.22));
 }
 
+.icon-wrapper img.icon-white {
+  filter: none;
+}
+
+.icon-wrapper.active img.icon-white {
+  filter: drop-shadow(0 0 12px rgba(229, 231, 235, 0.22));
+}
+
 .team-section {
   min-height: 100vh;
   padding: 100px 0;

@@ -15,7 +15,10 @@
     <title>AIDA.ON - Analise da Imagem</title>
     <link rel="icon" id="favicon" type="image/png" href="../assets/images/AIDABranco.ico">
     <link rel="stylesheet" href="../styles/style-shared-theme.css">
-    <link rel="stylesheet" href="../styles/style-analise.css">
+    <!-- A versao no fim do caminho e o que invalida o cache do navegador. O CSS
+         estava sem ela: quem ja visitou continuaria com a folha antiga e a
+         mensagem de "previa indisponivel" apareceria sem estilo. -->
+    <link rel="stylesheet" href="../styles/style-analise.css?v=20260813-previa-heic">
     <script>
         if (["localhost", "127.0.0.1"].includes(location.hostname) && "serviceWorker" in navigator) {
             navigator.serviceWorker.getRegistrations().then((regs) => regs.forEach((reg) => reg.unregister()));
@@ -153,10 +156,7 @@
                                 <div class="stat-bar-bg"><div class="stat-bar-fill" id="barIA"></div></div>
                             </div>
                             
-                            <div class="stat-box stat-confidence">
-                                <span class="stat-label">Nível de Confiança</span>
-                                <strong class="stat-value" id="statConfidence">--</strong>
-                            </div>
+                            
                         </div>
 
                         <p id="textoMetodo" style="display: none;"></p>
@@ -283,6 +283,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="../scripts/script-cookie-consent.js"></script>
-    <script src="../scripts/script-analise.js?v=20260813-proveniencia"></script>
+    <script src="../scripts/script-analise.js?v=20260813-previa-heic"></script>
 </body>
 </html>

@@ -123,6 +123,25 @@ function escaparHtml(valor) {
     .replace(/'/g, "&#39;");
 }
 
+// Apagar a linha do histórico não basta: o dossiê forense continua no cache do
+// servidor de análise até expirar. Quem apaga uma análise espera que ela suma,
+// então o cache cai junto.
+//
+// Melhor esforço, de propósito: o servidor de análise pode estar fora do ar, e
+// isso não pode impedir a exclusão do histórico. O cache tem TTL — no pior caso
+// a entrada expira sozinha.
+async function removerCacheForense(item) {
+  const idAnalise = String((item && item.analysis_id) || "").trim();
+  const base = String((item && item.api_base) || "").replace(/\/+$/, "");
+  if (!idAnalise || !base) return;
+
+  try {
+    await fetch(`${base}/forense/${encodeURIComponent(idAnalise)}`, { method: "DELETE" });
+  } catch (erro) {
+    console.warn("[AIDA.ON] Não foi possível remover o cache forense:", erro);
+  }
+}
+
 async function removerEvidenciasUsuario(userId) {
   if (!userId) {
     return;
@@ -217,6 +236,28 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     lista.innerHTML = "";
 
+    // "Abrir no Forensics" so aparece quando a linha guarda o identificador da
+    // analise (coluna analysis_id, ver docs/migracao-forensics.sql). Linhas
+    // antigas, gravadas antes da migracao, nao tem como reabrir a investigacao
+    // — e um botao que sempre leva a "analise nao encontrada" seria pior que a
+    // ausencia dele. Nao ha reenvio de imagem: o Forensics reaproveita a
+    // analise que o servidor ainda tem em cache.
+    function linkForense(item) {
+      const idAnalise = String(item.analysis_id || "").trim();
+      if (!idAnalise) return "";
+
+      const parametros = new URLSearchParams({ id: idAnalise });
+      if (item.api_base) parametros.set("base", item.api_base);
+
+      return `
+        <a href="./index-forensics.html?${escaparHtml(parametros.toString())}"
+           class="btn-forense-item"
+           title="Abrir esta análise no AIDA Forensics"
+           style="display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border: 1px solid rgba(127, 208, 216, 0.32); border-radius: 999px; color: #7fd0d8; font-size: 0.85rem; font-weight: 600; white-space: nowrap;">
+          Abrir no Forensics
+        </a>`;
+    }
+
     historicoNuvem.forEach((item, index) => {
       const dataFormatada = new Date(item.data_analise).toLocaleString("pt-BR");
       const card = document.createElement("div");
@@ -231,6 +272,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             <span class="action-desc">${escaparHtml(dataFormatada)}</span>
           </div>
         </a>
+        ${linkForense(item)}
         <button class="btn-apagar-item" data-id="${item.id}" data-url="${item.imagem_original}" title="Apagar análise" style="background: none; border: none; color: #ff6b6b; cursor: pointer; padding: 8px; transition: opacity 0.2s;">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
              <polyline points="3 6 5 6 21 6"></polyline>
@@ -255,18 +297,21 @@ document.addEventListener("DOMContentLoaded", async () => {
         e.stopPropagation();
         const id = button.dataset.id;
         const url = button.dataset.url;
-        
+        const item = historicoNuvem.find((linha) => String(linha.id) === String(id));
+
         const confirmed = window.confirm("Deseja realmente apagar esta análise?");
         if (!confirmed) return;
-        
+
         button.style.opacity = "0.5";
         button.disabled = true;
-        
+
         if (url && url.includes("/evidencias/")) {
           const path = url.split("/evidencias/")[1];
           await _supabase.storage.from("evidencias").remove([path]);
         }
-        
+
+        await removerCacheForense(item);
+
         const { error } = await _supabase.from("historico_analises").delete().eq("id", id);
         
         if (error) {
@@ -312,6 +357,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     lista.innerHTML = '<div class="mensagem-vazia">Removendo historico e evidencias salvas...</div>';
 
     await removerEvidenciasUsuario(user.id);
+    // Os dossiês forenses no servidor de análise saem junto: apagar só a linha
+    // deixaria a investigação acessível por link direto até o cache expirar.
+    await Promise.all((historicoNuvem || []).map(removerCacheForense));
     const { error } = await _supabase.from("historico_analises").delete().eq("user_id", user.id);
 
     if (error) {

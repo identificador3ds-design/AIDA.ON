@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#10403b">
+    <meta name="description"
+        content="AIDA Forensics: investigacao detalhada dos indicios por tras de uma analise do AIDA.">
+
+    <link rel="manifest" href="../manifest.webmanifest">
+    <link rel="apple-touch-icon" href="../assets/images/pwa-icon-180.png">
+    <link rel="icon" type="image/png" href="../assets/images/AIDABranco.ico">
+
+    <title>AIDA Forensics | Investigação da análise</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Afacad:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../styles/style-shared-theme.css">
+    <link rel="stylesheet" href="../styles/aida-design-system.css">
+    <link rel="stylesheet" href="../styles/style-forensics.css">
+</head>
+
+<body class="aida-shell">
+    <header class="page-header">
+        <a href="./index-apresentacao.html" aria-label="Pagina inicial do AIDA">
+            <img src="../assets/images/LogoBranca.png" alt="Logo AIDA.ON" class="brand-logo">
+        </a>
+
+        <nav class="aida-row" aria-label="Navegacao da plataforma">
+            <a href="./index-historico.html" class="top-link">Histórico</a>
+            <a href="./index-seleciona.html" class="top-link">Nova análise</a>
+        </nav>
+    </header>
+
+    <main class="page-frame forensics-main">
+        <section class="fo-topo">
+            <div>
+                <span class="aida-eyebrow">AIDA Forensics</span>
+                <h1 class="fo-topo__titulo">Os indícios <span>por trás</span> da análise.</h1>
+                <p class="aida-text" style="max-width: 62ch;">
+                    Esta página não refaz a análise: ela reabre a que já foi executada e mostra o material
+                    que sustentou a leitura — métodos, mapas, metadados e proveniência.
+                </p>
+
+                <div class="fo-identificacao" id="foIdentificacao" hidden>
+                    <span>ID <strong id="foId">—</strong></span>
+                    <span>Arquivo <strong id="foArquivo">—</strong></span>
+                    <span>Analisado em <strong id="foData">—</strong></span>
+                </div>
+            </div>
+
+            <span class="aida-status aida-status--beta">Beta</span>
+        </section>
+
+        <!-- Estados da página. Um por vez; o script escolhe. -->
+        <div id="foCarregando" class="aida-state aida-state--carregando fo-estado" role="status">
+            <span class="aida-state__icon" aria-hidden="true"></span>
+            <div>
+                <p class="aida-state__title">Abrindo a investigação</p>
+                <p class="aida-state__text">Recuperando o resultado já calculado desta análise.</p>
+            </div>
+        </div>
+
+        <div id="foEsqueleto" class="fo-esqueleto" aria-hidden="true">
+            <span class="aida-skeleton"></span>
+            <span class="aida-skeleton"></span>
+            <span class="aida-skeleton"></span>
+        </div>
+
+        <div id="foSemAnalise" class="aida-state aida-state--indisponivel fo-estado" role="status" hidden>
+            <span class="aida-state__icon" aria-hidden="true"></span>
+            <div>
+                <p class="aida-state__title">Nenhuma análise selecionada</p>
+                <p class="aida-state__text">
+                    O Forensics investiga uma análise existente. Envie uma imagem no AIDA Image e use
+                    "Ver análise forense" ao final do resultado.
+                </p>
+                <div class="fo-acoes">
+                    <a href="./index-seleciona.html" class="aida-btn aida-btn--sm">Analisar uma imagem</a>
+                    <a href="./index-historico.html" class="aida-btn aida-btn--ghost aida-btn--sm">Ver histórico</a>
+                </div>
+            </div>
+        </div>
+
+        <div id="foErro" class="aida-state aida-state--erro fo-estado" role="alert" hidden>
+            <span class="aida-state__icon" aria-hidden="true"></span>
+            <div>
+                <p class="aida-state__title" id="foErroTitulo">Não foi possível abrir a investigação</p>
+                <p class="aida-state__text" id="foErroTexto"></p>
+                <div class="fo-acoes">
+                    <a href="./index-seleciona.html" class="aida-btn aida-btn--sm">Refazer a análise</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================ Dossiê ============================ -->
+        <div id="foDossie" class="fo-grade" hidden>
+
+            <!-- Leitura -->
+            <section class="fo-bloco fo-bloco--meio">
+                <div class="fo-bloco__cabecalho">
+                    <h2 class="fo-bloco__titulo">Leitura</h2>
+                </div>
+
+                <div class="fo-veredito">
+                    <span class="fo-veredito__rotulo" id="foVeredito" data-estado="INCONCLUSIVO">—</span>
+                    <span class="fo-selo">Confiança: <strong id="foConfianca">—</strong></span>
+                </div>
+
+                <p class="fo-bloco__nota" id="foExplicacao"></p>
+
+                <div class="fo-escalas">
+                    <div class="fo-escala">
+                        <span class="fo-escala__rotulo">Escala de exibição</span>
+                        <span class="fo-escala__valor" id="foProbExibicao">—</span>
+                        <span class="fo-escala__detalhe">
+                            Chance de IA na escala mostrada ao usuário, com corte em 50%.
+                        </span>
+                    </div>
+
+                    <div class="fo-escala">
+                        <span class="fo-escala__rotulo">Escala calibrada</span>
+                        <span class="fo-escala__valor" id="foProbCalibrada">—</span>
+                        <span class="fo-escala__detalhe">
+                            Probabilidade usada nas métricas. O corte operacional não cai em 50%.
+                        </span>
+                    </div>
+                </div>
+
+                <div class="fo-regua" id="foRegua" aria-hidden="true">
+                    <span class="fo-regua__banda" id="foReguaBanda"></span>
+                    <span class="fo-regua__limiar" id="foReguaLimiar"></span>
+                    <span class="fo-regua__marcador" id="foReguaMarcador"></span>
+                </div>
+                <div class="fo-regua__legenda">
+                    <span>0 — real</span>
+                    <span id="foReguaInfo">limiar</span>
+                    <span>1 — IA</span>
+                </div>
+
+                <div id="foMotivosBloco" hidden>
+                    <p class="fo-bloco__nota" style="margin-top: 20px;"><strong>Por que a leitura ficou assim:</strong></p>
+                    <ul class="fo-lista" id="foMotivos"></ul>
+                </div>
+            </section>
+
+            <!-- Métodos -->
+            <section class="fo-bloco fo-bloco--meio">
+                <div class="fo-bloco__cabecalho">
+                    <h2 class="fo-bloco__titulo">Métodos executados</h2>
+                    <span class="fo-selo" id="foFusao">—</span>
+                </div>
+
+                <p class="fo-bloco__nota">
+                    Cada módulo devolve um score independente. Módulos que não participaram desta análise não
+                    aparecem — ausência não é score zero.
+                </p>
+
+                <div id="foMetodos" style="margin-top: 20px;"></div>
+            </section>
+
+            <!-- Evidências visuais -->
+            <section class="fo-bloco">
+                <div class="fo-bloco__cabecalho">
+                    <h2 class="fo-bloco__titulo">Evidências visuais</h2>
+                    <span class="fo-selo" id="foMapasInfo">—</span>
+                </div>
+
+                <p class="fo-bloco__nota">
+                    Os mapas mostram <strong>onde o sinal medido é mais forte</strong> — não onde houve
+                    manipulação. Servem para inspeção, nunca como prova de adulteração.
+                </p>
+
+                <div class="fo-mapas" id="foMapas" style="margin-top: 20px;"></div>
+
+                <div id="foSemMapas" class="aida-state aida-state--indisponivel" style="margin-top: 20px;" hidden>
+                    <span class="aida-state__icon" aria-hidden="true"></span>
+                    <div>
+                        <p class="aida-state__title">Sem mapas para esta análise</p>
+                        <p class="aida-state__text">
+                            A análise foi executada sem geração de evidências visuais.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Proveniência -->
+            <section class="fo-bloco fo-bloco--meio">
+                <div class="fo-bloco__cabecalho">
+                    <h2 class="fo-bloco__titulo">Proveniência digital</h2>
+                    <span class="fo-selo" id="foProvStatus">—</span>
+                </div>
+
+                <p class="fo-bloco__nota" id="foProvResumo"></p>
+
+                <dl class="fo-dados" id="foProvDados" style="margin-top: 20px;"></dl>
+
+                <ul class="fo-evidencia-prov" id="foProvEvidencias"></ul>
+            </section>
+
+            <!-- Arquivo -->
+            <section class="fo-bloco fo-bloco--meio">
+                <div class="fo-bloco__cabecalho">
+                    <h2 class="fo-bloco__titulo">Arquivo analisado</h2>
+                </div>
+
+                <p class="fo-bloco__nota">
+                    O AIDA não guarda a imagem no servidor: estes campos vêm da leitura feita durante a
+                    análise.
+                </p>
+                <p class="fo-bloco__nota" id="foArquivoNota" style="margin-top: 8px;"></p>
+
+                <dl class="fo-dados" id="foArquivoDados" style="margin-top: 20px;"></dl>
+            </section>
+
+            <!-- Qualidade e limitações -->
+            <section class="fo-bloco">
+                <div class="fo-bloco__cabecalho">
+                    <h2 class="fo-bloco__titulo">Qualidade e limitações</h2>
+                </div>
+
+                <p class="fo-bloco__nota">
+                    O que restringiu esta leitura. Compressão, redimensionamento e reencaminhamento apagam
+                    parte dos sinais que a análise mede.
+                </p>
+
+                <dl class="fo-dados" id="foQualidade" style="margin-top: 20px;"></dl>
+                <ul class="fo-lista" id="foLimitacoes"></ul>
+            </section>
+        </div>
+
+        <div id="foRessalva" class="aida-state aida-state--baixa-confianca fo-ressalva" role="note" hidden>
+            <span class="aida-state__icon" aria-hidden="true"></span>
+            <div>
+                <p class="aida-state__title">Ressalva obrigatória</p>
+                <p class="aida-state__text" id="foRessalvaTexto"></p>
+            </div>
+        </div>
+
+        <div class="fo-acoes" id="foAcoes" hidden>
+            <a href="./index-seleciona.html" class="aida-btn">Analisar outra imagem</a>
+            <a href="./index-historico.html" class="aida-btn aida-btn--ghost">Voltar ao histórico</a>
+        </div>
+    </main>
+
+    <script src="../scripts/script-cookie-consent.js"></script>
+    <script src="../scripts/script-forensics.js"></script>
+</body>
+
+</html>

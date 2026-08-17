@@ -627,13 +627,24 @@ function setupSiteScrollAnimations() {
     duration: 0.82,
   });
 
-  animateGroup(".icon-wrapper", {
-    trigger: ".icons-grid",
-    y: 22,
-    stagger: 0.06,
-    duration: 0.62,
-    start: "top 86%",
-  });
+  // Os nove logos de tecnologia NÃO recebem animação individual, de propósito.
+  //
+  // Cada `.icon-wrapper` é disputado por dois donos. O primeiro é
+  // `setupIconLoop`, que a cada 1,4 s acende alguns pela classe `.active` —
+  // regra que depende de `opacity: 1` e `transform: translateY(-8px)
+  // scale(1.06)`. O segundo seria um tween do GSAP, que escreve essas mesmas
+  // duas propriedades no estilo inline.
+  //
+  // Estilo inline vence classe. Enquanto o GSAP mantivesse `opacity` e
+  // `transform` escritos ali, o destaque do laço não apareceria; e bastava o
+  // tween não chegar ao fim — gatilho medido errado, aba em segundo plano — para
+  // os logos ficarem presos em `opacity: 0`, que foi o defeito relatado.
+  // `clearProps` reduz a janela, mas não fecha: o GSAP reescreve as
+  // propriedades de transform ao concluir.
+  //
+  // A entrada da seção já é animada em `.icons-grid`, logo acima, que é um
+  // contêiner sem classe de estado. Animar o contêiner e deixar os filhos
+  // inteiramente sob o CSS elimina a disputa em vez de arbitrá-la.
 
   if (window.innerWidth > 900) {
     animateGroup(".team-photo", {
@@ -681,32 +692,22 @@ function setupTeamControls() {
   });
 }
 
-function setupParallax() {
-  const items = document.querySelectorAll(".parallax-item");
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  if (!items.length || reduceMotion || window.innerWidth <= 768) {
-    items.forEach((item) => {
-      item.style.transform = "";
-    });
-    return;
-  }
-
-  const updateParallax = () => {
-    items.forEach((item) => {
-      const speed = Number(item.dataset.parallaxSpeed || 0.12);
-      const rect = item.getBoundingClientRect();
-      const centerOffset = rect.top + rect.height / 2 - window.innerHeight / 2;
-      const translateY = centerOffset * -speed;
-
-      item.style.transform = `translate3d(0, ${translateY}px, 0)`;
-    });
-  };
-
-  updateParallax();
-  window.addEventListener("scroll", updateParallax, { passive: true });
-  window.addEventListener("resize", updateParallax);
-}
+// O parallax de `.parallax-item` foi removido — e não só por gosto visual.
+//
+// A função media o elemento com `getBoundingClientRect()` DEPOIS de já ter
+// escrito um `transform` nele, e calculava o próximo deslocamento a partir
+// dessa medida. Como o retângulo já continha a translação anterior, cada
+// evento de rolagem realimentava o anterior e o deslocamento crescia sozinho:
+// a grade de tecnologias chegava a mais de 500 px fora do lugar.
+//
+// O estrago não parava na posição. O `transform` inline era reescrito a cada
+// scroll por cima do que o GSAP escrevia nos mesmos elementos, e o
+// ScrollTrigger, que mede o gatilho com o transform aplicado, calculava pontos
+// de partida que nunca correspondiam à tela — foi o que apagou os nove logos
+// de tecnologia.
+//
+// O efeito de rolagem da seção da equipe (`setupTeamRotation`) não vinha
+// daqui e continua ativo.
 
 document.addEventListener("DOMContentLoaded", () => {
   if (contaAtualSemAcesso()) {
@@ -762,7 +763,6 @@ document.addEventListener("DOMContentLoaded", () => {
   setupGsapIntro();
   setupCardScrollAnimations();
   setupSiteScrollAnimations();
-  setupParallax();
   window.addEventListener("resize", setupTeamRotation);
 });
 const favicon = document.getElementById('favicon');

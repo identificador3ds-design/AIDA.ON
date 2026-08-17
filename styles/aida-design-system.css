@@ -1,0 +1,758 @@
+/* ==========================================================================
+   AIDA — Design System
+   ==========================================================================
+
+   Camada base compartilhada pelas soluções da plataforma (Image, Forensics,
+   Video, API). Não substitui `style-shared-theme.css` nem
+   `style-apresentacao.css`: as variáveis abaixo REPETEM os valores que essas
+   folhas já usam, agora com nomes semânticos e namespace `--aida-*`.
+
+   Por que repetir em vez de reescrever: as páginas antigas leem `--bg-mid`,
+   `--highlight`, `--radius-lg` etc. Renomear tudo de uma vez quebraria telas
+   em produção. O caminho é aditivo — novas telas consomem `--aida-*`, as
+   antigas continuam funcionando, e a migração acontece arquivo a arquivo.
+
+   Ordem de carregamento recomendada:
+     1. style-shared-theme.css   (shell, glass, botões legados)
+     2. aida-design-system.css   (este arquivo)
+     3. folha específica da página
+
+   Sumário
+     01. Tokens — cor, superfície, linha
+     02. Tokens — tipografia
+     03. Tokens — espaçamento, raio, sombra
+     04. Tokens — movimento (timing e easings)
+     05. Containers e seções
+     06. Tipografia aplicada
+     07. Botões
+     08. Cards
+     09. Status de produto (Disponível / Beta / Em desenvolvimento / Planejado)
+     10. Estados de aplicação (carregando, analisando, erro, ...)
+     11. Inputs
+     12. Utilitários e acessibilidade
+   ========================================================================== */
+
+/* -----------------------------------------------------------------------
+   01. Tokens — cor, superfície, linha
+   ----------------------------------------------------------------------- */
+
+:root {
+  /* Base de marca. Mesmos valores de --bg-dark/--bg-mid/--bg-light. */
+  --aida-green-900: #0a2523;
+  --aida-green-800: #0c312e;
+  --aida-green-700: #0f3833;
+  --aida-green-600: #10403b;
+  --aida-green-500: #19675f;
+  --aida-green-400: #2dafa1;
+  --aida-mint: #8fd8b7;
+  --aida-mint-soft: rgba(143, 216, 183, 0.18);
+  --aida-mint-line: rgba(143, 216, 183, 0.42);
+
+  /* Texto */
+  --aida-text: #f4f8ff;
+  --aida-text-2: #d1d5db;
+  --aida-text-3: rgba(209, 213, 219, 0.72);
+  --aida-text-invert: #0f3833;
+
+  /* Superfícies, em ordem crescente de elevação */
+  --aida-surface-0: rgba(255, 255, 255, 0.04);
+  --aida-surface-1: rgba(255, 255, 255, 0.08);
+  --aida-surface-2: rgba(255, 255, 255, 0.12);
+  --aida-surface-3: rgba(255, 255, 255, 0.16);
+
+  /* Preenchimento de vidro reutilizável (card e painel) */
+  --aida-glass-card:
+    linear-gradient(180deg, rgba(229, 231, 235, 0.1), rgba(209, 213, 219, 0.03)),
+    linear-gradient(135deg, rgba(12, 49, 46, 0.14), rgba(16, 64, 59, 0.08));
+  --aida-glass-panel:
+    linear-gradient(180deg, rgba(229, 231, 235, 0.12), rgba(209, 213, 219, 0.04)),
+    linear-gradient(135deg, rgba(12, 49, 46, 0.28), rgba(16, 64, 59, 0.12));
+
+  /* Linhas */
+  --aida-line: rgba(255, 255, 255, 0.14);
+  --aida-line-soft: rgba(229, 231, 235, 0.12);
+  --aida-line-strong: rgba(229, 231, 235, 0.24);
+
+  /* Semânticas de estado. Tons escolhidos para manter contraste AA sobre
+     o verde escuro do shell — por isso são claros, não saturados. */
+  --aida-info: #9fd8ff;
+  --aida-info-bg: rgba(159, 216, 255, 0.12);
+  --aida-success: #8fd8b7;
+  --aida-success-bg: rgba(143, 216, 183, 0.12);
+  --aida-warning: #ffd58a;
+  --aida-warning-bg: rgba(255, 213, 138, 0.12);
+  --aida-danger: #ff9d9d;
+  --aida-danger-bg: rgba(255, 157, 157, 0.12);
+  --aida-neutral: #c3cbd6;
+  --aida-neutral-bg: rgba(195, 203, 214, 0.1);
+
+  /* Acentos por produto. Variação estreita de matiz de propósito: os quatro
+     cards precisam parecer da mesma família, não quatro marcas diferentes. */
+  --aida-image: #8fd8b7;
+  --aida-forensics: #7fd0d8;
+  --aida-video: #a9c8f0;
+  --aida-api: #c3b6f0;
+}
+
+/* -----------------------------------------------------------------------
+   02. Tokens — tipografia
+   ----------------------------------------------------------------------- */
+
+:root {
+  --aida-font: "Afacad", Arial, Helvetica, sans-serif;
+  --aida-font-mono: "SFMono-Regular", "JetBrains Mono", Consolas, "Liberation Mono", monospace;
+
+  --aida-fs-eyebrow: 0.82rem;
+  --aida-fs-micro: 0.76rem;
+  --aida-fs-caption: 0.92rem;
+  --aida-fs-body: 1.06rem;
+  --aida-fs-body-lg: 1.14rem;
+  --aida-fs-h3: 1.52rem;
+  --aida-fs-h2: clamp(2.2rem, 4vw, 3.9rem);
+  --aida-fs-h1: clamp(3rem, 5vw, 5.6rem);
+
+  --aida-lh-tight: 0.98;
+  --aida-lh-snug: 1.28;
+  --aida-lh-body: 1.58;
+
+  --aida-ls-eyebrow: 0.18em;
+  --aida-ls-title: -0.04em;
+
+  --aida-fw-regular: 400;
+  --aida-fw-medium: 500;
+  --aida-fw-semibold: 600;
+  --aida-fw-bold: 700;
+}
+
+/* -----------------------------------------------------------------------
+   03. Tokens — espaçamento, raio, sombra
+   ----------------------------------------------------------------------- */
+
+:root {
+  --aida-space-1: 4px;
+  --aida-space-2: 8px;
+  --aida-space-3: 12px;
+  --aida-space-4: 16px;
+  --aida-space-5: 20px;
+  --aida-space-6: 24px;
+  --aida-space-8: 32px;
+  --aida-space-10: 40px;
+  --aida-space-12: 48px;
+  --aida-space-16: 64px;
+  --aida-space-20: 80px;
+  --aida-space-25: 100px;
+
+  --aida-radius-pill: 999px;
+  --aida-radius-sm: 12px;
+  --aida-radius-md: 18px;
+  --aida-radius-lg: 24px;
+  --aida-radius-xl: 32px;
+  --aida-radius-2xl: 36px;
+
+  --aida-shadow-sm: 0 8px 20px rgba(4, 8, 20, 0.2);
+  --aida-shadow-md: 0 16px 38px rgba(4, 8, 20, 0.28);
+  --aida-shadow-lg: 0 24px 60px rgba(4, 8, 20, 0.36);
+
+  --aida-container: min(1180px, calc(100% - 48px));
+  --aida-container-narrow: min(920px, calc(100% - 48px));
+}
+
+/* -----------------------------------------------------------------------
+   04. Tokens — movimento
+
+   Um único vocabulário de tempo para toda a plataforma. Sem isto cada tela
+   inventa o seu `0.28s ease-in-out` e o conjunto perde cadência.
+   ----------------------------------------------------------------------- */
+
+:root {
+  --aida-dur-instant: 0.12s;
+  --aida-dur-fast: 0.2s;
+  --aida-dur-base: 0.32s;
+  --aida-dur-slow: 0.6s;
+  --aida-dur-scan: 3.6s;   /* varredura contínua dos cards */
+  --aida-dur-cycle: 7.2s;  /* ciclo longo (troca de camada forense) */
+
+  /* Curvas. `--aida-ease-out` é a padrão de interface; `--aida-ease-soft`
+     é a de entrada/saída de elementos que se movem sozinhos. */
+  --aida-ease-out: cubic-bezier(0.22, 0.8, 0.28, 1);
+  --aida-ease-soft: cubic-bezier(0.42, 0, 0.24, 1);
+  --aida-ease-inout: cubic-bezier(0.65, 0, 0.35, 1);
+
+  --aida-lift: -6px;       /* elevação padrão de card em hover */
+  --aida-lift-sm: -2px;    /* elevação de botão */
+}
+
+/* -----------------------------------------------------------------------
+   05. Containers e seções
+   ----------------------------------------------------------------------- */
+
+.aida-container {
+  width: var(--aida-container);
+  margin-inline: auto;
+  position: relative;
+  z-index: 1;
+}
+
+.aida-container--narrow {
+  width: var(--aida-container-narrow);
+}
+
+.aida-section {
+  padding-block: var(--aida-space-25);
+}
+
+.aida-section--tight {
+  padding-block: var(--aida-space-16);
+}
+
+.aida-section-head {
+  max-width: 760px;
+  margin-bottom: var(--aida-space-12);
+}
+
+.aida-section-head--center {
+  margin-inline: auto;
+  text-align: center;
+}
+
+/* -----------------------------------------------------------------------
+   06. Tipografia aplicada
+   ----------------------------------------------------------------------- */
+
+.aida-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--aida-space-2);
+  margin-bottom: var(--aida-space-4);
+  font-size: var(--aida-fs-eyebrow);
+  font-weight: var(--aida-fw-bold);
+  letter-spacing: var(--aida-ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--aida-mint);
+}
+
+.aida-title-1,
+.aida-title-2,
+.aida-title-3 {
+  margin: 0 0 var(--aida-space-4);
+  line-height: var(--aida-lh-tight);
+  letter-spacing: var(--aida-ls-title);
+}
+
+.aida-title-1 { font-size: var(--aida-fs-h1); }
+.aida-title-2 { font-size: var(--aida-fs-h2); }
+
+.aida-title-3 {
+  font-size: var(--aida-fs-h3);
+  line-height: var(--aida-lh-snug);
+  letter-spacing: -0.02em;
+}
+
+.aida-text {
+  margin: 0;
+  font-size: var(--aida-fs-body-lg);
+  line-height: var(--aida-lh-body);
+  color: var(--aida-text-2);
+}
+
+.aida-text--sm {
+  font-size: var(--aida-fs-caption);
+  color: var(--aida-text-3);
+}
+
+.aida-mono {
+  font-family: var(--aida-font-mono);
+  font-size: var(--aida-fs-micro);
+  letter-spacing: 0.04em;
+}
+
+/* -----------------------------------------------------------------------
+   07. Botões
+
+   `.aida-btn` é a evolução de `.aida-button`/`.btn-main`: mesma silhueta
+   (pílula, 52px, gradiente claro), com variantes explícitas e um estado
+   `is-busy` que as telas de análise precisavam e implementavam cada uma
+   do seu jeito.
+   ----------------------------------------------------------------------- */
+
+.aida-btn {
+  --_btn-bg: linear-gradient(135deg, #e5e7eb 0%, #c8d7d4 48%, #97bfaf 100%);
+  --_btn-color: var(--aida-text-invert);
+  --_btn-border: rgba(229, 231, 235, 0.18);
+  --_btn-shadow: 0 14px 28px rgba(12, 49, 46, 0.18);
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--aida-space-2);
+  min-height: 52px;
+  padding-inline: var(--aida-space-6);
+  border: 1px solid var(--_btn-border);
+  border-radius: var(--aida-radius-pill);
+  background: var(--_btn-bg);
+  box-shadow: var(--_btn-shadow);
+  color: var(--_btn-color);
+  font-family: inherit;
+  font-weight: var(--aida-fw-bold);
+  text-align: center;
+  cursor: pointer;
+  transition:
+    transform var(--aida-dur-fast) var(--aida-ease-out),
+    box-shadow var(--aida-dur-fast) var(--aida-ease-out),
+    border-color var(--aida-dur-fast) var(--aida-ease-out),
+    opacity var(--aida-dur-fast) var(--aida-ease-out);
+}
+
+.aida-btn:hover:not(:disabled):not(.is-busy) {
+  transform: translateY(var(--aida-lift-sm));
+  border-color: rgba(229, 231, 235, 0.3);
+  box-shadow: 0 18px 32px rgba(12, 49, 46, 0.24);
+}
+
+.aida-btn:focus-visible {
+  outline: 2px solid var(--aida-mint);
+  outline-offset: 3px;
+}
+
+.aida-btn--ghost {
+  --_btn-bg: linear-gradient(180deg, rgba(229, 231, 235, 0.1), rgba(209, 213, 219, 0.04));
+  --_btn-color: var(--aida-text);
+  --_btn-border: rgba(229, 231, 235, 0.14);
+  --_btn-shadow: none;
+}
+
+.aida-btn--quiet {
+  --_btn-bg: transparent;
+  --_btn-color: var(--aida-text-2);
+  --_btn-border: transparent;
+  --_btn-shadow: none;
+  min-height: 40px;
+  padding-inline: var(--aida-space-3);
+}
+
+.aida-btn--danger {
+  --_btn-bg: var(--aida-danger-bg);
+  --_btn-color: var(--aida-danger);
+  --_btn-border: rgba(255, 157, 157, 0.3);
+  --_btn-shadow: none;
+}
+
+.aida-btn--sm {
+  min-height: 42px;
+  padding-inline: var(--aida-space-5);
+  font-size: var(--aida-fs-caption);
+}
+
+.aida-btn--block {
+  width: 100%;
+}
+
+.aida-btn:disabled,
+.aida-btn.is-disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+  filter: grayscale(0.2);
+}
+
+/* Botão ocupado: mantém a largura (o rótulo continua no fluxo, invisível)
+   para a linha de ações não saltar quando a análise começa. */
+.aida-btn.is-busy {
+  cursor: progress;
+  color: transparent;
+  pointer-events: none;
+}
+
+.aida-btn.is-busy::after {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid rgba(15, 56, 51, 0.28);
+  border-top-color: var(--aida-text-invert);
+  animation: aida-spin 0.7s linear infinite;
+}
+
+.aida-btn--ghost.is-busy::after,
+.aida-btn--quiet.is-busy::after {
+  border-color: rgba(244, 248, 255, 0.24);
+  border-top-color: var(--aida-text);
+}
+
+@keyframes aida-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Seta que avança no hover — usada nos CTAs dos cards de solução. */
+.aida-btn__arrow {
+  display: inline-block;
+  transition: transform var(--aida-dur-fast) var(--aida-ease-out);
+}
+
+.aida-btn:hover:not(:disabled) .aida-btn__arrow {
+  transform: translateX(3px);
+}
+
+/* -----------------------------------------------------------------------
+   08. Cards
+   ----------------------------------------------------------------------- */
+
+.aida-card {
+  position: relative;
+  padding: var(--aida-space-8);
+  border: 1px solid var(--aida-line-soft);
+  border-radius: var(--aida-radius-lg);
+  background: var(--aida-glass-card);
+  box-shadow: var(--aida-shadow-md);
+  backdrop-filter: blur(12px);
+  transition:
+    transform var(--aida-dur-base) var(--aida-ease-out),
+    border-color var(--aida-dur-base) var(--aida-ease-out),
+    box-shadow var(--aida-dur-base) var(--aida-ease-out);
+}
+
+.aida-card--panel {
+  border-radius: var(--aida-radius-xl);
+  background: var(--aida-glass-panel);
+  box-shadow: var(--aida-shadow-lg);
+}
+
+.aida-card--flat {
+  box-shadow: none;
+  backdrop-filter: none;
+  background: var(--aida-surface-0);
+}
+
+.aida-card--interactive:hover {
+  transform: translateY(var(--aida-lift));
+  border-color: var(--aida-line-strong);
+  box-shadow: 0 22px 38px rgba(4, 8, 20, 0.28);
+}
+
+.aida-card__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--aida-space-4);
+}
+
+/* -----------------------------------------------------------------------
+   09. Status de produto
+
+   Quatro estados, um componente. O modificador diz a verdade sobre a
+   solução — trocar o rótulo sem trocar o modificador é bug, não estilo.
+   ----------------------------------------------------------------------- */
+
+.aida-status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--aida-space-2);
+  padding: 5px 12px 5px 10px;
+  border: 1px solid var(--_status-line, var(--aida-line-soft));
+  border-radius: var(--aida-radius-pill);
+  background: var(--_status-bg, var(--aida-neutral-bg));
+  color: var(--_status-fg, var(--aida-neutral));
+  font-size: var(--aida-fs-micro);
+  font-weight: var(--aida-fw-bold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.aida-status::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  flex: none;
+}
+
+.aida-status--disponivel {
+  --_status-fg: var(--aida-success);
+  --_status-bg: var(--aida-success-bg);
+  --_status-line: rgba(143, 216, 183, 0.34);
+}
+
+/* O ponto pulsa apenas no estado "disponível": é o único que representa
+   algo em operação agora. Nos demais, um ponto pulsando mentiria. */
+.aida-status--disponivel::before {
+  animation: aida-pulse 2.4s var(--aida-ease-inout) infinite;
+}
+
+@keyframes aida-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.45; transform: scale(0.82); }
+}
+
+.aida-status--beta {
+  --_status-fg: var(--aida-info);
+  --_status-bg: var(--aida-info-bg);
+  --_status-line: rgba(159, 216, 255, 0.3);
+}
+
+.aida-status--desenvolvimento {
+  --_status-fg: var(--aida-warning);
+  --_status-bg: var(--aida-warning-bg);
+  --_status-line: rgba(255, 213, 138, 0.3);
+}
+
+.aida-status--planejado {
+  --_status-fg: var(--aida-neutral);
+  --_status-bg: var(--aida-neutral-bg);
+  --_status-line: rgba(195, 203, 214, 0.24);
+}
+
+.aida-status--planejado::before {
+  background: transparent;
+  border: 1px solid currentColor;
+}
+
+/* -----------------------------------------------------------------------
+   10. Estados de aplicação
+
+   Carregando, enviando, analisando, sucesso, erro, baixa confiança,
+   indisponível. Antes cada página desenhava o seu; aqui há um só bloco
+   com um modificador por estado.
+   ----------------------------------------------------------------------- */
+
+.aida-state {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--aida-space-4);
+  padding: var(--aida-space-5) var(--aida-space-6);
+  border: 1px solid var(--_state-line, var(--aida-line-soft));
+  border-left-width: 3px;
+  border-radius: var(--aida-radius-md);
+  background: var(--_state-bg, var(--aida-surface-0));
+  color: var(--aida-text-2);
+}
+
+.aida-state__icon {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 3px;
+  border-radius: 50%;
+  color: var(--_state-fg, var(--aida-neutral));
+}
+
+.aida-state__title {
+  margin: 0 0 2px;
+  font-size: var(--aida-fs-body);
+  font-weight: var(--aida-fw-bold);
+  color: var(--_state-fg, var(--aida-text));
+}
+
+.aida-state__text {
+  margin: 0;
+  font-size: var(--aida-fs-caption);
+  line-height: 1.5;
+  color: var(--aida-text-3);
+}
+
+.aida-state--carregando,
+.aida-state--enviando,
+.aida-state--analisando {
+  --_state-fg: var(--aida-info);
+  --_state-bg: var(--aida-info-bg);
+  --_state-line: rgba(159, 216, 255, 0.3);
+}
+
+.aida-state--sucesso {
+  --_state-fg: var(--aida-success);
+  --_state-bg: var(--aida-success-bg);
+  --_state-line: rgba(143, 216, 183, 0.34);
+}
+
+.aida-state--erro {
+  --_state-fg: var(--aida-danger);
+  --_state-bg: var(--aida-danger-bg);
+  --_state-line: rgba(255, 157, 157, 0.34);
+}
+
+.aida-state--baixa-confianca,
+.aida-state--beta,
+.aida-state--desenvolvimento {
+  --_state-fg: var(--aida-warning);
+  --_state-bg: var(--aida-warning-bg);
+  --_state-line: rgba(255, 213, 138, 0.3);
+}
+
+.aida-state--indisponivel {
+  --_state-fg: var(--aida-neutral);
+  --_state-bg: var(--aida-neutral-bg);
+  --_state-line: rgba(195, 203, 214, 0.24);
+}
+
+/* Ícone dos estados em progresso: anel girando, sem imagem externa. */
+.aida-state--carregando .aida-state__icon,
+.aida-state--enviando .aida-state__icon,
+.aida-state--analisando .aida-state__icon {
+  border: 2px solid rgba(159, 216, 255, 0.24);
+  border-top-color: var(--aida-info);
+  animation: aida-spin 0.8s linear infinite;
+}
+
+.aida-state--sucesso .aida-state__icon,
+.aida-state--erro .aida-state__icon,
+.aida-state--baixa-confianca .aida-state__icon,
+.aida-state--indisponivel .aida-state__icon,
+.aida-state--beta .aida-state__icon,
+.aida-state--desenvolvimento .aida-state__icon {
+  border: 2px solid currentColor;
+  opacity: 0.75;
+}
+
+/* Esqueleto de carregamento, para blocos que preenchem depois. */
+.aida-skeleton {
+  border-radius: var(--aida-radius-sm);
+  background: linear-gradient(
+    90deg,
+    var(--aida-surface-0) 0%,
+    var(--aida-surface-2) 50%,
+    var(--aida-surface-0) 100%
+  );
+  background-size: 200% 100%;
+  animation: aida-shimmer 1.4s var(--aida-ease-inout) infinite;
+}
+
+@keyframes aida-shimmer {
+  from { background-position: 200% 0; }
+  to   { background-position: -200% 0; }
+}
+
+/* -----------------------------------------------------------------------
+   11. Inputs
+   ----------------------------------------------------------------------- */
+
+.aida-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--aida-space-2);
+}
+
+.aida-field__label {
+  font-size: var(--aida-fs-caption);
+  font-weight: var(--aida-fw-semibold);
+  color: var(--aida-text-2);
+}
+
+.aida-input,
+.aida-select,
+.aida-textarea {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px var(--aida-space-4);
+  border: 1px solid var(--aida-line-soft);
+  border-radius: 14px;
+  background: rgba(209, 213, 219, 0.08);
+  color: var(--aida-text);
+  font: inherit;
+  transition:
+    border-color var(--aida-dur-fast) var(--aida-ease-out),
+    background var(--aida-dur-fast) var(--aida-ease-out);
+}
+
+.aida-textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.aida-input::placeholder,
+.aida-textarea::placeholder {
+  color: rgba(209, 213, 219, 0.55);
+}
+
+.aida-input:focus,
+.aida-select:focus,
+.aida-textarea:focus {
+  outline: none;
+  border-color: var(--aida-mint-line);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.aida-input[aria-invalid="true"] {
+  border-color: rgba(255, 157, 157, 0.5);
+}
+
+.aida-field__hint {
+  font-size: var(--aida-fs-micro);
+  color: var(--aida-text-3);
+}
+
+/* -----------------------------------------------------------------------
+   12. Utilitários e acessibilidade
+   ----------------------------------------------------------------------- */
+
+.aida-divider {
+  height: 1px;
+  border: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--aida-mint-soft) 22%,
+    var(--aida-mint-soft) 78%,
+    transparent
+  );
+}
+
+.aida-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.aida-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--aida-space-4);
+}
+
+.aida-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--aida-space-3);
+}
+
+/* Preferência do sistema por menos movimento: as animações decorativas
+   deste arquivo param. Os componentes continuam legíveis porque nenhum
+   deles depende de movimento para comunicar o estado. */
+@media (prefers-reduced-motion: reduce) {
+  .aida-status--disponivel::before,
+  .aida-skeleton,
+  .aida-btn.is-busy::after,
+  .aida-state--carregando .aida-state__icon,
+  .aida-state--enviando .aida-state__icon,
+  .aida-state--analisando .aida-state__icon {
+    animation: none;
+  }
+
+  .aida-btn,
+  .aida-card {
+    transition-duration: 0.01ms;
+  }
+}
+
+@media (max-width: 640px) {
+  :root {
+    --aida-container: calc(100% - 24px);
+    --aida-container-narrow: calc(100% - 24px);
+  }
+
+  .aida-section { padding-block: var(--aida-space-16); }
+  .aida-card { padding: var(--aida-space-6); }
+  .aida-btn { width: 100%; }
+  .aida-btn--quiet,
+  .aida-btn--sm { width: auto; }
+}

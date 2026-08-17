@@ -1591,3 +1591,45 @@ body.tutorial-active .tutorial-fab {
   gap: 10px;
   margin-top: 12px;
 }
+
+/* --------------------------------------------------------------------------
+   Passagem para o AIDA Forensics
+
+   Aparece ao pé do resultado, depois da leitura rápida. A investigação
+   detalhada é uma página própria: embutir o Forensics aqui transformaria a
+   tela de resposta em painel técnico, que é justamente o que ela não deve ser.
+   -------------------------------------------------------------------------- */
+
+.resultado-forense {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-top: 24px;
+  padding: 22px 24px;
+  border: 1px solid rgba(127, 208, 216, 0.22);
+  border-radius: var(--radius-lg, 24px);
+  background:
+    linear-gradient(180deg, rgba(127, 208, 216, 0.09), rgba(127, 208, 216, 0.03)),
+    linear-gradient(135deg, rgba(12, 49, 46, 0.2), rgba(16, 64, 59, 0.1));
+}
+
+.resultado-forense__copy {
+  flex: 1 1 320px;
+}
+
+.resultado-forense .result-copy {
+  margin: 0;
+  max-width: 62ch;
+}
+
+@media (max-width: 640px) {
+  .resultado-forense {
+    padding: 18px;
+  }
+
+  .resultado-forense .aida-button {
+    width: 100%;
+  }
+}

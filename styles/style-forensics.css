@@ -1,0 +1,525 @@
+/* ==========================================================================
+   AIDA Forensics — investigação detalhada de uma análise já feita
+   ==========================================================================
+
+   A tela é um dossiê: o veredito aparece uma vez, compacto, no topo, e o
+   resto da página é material de inspeção. O AIDA Image continua sendo o lugar
+   da resposta rápida.
+
+   Depende de `style-shared-theme.css` e `aida-design-system.css`.
+   ========================================================================== */
+
+.forensics-main {
+  padding-bottom: var(--aida-space-20);
+}
+
+/* --------------------------------------------------------------------------
+   Faixa de identificação da análise
+   -------------------------------------------------------------------------- */
+
+.fo-topo {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: var(--aida-space-6);
+  padding: var(--aida-space-10) 0 var(--aida-space-8);
+}
+
+.fo-topo__titulo {
+  margin: 0 0 var(--aida-space-2);
+  font-size: clamp(2.2rem, 4vw, 3.4rem);
+  line-height: var(--aida-lh-tight);
+  letter-spacing: var(--aida-ls-title);
+}
+
+.fo-topo__titulo span {
+  color: var(--aida-forensics);
+}
+
+.fo-identificacao {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--aida-space-2) var(--aida-space-5);
+  margin-top: var(--aida-space-4);
+  font-family: var(--aida-font-mono);
+  font-size: var(--aida-fs-micro);
+  letter-spacing: 0.08em;
+  color: var(--aida-text-3);
+}
+
+.fo-identificacao strong {
+  color: var(--aida-text-2);
+  font-weight: var(--aida-fw-semibold);
+}
+
+/* --------------------------------------------------------------------------
+   Estados da página (sem id, carregando, erro)
+   -------------------------------------------------------------------------- */
+
+.fo-estado {
+  margin: var(--aida-space-8) 0;
+}
+
+.fo-esqueleto {
+  display: grid;
+  gap: var(--aida-space-4);
+  margin-top: var(--aida-space-8);
+}
+
+.fo-esqueleto span {
+  display: block;
+  height: 92px;
+  border-radius: var(--aida-radius-md);
+}
+
+/* --------------------------------------------------------------------------
+   Grade do dossiê
+   -------------------------------------------------------------------------- */
+
+.fo-grade {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--aida-space-5);
+}
+
+.fo-bloco {
+  grid-column: span 12;
+  padding: var(--aida-space-6);
+  border: 1px solid var(--aida-line-soft);
+  border-radius: var(--aida-radius-lg);
+  background: var(--aida-glass-card);
+  backdrop-filter: blur(12px);
+  box-shadow: var(--aida-shadow-md);
+}
+
+.fo-bloco--meio { grid-column: span 6; }
+.fo-bloco--terco { grid-column: span 4; }
+
+.fo-bloco__cabecalho {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--aida-space-4);
+  margin-bottom: var(--aida-space-5);
+}
+
+.fo-bloco__titulo {
+  margin: 0;
+  font-size: 1.28rem;
+  letter-spacing: -0.01em;
+}
+
+.fo-bloco__nota {
+  margin: 0;
+  font-size: var(--aida-fs-caption);
+  line-height: 1.55;
+  color: var(--aida-text-3);
+}
+
+/* --------------------------------------------------------------------------
+   Leitura (veredito compacto)
+   -------------------------------------------------------------------------- */
+
+.fo-veredito {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--aida-space-4);
+  margin-bottom: var(--aida-space-5);
+}
+
+.fo-veredito__rotulo {
+  padding: 8px 18px;
+  border: 1px solid var(--_fo-line, var(--aida-line-soft));
+  border-radius: var(--aida-radius-pill);
+  background: var(--_fo-bg, var(--aida-neutral-bg));
+  color: var(--_fo-fg, var(--aida-neutral));
+  font-weight: var(--aida-fw-bold);
+  letter-spacing: 0.06em;
+}
+
+.fo-veredito__rotulo[data-estado="REAL"] {
+  --_fo-fg: var(--aida-success);
+  --_fo-bg: var(--aida-success-bg);
+  --_fo-line: rgba(143, 216, 183, 0.34);
+}
+
+.fo-veredito__rotulo[data-estado="IA/MANIPULADA"] {
+  --_fo-fg: var(--aida-danger);
+  --_fo-bg: var(--aida-danger-bg);
+  --_fo-line: rgba(255, 157, 157, 0.34);
+}
+
+.fo-veredito__rotulo[data-estado="INCONCLUSIVO"],
+.fo-veredito__rotulo[data-estado="FORA_DE_DOMINIO"] {
+  --_fo-fg: var(--aida-warning);
+  --_fo-bg: var(--aida-warning-bg);
+  --_fo-line: rgba(255, 213, 138, 0.3);
+}
+
+/* Duas escalas lado a lado. A de exibição é a que o usuário viu no AIDA
+   Image; a calibrada é a que as métricas usam. Mostrar só uma delas aqui
+   esconderia justamente a distinção que o dossiê existe para explicar. */
+.fo-escalas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: var(--aida-space-4);
+  margin-bottom: var(--aida-space-5);
+}
+
+.fo-escala {
+  padding: var(--aida-space-4);
+  border: 1px solid var(--aida-line-soft);
+  border-radius: var(--aida-radius-sm);
+  background: var(--aida-surface-0);
+}
+
+.fo-escala__rotulo {
+  display: block;
+  margin-bottom: 6px;
+  font-size: var(--aida-fs-micro);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--aida-text-3);
+}
+
+.fo-escala__valor {
+  font-size: 1.6rem;
+  font-weight: var(--aida-fw-bold);
+  line-height: 1;
+}
+
+.fo-escala__detalhe {
+  display: block;
+  margin-top: 6px;
+  font-size: var(--aida-fs-micro);
+  color: var(--aida-text-3);
+}
+
+/* Régua com o limiar e a banda de abstenção desenhados na posição real. */
+.fo-regua {
+  position: relative;
+  height: 34px;
+  margin: var(--aida-space-5) 0 var(--aida-space-2);
+  border-radius: var(--aida-radius-sm);
+  background: linear-gradient(90deg, rgba(143, 216, 183, 0.16), rgba(255, 157, 157, 0.16));
+  border: 1px solid var(--aida-line-soft);
+  overflow: hidden;
+}
+
+.fo-regua__banda {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(255, 213, 138, 0.22) 0 6px,
+    transparent 6px 12px
+  );
+  border-left: 1px solid rgba(255, 213, 138, 0.4);
+  border-right: 1px solid rgba(255, 213, 138, 0.4);
+}
+
+.fo-regua__limiar {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--aida-text);
+  opacity: 0.7;
+}
+
+.fo-regua__marcador {
+  position: absolute;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
+  border: 2px solid var(--aida-green-900);
+  border-radius: 50%;
+  background: var(--aida-forensics);
+}
+
+.fo-regua__legenda {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--aida-font-mono);
+  font-size: var(--aida-fs-micro);
+  color: var(--aida-text-3);
+}
+
+.fo-lista {
+  margin: var(--aida-space-4) 0 0;
+  padding-left: 1.1em;
+  font-size: var(--aida-fs-caption);
+  line-height: 1.6;
+  color: var(--aida-text-3);
+}
+
+.fo-lista li + li {
+  margin-top: 4px;
+}
+
+/* --------------------------------------------------------------------------
+   Métodos executados
+   -------------------------------------------------------------------------- */
+
+.fo-metodo + .fo-metodo {
+  margin-top: var(--aida-space-5);
+  padding-top: var(--aida-space-5);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.fo-metodo__topo {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--aida-space-3);
+  margin-bottom: 6px;
+}
+
+.fo-metodo__nome {
+  margin: 0;
+  font-size: 1.06rem;
+  font-weight: var(--aida-fw-semibold);
+}
+
+.fo-metodo__score {
+  font-family: var(--aida-font-mono);
+  font-size: 1rem;
+  color: var(--aida-forensics);
+}
+
+.fo-barra {
+  height: 6px;
+  margin: 8px 0;
+  border-radius: 999px;
+  background: rgba(209, 213, 219, 0.12);
+  overflow: hidden;
+}
+
+.fo-barra__preenchimento {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(127, 208, 216, 0.5), var(--aida-forensics));
+  transition: width var(--aida-dur-slow) var(--aida-ease-out);
+}
+
+.fo-metodo__descricao {
+  margin: 0;
+  font-size: var(--aida-fs-caption);
+  line-height: 1.55;
+  color: var(--aida-text-3);
+}
+
+/* --------------------------------------------------------------------------
+   Evidências visuais
+   -------------------------------------------------------------------------- */
+
+.fo-mapas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--aida-space-5);
+}
+
+.fo-mapa {
+  margin: 0;
+  border: 1px solid var(--aida-line-soft);
+  border-radius: var(--aida-radius-md);
+  background: var(--aida-surface-0);
+  overflow: hidden;
+}
+
+.fo-mapa__palco {
+  position: relative;
+  aspect-ratio: 1;
+  background: var(--aida-green-900);
+}
+
+.fo-mapa__palco img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Comparação com o original. Só existe quando o navegador ainda tem a imagem
+   escolhida: o servidor não guarda o arquivo enviado. */
+.fo-mapa__original {
+  clip-path: inset(0 calc(100% - var(--fo-split, 50%)) 0 0);
+}
+
+.fo-mapa__divisor {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  transform: translateX(var(--fo-split, 50%));
+  pointer-events: none;
+}
+
+.fo-mapa__divisor::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -1px;
+  width: 2px;
+  background: rgba(244, 248, 255, 0.85);
+}
+
+.fo-mapa__controle {
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  bottom: 8px;
+  width: 88%;
+  margin: 0;
+  accent-color: var(--aida-forensics);
+  cursor: ew-resize;
+}
+
+.fo-mapa figcaption {
+  padding: var(--aida-space-4);
+}
+
+.fo-mapa__nome {
+  display: block;
+  margin-bottom: 4px;
+  font-weight: var(--aida-fw-bold);
+}
+
+.fo-mapa__legenda {
+  margin: 0;
+  font-size: var(--aida-fs-micro);
+  line-height: 1.55;
+  color: var(--aida-text-3);
+}
+
+.fo-mapa__tag {
+  display: inline-block;
+  margin-bottom: 8px;
+  padding: 2px 8px;
+  border: 1px solid var(--aida-line-soft);
+  border-radius: var(--aida-radius-pill);
+  font-family: var(--aida-font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--aida-text-3);
+}
+
+/* --------------------------------------------------------------------------
+   Tabelas de dados (arquivo, proveniência, qualidade)
+   -------------------------------------------------------------------------- */
+
+.fo-dados {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--aida-space-4);
+  margin: 0;
+}
+
+.fo-dado {
+  padding: var(--aida-space-3) var(--aida-space-4);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--aida-radius-sm);
+  background: var(--aida-surface-0);
+}
+
+.fo-dado dt {
+  margin-bottom: 4px;
+  font-size: var(--aida-fs-micro);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--aida-text-3);
+}
+
+.fo-dado dd {
+  margin: 0;
+  font-family: var(--aida-font-mono);
+  font-size: 0.94rem;
+  word-break: break-word;
+  color: var(--aida-text);
+}
+
+.fo-selo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border: 1px solid var(--aida-line-soft);
+  border-radius: var(--aida-radius-pill);
+  background: var(--aida-surface-0);
+  font-size: var(--aida-fs-caption);
+  font-weight: var(--aida-fw-semibold);
+}
+
+.fo-evidencia-prov {
+  margin: var(--aida-space-4) 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--aida-space-2);
+}
+
+.fo-evidencia-prov li {
+  padding: var(--aida-space-3) var(--aida-space-4);
+  border-left: 2px solid rgba(127, 208, 216, 0.4);
+  border-radius: 0 var(--aida-radius-sm) var(--aida-radius-sm) 0;
+  background: var(--aida-surface-0);
+  font-size: var(--aida-fs-caption);
+  line-height: 1.55;
+  color: var(--aida-text-3);
+}
+
+.fo-evidencia-prov strong {
+  display: block;
+  color: var(--aida-text-2);
+  font-family: var(--aida-font-mono);
+  font-size: var(--aida-fs-micro);
+  letter-spacing: 0.08em;
+}
+
+/* --------------------------------------------------------------------------
+   Rodapé
+   -------------------------------------------------------------------------- */
+
+.fo-ressalva {
+  margin-top: var(--aida-space-8);
+}
+
+.fo-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--aida-space-3);
+  margin-top: var(--aida-space-8);
+}
+
+@media (max-width: 1000px) {
+  .fo-bloco--meio,
+  .fo-bloco--terco {
+    grid-column: span 12;
+  }
+}
+
+@media (max-width: 640px) {
+  .fo-topo {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+    padding-top: var(--aida-space-8);
+  }
+
+  .fo-bloco {
+    padding: var(--aida-space-5);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fo-barra__preenchimento {
+    transition: none;
+  }
+}

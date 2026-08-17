@@ -10,7 +10,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Afacad:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="../styles/style-apresentacao.css">
+    <!-- A versão no fim do caminho é o que invalida o cache do navegador. Sem
+         ela, quem já visitou continuaria com a folha antiga — no caso desta
+         mudança, com as regras de parallax que deixaram de existir. -->
+    <link rel="stylesheet" href="../styles/style-apresentacao.css?v=20260816-sem-parallax">
 </head>
 
 <body>
@@ -23,6 +26,7 @@
             <nav class="navbar" id="menu-principal" aria-label="Navegacao principal">
                 <a href="#sobre" class="ancoranav">Sobre</a>
                 <a href="#funcionamento" class="ancoranav">Funcionamento</a>
+                <a href="./index-solucoes.html" class="ancoranav">Soluções</a>
                 <a href="#tecnologias" class="ancoranav">Tecnologias</a>
                 <a href="#equipe" class="ancoranav">Equipe</a>
                 <a href="#ferramentaaida" class="ancoranav mobile-only-link">Experimentar</a>
@@ -62,9 +66,9 @@
     <div class="menu-overlay"></div>
 
     <main id="topo">
-        <section class="hero parallax-section">
+        <section class="hero secao-recortada">
             <div class="hero-inner">
-                <div class="hero-copy parallax-item" data-parallax-speed="0.16">
+                <div class="hero-copy">
                     <span class="hero-badge">Analise forense de imagens</span>
                     <h1 class="hero-title">Seja bem-vindo a verdade digital.</h1>
                     <p class="hero-text">
@@ -77,16 +81,16 @@
                     </div>
                 </div>
 
-                <div class="hero-visual parallax-item" data-parallax-speed="0.24">
+                <div class="hero-visual">
                     <img class="imghero" src="../assets/images/Group 10.png"
                         alt="Painel ilustrativo da plataforma AIDA.ON">
                 </div>
             </div>
         </section>
 
-        <section class="sobre parallax-section" id="sobre">
+        <section class="sobre secao-recortada" id="sobre">
             <div class="content">
-                <div class="sobre-visual parallax-item" data-parallax-speed="0.18">
+                <div class="sobre-visual">
                     <img src="../assets/images/Group 11.png" alt="Ilustracao de analise de imagens">
                 </div>
 
@@ -180,7 +184,7 @@
             </div>
         </section>
 
-        <section class="icons-section parallax-section" id="tecnologias">
+        <section class="icons-section secao-recortada" id="tecnologias">
             <div class="icons-inner">
                 <div class="section-heading center">
                     <span class="section-label">Tecnologias</span>
@@ -188,7 +192,7 @@
                 </div>
 
                 <div class="tech-layout">
-                    <div class="cards parallax-item" data-parallax-speed="0.12">
+                    <div class="cards">
                         <article class="card-content">
                             <img src="../assets/images/code-solid-full.svg" alt="" class="imgtech">
                             <h3>Tecnologias usadas</h3>
@@ -204,7 +208,7 @@
                         </article>
                     </div>
 
-                    <div class="icons-grid parallax-item" data-parallax-speed="0.2">
+                    <div class="icons-grid">
                         <div class="icon-wrapper"><img src="../assets/images/html5-brands-solid-full.svg" alt="HTML">
                         </div>
                         <div class="icon-wrapper"><img src="../assets/images/css-brands-solid-full.svg" alt="CSS"></div>
@@ -262,7 +266,7 @@
             </div>
         </section>
 
-        <section class="ferramenta parallax-section" id="ferramentaaida">
+        <section class="ferramenta secao-recortada" id="ferramentaaida">
             <div class="ferramenta-container">
                 <div class="new-feature-badge">
                     <span class="badge-tag">Novidade</span>
@@ -270,7 +274,7 @@
                     <i class="fa-solid fa-arrow-right"></i>
                 </div>
 
-                <div class="contentferr parallax-item" data-parallax-speed="0.14">
+                <div class="contentferr">
                     <h2 class="titleferr">Experimente o AIDA agora.</h2>
                     <p class="subtitleferr">
                         Faca o upload de qualquer imagem e descubra em segundos se ha indicios de geração por
@@ -281,6 +285,14 @@
                 <div class="btn-group-ferr">
                     <a href="#sobre" class="btn-watch">Saiba mais</a>
                     <a href="./index-apoiadores.html" class="btn-watch">Ver apoiadores</a>
+                    <!-- Porta de entrada das soluções. Os quatro cards vivem em
+                         página própria (index-solucoes.html): a Home apresenta o
+                         projeto, e o ecossistema é o passo seguinte de quem já
+                         se interessou. -->
+                    <a href="./index-solucoes.html" class="btn-watch">
+                        <i class="fa-solid fa-layer-group"></i>
+                        Conhecer as soluções
+                    </a>
                     <a href="./index-seleciona.html" class="btn-main">
                         <i class="fa-solid fa-play"></i>
                         Começar agora
@@ -333,7 +345,10 @@
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/SplitText.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <script src="../scripts/script-cookie-consent.js"></script>
-    <script src="../scripts/script-apresentacao.js"></script>
+    <!-- Mesma versão da folha de estilo: sem ela, quem já visitou continuaria
+         rodando o script antigo, com o parallax e a animação que apagava os
+         logos de tecnologia. -->
+    <script src="../scripts/script-apresentacao.js?v=20260816-sem-parallax"></script>
 </body>
 
 </html>

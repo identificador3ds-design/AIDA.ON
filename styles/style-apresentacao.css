@@ -310,14 +310,12 @@ section {
   visibility: visible;
 }
 
-.parallax-section {
+/* Herdeira de `.parallax-section`. O parallax saiu; o recorte ficou, porque é
+   ele que impede os fundos em `background-attachment` de vazarem para a seção
+   vizinha. */
+.secao-recortada {
   position: relative;
   overflow: clip;
-}
-
-.parallax-item {
-  will-change: transform;
-  transition: transform 0.08s linear;
 }
 
 .hero {
@@ -1223,10 +1221,6 @@ section {
   .hero-actions,
   .btn-group-ferr {
     width: 100%;
-  }
-
-  .parallax-item {
-    transform: none !important;
   }
 }
 

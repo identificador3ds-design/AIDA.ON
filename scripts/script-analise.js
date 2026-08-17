@@ -380,6 +380,7 @@ function exibirResultado(dados, baseApi) {
   renderizarDetalhes(dados, estado);
   renderizarEvidencias(dados, baseApi);
   renderizarProveniencia(dados);
+  prepararPassagemForense(dados, baseApi);
 
   if (areaResultado) {
     areaResultado.style.display = "block";
@@ -390,6 +391,46 @@ function exibirResultado(dados, baseApi) {
   if (!isLogged) {
     localStorage.setItem("AIDA_AnaliseUnlogged", "true");
   }
+}
+
+// Chave lida pelo AIDA Forensics (scripts/script-forensics.js). Guarda apenas o
+// necessario para reabrir a analise: o id, a base que a atendeu e o nome do
+// arquivo. A imagem NAO vai junto — ela ja esta no armazenamento do navegador,
+// e duplica-la aqui estouraria a cota do sessionStorage em imagens grandes.
+const CHAVE_REPASSE_FORENSE = "AIDA_Forense";
+
+function prepararPassagemForense(dados, baseApi) {
+  const bloco = document.getElementById("blocoForense");
+  const botao = document.getElementById("btnVerForense");
+  if (!bloco || !botao) return;
+
+  const idAnalise = String(dados.id_analise || "").trim();
+  if (!idAnalise) {
+    // Sem id nao ha o que reabrir: a API antiga nao devolvia o campo, e um
+    // botao que sempre leva a "analise nao encontrada" e pior que nenhum botao.
+    bloco.hidden = true;
+    return;
+  }
+
+  const repasse = {
+    id_analise: idAnalise,
+    base_api: baseApi || "",
+    nome_imagem: dados.nome_imagem_original || dados.nome_imagem || "",
+    quando: Date.now(),
+  };
+
+  try {
+    sessionStorage.setItem(CHAVE_REPASSE_FORENSE, JSON.stringify(repasse));
+  } catch (erro) {
+    console.warn("Nao foi possivel registrar a passagem para o Forensics:", erro);
+  }
+
+  // O id tambem vai na URL: assim o link continua valido se o usuario abrir em
+  // outra aba, onde o sessionStorage nao existe.
+  const parametros = new URLSearchParams({ id: idAnalise });
+  if (baseApi) parametros.set("base", baseApi);
+  botao.href = `./index-forensics.html?${parametros.toString()}`;
+  bloco.hidden = false;
 }
 
 function renderizarDetalhes(dados, estado) {
@@ -745,7 +786,7 @@ async function executarAnalise(event) {
     }
 
     if (salvarNoHistorico) {
-      salvarHistoricoSupabase(imagemAtual, dados)
+      salvarHistoricoSupabase(imagemAtual, dados, base)
         .then(() => {
           registrarStatus("Histórico salvo com sucesso na nuvem.", "sucesso");
         })
@@ -795,7 +836,7 @@ async function enviarParaApi(formData, signal) {
   );
 }
 
-async function salvarHistoricoSupabase(arquivo, dadosAnalisados) {
+async function salvarHistoricoSupabase(arquivo, dadosAnalisados, baseApi) {
   if (typeof _supabase === 'undefined') return;
 
   const { data: { user }, error: authError } = await _supabase.auth.getUser();
@@ -873,17 +914,36 @@ async function salvarHistoricoSupabase(arquivo, dadosAnalisados) {
       }
     : {};
 
+  // Reabertura no AIDA Forensics.
+  //
+  // Dois campos curtos, e só. O que o Forensics precisa (mapas, scores,
+  // metadados, proveniência) já está no cache do servidor, indexado por
+  // `analysis_id`; duplicar esse conteúdo no Supabase multiplicaria o
+  // armazenamento por análise sem ganho nenhum. `api_base` existe porque a
+  // mesma conta pode ter análises feitas no backend local e no publicado, e o
+  // id só vale na base que o gerou.
+  //
+  // O cache do servidor expira (sete dias, por padrão): análises antigas
+  // deixarão de abrir, e a tela do Forensics já trata esse caso pedindo uma
+  // nova análise. Persistir o dossiê inteiro para evitar isso é uma decisão de
+  // armazenamento que ainda não se justifica.
+  const camposForense = {
+    analysis_id: dadosAnalisados.id_analise || null,
+    api_base: baseApi || null,
+  };
+
   // Enquanto a migração de colunas não roda (docs/migracao-proveniencia.sql), o
   // insert completo falha com PGRST204. Cair para o payload antigo mantém o
   // histórico funcionando em vez de derrubá-lo em produção.
   let { error: insertError } = await _supabase
     .from("historico_analises")
-    .insert([{ ...payload, ...camposProveniencia }]);
+    .insert([{ ...payload, ...camposProveniencia, ...camposForense }]);
 
   if (insertError && /column|schema cache|PGRST204/i.test(insertError.message || "")) {
     console.warn(
-      "[AIDA.ON] Colunas de proveniência ausentes no histórico; gravando sem elas. " +
-      "Rode docs/migracao-proveniencia.sql no Supabase.",
+      "[AIDA.ON] Colunas de proveniência ou de reabertura forense ausentes no " +
+      "histórico; gravando sem elas. Rode docs/migracao-proveniencia.sql e " +
+      "docs/migracao-forensics.sql no Supabase.",
       insertError.message
     );
     ({ error: insertError } = await _supabase

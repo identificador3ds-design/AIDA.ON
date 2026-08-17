@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#10403b">
+    <meta name="description"
+        content="Solucoes AIDA: Image, Forensics, Video e API. Um ecossistema de analise de conteudo digital.">
+
+    <link rel="manifest" href="../manifest.webmanifest">
+    <link rel="apple-touch-icon" href="../assets/images/pwa-icon-180.png">
+    <link rel="icon" type="image/png" href="../assets/images/AIDABranco.ico">
+
+    <title>Soluções AIDA</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Afacad:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../styles/style-shared-theme.css">
+    <link rel="stylesheet" href="../styles/aida-design-system.css">
+    <link rel="stylesheet" href="../styles/aida-solucoes.css?v=20260816-demos">
+</head>
+
+<body class="aida-shell">
+    <header class="page-header">
+        <a href="./index-apresentacao.html" aria-label="Pagina inicial do AIDA">
+            <img src="../assets/images/LogoBranca.png" alt="Logo AIDA.ON" class="brand-logo">
+        </a>
+
+        <nav class="aida-row" aria-label="Navegacao da plataforma">
+            <a href="./index-apresentacao.html" class="top-link">Voltar à página inicial</a>
+            <a href="./index-seleciona.html" class="top-link">Analisar imagem</a>
+        </nav>
+    </header>
+
+    <main class="page-frame">
+        <!-- =============================================================
+             Soluções AIDA
+
+             Cada palco (`.sol-card__stage`) é uma microdemonstração do
+             produto, não uma ilustração inspirada nele. Image e Forensics
+             usam a MESMA fotografia real, e os mapas do Forensics são saídas
+             de verdade das funções do pipeline — ver
+             assets/demos/PROCEDENCIA.md.
+
+             Nenhum card exibe resultado de análise: não há porcentagem de IA
+             nem valor fabricado em lugar nenhum.
+
+             Estilos em styles/aida-solucoes.css, movimento em
+             scripts/aida-solucoes.js.
+             ============================================================= -->
+        <section class="solucoes" id="solucoes" data-solucoes>
+            <div class="solucoes__head">
+                <div>
+                    <span class="aida-eyebrow">Soluções AIDA</span>
+                    <h1 class="aida-title-2">Quatro frentes, uma mesma análise.</h1>
+                </div>
+
+            </div>
+
+            <div class="sol-grid">
+                <!-- ---------- AIDA Image ----------
+                     Fotografia real do acervo do projeto sob varredura. Os
+                     pontos marcam onde a leitura está amostrando; o rodapé
+                     mostra o estado do processo e a família de medida em curso.
+                     Nenhum número aparece — o card demonstra que HÁ análise,
+                     não qual foi o veredito. -->
+                <article class="sol-card sol-card--image" data-sol="image">
+                    <div class="sol-card__stage">
+                        <span class="sol-card__note">demonstração</span>
+
+                        <div class="sol-fx fx-img">
+                            <div class="sol-fx__quadro">
+                                <img class="fx-img__foto" src="../assets/demos/image/demo.webp"
+                                     width="960" height="540" loading="lazy" decoding="async"
+                                     alt="Fotografia de demonstração percorrida por uma faixa de análise">
+
+                                <span class="sol-fx__grade" aria-hidden="true"></span>
+                                <span class="fx-img__band" aria-hidden="true"></span>
+
+                                <span class="fx-img__canto fx-img__canto--tl" aria-hidden="true"></span>
+                                <span class="fx-img__canto fx-img__canto--tr" aria-hidden="true"></span>
+                                <span class="fx-img__canto fx-img__canto--bl" aria-hidden="true"></span>
+                                <span class="fx-img__canto fx-img__canto--br" aria-hidden="true"></span>
+
+                                <span class="fx-img__ponto fx-img__ponto--a" aria-hidden="true"></span>
+                                <span class="fx-img__ponto fx-img__ponto--b" aria-hidden="true"></span>
+                                <span class="fx-img__ponto fx-img__ponto--c" aria-hidden="true"></span>
+                                <span class="fx-img__ponto fx-img__ponto--d" aria-hidden="true"></span>
+                                <span class="fx-img__ponto fx-img__ponto--e" aria-hidden="true"></span>
+                                <span class="fx-img__ponto fx-img__ponto--f" aria-hidden="true"></span>
+                            </div>
+
+                            <div class="sol-fx__barra" aria-hidden="true">
+                                <span class="fx-img__estado">analisando</span>
+                                <span class="sol-fx__marca" data-familia>espectro</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sol-card__body">
+                        <div class="sol-card__head">
+                            <h2 class="sol-card__title">AIDA <span>Image</span></h2>
+                            <span class="aida-status aida-status--disponivel">Disponível</span>
+                        </div>
+                        <p class="sol-card__text">
+                            Envie uma imagem e receba uma leitura rápida e objetiva sobre indícios de
+                            geração ou manipulação por inteligência artificial.
+                        </p>
+                        <a href="./index-seleciona.html" class="aida-btn aida-btn--ghost aida-btn--sm sol-card__cta">
+                            Analisar uma imagem
+                            <span class="aida-btn__arrow" aria-hidden="true">&rarr;</span>
+                        </a>
+                    </div>
+                </article>
+
+                <!-- ---------- AIDA Forensics ----------
+                     A MESMA fotografia do card acima, agora contra as saídas
+                     forenses reais do AIDA: FFT, mapa de gradiente e ruído
+                     residual, produzidos pelas funções do pipeline. A
+                     continuidade da foto é intencional: o Image dá o resultado,
+                     o Forensics mostra em cima de quê. -->
+                <article class="sol-card sol-card--forensics" data-sol="forensics">
+                    <div class="sol-card__stage">
+                        <span class="sol-card__note">saída real</span>
+
+                        <div class="sol-fx fx-for">
+                            <div class="sol-fx__quadro">
+                                <img class="fx-for__original" src="../assets/demos/image/demo.webp"
+                                     width="960" height="540" loading="lazy" decoding="async"
+                                     alt="A mesma fotografia, no lado original da comparação">
+
+                                <div class="fx-for__reveal" aria-hidden="true">
+                                    <img class="fx-for__layer" data-metodo="FFT"
+                                         src="../assets/demos/forensics/demo_fft.webp"
+                                         width="960" height="540" loading="lazy" decoding="async" alt="">
+                                    <img class="fx-for__layer" data-metodo="Gradiente"
+                                         src="../assets/demos/forensics/demo_gradient.webp"
+                                         width="960" height="540" loading="lazy" decoding="async" alt="">
+                                    <img class="fx-for__layer" data-metodo="Ruído"
+                                         src="../assets/demos/forensics/demo_noise.webp"
+                                         width="960" height="540" loading="lazy" decoding="async" alt="">
+                                </div>
+
+                                <span class="sol-fx__grade" aria-hidden="true"></span>
+
+                                <span class="fx-for__divider" aria-hidden="true">
+                                    <span class="fx-for__handle"></span>
+                                </span>
+                            </div>
+
+                            <div class="sol-fx__barra" aria-hidden="true">
+                                <span>original</span>
+                                <span class="sol-fx__marca" data-metodo-atual>FFT</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sol-card__body">
+                        <div class="sol-card__head">
+                            <h2 class="sol-card__title">AIDA <span>Forensics</span></h2>
+                            <span class="aida-status aida-status--beta">Beta</span>
+                        </div>
+                        <p class="sol-card__text">
+                            Investigue os indícios por trás da análise: espectro, gradiente, ruído residual,
+                            metadados e proveniência da mesma imagem, lado a lado.
+                        </p>
+                        <a href="./index-forensics.html" class="aida-btn aida-btn--ghost aida-btn--sm sol-card__cta">
+                            Abrir o Forensics
+                            <span class="aida-btn__arrow" aria-hidden="true">&rarr;</span>
+                        </a>
+                    </div>
+                </article>
+
+                <!-- ---------- AIDA Video ----------
+                     Frames reais numa linha do tempo. Não é um player: não há
+                     controle de reprodução, e o selo "Em desenvolvimento"
+                     permanece. Os frames vêm de um travelling sobre uma
+                     fotografia panorâmica real — ver PROCEDENCIA.md. -->
+                <article class="sol-card sol-card--video" data-sol="video">
+                    <div class="sol-card__stage">
+                        <span class="sol-card__note">conceito</span>
+
+                        <div class="sol-fx fx-vid">
+                            <div class="fx-vid__strip" aria-hidden="true">
+                                <figure class="fx-vid__frame">
+                                    <img src="../assets/demos/video/frame_01.webp" width="320" height="240"
+                                         loading="lazy" decoding="async" alt="">
+                                </figure>
+                                <figure class="fx-vid__frame">
+                                    <img src="../assets/demos/video/frame_02.webp" width="320" height="240"
+                                         loading="lazy" decoding="async" alt="">
+                                </figure>
+                                <figure class="fx-vid__frame">
+                                    <img src="../assets/demos/video/frame_03.webp" width="320" height="240"
+                                         loading="lazy" decoding="async" alt="">
+                                </figure>
+                                <figure class="fx-vid__frame">
+                                    <img src="../assets/demos/video/frame_04.webp" width="320" height="240"
+                                         loading="lazy" decoding="async" alt="">
+                                </figure>
+                                <figure class="fx-vid__frame">
+                                    <img src="../assets/demos/video/frame_05.webp" width="320" height="240"
+                                         loading="lazy" decoding="async" alt="">
+                                </figure>
+                                <figure class="fx-vid__frame">
+                                    <img src="../assets/demos/video/frame_06.webp" width="320" height="240"
+                                         loading="lazy" decoding="async" alt="">
+                                </figure>
+
+                                <!-- Depois dos frames de propósito: como último filho, os
+                                     pontos não deslocam a contagem de `nth-child` que a
+                                     regra responsiva usa. -->
+                                <div class="fx-vid__dots">
+                                    <span class="fx-vid__dot"></span>
+                                    <span class="fx-vid__dot"></span>
+                                    <span class="fx-vid__dot"></span>
+                                    <span class="fx-vid__dot"></span>
+                                    <span class="fx-vid__dot"></span>
+                                    <span class="fx-vid__dot"></span>
+                                </div>
+                            </div>
+
+                            <div class="fx-vid__track" aria-hidden="true">
+                                <div class="fx-vid__ticks">
+                                    <span></span><span></span><span></span>
+                                    <span></span><span></span><span></span>
+                                </div>
+                                <div class="fx-vid__playhead"></div>
+                            </div>
+
+                            <div class="sol-fx__barra" aria-hidden="true">
+                                <span>frames</span>
+                                <span class="sol-fx__marca">análise temporal</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sol-card__body">
+                        <div class="sol-card__head">
+                            <h2 class="sol-card__title">AIDA <span>Video</span></h2>
+                            <span class="aida-status aida-status--desenvolvimento">Em desenvolvimento</span>
+                        </div>
+                        <p class="sol-card__text">
+                            Análise de conteúdo ao longo do tempo: extração de frames, leitura individual e
+                            agregação temporal. Ainda não é possível enviar vídeos.
+                        </p>
+                        <a href="./index-video.html" class="aida-btn aida-btn--ghost aida-btn--sm sol-card__cta">
+                            Ver o que está planejado
+                            <span class="aida-btn__arrow" aria-hidden="true">&rarr;</span>
+                        </a>
+                    </div>
+                </article>
+
+                <!-- ---------- AIDA API ----------
+                     Requisição e resposta entre sistemas. O corpo da resposta
+                     mostra a FORMA do contrato — os campos existem, os valores
+                     aparecem elididos. Nenhuma credencial, host real ou número
+                     de resultado. -->
+                <article class="sol-card sol-card--api" data-sol="api">
+                    <div class="sol-card__stage">
+                        <span class="sol-card__note">conceito</span>
+
+                        <div class="sol-fx fx-api">
+                            <div class="fx-api__graph">
+                                <svg viewBox="0 0 200 54" preserveAspectRatio="xMidYMid meet" aria-hidden="true"
+                                     focusable="false">
+                                    <path class="fx-api__rail" d="M50 27 H150" />
+                                    <path class="fx-api__pulse" d="M50 27 H150" />
+
+                                    <g class="fx-api__node">
+                                        <rect x="2" y="15" width="48" height="24" rx="6" />
+                                        <text x="26" y="30">APP</text>
+                                    </g>
+                                    <g class="fx-api__node fx-api__node--core">
+                                        <rect x="74" y="10" width="52" height="34" rx="8" />
+                                        <text x="100" y="30">AIDA</text>
+                                    </g>
+                                    <g class="fx-api__node">
+                                        <rect x="150" y="15" width="48" height="24" rx="6" />
+                                        <text x="174" y="30">JSON</text>
+                                    </g>
+                                </svg>
+                            </div>
+
+                            <div class="fx-api__console" aria-hidden="true">
+                                <div class="fx-api__req">
+                                    <span class="fx-api__verb">POST</span>
+                                    <span class="fx-api__endpoint">/v1/analyze/image</span>
+                                </div>
+                                <div class="fx-api__res">
+                                    <span class="fx-api__status">200 OK</span>
+                                    <span class="fx-api__campo"><span class="fx-api__chave">"result"</span>: <span
+                                            class="fx-api__vazio">…</span></span>
+                                    <span class="fx-api__campo"><span class="fx-api__chave">"ai_probability"</span>:
+                                        <span class="fx-api__vazio">…</span></span>
+                                    <span class="fx-api__campo"><span class="fx-api__chave">"confidence"</span>: <span
+                                            class="fx-api__vazio">…</span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sol-card__body">
+                        <div class="sol-card__head">
+                            <h2 class="sol-card__title">AIDA <span>API</span></h2>
+                            <span class="aida-status aida-status--desenvolvimento">Em desenvolvimento</span>
+                        </div>
+                        <p class="sol-card__text">
+                            Integre a tecnologia AIDA ao seu sistema: envio da imagem, resposta em JSON e as
+                            mesmas evidências da interface. Endpoints públicos ainda não estão abertos.
+                        </p>
+                        <a href="./index-api.html" class="aida-btn aida-btn--ghost aida-btn--sm sol-card__cta">
+                            Ver a proposta da API
+                            <span class="aida-btn__arrow" aria-hidden="true">&rarr;</span>
+                        </a>
+                    </div>
+                </article>
+            </div>
+
+            <div class="solucoes__rodape">
+                <p class="aida-text--sm">
+                    As imagens dos cards são demonstrações. O resultado do AIDA é um indício técnico, nunca
+                    uma prova sobre a origem de um conteúdo.
+                </p>
+                <a href="./index-apresentacao.html" class="aida-btn aida-btn--ghost aida-btn--sm">
+                    Voltar à página inicial
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/gsap.min.js"></script>
+    <script src="../scripts/script-cookie-consent.js"></script>
+    <script src="../scripts/aida-solucoes.js?v=20260816-demos"></script>
+</body>
+
+</html>

@@ -1,7 +1,44 @@
 {
   "cleanUrls": true,
   "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/forense",
+      "destination": "/forensics",
+      "permanent": false
+    },
+    {
+      "source": "/imagem",
+      "destination": "/image",
+      "permanent": false
+    },
+    {
+      "source": "/api/v1/:caminho*",
+      "destination": "/api",
+      "permanent": false
+    }
+  ],
   "rewrites": [
+    {
+      "source": "/solucoes",
+      "destination": "/pages/index-solucoes.html"
+    },
+    {
+      "source": "/image",
+      "destination": "/pages/index-seleciona.html"
+    },
+    {
+      "source": "/forensics",
+      "destination": "/pages/index-forensics.html"
+    },
+    {
+      "source": "/video",
+      "destination": "/pages/index-video.html"
+    },
+    {
+      "source": "/api",
+      "destination": "/pages/index-api.html"
+    },
     {
       "source": "/admin",
       "destination": "/pages/index-admin.html"
@@ -11,12 +48,12 @@
       "destination": "/pages/index-analise.html"
     },
     {
-      "source": "/apoiadores",
-      "destination": "/pages/index-apoiadores.html"
+      "source": "/apresentacao",
+      "destination": "/pages/index-apresentacao.html"
     },
     {
-      "source": "/analise",
-      "destination": "/pages/index-apresentacao.html"
+      "source": "/apoiadores",
+      "destination": "/pages/index-apoiadores.html"
     },
     {
       "source": "/historico",

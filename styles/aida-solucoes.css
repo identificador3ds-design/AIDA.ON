@@ -1,0 +1,826 @@
+/* ==========================================================================
+   AIDA — Seção "Soluções AIDA"
+   ==========================================================================
+
+   Quatro cards do mesmo sistema (mesma proporção, padding, tipografia,
+   hierarquia, tratamento de borda e padrão de CTA). O que muda em cada um é o
+   palco (`.sol-card__stage`), que é uma **microdemonstração do produto** — não
+   uma ilustração inspirada nele.
+
+     Image      fotografia real sendo varrida
+     Forensics  a MESMA fotografia contra as saídas forenses reais do AIDA
+     Video      timeline com frames reais
+     API        requisição e resposta entre sistemas
+
+   Os assets de Image, Forensics e Video vêm de `assets/demos/`, pré-gerados por
+   `aida-space/ferramentas/gerar_assets_demo.py` (ver `PROCEDENCIA.md` na
+   pasta). Os mapas forenses são saídas reais das funções do pipeline; nada
+   disso é calculado no navegador.
+
+   Regras de movimento:
+     * animação contínua = `transform` e `opacity`;
+     * hover é refinamento — a narrativa roda sozinha e faz sentido no toque;
+     * `prefers-reduced-motion` desliga o movimento e deixa cada palco num
+       estado de repouso que ainda comunica a função;
+     * o JS pausa as timelines quando a seção sai da viewport.
+
+   Nenhum card exibe resultado de análise: não há porcentagem de IA nem valor
+   fabricado em lugar nenhum.
+
+   Depende de `aida-design-system.css` (tokens).
+   ========================================================================== */
+
+.solucoes {
+  position: relative;
+  padding-block: var(--aida-space-25);
+}
+
+.solucoes__head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 380px);
+  align-items: end;
+  gap: var(--aida-space-8);
+  margin-bottom: var(--aida-space-12);
+}
+
+.solucoes__head .aida-title-2 {
+  max-width: 16ch;
+}
+
+.sol-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--aida-space-5);
+}
+
+.solucoes__rodape {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--aida-space-4);
+  margin-top: var(--aida-space-12);
+  padding-top: var(--aida-space-8);
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.solucoes__rodape p {
+  margin: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Casca comum
+   -------------------------------------------------------------------------- */
+
+.sol-card {
+  --sol-accent: var(--aida-mint);
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: var(--aida-space-5) var(--aida-space-5) var(--aida-space-6);
+  border: 1px solid var(--aida-line-soft);
+  border-radius: var(--aida-radius-xl);
+  background: var(--aida-glass-card);
+  box-shadow: var(--aida-shadow-md);
+  backdrop-filter: blur(12px);
+  transition:
+    transform var(--aida-dur-base) var(--aida-ease-out),
+    border-color var(--aida-dur-base) var(--aida-ease-out),
+    box-shadow var(--aida-dur-base) var(--aida-ease-out);
+}
+
+.sol-card--image     { --sol-accent: var(--aida-image); }
+.sol-card--forensics { --sol-accent: var(--aida-forensics); }
+.sol-card--video     { --sol-accent: var(--aida-video); }
+.sol-card--api       { --sol-accent: var(--aida-api); }
+
+/* Borda que responde ao cursor. Máscara de anel para colorir só a linha — o
+   interior viraria glow. */
+.sol-card::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: radial-gradient(
+    240px circle at var(--sol-mx, 50%) var(--sol-my, 0%),
+    var(--sol-accent),
+    transparent 62%
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--aida-dur-base) var(--aida-ease-out);
+}
+
+.sol-card__stage {
+  position: relative;
+  aspect-ratio: 16 / 8.4;
+  margin-bottom: var(--aida-space-5);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: var(--aida-radius-md);
+  background: linear-gradient(180deg, rgba(10, 37, 35, 0.72), rgba(12, 49, 46, 0.46));
+  isolation: isolate;
+}
+
+.sol-card__note {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  z-index: 5;
+  padding: 2px 8px;
+  border-radius: var(--aida-radius-pill);
+  background: rgba(8, 30, 29, 0.66);
+  font-family: var(--aida-font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(209, 213, 219, 0.62);
+  pointer-events: none;
+}
+
+.sol-card__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--aida-space-3);
+}
+
+.sol-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--aida-space-3);
+}
+
+.sol-card__title {
+  margin: 0;
+  font-size: 1.62rem;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.sol-card__title span {
+  color: var(--sol-accent);
+}
+
+.sol-card__text {
+  margin: 0;
+  flex: 1;
+  font-size: 1.02rem;
+  line-height: 1.55;
+  color: var(--aida-text-2);
+}
+
+.sol-card__cta {
+  align-self: flex-start;
+  margin-top: var(--aida-space-2);
+}
+
+/* Microinterações comuns: elevação, borda reagindo ao cursor e avanço do CTA.
+   O resto do movimento é a narrativa do palco, específica de cada produto. */
+@media (hover: hover) and (pointer: fine) {
+  .sol-card:hover {
+    transform: translateY(var(--aida-lift));
+    border-color: var(--aida-line-strong);
+    box-shadow: 0 26px 46px rgba(4, 8, 20, 0.32);
+  }
+
+  .sol-card:hover::after {
+    opacity: 0.45;
+  }
+}
+
+.sol-card:focus-within {
+  border-color: var(--aida-line-strong);
+}
+
+.sol-card:focus-within::after {
+  opacity: 0.35;
+}
+
+/* --------------------------------------------------------------------------
+   Camadas genéricas de palco
+   -------------------------------------------------------------------------- */
+
+.sol-fx {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Toda mídia de demonstração preenche o seu quadro. `object-fit: cover` porque
+   o palco é mais panorâmico que a fotografia. */
+.sol-fx img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Legenda técnica do rodapé de cada palco — mesma tipografia nos quatro. */
+.sol-fx__barra {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-family: var(--aida-font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(209, 213, 219, 0.5);
+}
+
+.sol-fx__marca {
+  color: var(--sol-accent);
+}
+
+/* Moldura da mídia: mesma borda e mesmo raio nos quatro palcos. */
+.sol-fx__quadro {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  background: var(--aida-green-900);
+}
+
+/* Reticulado técnico sobre a mídia. Discreto: ele situa a imagem num
+   instrumento, não compete com ela. */
+.sol-fx__grade {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(209, 213, 219, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(209, 213, 219, 0.07) 1px, transparent 1px);
+  background-size: 28px 28px, 28px 28px;
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   1. AIDA IMAGE — a fotografia sendo analisada
+   ========================================================================== */
+
+.fx-img {
+  padding: 6% 6% 5%;
+  gap: 8px;
+}
+
+.fx-img__foto {
+  will-change: transform;
+}
+
+/* Faixa de varredura. Percorre a fotografia de cima a baixo, com a linha de
+   leitura na borda de ataque. */
+.fx-img__band {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 34%;
+  background: linear-gradient(
+    180deg,
+    rgba(143, 216, 183, 0) 0%,
+    rgba(143, 216, 183, 0.08) 58%,
+    rgba(143, 216, 183, 0.2) 96%,
+    rgba(143, 216, 183, 0) 100%
+  );
+  mix-blend-mode: screen;
+  will-change: transform;
+  pointer-events: none;
+}
+
+.fx-img__band::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 4%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--sol-accent) 14%,
+    var(--sol-accent) 86%,
+    transparent
+  );
+  box-shadow: 0 0 8px rgba(143, 216, 183, 0.4);
+}
+
+/* Cantoneiras de enquadramento: o vocabulário visual de "área sob medida". */
+.fx-img__canto {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border: 1px solid var(--sol-accent);
+  opacity: 0.5;
+  pointer-events: none;
+  transition: opacity var(--aida-dur-base) var(--aida-ease-out);
+}
+
+.fx-img__canto--tl { top: 8px; left: 8px; border-right: 0; border-bottom: 0; }
+.fx-img__canto--tr { top: 8px; right: 8px; border-left: 0; border-bottom: 0; }
+.fx-img__canto--bl { bottom: 8px; left: 8px; border-right: 0; border-top: 0; }
+.fx-img__canto--br { bottom: 8px; right: 8px; border-left: 0; border-top: 0; }
+
+/* Pontos de amostragem sobre a fotografia. Posições fixas, escolhidas sobre
+   regiões com conteúdo diferente (pétala, folha, fundo). */
+.fx-img__ponto {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  margin: -3.5px 0 0 -3.5px;
+  border: 1px solid var(--sol-accent);
+  border-radius: 50%;
+  opacity: 0;
+  will-change: transform, opacity;
+  pointer-events: none;
+}
+
+.fx-img__ponto::after {
+  content: "";
+  position: absolute;
+  inset: 1.5px;
+  border-radius: 50%;
+  background: var(--sol-accent);
+}
+
+.fx-img__ponto--a { top: 34%; left: 22%; }
+.fx-img__ponto--b { top: 58%; left: 38%; }
+.fx-img__ponto--c { top: 30%; left: 57%; }
+.fx-img__ponto--d { top: 66%; left: 70%; }
+.fx-img__ponto--e { top: 44%; left: 86%; }
+.fx-img__ponto--f { top: 76%; left: 12%; }
+
+/* Estado da leitura. É um estado de processo — "analisando" —, nunca um
+   veredito nem um número. */
+.fx-img__estado {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.fx-img__estado::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--sol-accent);
+}
+
+/* ==========================================================================
+   2. AIDA FORENSICS — a MESMA fotografia contra as saídas reais do AIDA
+   ==========================================================================
+   O divisor caminha sozinho; no hover ele acompanha o cursor. As três camadas
+   (FFT, gradiente, ruído) se alternam por opacidade.
+   ========================================================================== */
+
+.fx-for {
+  padding: 6% 6% 5%;
+  gap: 8px;
+}
+
+/* `--split` em 0..1, definido em `.fx-for` e herdado. A camada forense é
+   recortada à direita do divisor. */
+.fx-for__reveal {
+  position: absolute;
+  inset: 0;
+  clip-path: inset(0 0 0 calc(var(--split, 0.5) * 100%));
+}
+
+.fx-for__layer {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+}
+
+/* Sem JS, a primeira leitura fica visível. */
+.fx-for__layer:first-of-type {
+  opacity: 1;
+}
+
+/* Trilho de largura total com a linha na borda esquerda: `translateX` em
+   porcentagem se resolve contra a largura do quadro, não contra a do próprio
+   divisor — assim a animação não precisa de medição em JavaScript. */
+.fx-for__divider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  transform: translateX(calc(var(--split, 0.5) * 100%));
+  will-change: transform;
+  pointer-events: none;
+}
+
+.fx-for__divider::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -1px;
+  width: 2px;
+  background: rgba(244, 248, 255, 0.85);
+}
+
+.fx-for__handle {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 1px solid rgba(244, 248, 255, 0.85);
+  border-radius: 50%;
+  background: rgba(8, 30, 29, 0.7);
+  backdrop-filter: blur(2px);
+}
+
+.fx-for__handle::before,
+.fx-for__handle::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 0;
+  height: 0;
+  margin-top: -3px;
+  border-block: 3px solid transparent;
+}
+
+.fx-for__handle::before {
+  left: 4px;
+  border-right: 4px solid rgba(244, 248, 255, 0.85);
+}
+
+.fx-for__handle::after {
+  right: 4px;
+  border-left: 4px solid rgba(244, 248, 255, 0.85);
+}
+
+/* ==========================================================================
+   3. AIDA VIDEO — frames reais numa linha do tempo
+   ========================================================================== */
+
+.fx-vid {
+  justify-content: center;
+  gap: 10px;
+  padding: 8% 6%;
+}
+
+.fx-vid__strip {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.fx-vid__frame {
+  position: relative;
+  margin: 0;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  background: var(--aida-green-900);
+  /* Frame ainda não lido nasce apagado; a leitura é o que acende. O valor fica
+     no CSS (e não só no JS) para o estado de repouso continuar correto quando o
+     movimento está reduzido ou o script não roda. */
+  opacity: 0.42;
+  will-change: transform, opacity;
+}
+
+.fx-vid__frame img {
+  transition: filter var(--aida-dur-base) var(--aida-ease-out);
+  filter: saturate(0.7);
+}
+
+.fx-vid__frame.is-lido img {
+  filter: saturate(1);
+}
+
+/* Pontos de análise: linha própria acima da faixa, porque `overflow: hidden`
+   nos frames os cortaria. */
+.fx-vid__dots {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -9px;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 6px;
+  pointer-events: none;
+}
+
+.fx-vid__dot {
+  justify-self: center;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--sol-accent);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.fx-vid__track {
+  position: relative;
+  height: 2px;
+  border-radius: 999px;
+  background: rgba(209, 213, 219, 0.16);
+}
+
+.fx-vid__ticks {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.fx-vid__ticks span {
+  height: 5px;
+  margin-top: -1px;
+  border-left: 1px solid rgba(209, 213, 219, 0.2);
+}
+
+.fx-vid__playhead {
+  position: absolute;
+  top: -9px;
+  left: 0;
+  width: 100%;
+  height: 20px;
+  will-change: transform;
+  pointer-events: none;
+}
+
+.fx-vid__playhead::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 1px;
+  background: var(--sol-accent);
+}
+
+.fx-vid__playhead::before {
+  content: "";
+  position: absolute;
+  top: -3px;
+  left: -2.5px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--sol-accent);
+  z-index: 1;
+}
+
+/* ==========================================================================
+   4. AIDA API — requisição e resposta entre sistemas
+   ========================================================================== */
+
+.fx-api {
+  justify-content: center;
+  gap: 8px;
+  padding: 7% 6%;
+}
+
+.fx-api__graph {
+  position: relative;
+  flex: 0 1 auto;
+  min-height: 54px;
+}
+
+.fx-api__graph svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.fx-api__rail {
+  fill: none;
+  stroke: rgba(209, 213, 219, 0.22);
+  stroke-width: 1;
+}
+
+/* O pulso é o mesmo caminho, tracejado, com o offset animado — sem plugin de
+   motion path. Ele some atrás do nó central: entra no AIDA e sai do outro lado. */
+.fx-api__pulse {
+  fill: none;
+  stroke: var(--sol-accent);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  opacity: 0.9;
+  will-change: stroke-dashoffset;
+}
+
+.fx-api__node {
+  transform-box: fill-box;
+  transform-origin: center;
+  will-change: transform, opacity;
+}
+
+.fx-api__node rect {
+  fill: rgba(8, 30, 29, 0.9);
+  stroke: rgba(209, 213, 219, 0.24);
+  stroke-width: 1;
+}
+
+.fx-api__node text {
+  fill: rgba(229, 231, 235, 0.78);
+  font-family: var(--aida-font-mono);
+  font-size: 7px;
+  letter-spacing: 0.12em;
+  text-anchor: middle;
+}
+
+.fx-api__node--core rect { stroke: var(--sol-accent); }
+.fx-api__node--core text { fill: var(--sol-accent); }
+
+/* Console. Nenhuma credencial, nenhum dado real, nenhum valor de resultado:
+   os campos da resposta aparecem com o valor elidido. */
+.fx-api__console {
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 6px;
+  background: rgba(8, 30, 29, 0.72);
+  font-family: var(--aida-font-mono);
+  font-size: 0.58rem;
+  line-height: 1.5;
+  overflow: hidden;
+}
+
+.fx-api__req {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 9px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  white-space: nowrap;
+  color: rgba(209, 213, 219, 0.72);
+}
+
+.fx-api__verb {
+  color: var(--sol-accent);
+  font-weight: var(--aida-fw-bold);
+}
+
+.fx-api__endpoint {
+  transition: color var(--aida-dur-base) var(--aida-ease-out);
+}
+
+.fx-api__res {
+  padding: 5px 9px;
+  color: rgba(209, 213, 219, 0.6);
+  will-change: transform, opacity;
+}
+
+.fx-api__status {
+  display: inline-block;
+  margin-bottom: 2px;
+  color: var(--aida-success);
+}
+
+.fx-api__campo {
+  display: block;
+  white-space: nowrap;
+  opacity: 0;
+  will-change: opacity;
+}
+
+.fx-api__chave {
+  color: #9fd8ff;
+}
+
+/* Valor elidido: o card mostra a FORMA da resposta, não uma resposta. */
+.fx-api__vazio {
+  color: rgba(209, 213, 219, 0.38);
+}
+
+/* ==========================================================================
+   Responsivo
+   ========================================================================== */
+
+@media (max-width: 1080px) {
+  .solucoes__head {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .solucoes__head .aida-title-2 {
+    max-width: none;
+  }
+}
+
+@media (max-width: 860px) {
+  .sol-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .sol-card__stage {
+    aspect-ratio: 16 / 8;
+  }
+}
+
+@media (max-width: 640px) {
+  .solucoes {
+    padding-block: var(--aida-space-16);
+  }
+
+  .sol-card__title {
+    font-size: 1.42rem;
+  }
+
+  .sol-card__head {
+    flex-wrap: wrap;
+  }
+
+  /* Palco mais alto e respiro em pixels, não em porcentagem: a 309 px de
+     largura, `padding: 6%` come 18 px de cada lado e achata a fotografia numa
+     tira de 2,7:1, em que já não se reconhece a cena. */
+  .sol-card__stage {
+    aspect-ratio: 16 / 9.5;
+  }
+
+  .fx-img,
+  .fx-for {
+    padding: 12px 12px 10px;
+  }
+
+  .fx-vid,
+  .fx-api {
+    padding: 14px 12px;
+  }
+
+  /* Seis frames viram tiras finas demais para se lerem como frames. */
+  .fx-vid__strip,
+  .fx-vid__ticks,
+  .fx-vid__dots {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .fx-vid__frame:nth-child(n + 5),
+  .fx-vid__dot:nth-child(n + 5),
+  .fx-vid__ticks span:nth-child(n + 5) {
+    display: none;
+  }
+
+  .fx-img__ponto--e,
+  .fx-img__ponto--f {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   Movimento reduzido
+
+   `is-static` é aplicado pelo JS quando ele decide não animar — movimento
+   reduzido ligado ou GSAP ausente. As duas rotas levam ao mesmo repouso, e a
+   media query o garante mesmo que o script não chegue a rodar.
+
+   No repouso cada palco continua contando a história: a varredura parada no
+   meio da fotografia com os pontos visíveis, o divisor forense a meio caminho
+   entre original e método, três frames já lidos com o playhead sobre eles, e a
+   resposta da API visível.
+   ========================================================================== */
+
+.solucoes.is-static .sol-card,
+.solucoes.is-static .sol-card::after {
+  transition: none;
+}
+
+.solucoes.is-static .fx-img__band { transform: translateY(110%); }
+.solucoes.is-static .fx-img__ponto { opacity: 0.9; }
+.solucoes.is-static .fx-for { --split: 0.5; }
+.solucoes.is-static .fx-vid__frame:nth-child(-n + 3) { opacity: 1; }
+.solucoes.is-static .fx-vid__dot:nth-child(-n + 3) { opacity: 1; }
+.solucoes.is-static .fx-vid__playhead { transform: translateX(42%); }
+.solucoes.is-static .fx-api__pulse { opacity: 0; }
+.solucoes.is-static .fx-api__campo { opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .sol-card,
+  .sol-card::after,
+  .fx-vid__frame img,
+  .fx-api__endpoint {
+    transition: none;
+  }
+
+  .fx-img__band { transform: translateY(110%); }
+  .fx-img__ponto { opacity: 0.9; }
+  .fx-for { --split: 0.5; }
+  .fx-vid__frame:nth-child(-n + 3) { opacity: 1; }
+  .fx-vid__dot:nth-child(-n + 3) { opacity: 1; }
+  .fx-vid__playhead { transform: translateX(42%); }
+  .fx-api__pulse { opacity: 0; }
+  .fx-api__campo { opacity: 1; }
+}

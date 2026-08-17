@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#10403b">
+    <meta name="description"
+        content="AIDA Video: analise de conteudo em video por frames e agregacao temporal. Solucao em desenvolvimento.">
+
+    <link rel="manifest" href="../manifest.webmanifest">
+    <link rel="apple-touch-icon" href="../assets/images/pwa-icon-180.png">
+    <link rel="icon" type="image/png" href="../assets/images/AIDABranco.ico">
+
+    <title>AIDA Video | Em desenvolvimento</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Afacad:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../styles/style-shared-theme.css">
+    <link rel="stylesheet" href="../styles/aida-design-system.css">
+    <link rel="stylesheet" href="../styles/aida-solucoes.css">
+    <link rel="stylesheet" href="../styles/aida-produto.css">
+</head>
+
+<body class="aida-shell" style="--produto-accent: var(--aida-video);">
+    <header class="page-header">
+        <a href="./index-apresentacao.html" aria-label="Pagina inicial do AIDA">
+            <img src="../assets/images/LogoBranca.png" alt="Logo AIDA.ON" class="brand-logo">
+        </a>
+
+        <nav class="aida-row" aria-label="Navegacao da plataforma">
+            <a href="./index-apresentacao.html#solucoes" class="top-link">Soluções</a>
+            <a href="./index-seleciona.html" class="top-link">Analisar imagem</a>
+        </nav>
+    </header>
+
+    <main class="page-frame produto-main">
+
+        <!-- ================= Topo ================= -->
+        <section class="produto-hero">
+            <div class="produto-hero__inner">
+                <div class="produto-hero__copy">
+                    <div class="produto-hero__badges">
+                        <span class="aida-eyebrow" style="margin-bottom: 0;">Soluções AIDA</span>
+                        <span class="aida-status aida-status--desenvolvimento">Em desenvolvimento</span>
+                    </div>
+
+                    <h1 class="produto-hero__title">AIDA <span>Video</span></h1>
+
+                    <p class="aida-text">
+                        A análise de vídeo estende o AIDA para conteúdos que mudam ao longo do tempo. Em vez de
+                        uma leitura única, o vídeo é decomposto em frames, cada frame é analisado pelo mesmo
+                        núcleo do AIDA Image e os resultados são combinados em uma leitura temporal.
+                    </p>
+
+                    <!-- O estado precisa aparecer como texto, não só como selo: quem
+                         chega pela busca não vê a pílula do topo. -->
+                    <div class="aida-state aida-state--desenvolvimento" style="margin-top: 24px;" role="status">
+                        <span class="aida-state__icon" aria-hidden="true"></span>
+                        <div>
+                            <p class="aida-state__title">Ainda não é possível enviar vídeos</p>
+                            <p class="aida-state__text">
+                                Esta página descreve o que está sendo construído. Não há upload, fila de
+                                processamento nem resultado de vídeo disponíveis nesta versão da plataforma.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="produto-hero__actions">
+                        <a href="./index-seleciona.html" class="aida-btn">
+                            Analisar uma imagem agora
+                            <span class="aida-btn__arrow" aria-hidden="true">&rarr;</span>
+                        </a>
+                        <a href="#roadmap" class="aida-btn aida-btn--ghost">Ver o roadmap</a>
+                    </div>
+                </div>
+
+                <!-- Mesmo palco animado do card da Home, em tamanho maior. -->
+                <div class="produto-hero__visual" data-solucoes>
+                    <div class="produto-hero__palco sol-card--video" data-sol="video">
+                        <div class="sol-card__stage produto-hero__stage">
+                            <!-- Mesmo palco do card da página de soluções: os frames são os
+                                 mesmos arquivos, e a leitura temporal é a mesma. -->
+                            <div class="sol-fx fx-vid">
+                                <div class="fx-vid__strip" aria-hidden="true">
+                                    <figure class="fx-vid__frame">
+                                        <img src="../assets/demos/video/frame_01.webp" width="320" height="240"
+                                             loading="lazy" decoding="async" alt="">
+                                    </figure>
+                                    <figure class="fx-vid__frame">
+                                        <img src="../assets/demos/video/frame_02.webp" width="320" height="240"
+                                             loading="lazy" decoding="async" alt="">
+                                    </figure>
+                                    <figure class="fx-vid__frame">
+                                        <img src="../assets/demos/video/frame_03.webp" width="320" height="240"
+                                             loading="lazy" decoding="async" alt="">
+                                    </figure>
+                                    <figure class="fx-vid__frame">
+                                        <img src="../assets/demos/video/frame_04.webp" width="320" height="240"
+                                             loading="lazy" decoding="async" alt="">
+                                    </figure>
+                                    <figure class="fx-vid__frame">
+                                        <img src="../assets/demos/video/frame_05.webp" width="320" height="240"
+                                             loading="lazy" decoding="async" alt="">
+                                    </figure>
+                                    <figure class="fx-vid__frame">
+                                        <img src="../assets/demos/video/frame_06.webp" width="320" height="240"
+                                             loading="lazy" decoding="async" alt="">
+                                    </figure>
+
+                                    <div class="fx-vid__dots">
+                                        <span class="fx-vid__dot"></span>
+                                        <span class="fx-vid__dot"></span>
+                                        <span class="fx-vid__dot"></span>
+                                        <span class="fx-vid__dot"></span>
+                                        <span class="fx-vid__dot"></span>
+                                        <span class="fx-vid__dot"></span>
+                                    </div>
+                                </div>
+
+                                <div class="fx-vid__track" aria-hidden="true">
+                                    <div class="fx-vid__ticks">
+                                        <span></span><span></span><span></span>
+                                        <span></span><span></span><span></span>
+                                    </div>
+                                    <div class="fx-vid__playhead"></div>
+                                </div>
+
+                                <div class="sol-fx__barra" aria-hidden="true">
+                                    <span>frames</span>
+                                    <span class="sol-fx__marca">análise temporal</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= Objetivo ================= -->
+        <section class="produto-bloco">
+            <span class="aida-eyebrow">Objetivo</span>
+            <h2 class="aida-title-2">Levar a mesma análise para o tempo.</h2>
+            <p class="aida-text" style="max-width: 70ch;">
+                Uma imagem tem um único conjunto de evidências. Um vídeo tem muitos, e eles nem sempre
+                concordam entre si: um trecho pode conter um rosto sintetizado enquanto o restante da cena é
+                uma captura real. O objetivo do AIDA Video é tornar essa diferença visível, em vez de reduzir
+                o vídeo inteiro a um número só.
+            </p>
+
+            <div class="produto-grid">
+                <article class="produto-item">
+                    <span class="produto-item__marca">01</span>
+                    <h3>Leitura por trecho</h3>
+                    <p>
+                        Os indícios são apresentados ao longo da linha do tempo, indicando em que parte do
+                        vídeo o sinal medido é mais forte.
+                    </p>
+                </article>
+
+                <article class="produto-item">
+                    <span class="produto-item__marca">02</span>
+                    <h3>Mesmo núcleo de análise</h3>
+                    <p>
+                        Cada frame passa pelo AIDA Core — os mesmos módulos, a mesma calibração e a mesma
+                        política de decisão já usados no AIDA Image.
+                    </p>
+                </article>
+
+                <article class="produto-item">
+                    <span class="produto-item__marca">03</span>
+                    <h3>Investigação no Forensics</h3>
+                    <p>
+                        Frames selecionados poderão ser abertos no AIDA Forensics, com as mesmas evidências
+                        visuais disponíveis hoje para imagens.
+                    </p>
+                </article>
+            </div>
+        </section>
+
+        <!-- ================= Funcionamento planejado ================= -->
+        <section class="produto-bloco">
+            <span class="aida-eyebrow">Funcionamento planejado</span>
+            <h2 class="aida-title-2">Do arquivo à leitura temporal.</h2>
+            <p class="aida-text" style="max-width: 70ch;">
+                O desenho abaixo é a arquitetura pretendida. Nenhuma dessas etapas está implementada para
+                vídeo nesta versão.
+            </p>
+
+            <div class="produto-fluxo">
+                <article class="produto-fluxo__etapa">
+                    <span class="produto-fluxo__num">Etapa 01</span>
+                    <h3>Upload e leitura</h3>
+                    <p>Validação do arquivo, duração, resolução e codec, antes de qualquer processamento.</p>
+                </article>
+
+                <article class="produto-fluxo__etapa">
+                    <span class="produto-fluxo__num">Etapa 02</span>
+                    <h3>Extração de frames</h3>
+                    <p>Amostragem por intervalo e nos cortes de cena, para não analisar mil quadros iguais.</p>
+                </article>
+
+                <article class="produto-fluxo__etapa">
+                    <span class="produto-fluxo__num">Etapa 03</span>
+                    <h3>Análise individual</h3>
+                    <p>Cada frame amostrado atravessa o AIDA Core como se fosse uma imagem enviada.</p>
+                </article>
+
+                <article class="produto-fluxo__etapa">
+                    <span class="produto-fluxo__num">Etapa 04</span>
+                    <h3>Agregação temporal</h3>
+                    <p>Os scores por frame viram uma série; a agregação considera concordância e dispersão.</p>
+                </article>
+
+                <article class="produto-fluxo__etapa">
+                    <span class="produto-fluxo__num">Etapa 05</span>
+                    <h3>Resultado e Forensics</h3>
+                    <p>Leitura ao longo do tempo, com passagem para a investigação detalhada de cada frame.</p>
+                </article>
+            </div>
+        </section>
+
+        <!-- ================= AIDA Core ================= -->
+        <section class="produto-bloco">
+            <span class="aida-eyebrow">Uso do AIDA Core</span>
+            <h2 class="aida-title-2">Nada é reimplementado do zero.</h2>
+            <p class="aida-text" style="max-width: 70ch;">
+                O AIDA Core é a camada que já executa a análise de imagem hoje: extração de características,
+                módulos de detecção, fusão, calibração e política de decisão. O AIDA Video não cria um segundo
+                detector — ele alimenta o Core com frames e cuida do que é específico do vídeo: amostragem,
+                deduplicação de quadros parecidos e agregação da série de scores.
+            </p>
+
+            <div class="produto-grid">
+                <article class="produto-item">
+                    <span class="produto-item__marca">Core</span>
+                    <h3>O que vem pronto</h3>
+                    <p>
+                        Características espectrais, espaciais, de textura e ruído; módulos de detecção; fusão
+                        calibrada; banda de abstenção; evidências visuais e leitura de proveniência.
+                    </p>
+                </article>
+
+                <article class="produto-item">
+                    <span class="produto-item__marca">Video</span>
+                    <h3>O que é específico</h3>
+                    <p>
+                        Decodificação, amostragem de frames, detecção de cortes de cena, agregação temporal e
+                        apresentação do resultado ao longo da duração.
+                    </p>
+                </article>
+
+                <article class="produto-item">
+                    <span class="produto-item__marca">Aberto</span>
+                    <h3>O que ainda está em estudo</h3>
+                    <p>
+                        Como tratar compressão agressiva de plataformas de vídeo, que apaga parte dos sinais
+                        usados na análise de imagem, e qual amostragem equilibra custo e cobertura.
+                    </p>
+                </article>
+            </div>
+        </section>
+
+        <!-- ================= Casos de uso ================= -->
+        <section class="produto-bloco">
+            <span class="aida-eyebrow">Casos de uso</span>
+            <h2 class="aida-title-2">Onde a leitura temporal muda a conclusão.</h2>
+
+            <div class="produto-grid">
+                <article class="produto-item">
+                    <h3>Verificação jornalística</h3>
+                    <p>
+                        Localizar em que trecho de um vídeo em circulação os indícios se concentram, em vez de
+                        classificar a peça inteira de uma vez.
+                    </p>
+                </article>
+
+                <article class="produto-item">
+                    <h3>Educação e pesquisa</h3>
+                    <p>
+                        Mostrar, quadro a quadro, como os sinais medidos variam — inclusive quando eles não
+                        sustentam nenhuma conclusão.
+                    </p>
+                </article>
+
+                <article class="produto-item">
+                    <h3>Triagem de acervo</h3>
+                    <p>
+                        Apontar quais trechos merecem inspeção humana em coleções grandes, sem prometer um
+                        veredito automático.
+                    </p>
+                </article>
+            </div>
+        </section>
+
+        <!-- ================= Roadmap ================= -->
+        <section class="produto-bloco" id="roadmap">
+            <span class="aida-eyebrow">Roadmap</span>
+            <h2 class="aida-title-2">Etapas previstas.</h2>
+            <p class="aida-text" style="max-width: 70ch;">
+                A ordem reflete a dependência técnica entre as etapas. Não há datas: cada uma avança quando a
+                anterior estiver estável e avaliada.
+            </p>
+
+            <ol class="roadmap">
+                <li class="roadmap__item">
+                    <span class="roadmap__num">01</span>
+                    <div>
+                        <h3 class="roadmap__titulo">Upload e leitura do arquivo</h3>
+                        <p class="roadmap__texto">
+                            Aceitar o envio, validar formato e duração e expor os metadados do contêiner.
+                        </p>
+                    </div>
+                    <span class="aida-status aida-status--planejado">Planejado</span>
+                </li>
+
+                <li class="roadmap__item">
+                    <span class="roadmap__num">02</span>
+                    <div>
+                        <h3 class="roadmap__titulo">Extração de frames</h3>
+                        <p class="roadmap__texto">
+                            Amostragem por intervalo, detecção de cortes de cena e descarte de quadros
+                            praticamente idênticos.
+                        </p>
+                    </div>
+                    <span class="aida-status aida-status--planejado">Planejado</span>
+                </li>
+
+                <li class="roadmap__item">
+                    <span class="roadmap__num">03</span>
+                    <div>
+                        <h3 class="roadmap__titulo">Análise individual pelo Core</h3>
+                        <p class="roadmap__texto">
+                            Reaproveitar o pipeline de imagem por frame, com cache para não recalcular quadros
+                            repetidos.
+                        </p>
+                    </div>
+                    <span class="aida-status aida-status--planejado">Planejado</span>
+                </li>
+
+                <li class="roadmap__item">
+                    <span class="roadmap__num">04</span>
+                    <div>
+                        <h3 class="roadmap__titulo">Agregação temporal</h3>
+                        <p class="roadmap__texto">
+                            Transformar a série de scores em uma leitura única, preservando a informação de
+                            onde e quanto os frames discordam.
+                        </p>
+                    </div>
+                    <span class="aida-status aida-status--planejado">Planejado</span>
+                </li>
+
+                <li class="roadmap__item">
+                    <span class="roadmap__num">05</span>
+                    <div>
+                        <h3 class="roadmap__titulo">Resultado e passagem para o Forensics</h3>
+                        <p class="roadmap__texto">
+                            Linha do tempo com os indícios e abertura de qualquer frame na investigação
+                            detalhada.
+                        </p>
+                    </div>
+                    <span class="aida-status aida-status--planejado">Planejado</span>
+                </li>
+            </ol>
+        </section>
+
+        <div class="produto-rodape">
+            <p class="aida-text--sm" style="margin: 0;">
+                O resultado do AIDA é um indício técnico, nunca uma prova sobre a origem de um conteúdo.
+            </p>
+            <a href="./index-apresentacao.html#solucoes" class="aida-btn aida-btn--ghost aida-btn--sm">
+                Voltar para as soluções
+            </a>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/gsap.min.js"></script>
+    <script src="../scripts/script-cookie-consent.js"></script>
+    <script src="../scripts/aida-solucoes.js"></script>
+</body>
+
+</html>

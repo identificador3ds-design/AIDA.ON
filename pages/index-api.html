@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#10403b">
+    <meta name="description"
+        content="AIDA API: integracao da analise do AIDA em outros sistemas. Solucao em desenvolvimento.">
+
+    <link rel="manifest" href="../manifest.webmanifest">
+    <link rel="apple-touch-icon" href="../assets/images/pwa-icon-180.png">
+    <link rel="icon" type="image/png" href="../assets/images/AIDABranco.ico">
+
+    <title>AIDA API | Em desenvolvimento</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Afacad:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../styles/style-shared-theme.css">
+    <link rel="stylesheet" href="../styles/aida-design-system.css">
+    <link rel="stylesheet" href="../styles/aida-solucoes.css">
+    <link rel="stylesheet" href="../styles/aida-produto.css">
+</head>
+
+<body class="aida-shell" style="--produto-accent: var(--aida-api);">
+    <header class="page-header">
+        <a href="./index-apresentacao.html" aria-label="Pagina inicial do AIDA">
+            <img src="../assets/images/LogoBranca.png" alt="Logo AIDA.ON" class="brand-logo">
+        </a>
+
+        <nav class="aida-row" aria-label="Navegacao da plataforma">
+            <a href="./index-apresentacao.html#solucoes" class="top-link">Soluções</a>
+            <a href="./index-seleciona.html" class="top-link">Analisar imagem</a>
+        </nav>
+    </header>
+
+    <main class="page-frame produto-main">
+
+        <!-- ================= Topo ================= -->
+        <section class="produto-hero">
+            <div class="produto-hero__inner">
+                <div class="produto-hero__copy">
+                    <div class="produto-hero__badges">
+                        <span class="aida-eyebrow" style="margin-bottom: 0;">Soluções AIDA</span>
+                        <span class="aida-status aida-status--desenvolvimento">Em desenvolvimento</span>
+                    </div>
+
+                    <h1 class="produto-hero__title">AIDA <span>API</span></h1>
+
+                    <p class="aida-text">
+                        A AIDA API levará a mesma análise da plataforma para dentro de outros sistemas: uma
+                        imagem entra, um resultado estruturado sai — com os mesmos estados, as mesmas ressalvas
+                        e as mesmas evidências que a interface mostra hoje.
+                    </p>
+
+                    <div class="aida-state aida-state--desenvolvimento" style="margin-top: 24px;" role="status">
+                        <span class="aida-state__icon" aria-hidden="true"></span>
+                        <div>
+                            <p class="aida-state__title">Não há endpoints públicos abertos</p>
+                            <p class="aida-state__text">
+                                Não existe cadastro, chave de acesso nem domínio público de produção. Os
+                                exemplos desta página são conceituais e servem para descrever o formato
+                                pretendido.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="produto-hero__actions">
+                        <a href="#exemplo" class="aida-btn">
+                            Ver o formato pretendido
+                            <span class="aida-btn__arrow" aria-hidden="true">&rarr;</span>
+                        </a>
+                        <a href="#roadmap" class="aida-btn aida-btn--ghost">Ver o roadmap</a>
+                    </div>
+                </div>
+
+                <div class="produto-hero__visual" data-solucoes>
+                    <div class="produto-hero__palco sol-card--api" data-sol="api">
+                        <div class="sol-card__stage produto-hero__stage">
+                            <!-- Mesmo palco do card da página de soluções. Os campos da
+                                 resposta aparecem com o valor elidido: o desenho mostra a
+                                 FORMA do contrato, não uma resposta. -->
+                            <div class="sol-fx fx-api">
+                                <div class="fx-api__graph">
+                                    <svg viewBox="0 0 200 54" preserveAspectRatio="xMidYMid meet" aria-hidden="true"
+                                        focusable="false">
+                                        <path class="fx-api__rail" d="M50 27 H150" />
+                                        <path class="fx-api__pulse" d="M50 27 H150" />
+
+                                        <g class="fx-api__node">
+                                            <rect x="2" y="15" width="48" height="24" rx="6" />
+                                            <text x="26" y="30">APP</text>
+                                        </g>
+                                        <g class="fx-api__node fx-api__node--core">
+                                            <rect x="74" y="10" width="52" height="34" rx="8" />
+                                            <text x="100" y="30">AIDA</text>
+                                        </g>
+                                        <g class="fx-api__node">
+                                            <rect x="150" y="15" width="48" height="24" rx="6" />
+                                            <text x="174" y="30">JSON</text>
+                                        </g>
+                                    </svg>
+                                </div>
+
+                                <div class="fx-api__console" aria-hidden="true">
+                                    <div class="fx-api__req">
+                                        <span class="fx-api__verb">POST</span>
+                                        <span class="fx-api__endpoint">/v1/analyze/image</span>
+                                    </div>
+                                    <div class="fx-api__res">
+                                        <span class="fx-api__status">200 OK</span>
+                                        <span class="fx-api__campo"><span class="fx-api__chave">"result"</span>: <span
+                                                class="fx-api__vazio">…</span></span>
+                                        <span class="fx-api__campo"><span class="fx-api__chave">"ai_probability"</span>:
+                                            <span class="fx-api__vazio">…</span></span>
+                                        <span class="fx-api__campo"><span class="fx-api__chave">"confidence"</span>:
+                                            <span class="fx-api__vazio">…</span></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= Objetivo ================= -->
+        <section class="produto-bloco">
+            <span class="aida-eyebrow">Objetivo</span>
+            <h2 class="aida-title-2">Integrar a análise, sem reescrevê-la.</h2>
+            <p class="aida-text" style="max-width: 70ch;">
+                Hoje a análise só existe dentro da interface do AIDA. Quem precisa verificar imagens dentro do
+                próprio fluxo — um sistema de redação, uma plataforma de denúncias, uma ferramenta de
+                moderação — precisaria replicar o pipeline. A API existe para evitar isso: o mesmo núcleo,
+                exposto por HTTP, com um contrato estável.
+            </p>
+
+            <div class="produto-grid">
+                <article class="produto-item">
+                    <span class="produto-item__marca">Contrato</span>
+                    <h3>Três estados, sempre</h3>
+                    <p>
+                        A resposta preserva <strong>REAL</strong>, <strong>IA/MANIPULADA</strong> e
+                        <strong>INCONCLUSIVO</strong>. Integrações binárias rotulariam como IA justamente o
+                        que o sistema declarou indeterminado.
+                    </p>
+                </article>
+
+                <article class="produto-item">
+                    <span class="produto-item__marca">Evidência</span>
+                    <h3>Não é só um número</h3>
+                    <p>
+                        Scores por módulo, indicadores de qualidade, limitações do arquivo e os mapas visuais
+                        acompanham o resultado, como já acontece na interface.
+                    </p>
+                </article>
+
+                <article class="produto-item">
+                    <span class="produto-item__marca">Ressalva</span>
+                    <h3>Obrigatória na saída</h3>
+                    <p>
+                        O campo de ressalva viaja junto com o resultado e não deve ser omitido por quem
+                        integra: o retorno é indício técnico, não prova.
+                    </p>
+                </article>
+            </div>
+        </section>
+
+        <!-- ================= Exemplo conceitual ================= -->
+        <section class="produto-bloco" id="exemplo">
+            <span class="aida-eyebrow">Demonstração conceitual</span>
+            <h2 class="aida-title-2">O formato pretendido.</h2>
+            <p class="aida-text" style="max-width: 70ch;">
+                O par abaixo ilustra a forma da chamada e da resposta. O host é fictício, não há chave real e
+                os valores servem apenas para mostrar a estrutura — nenhum deles vem de uma análise.
+            </p>
+
+            <div class="codigo__par">
+                <div class="codigo">
+                    <div class="codigo__topo">
+                        <span>Requisição</span>
+                        <span>conceitual</span>
+                    </div>
+<pre class="codigo__corpo"><code><span class="tok-verbo">POST</span> /v1/analyze/image
+<span class="tok-chave">Host</span>: api.exemplo.aida
+<span class="tok-chave">Content-Type</span>: multipart/form-data
+<span class="tok-chave">Authorization</span>: Bearer &lt;sua-chave&gt;
+
+<span class="tok-coment"># campos do formulário</span>
+image=<span class="tok-texto">@foto.jpg</span>
+evidence=<span class="tok-texto">true</span></code></pre>
+                </div>
+
+                <div class="codigo">
+                    <div class="codigo__topo">
+                        <span>Resposta</span>
+                        <span>conceitual</span>
+                    </div>
+<pre class="codigo__corpo"><code>{
+  <span class="tok-chave">"result"</span>: <span class="tok-texto">"INCONCLUSIVO"</span>,
+  <span class="tok-chave">"confidence"</span>: <span class="tok-texto">"baixa"</span>,
+  <span class="tok-chave">"module_scores"</span>: { <span class="tok-coment">…</span> },
+  <span class="tok-chave">"quality"</span>: { <span class="tok-coment">…</span> },
+  <span class="tok-chave">"limitations"</span>: [ <span class="tok-coment">…</span> ],
+  <span class="tok-chave">"evidence"</span>: { <span class="tok-coment">…</span> },
+  <span class="tok-chave">"disclaimer"</span>: <span class="tok-texto">"indício, não prova"</span>,
+  <span class="tok-chave">"analysis_id"</span>: <span class="tok-texto">"&lt;id&gt;"</span>
+}</code></pre>
+                </div>
+            </div>
+
+            <p class="aida-text--sm" style="margin-top: 16px;">
+                O exemplo mostra deliberadamente o estado indeterminado: é o caso que integrações costumam
+                esquecer de tratar.
+            </p>
+        </section>
+
+        <!-- ================= Arquitetura futura ================= -->
+        <section class="produto-bloco">
+            <span class="aida-eyebrow">Arquitetura futura</span>
+            <h2 class="aida-title-2">Uma camada fina sobre o Core.</h2>
+            <p class="aida-text" style="max-width: 70ch;">
+                A API pública não conterá lógica de detecção. Ela recebe a requisição, valida, delega ao AIDA
+                Core e devolve o resultado no contrato versionado — a mesma separação que já existe entre a
+                interface e o pipeline de análise.
+            </p>
+
+            <div class="produto-fluxo">
+                <article class="produto-fluxo__etapa">
+                    <span class="produto-fluxo__num">Camada 01</span>
+                    <h3>Borda HTTP</h3>
+                    <p>Autenticação por chave, limites de uso, validação de formato e tamanho do arquivo.</p>
+                </article>
+
+                <article class="produto-fluxo__etapa">
+                    <span class="produto-fluxo__num">Camada 02</span>
+                    <h3>Orquestração</h3>
+                    <p>Fila para requisições longas, cache por conteúdo e reaproveitamento entre chamadas.</p>
+                </article>
+
+                <article class="produto-fluxo__etapa">
+                    <span class="produto-fluxo__num">Camada 03</span>
+                    <h3>AIDA Core</h3>
+                    <p>Extração, módulos de detecção, fusão calibrada e política de decisão — sem duplicação.</p>
+                </article>
+
+                <article class="produto-fluxo__etapa">
+                    <span class="produto-fluxo__num">Camada 04</span>
+                    <h3>Contrato versionado</h3>
+                    <p>Resposta em <code>/v1</code>, com mudanças incompatíveis reservadas a uma versão nova.</p>
+                </article>
+            </div>
+        </section>
+
+        <!-- ================= Casos de uso ================= -->
+        <section class="produto-bloco">
+            <span class="aida-eyebrow">Casos de uso</span>
+            <h2 class="aida-title-2">Quem ganharia com a integração.</h2>
+
+            <div class="produto-grid">
+                <article class="produto-item">
+                    <h3>Redações e checagem</h3>
+                    <p>Verificar imagens recebidas dentro do próprio sistema editorial, antes da publicação.</p>
+                </article>
+
+                <article class="produto-item">
+                    <h3>Moderação de conteúdo</h3>
+                    <p>Marcar para revisão humana os envios com indícios mais fortes, sem decidir sozinho.</p>
+                </article>
+
+                <article class="produto-item">
+                    <h3>Pesquisa acadêmica</h3>
+                    <p>Rodar o pipeline sobre conjuntos grandes e comparar resultados de forma reprodutível.</p>
+                </article>
+
+                <article class="produto-item">
+                    <h3>Ensino</h3>
+                    <p>Construir exercícios que consomem a análise e discutem por que ela às vezes se abstém.</p>
+                </article>
+            </div>
+        </section>
+
+        <!-- ================= Roadmap ================= -->
+        <section class="produto-bloco" id="roadmap">
+            <span class="aida-eyebrow">Roadmap</span>
+            <h2 class="aida-title-2">Etapas previstas.</h2>
+            <p class="aida-text" style="max-width: 70ch;">
+                Nada disso está implementado como produto público. A ordem segue a dependência entre as
+                etapas, e nenhuma delas tem data.
+            </p>
+
+            <ol class="roadmap">
+                <li class="roadmap__item">
+                    <span class="roadmap__num">01</span>
+                    <div>
+                        <h3 class="roadmap__titulo">Endpoint de imagem</h3>
+                        <p class="roadmap__texto">
+                            <code>POST /v1/analyze/image</code> com contrato estável e os três estados de
+                            resultado.
+                        </p>
+                    </div>
+                    <span class="aida-status aida-status--planejado">Planejado</span>
+                </li>
+
+                <li class="roadmap__item">
+                    <span class="roadmap__num">02</span>
+                    <div>
+                        <h3 class="roadmap__titulo">Chaves de API</h3>
+                        <p class="roadmap__texto">
+                            Emissão, rotação e revogação de chaves, com escopo por aplicação.
+                        </p>
+                    </div>
+                    <span class="aida-status aida-status--planejado">Planejado</span>
+                </li>
+
+                <li class="roadmap__item">
+                    <span class="roadmap__num">03</span>
+                    <div>
+                        <h3 class="roadmap__titulo">Autenticação</h3>
+                        <p class="roadmap__texto">
+                            Verificação da chave na borda e vínculo entre chamada, aplicação e responsável.
+                        </p>
+                    </div>
+                    <span class="aida-status aida-status--planejado">Planejado</span>
+                </li>
+
+                <li class="roadmap__item">
+                    <span class="roadmap__num">04</span>
+                    <div>
+                        <h3 class="roadmap__titulo">Limites de uso</h3>
+                        <p class="roadmap__texto">
+                            Cotas por chave e janela de tempo — a análise é cara e precisa de proteção contra
+                            uso em rajada.
+                        </p>
+                    </div>
+                    <span class="aida-status aida-status--planejado">Planejado</span>
+                </li>
+
+                <li class="roadmap__item">
+                    <span class="roadmap__num">05</span>
+                    <div>
+                        <h3 class="roadmap__titulo">Documentação</h3>
+                        <p class="roadmap__texto">
+                            Referência gerada a partir do próprio contrato servido pela API, para não descolar
+                            do código.
+                        </p>
+                    </div>
+                    <span class="aida-status aida-status--planejado">Planejado</span>
+                </li>
+
+                <li class="roadmap__item">
+                    <span class="roadmap__num">06</span>
+                    <div>
+                        <h3 class="roadmap__titulo">Logs</h3>
+                        <p class="roadmap__texto">
+                            Registro de chamadas para auditoria e diagnóstico, com retenção declarada no aviso
+                            de privacidade.
+                        </p>
+                    </div>
+                    <span class="aida-status aida-status--planejado">Planejado</span>
+                </li>
+
+                <li class="roadmap__item">
+                    <span class="roadmap__num">07</span>
+                    <div>
+                        <h3 class="roadmap__titulo">Monitoramento</h3>
+                        <p class="roadmap__texto">
+                            Disponibilidade, latência por etapa e alerta quando um módulo do Core deixar de
+                            carregar.
+                        </p>
+                    </div>
+                    <span class="aida-status aida-status--planejado">Planejado</span>
+                </li>
+            </ol>
+        </section>
+
+        <div class="produto-rodape">
+            <p class="aida-text--sm" style="margin: 0;">
+                Enquanto a API pública não existe, a análise continua disponível pela interface do AIDA Image.
+            </p>
+            <a href="./index-apresentacao.html#solucoes" class="aida-btn aida-btn--ghost aida-btn--sm">
+                Voltar para as soluções
+            </a>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/gsap.min.js"></script>
+    <script src="../scripts/script-cookie-consent.js"></script>
+    <script src="../scripts/aida-solucoes.js"></script>
+</body>
+
+</html>

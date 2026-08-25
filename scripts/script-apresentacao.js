@@ -282,19 +282,29 @@ function setUserName() {
 
 function updateActiveNav() {
   const links = document.querySelectorAll(".ancoranav");
-  const sections = Array.from(links)
-    .map((link) => document.querySelector(link.getAttribute("href")))
-    .filter(Boolean);
+  const navItems = Array.from(links)
+    .map((link) => {
+      const href = link.getAttribute("href");
+      let section = null;
+      if (href && href.startsWith("#")) {
+        try {
+          section = document.querySelector(href);
+        } catch (e) {
+          section = null;
+        }
+      }
+      return { link, section };
+    })
+    .filter((item) => item.section !== null);
 
-  if (!sections.length) {
+  if (!navItems.length) {
     return;
   }
 
   const onScroll = () => {
     const offset = window.scrollY + 140;
 
-    sections.forEach((section, index) => {
-      const link = links[index];
+    navItems.forEach(({ link, section }) => {
       const isActive =
         offset >= section.offsetTop &&
         offset < section.offsetTop + section.offsetHeight;

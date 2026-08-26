@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -131,7 +132,7 @@
             display: none;
             width: 24px;
             height: 24px;
-            border: 3px solid rgba(255,255,255,0.3);
+            border: 3px solid rgba(255, 255, 255, 0.3);
             border-radius: 50%;
             border-top-color: white;
             animation: spin 1s ease-in-out infinite;
@@ -139,7 +140,9 @@
         }
 
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         /* Results Section */
@@ -152,8 +155,15 @@
         }
 
         @keyframes slideUp {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .result-badge {
@@ -225,6 +235,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <div class="container">
@@ -269,7 +280,7 @@
     <script>
         // Configurações da API
         const API_URL = "https://aidaon-aida-borda-api.hf.space/v1/analyze/image";
-        const API_KEY = "aida_teste"; // Em um site real, essa requisição seria feita pelo Backend do cliente, para não expor a chave no JS.
+        const API_KEY = "aida_WGzt7D00yExZ4mI-UZxyF0JsAQ2Az7RoCXqzony6OzM"; // Em um site real, essa requisição seria feita pelo Backend do cliente, para não expor a chave no JS.
 
         // Elementos da UI
         const fileInput = document.getElementById('fileInput');
@@ -345,7 +356,7 @@
             // Configurar Badge Principal
             resultBadge.textContent = data.result;
             resultBadge.className = 'result-badge'; // reset
-            
+
             if (data.result === 'REAL') {
                 resultBadge.classList.add('badge-real');
             } else if (data.result === 'IA/MANIPULADA') {
@@ -369,4 +380,5 @@
         }
     </script>
 </body>
+
 </html>

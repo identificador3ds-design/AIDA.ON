@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Bank | Verificação de Identidade</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <style>
+        :root {
+            /* Paleta da "Fintech" fictícia */
+            --bg-base: #f8fafc;
+            --surface: #ffffff;
+            --brand-primary: #3b82f6; /* Azul moderno */
+            --brand-dark: #0f172a;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            
+            /* Status Colors */
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #f59e0b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Ambient Background blobs */
+        .ambient-blob {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: 0;
+            opacity: 0.4;
+            pointer-events: none;
+            animation: float 20s infinite alternate ease-in-out;
+        }
+
+        .blob-1 {
+            background: linear-gradient(to right, rgba(59, 130, 246, 0.2), rgba(16, 185, 129, 0.2));
+            top: -200px;
+            right: -100px;
+        }
+
+        .blob-2 {
+            background: linear-gradient(to right, rgba(99, 102, 241, 0.1), rgba(236, 72, 153, 0.1));
+            bottom: -200px;
+            left: -200px;
+            animation-delay: -5s;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(-50px, 50px) scale(1.1); }
+        }
+
+        /* Navbar */
+        nav {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--brand-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            color: var(--brand-primary);
+            font-size: 2rem;
+        }
+
+        /* Main Container */
+        .main-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .kyc-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.08), 
+                        0 0 0 1px rgba(0,0,0,0.02);
+            width: 100%;
+            max-width: 540px;
+            padding: 40px;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .card-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .card-header h2 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            color: var(--brand-dark);
+        }
+
+        .card-header p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+        }
+
+        /* Upload Area */
+        .upload-zone {
+            border: 2px dashed #cbd5e1;
+            border-radius: 16px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #f8fafc;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-zone:hover, .upload-zone.dragover {
+            border-color: var(--brand-primary);
+            background: #eff6ff;
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--brand-primary);
+            margin-bottom: 15px;
+            transition: transform 0.3s;
+        }
+        
+        .upload-zone:hover .upload-icon {
+            transform: translateY(-5px);
+        }
+
+        .upload-text {
+            font-weight: 500;
+            color: var(--brand-dark);
+            margin-bottom: 5px;
+        }
+        
+        .upload-hint {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        /* Image Preview Area */
+        .preview-container {
+            display: none;
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .preview-image {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Scanner Animation (Premium feel) */
+        .scanner-beam {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--brand-primary);
+            box-shadow: 0 0 15px 2px var(--brand-primary), 0 0 30px 5px var(--brand-primary);
+            opacity: 0;
+            z-index: 2;
+        }
+
+        .scanning .scanner-beam {
+            opacity: 1;
+            animation: scan 2s linear infinite;
+        }
+
+        .scanning::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(59, 130, 246, 0.1);
+            z-index: 1;
+        }
+
+        @keyframes scan {
+            0% { top: 0; }
+            50% { top: 100%; }
+            100% { top: 0; }
+        }
+
+        /* Button */
+        .btn-submit {
+            width: 100%;
+            padding: 16px;
+            background: var(--brand-primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+            box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.39);
+        }
+
+        .btn-submit:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+        }
+        
+        .btn-submit:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s infinite linear;
+        }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* Results Area (Business Logic Implementation) */
+        .result-container {
+            display: none;
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px solid #e2e8f0;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .status-box {
+            padding: 20px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .status-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .status-text h3 {
+            font-size: 1.2rem;
+            margin-bottom: 4px;
+        }
+
+        .status-text p {
+            font-size: 0.9rem;
+        }
+
+        /* REAL / APROVADO */
+        .status-approved {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+        .status-approved .status-icon {
+            background: var(--success);
+            color: white;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+        .status-approved h3 { color: #065f46; }
+        .status-approved p { color: #047857; }
+
+        /* FAKE / RECUSADO */
+        .status-rejected {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+        .status-rejected .status-icon {
+            background: var(--error);
+            color: white;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+        .status-rejected h3 { color: #991b1b; }
+        .status-rejected p { color: #b91c1c; }
+
+        /* AIDA Dev Box (Proof of concept) */
+        .dev-box {
+            background: #1e293b;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+
+        .dev-header {
+            background: #0f172a;
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #94a3b8;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+        
+        .dev-header span.powered {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #34d399;
+            font-weight: 600;
+        }
+
+        .dev-content {
+            display: none;
+            padding: 15px;
+            font-family: monospace;
+            font-size: 0.8rem;
+            color: #e2e8f0;
+            white-space: pre-wrap;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Background Blobs -->
+    <div class="ambient-blob blob-1"></div>
+    <div class="ambient-blob blob-2"></div>
+
+    <!-- Fictional Bank Navbar -->
+    <nav>
+        <div class="logo">
+            <i class="ph-fill ph-bank"></i>
+            Nexus Bank
+        </div>
+        <div style="font-weight: 500; color: var(--text-muted); font-size: 0.9rem;">
+            Abertura de Conta Segura
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <div class="kyc-card">
+            
+            <div class="card-header" id="headerContent">
+                <h2>Envie seu Documento</h2>
+                <p>Precisamos verificar sua identidade para aprovar a abertura da sua conta. Envie seu RG, CNH ou uma selfie.</p>
+            </div>
+
+            <!-- Area de Upload -->
+            <div class="upload-zone" id="uploadZone">
+                <i class="ph ph-upload-simple upload-icon"></i>
+                <div class="upload-text">Arraste a foto ou clique para escolher</div>
+                <div class="upload-hint">Formatos aceitos: JPG, PNG, WEBP (Máx. 15MB)</div>
+                <input type="file" id="fileInput" accept="image/jpeg, image/png, image/webp">
+            </div>
+
+            <!-- Preview e Animação -->
+            <div class="preview-container" id="previewContainer">
+                <div class="scanner-beam"></div>
+                <img id="imagePreview" class="preview-image" src="" alt="Documento Selecionado">
+            </div>
+
+            <button class="btn-submit" id="btnSubmit" style="display: none;">
+                <span id="btnText">Verificar Identidade</span>
+                <div class="spinner" id="spinner"></div>
+            </button>
+
+            <!-- Resultado da Lógica de Negócios (Bank Flow) -->
+            <div class="result-container" id="resultContainer">
+                
+                <div id="statusBox" class="status-box">
+                    <div class="status-icon">
+                        <i id="statusIconClass" class="ph ph-check"></i>
+                    </div>
+                    <div class="status-text">
+                        <h3 id="statusTitle">Identidade Confirmada!</h3>
+                        <p id="statusMessage">Seu documento foi verificado com sucesso.</p>
+                    </div>
+                </div>
+
+                <!-- Abaixo do capô (AIDA API) -->
+                <div class="dev-box">
+                    <div class="dev-header" onclick="toggleDevInfo()">
+                        <span>🔍 Ver Resposta da IA</span>
+                        <span class="powered"><i class="ph-fill ph-shield-check"></i> Powered by AIDA</span>
+                    </div>
+                    <div class="dev-content" id="rawJson"></div>
+                </div>
+
+                <button class="btn-submit" id="btnReset" style="background: var(--bg-base); color: var(--text-main); border: 1px solid #cbd5e1; box-shadow: none; margin-top: 15px;">
+                    Testar Nova Foto
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Configuração da AIDA API
+        // IMPORTANTE: Em produção, essa chamada é feita pelo BACKEND (Node/Python).
+        // Aqui estamos expondo para fins de demonstração B2B do front-end.
+        const AIDA_API_URL = "https://aidaon-aida-borda-api.hf.space/v1/analyze/image";
+        const AIDA_API_KEY = "aida_WGzt7D00yExZ4mI-UZxyF0JsAQ2Az7RoCXqzony6OzM"; 
+
+        // Elementos UI
+        const uploadZone = document.getElementById('uploadZone');
+        const fileInput = document.getElementById('fileInput');
+        const previewContainer = document.getElementById('previewContainer');
+        const imagePreview = document.getElementById('imagePreview');
+        const btnSubmit = document.getElementById('btnSubmit');
+        const btnText = document.getElementById('btnText');
+        const spinner = document.getElementById('spinner');
+        const resultContainer = document.getElementById('resultContainer');
+        const headerContent = document.getElementById('headerContent');
+        const statusBox = document.getElementById('statusBox');
+        const statusIconClass = document.getElementById('statusIconClass');
+        const statusTitle = document.getElementById('statusTitle');
+        const statusMessage = document.getElementById('statusMessage');
+        const rawJson = document.getElementById('rawJson');
+        const btnReset = document.getElementById('btnReset');
+
+        let currentFile = null;
+
+        // --- Eventos de Drag & Drop e Seleção ---
+        uploadZone.addEventListener('click', () => fileInput.click());
+        
+        ['dragenter', 'dragover'].forEach(evt => {
+            uploadZone.addEventListener(evt, (e) => {
+                e.preventDefault();
+                uploadZone.classList.add('dragover');
+            });
+        });
+        
+        ['dragleave', 'drop'].forEach(evt => {
+            uploadZone.addEventListener(evt, (e) => {
+                e.preventDefault();
+                uploadZone.classList.remove('dragover');
+            });
+        });
+
+        uploadZone.addEventListener('drop', (e) => {
+            if (e.dataTransfer.files.length) {
+                handleFile(e.dataTransfer.files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length) {
+                handleFile(e.target.files[0]);
+            }
+        });
+
+        function handleFile(file) {
+            currentFile = file;
+            uploadZone.style.display = 'none';
+            previewContainer.style.display = 'block';
+            btnSubmit.style.display = 'flex';
+            
+            // Preview da Imagem
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                imagePreview.src = e.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
+
+        // --- Envio para AIDA API ---
+        btnSubmit.addEventListener('click', async () => {
+            if (!currentFile) return;
+
+            // Inicia Animação de Loading/Scanner
+            btnSubmit.disabled = true;
+            btnText.innerText = "Avaliando Autenticidade...";
+            spinner.style.display = "block";
+            previewContainer.classList.add('scanning');
+
+            const formData = new FormData();
+            formData.append("image", currentFile);
+            formData.append("evidence", "false"); // Não precisa do mapa no fluxo normal bancário
+
+            try {
+                const response = await fetch(AIDA_API_URL, {
+                    method: 'POST',
+                    headers: {
+                        "Authorization": `Bearer ${AIDA_API_KEY}`
+                    },
+                    body: formData
+                });
+
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    // Lança um objeto customizado para o catch tratar o UI
+                    throw { status: response.status, message: data.error?.message || "Erro de comunicação com a API", raw: data };
+                }
+
+                // API respondeu com sucesso. Aplica a Regra de Negócios do Banco.
+                processBankLogic(data);
+
+            } catch (error) {
+                if (error.status === 429) {
+                    // Cota estourada! Mostra visualmente na UI.
+                    headerContent.style.display = 'none';
+                    resultContainer.style.display = 'block';
+                    rawJson.innerText = JSON.stringify(error.raw, null, 2);
+                    
+                    statusBox.className = "status-box status-rejected"; // Usa o estilo vermelho/laranja
+                    statusIconClass.className = "ph-bold ph-hand-palm";
+                    statusTitle.innerText = "Cota Excedida";
+                    statusMessage.innerText = "Você atingiu o limite de análises do seu plano. Tente novamente em uma hora.";
+                } else {
+                    // Outros erros
+                    alert("Falha na verificação: " + (error.message || error));
+                    resetUI();
+                }
+            } finally {
+                // Para a animação
+                previewContainer.classList.remove('scanning');
+                btnSubmit.style.display = 'none';
+                spinner.style.display = "none";
+                btnSubmit.disabled = false;
+                btnText.innerText = "Verificar Identidade";
+            }
+        });
+
+        // --- Lógica de Negócios (Como o cliente usa o resultado) ---
+        function processBankLogic(aidaResponse) {
+            headerContent.style.display = 'none';
+            resultContainer.style.display = 'block';
+
+            // Preenche os dados brutos no Dev Box
+            rawJson.innerText = JSON.stringify(aidaResponse, null, 2);
+            
+            // Limpa classes anteriores
+            statusBox.className = "status-box";
+
+            if (aidaResponse.result === 'REAL') {
+                // Aprovado pelo Banco!
+                statusBox.classList.add('status-approved');
+                statusIconClass.className = "ph-bold ph-shield-check";
+                statusTitle.innerText = "Identidade Verificada";
+                statusMessage.innerText = `O documento passou em nossas checagens de segurança com confiança ${aidaResponse.confidence}. Sua conta foi liberada!`;
+            } 
+            else if (aidaResponse.result === 'IA/MANIPULADA') {
+                // Reprovado / Fraude
+                statusBox.classList.add('status-rejected');
+                statusIconClass.className = "ph-bold ph-shield-warning";
+                statusTitle.innerText = "Risco Detectado";
+                statusMessage.innerText = `Nosso sistema antifraude detectou sinais de manipulação digital (Probabilidade de IA: ${(aidaResponse.ai_probability * 100).toFixed(1)}%). Transação bloqueada.`;
+            }
+            else {
+                // Inconclusivo (ex: foto embaçada)
+                statusBox.classList.add('status-rejected'); // Usa o vermelho/laranja como aviso
+                statusIconClass.className = "ph-bold ph-warning-circle";
+                statusTitle.innerText = "Não foi possível validar";
+                statusMessage.innerText = "A qualidade da foto está ruim. Por favor, reinicie e envie uma imagem mais nítida.";
+            }
+        }
+
+        // --- Utils ---
+        function toggleDevInfo() {
+            rawJson.style.display = rawJson.style.display === 'block' ? 'none' : 'block';
+        }
+
+        btnReset.addEventListener('click', resetUI);
+
+        function resetUI() {
+            currentFile = null;
+            fileInput.value = '';
+            imagePreview.src = '';
+            
+            uploadZone.style.display = 'block';
+            previewContainer.style.display = 'none';
+            resultContainer.style.display = 'none';
+            btnSubmit.style.display = 'none';
+            headerContent.style.display = 'block';
+        }
+
+    </script>
+</body>
+</html>

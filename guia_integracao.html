@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIDA API | Guia Oficial de Integração B2B</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-primary: #09090b;
+            --bg-secondary: #18181b;
+            --bg-tertiary: #27272a;
+            --text-primary: #fafafa;
+            --text-secondary: #a1a1aa;
+            --accent-glow: #10b981; /* Verde AIDA vibrante */
+            --accent-color: #34d399;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --code-bg: #000000;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Ambient Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .badge-api {
+            display: inline-block;
+            padding: 6px 14px;
+            background: rgba(52, 211, 153, 0.1);
+            color: var(--accent-color);
+            border: 1px solid rgba(52, 211, 153, 0.2);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            backdrop-filter: blur(4px);
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, #fff 0%, #a1a1aa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Sections */
+        section {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s ease-out forwards;
+            position: relative;
+            overflow: hidden;
+        }
+
+        section:nth-child(2) { animation-delay: 0.1s; }
+        section:nth-child(3) { animation-delay: 0.2s; }
+        section:nth-child(4) { animation-delay: 0.3s; }
+        section:nth-child(5) { animation-delay: 0.4s; }
+
+        section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-glow), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        section:hover::before {
+            opacity: 1;
+        }
+
+        h2 {
+            font-size: 1.7rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .step-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background: rgba(52, 211, 153, 0.1);
+            color: var(--accent-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        p {
+            margin-bottom: 20px;
+            color: #d4d4d8;
+        }
+
+        .highlight {
+            color: var(--accent-color);
+            font-weight: 500;
+        }
+
+        /* Code Blocks */
+        .code-window {
+            background: var(--code-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            margin: 25px 0;
+            overflow: hidden;
+        }
+
+        .code-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg-tertiary);
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .code-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .dot:nth-child(1) { background: #ef4444; }
+        .dot:nth-child(2) { background: #eab308; }
+        .dot:nth-child(3) { background: #22c55e; }
+
+        .copy-btn {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        pre {
+            padding: 20px;
+            overflow-x: auto;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: #e4e4e7;
+        }
+
+        /* Token Colors */
+        .t-keyword { color: #c678dd; }
+        .t-string { color: #98c379; }
+        .t-function { color: #61afef; }
+        .t-comment { color: #5c6370; font-style: italic; }
+        .t-operator { color: #56b6c2; }
+        .t-number { color: #d19a66; }
+
+        /* Endpoints Table */
+        .endpoint-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .method {
+            display: inline-block;
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            margin-right: 10px;
+        }
+        
+        .method.post {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--accent-color);
+        }
+
+        code.inline {
+            background: rgba(255,255,255,0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85em;
+            color: #e4e4e7;
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        td {
+            font-size: 0.95rem;
+        }
+        
+        .type-badge {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.8rem;
+            color: #fca5a5;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <div class="badge-api">B2B API Integration</div>
+            <h1>AIDA Developer Portal</h1>
+            <p class="subtitle">Guia completo para conectar seu sistema à inteligência artificial de detecção de fraudes da AIDA.</p>
+        </header>
+
+        <!-- Seção 1: Autenticação -->
+        <section>
+            <h2><span class="step-number">1</span> Autenticação</h2>
+            <p>A API da AIDA utiliza o padrão <code class="inline">Bearer Token</code>. A chave que fornecemos a você deve ser enviada no cabeçalho <code class="inline">Authorization</code> de cada requisição feita ao nosso servidor.</p>
+            <p><strong>⚠️ Segurança:</strong> Nunca exponha essa chave no front-end (como no JavaScript do navegador) do seu site. Todas as chamadas para a nossa API devem partir do <strong>seu servidor backend</strong> (Node.js, Python, PHP, Java, etc).</p>
+            
+            <div class="code-window">
+                <div class="code-header">
+                    <div class="code-dots">
+                        <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+                    </div>
+                    <span>HTTP Headers</span>
+                </div>
+                <pre><code>Authorization: Bearer <span class="t-string">SUA_CHAVE_DE_API_AQUI</span></code></pre>
+            </div>
+        </section>
+
+        <!-- Seção 2: O Endpoint de Análise -->
+        <section>
+            <h2><span class="step-number">2</span> Realizando uma Análise</h2>
+            <p>Para analisar uma imagem, envie uma requisição <code class="inline">POST</code> com formato <code class="inline">multipart/form-data</code>. O limite máximo de tamanho de arquivo é de 15MB.</p>
+            
+            <div class="endpoint-card">
+                <div><span class="method post">POST</span> <code>https://aidaon-aida-borda-api.hf.space/v1/analyze/image</code></div>
+            </div>
+
+            <h3>Parâmetros da Requisição (Form Data)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Campo</th>
+                        <th>Tipo</th>
+                        <th>Obrigatório</th>
+                        <th>Descrição</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>image</strong></td>
+                        <td><span class="type-badge">File</span></td>
+                        <td>Sim</td>
+                        <td>O arquivo da imagem (JPEG, PNG, WEBP, etc).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>evidence</strong></td>
+                        <td><span class="type-badge">boolean</span></td>
+                        <td>Não</td>
+                        <td>Defina como <code class="inline">false</code> se não precisar do mapa de calor (reduz processamento). Padrão é <code class="inline">true</code>.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Seção 3: Exemplos de Código -->
+        <section>
+            <h2><span class="step-number">3</span> Exemplos de Código (Backend)</h2>
+            <p>Copie o trecho abaixo de acordo com a linguagem do seu servidor para realizar a integração rapidamente.</p>
+
+            <div class="code-window">
+                <div class="code-header">
+                    <div class="code-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                    <span>Node.js (Axios)</span>
+                    <button class="copy-btn" onclick="copyCode('code-node')">Copiar</button>
+                </div>
+                <pre><code id="code-node"><span class="t-keyword">const</span> axios <span class="t-operator">=</span> <span class="t-function">require</span>(<span class="t-string">'axios'</span>);
+<span class="t-keyword">const</span> FormData <span class="t-operator">=</span> <span class="t-function">require</span>(<span class="t-string">'form-data'</span>);
+<span class="t-keyword">const</span> fs <span class="t-operator">=</span> <span class="t-function">require</span>(<span class="t-string">'fs'</span>);
+
+<span class="t-keyword">async function</span> <span class="t-function">analisarDocumento</span>(caminhoImagem) {
+    <span class="t-keyword">const</span> form <span class="t-operator">=</span> <span class="t-keyword">new</span> <span class="t-function">FormData</span>();
+    form.<span class="t-function">append</span>(<span class="t-string">'image'</span>, fs.<span class="t-function">createReadStream</span>(caminhoImagem));
+    form.<span class="t-function">append</span>(<span class="t-string">'evidence'</span>, <span class="t-string">'true'</span>);
+
+    <span class="t-keyword">try</span> {
+        <span class="t-keyword">const</span> response <span class="t-operator">=</span> <span class="t-keyword">await</span> axios.<span class="t-function">post</span>(
+            <span class="t-string">'https://aidaon-aida-borda-api.hf.space/v1/analyze/image'</span>, 
+            form, 
+            {
+                <span class="t-function">headers</span>: {
+                    ...form.<span class="t-function">getHeaders</span>(),
+                    <span class="t-string">'Authorization'</span>: <span class="t-string">'Bearer aida_WGzt7D00yExZ4mI-UZxyF...'</span> <span class="t-comment">// Use variável de ambiente!</span>
+                }
+            }
+        );
+        <span class="t-function">console</span>.<span class="t-function">log</span>(<span class="t-string">'Resultado:'</span>, response.data);
+    } <span class="t-keyword">catch</span> (error) {
+        <span class="t-function">console</span>.<span class="t-function">error</span>(<span class="t-string">'Erro na API:'</span>, error.response ? error.response.data : error.message);
+    }
+}</code></pre>
+            </div>
+
+            <div class="code-window">
+                <div class="code-header">
+                    <div class="code-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                    <span>Python (Requests)</span>
+                    <button class="copy-btn" onclick="copyCode('code-python')">Copiar</button>
+                </div>
+                <pre><code id="code-python"><span class="t-keyword">import</span> requests
+
+<span class="t-keyword">def</span> <span class="t-function">analisar_documento</span>(caminho_imagem):
+    url <span class="t-operator">=</span> <span class="t-string">"https://aidaon-aida-borda-api.hf.space/v1/analyze/image"</span>
+    headers <span class="t-operator">=</span> {
+        <span class="t-string">"Authorization"</span>: <span class="t-string">"Bearer aida_WGzt7D00yExZ4mI-UZxyF..."</span> <span class="t-comment"># Use var de ambiente!</span>
+    }
+    
+    <span class="t-keyword">with</span> <span class="t-function">open</span>(caminho_imagem, <span class="t-string">"rb"</span>) <span class="t-keyword">as</span> f:
+        files <span class="t-operator">=</span> {<span class="t-string">"image"</span>: f}
+        data <span class="t-operator">=</span> {<span class="t-string">"evidence"</span>: <span class="t-string">"true"</span>}
+        
+        response <span class="t-operator">=</span> requests.<span class="t-function">post</span>(url, headers<span class="t-operator">=</span>headers, files<span class="t-operator">=</span>files, data<span class="t-operator">=</span>data)
+        
+    <span class="t-keyword">if</span> response.status_code <span class="t-operator">==</span> <span class="t-number">200</span>:
+        <span class="t-function">print</span>(<span class="t-string">"Resultado:"</span>, response.<span class="t-function">json</span>())
+    <span class="t-keyword">else</span>:
+        <span class="t-function">print</span>(<span class="t-string">"Erro:"</span>, response.status_code, response.<span class="t-function">json</span>())</code></pre>
+            </div>
+        </section>
+
+        <!-- Seção 4: Lendo a Resposta -->
+        <section>
+            <h2><span class="step-number">4</span> Processando a Resposta</h2>
+            <p>Se a requisição for bem-sucedida (Status <code class="inline">200 OK</code>), você receberá um JSON detalhado com o veredito da IA.</p>
+            
+            <div class="code-window">
+                <div class="code-header">
+                    <div class="code-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                    <span>JSON Response (Exemplo de Sucesso)</span>
+                </div>
+                <pre><code>{
+  <span class="t-string">"analysis_id"</span>: <span class="t-string">"hash_unico_da_analise"</span>,
+  <span class="t-string">"result"</span>: <span class="t-string">"IA/MANIPULADA"</span>, <span class="t-comment">// "REAL" | "IA/MANIPULADA" | "INCONCLUSIVO"</span>
+  <span class="t-string">"ai_probability"</span>: <span class="t-number">0.985</span>, <span class="t-comment">// Confiança da IA (0 a 1)</span>
+  <span class="t-string">"confidence"</span>: <span class="t-string">"ALTA"</span>, <span class="t-comment">// "ALTA" | "MEDIA" | "BAIXA"</span>
+  <span class="t-string">"details"</span>: {
+    <span class="t-string">"models"</span>: [
+      { <span class="t-string">"name"</span>: <span class="t-string">"forense"</span>, <span class="t-string">"ai_probability"</span>: <span class="t-number">0.99</span>, <span class="t-string">"status"</span>: <span class="t-string">"ok"</span> },
+      { <span class="t-string">"name"</span>: <span class="t-string">"clip"</span>, <span class="t-string">"ai_probability"</span>: <span class="t-number">0.98</span>, <span class="t-string">"status"</span>: <span class="t-string">"ok"</span> }
+    ]
+  },
+  <span class="t-string">"metadata"</span>: {
+    <span class="t-string">"duration_seconds"</span>: <span class="t-number">2.1</span>
+  }
+}</code></pre>
+            </div>
+            
+            <h3>Lógica de Negócios Sugerida</h3>
+            <p>No seu backend, você pode criar uma regra simples baseada no campo <code class="inline">result</code>:</p>
+            <ul>
+                <li style="margin-left: 20px; margin-bottom: 8px;"><strong style="color: #4ade80;">REAL</strong>: Aprove o fluxo do usuário normalmente.</li>
+                <li style="margin-left: 20px; margin-bottom: 8px;"><strong style="color: #f87171;">IA/MANIPULADA</strong>: Bloqueie a transação e encaminhe para revisão humana ou recuse.</li>
+                <li style="margin-left: 20px;"><strong style="color: #fbbf24;">INCONCLUSIVO</strong>: Peça ao usuário para enviar uma foto com melhor iluminação.</li>
+            </ul>
+        </section>
+
+        <!-- Seção 5: Erros Comuns -->
+        <section>
+            <h2><span class="step-number">5</span> Tratamento de Erros e Limites</h2>
+            <p>Sua integração deve estar preparada para lidar com os seguintes códigos HTTP da API:</p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Status</th>
+                        <th>Código Interno</th>
+                        <th>Significado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong style="color: #f87171;">400</strong></td>
+                        <td><code class="inline">invalid_image</code></td>
+                        <td>Arquivo vazio, corrompido ou formato não suportado.</td>
+                    </tr>
+                    <tr>
+                        <td><strong style="color: #f87171;">401</strong></td>
+                        <td><code class="inline">invalid_key</code></td>
+                        <td>Chave de API ausente, inválida ou revogada.</td>
+                    </tr>
+                    <tr>
+                        <td><strong style="color: #f87171;">413</strong></td>
+                        <td><code class="inline">payload_too_large</code></td>
+                        <td>O arquivo ultrapassa o limite de 15MB.</td>
+                    </tr>
+                    <tr>
+                        <td><strong style="color: #fbbf24;">429</strong></td>
+                        <td><code class="inline">rate_limited</code></td>
+                        <td>Sua empresa excedeu o limite do plano contratado nesta hora. Tente novamente mais tarde. Leia o header <code>Retry-After</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><strong style="color: #f87171;">503</strong></td>
+                        <td><code class="inline">busy</code></td>
+                        <td>Servidores da AIDA sob carga máxima. Tente de novo em alguns segundos.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+    </div>
+
+    <script>
+        function copyCode(elementId) {
+            const code = document.getElementById(elementId).innerText;
+            navigator.clipboard.writeText(code).then(() => {
+                const btn = event.target;
+                const originalText = btn.innerText;
+                btn.innerText = 'Copiado!';
+                btn.style.background = 'rgba(52, 211, 153, 0.2)';
+                btn.style.color = '#34d399';
+                
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.style.background = 'none';
+                    btn.style.color = 'var(--text-secondary)';
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>

@@ -2,7 +2,14 @@
 const supabaseUrl = "https://nwzijdudhemuibsyzpub.supabase.co";
 const supabaseKey =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im53emlqZHVkaGVtdWlic3l6cHViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwMjk5MTAsImV4cCI6MjA4NzYwNTkxMH0.aDHymYEKtyY5m2eaOHoBy4QRpaAvtafi_PVDtrL9gQc";
-const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
+const _supabase = supabase.createClient(supabaseUrl, supabaseKey, {
+  auth: {
+    flowType: "pkce",
+    detectSessionInUrl: true,
+    persistSession: true,
+    autoRefreshToken: true,
+  },
+});
 
 const ADMIN_EMAIL = "admin@gmail.com";
 const ADMIN_PASSWORD = "admin3ds";
@@ -324,9 +331,22 @@ async function finalizarLoginUsuario(user, mensagemBoasVindas = true) {
   return true;
 }
 
+async function aguardarSessaoOAuth(tentativas = 24, intervaloMs = 250) {
+  for (let tentativa = 0; tentativa < tentativas; tentativa += 1) {
+    const { data } = await _supabase.auth.getSession();
+
+    if (data?.session?.user) {
+      return data.session;
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, intervaloMs));
+  }
+
+  return null;
+}
+
 async function processarRetornoOAuth() {
-  const { searchParams, hashParams, codigoOAuth, possuiRetornoOAuth } =
-    obterDadosRetornoOAuth();
+  const { searchParams, hashParams, possuiRetornoOAuth } = obterDadosRetornoOAuth();
 
   if (!possuiRetornoOAuth) {
     return;
@@ -337,6 +357,7 @@ async function processarRetornoOAuth() {
     searchParams.get("error_description") || hashParams.get("error_description");
 
   if (erroOAuth) {
+    window.history.replaceState(null, document.title, window.location.pathname);
     mostrarAviso(
       descricaoErroOAuth || "Nao foi possivel concluir o login com Google.",
       "erro"
@@ -344,30 +365,21 @@ async function processarRetornoOAuth() {
     return;
   }
 
-  let session = null;
-  let error = null;
+  // O supabase-js ja troca o code por sessao sozinho (detectSessionInUrl).
+  // Aqui apenas aguardamos essa troca terminar - chamar exchangeCodeForSession
+  // manualmente consome o code_verifier do PKCE e quebra o login.
+  const session = await aguardarSessaoOAuth();
 
-  if (codigoOAuth) {
-    const resultado = await _supabase.auth.exchangeCodeForSession(codigoOAuth);
-    session = resultado.data?.session || null;
-    error = resultado.error;
-  }
+  window.history.replaceState(null, document.title, window.location.pathname);
 
-  if (!session && !error) {
-    const resultado = await _supabase.auth.getSession();
-    session = resultado.data?.session || null;
-    error = resultado.error;
-  }
-
-  if (error) {
-    mostrarAviso("Nao foi possivel concluir o login com Google.", "erro");
+  if (!session?.user) {
+    if (!loginFinalizado) {
+      mostrarAviso("Nao foi possivel concluir o login com Google.", "erro");
+    }
     return;
   }
 
-  if (session?.user) {
-    window.history.replaceState(null, document.title, window.location.pathname);
-    await finalizarLoginUsuario(session.user);
-  }
+  await finalizarLoginUsuario(session.user);
 }
 
 async function redirecionarSessaoAtiva() {

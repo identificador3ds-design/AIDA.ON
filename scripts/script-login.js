@@ -12,7 +12,6 @@ const _supabase = supabase.createClient(supabaseUrl, supabaseKey, {
 });
 
 const ADMIN_EMAIL = "admin@gmail.com";
-const ADMIN_PASSWORD = "admin3ds";
 const CHAVE_ADMIN_CONFIG = "AIDA_ADMIN_CONFIG";
 const CHAVE_LOGIN_FEEDBACK = "AIDA_LOGIN_FEEDBACK";
 const CHAVE_ADMIN_REDIRECT_MESSAGE = "AIDA_ADMIN_REDIRECT_MESSAGE";
@@ -213,20 +212,6 @@ function obterUrlRetornoOAuth() {
   return `${window.location.origin}${window.location.pathname}`;
 }
 
-function acessarAdminLocal() {
-  limparSessaoLocal();
-  localStorage.setItem("usuarioNome", "Admin");
-  localStorage.setItem("usuarioEmail", ADMIN_EMAIL);
-  localStorage.setItem("usuarioTipo", "admin");
-  localStorage.removeItem(CHAVE_LOGIN_FEEDBACK);
-  localStorage.removeItem(CHAVE_ADMIN_REDIRECT_MESSAGE);
-  mostrarAviso("Acesso administrativo liberado.");
-
-  setTimeout(() => {
-    window.location.href = "./index-admin.html";
-  }, 900);
-}
-
 function obterDadosRetornoOAuth() {
   const searchParams = new URLSearchParams(window.location.search);
   const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ""));
@@ -324,8 +309,14 @@ async function finalizarLoginUsuario(user, mensagemBoasVindas = true) {
     mostrarAviso(`Bem-vindo(a), ${nomeUsuario}!`);
   }
 
+  // O admin nao tem mais atalho local: entra pelo Supabase como todo mundo. O
+  // destino continua sendo o painel, mas quem decide o que ele enxerga la sao
+  // as policies de RLS, nao esta linha.
+  const destino =
+    emailUsuario === ADMIN_EMAIL ? "./index-admin.html" : "./index-apresentacao.html";
+
   setTimeout(() => {
-    window.location.href = "./index-apresentacao.html";
+    window.location.href = destino;
   }, 1250);
 
   return true;
@@ -477,11 +468,6 @@ loginForm?.addEventListener("submit", async (event) => {
   const email = document.getElementById("loginEmail")?.value.trim() || "";
   const password = document.getElementById("loginPassword")?.value || "";
   const emailNormalizado = email.trim().toLowerCase();
-
-  if (emailNormalizado === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-    acessarAdminLocal();
-    return;
-  }
 
   const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
 

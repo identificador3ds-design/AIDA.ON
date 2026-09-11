@@ -1,0 +1,160 @@
+{
+  "info": {
+    "name": "AIDA API",
+    "description": "Coleção de testes para a API AIDA.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Public (Sem Autenticação)",
+      "item": [
+        {
+          "name": "Raiz / Informações",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": ["{{base_url}}"],
+              "path": [""]
+            }
+          }
+        },
+        {
+          "name": "Contrato",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/v1/contract",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "contract"]
+            }
+          }
+        },
+        {
+          "name": "Documentação",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/v1/docs",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "docs"]
+            }
+          }
+        },
+        {
+          "name": "Saúde (Health)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/v1/health",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "health"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Protegidas (Requer Chave de API)",
+      "item": [
+        {
+          "name": "Analisar Imagem",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{api_key}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "evidence",
+                  "value": "true",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/v1/analyze/image",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "analyze", "image"]
+            }
+          }
+        },
+        {
+          "name": "Recuperar Análise",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{api_key}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/v1/analysis/{{analysis_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "analysis", "{{analysis_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Recuperar Evidência",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{api_key}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/v1/evidence/{{analysis_id}}/{{map_name}}",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "evidence", "{{analysis_id}}", "{{map_name}}"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000"
+    },
+    {
+      "key": "api_key",
+      "value": "aida_teste"
+    },
+    {
+      "key": "analysis_id",
+      "value": "substitua_pelo_id_da_analise"
+    },
+    {
+      "key": "map_name",
+      "value": "substitua_pelo_nome_do_mapa"
+    }
+  ]
+}

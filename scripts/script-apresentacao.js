@@ -281,17 +281,34 @@ function setUserName() {
 }
 
 function updateActiveNav() {
-  /* Nem todo `.ancoranav` aponta para uma secao desta pagina: "Solucoes" leva
-     para outro arquivo. Passar "./index-solucoes.html" para querySelector
-     lanca SyntaxError e derrubava todo o resto do boot da home. Por isso
-     filtramos so as ancoras internas — e guardamos link e secao no mesmo par,
-     em vez de duas listas que saiam de sincronia ao descartar um item. */
+
+  
   const alvos = Array.from(document.querySelectorAll(".ancoranav"))
     .filter((link) => (link.getAttribute("href") || "").startsWith("#"))
     .map((link) => ({ link, section: document.querySelector(link.getAttribute("href")) }))
     .filter((par) => par.section);
 
   if (!alvos.length) {
+
+    const links = document.querySelectorAll(".ancoranav");
+    const navItems = Array.from(links)
+      .map((link) => {
+        const href = link.getAttribute("href");
+        let section = null;
+        if (href && href.startsWith("#")) {
+          try {
+            section = document.querySelector(href);
+          } catch (e) {
+            section = null;
+          }
+        }
+        return { link, section };
+    })
+    .filter((item) => item.section !== null);
+  }
+
+  if (!navItems.length) {
+
     return;
   }
 
@@ -299,18 +316,22 @@ function updateActiveNav() {
     const offset = window.scrollY + 140;
 
     alvos.forEach(({ link, section }) => {
+
+    navItems.forEach(({ link, section }) => {
+
       const isActive =
         offset >= section.offsetTop &&
         offset < section.offsetTop + section.offsetHeight;
 
       link.classList.toggle("active", isActive);
     });
-  };
+  });
+
 
   onScroll();
   window.addEventListener("scroll", onScroll, { passive: true });
+  }
 }
-
 function changeMember(index) {
   if (index === currentIndex || !photo || !bigName || !memberDescription) {
     return;
@@ -791,5 +812,3 @@ updateFavicon();
 
 
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateFavicon);
-
-

@@ -10,9 +10,23 @@
 
     <link rel="manifest" href="../manifest.webmanifest">
     <link rel="apple-touch-icon" href="../assets/images/pwa-icon-180.png">
-    <link rel="icon" type="image/png" href="../assets/images/AIDABranco.ico">
+    <link id="favicon" rel="icon" type="image/x-icon" href="../assets/images/AIDABranco.ico">
 
     <title>Soluções AIDA</title>
+    <!-- SEO e compartilhamento -->
+    <link rel="canonical" href="https://aida-on.vercel.app/solucoes">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="AIDA.ON">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:title" content="Soluções AIDA — Image, Forensics, Video e API">
+    <meta property="og:description" content="O ecossistema AIDA em quatro frentes: análise de imagem, investigação forense, leitura de vídeo e integração por API.">
+    <meta property="og:url" content="https://aida-on.vercel.app/solucoes">
+    <meta property="og:image" content="https://aida-on.vercel.app/assets/images/pwa-icon-512.png">
+    <meta property="og:image:alt" content="Logotipo do AIDA.ON">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Soluções AIDA — Image, Forensics, Video e API">
+    <meta name="twitter:description" content="O ecossistema AIDA em quatro frentes: análise de imagem, investigação forense, leitura de vídeo e integração por API.">
+    <meta name="twitter:image" content="https://aida-on.vercel.app/assets/images/pwa-icon-512.png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,18 +38,19 @@
 </head>
 
 <body class="aida-shell">
+    <a class="aida-skip-link" href="#conteudo">Pular para o conteúdo</a>
     <header class="page-header">
-        <a href="./index-apresentacao.html" aria-label="Pagina inicial do AIDA">
+        <a href="./index-apresentacao.html" aria-label="Página inicial do AIDA">
             <img src="../assets/images/LogoBranca.png" alt="Logo AIDA.ON" class="brand-logo">
         </a>
 
-        <nav class="aida-row" aria-label="Navegacao da plataforma">
+        <nav class="aida-row" aria-label="Navegação da plataforma">
             <a href="./index-apresentacao.html" class="top-link">Voltar à página inicial</a>
             <a href="./index-seleciona.html" class="top-link">Analisar imagem</a>
         </nav>
     </header>
 
-    <main class="page-frame">
+    <main id="conteudo" class="page-frame">
         <!-- =============================================================
              Soluções AIDA
 
@@ -332,7 +347,7 @@
         </section>
     </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/gsap.min.js" integrity="sha384-UoFnwgbUNlK0Rwou15cSoyrXQvKrOUxV8AkCoGKSSd0sxVeJ95ARU8uGMkMZhzpB" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="../scripts/script-cookie-consent.js"></script>
     <script src="../scripts/aida-solucoes.js?v=20260816-demos"></script>
 </body>

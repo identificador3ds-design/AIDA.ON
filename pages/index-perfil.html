@@ -5,19 +5,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#10403b">
   <title>Perfil AIDA.ON</title>
-  <link rel="icon" id="favicon" type="image/png" href="../assets/images/AIDABranco.ico">
+  <!-- SEO e compartilhamento -->
+  <meta name="description" content="Dados da sua conta AIDA.ON, preferências de retenção e controle sobre os seus dados.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="AIDA.ON">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:title" content="Perfil — AIDA.ON">
+  <meta property="og:description" content="Dados da sua conta AIDA.ON, preferências de retenção e controle sobre os seus dados.">
+  <meta property="og:url" content="https://aida-on.vercel.app/perfil">
+  <meta property="og:image" content="https://aida-on.vercel.app/assets/images/pwa-icon-512.png">
+  <meta property="og:image:alt" content="Logotipo do AIDA.ON">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Perfil — AIDA.ON">
+  <meta name="twitter:description" content="Dados da sua conta AIDA.ON, preferências de retenção e controle sobre os seus dados.">
+  <meta name="twitter:image" content="https://aida-on.vercel.app/assets/images/pwa-icon-512.png">
+  <link rel="icon" id="favicon" type="image/x-icon" href="../assets/images/AIDABranco.ico">
   <link rel="stylesheet" href="../styles/style-shared-theme.css">
+  <link rel="stylesheet" href="../styles/aida-design-system.css">
   <link rel="stylesheet" href="../styles/style-perfil.css">
 </head>
 <body class="aida-shell profile-page">
+  <a class="aida-skip-link" href="#conteudo">Pular para o conteúdo</a>
   <header class="page-header">
-    <a href="../index.html" aria-label="Pagina inicial">
+    <a href="../index.html" aria-label="Página inicial">
       <img src="../assets/images/LogoBranca.png" alt="Logo AIDA.ON" class="brand-logo">
     </a>
     <a href="./index-apresentacao.html" class="top-link">Voltar</a>
   </header>
 
-<main class="page-frame profile-main">
+<main id="conteudo" class="page-frame profile-main">
     <div class="profile-container">
       
       <!-- Cabeçalho do Perfil -->
@@ -27,9 +44,9 @@
             <img src="../assets/images/circle-user-regular-full.svg" alt="">
           </div>
           <div class="profile-text">
-            <h1 id="nome-usuario" class="profile-name">Usuario</h1>
+            <h1 id="nome-usuario" class="profile-name">Usuário</h1>
             <p id="email-usuario" class="profile-email">usuarioaida@gmail.com</p>
-            <span class="profile-role" id="profile-info-role">Usuario</span>
+            <span class="profile-role" id="profile-info-role">Usuário</span>
           </div>
         </div>
         
@@ -44,7 +61,7 @@
       <div class="profile-content">
         
         <!-- Detalhes e Configurações -->
-        <section class="profile-section" aria-label="Informacoes do usuario">
+        <section class="profile-section" aria-label="Informações do usuário">
           <div class="section-header">
             <h2>Informações Pessoais</h2>
             <button type="button" class="btn-edit" id="edit-profile-button">
@@ -66,7 +83,7 @@
         </section>
 
         <!-- Acesso Rápido -->
-        <section class="profile-section" aria-label="Acoes do perfil">
+        <section class="profile-section" aria-label="Ações do perfil">
           <div class="section-header">
             <h2>Acesso Rápido</h2>
           </div>
@@ -144,7 +161,7 @@
   <div class="profile-modal" id="profile-edit-modal" hidden>
     <div class="profile-modal-backdrop" data-close-profile-modal></div>
     <div class="profile-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="profile-edit-title">
-      <button type="button" class="profile-modal-close" aria-label="Fechar edicao" data-close-profile-modal>&times;</button>
+      <button type="button" class="profile-modal-close" aria-label="Fechar edição" data-close-profile-modal>&times;</button>
       <h2 id="profile-edit-title">Editar informações</h2>
       <form id="profile-edit-form" class="profile-edit-form">
         <label class="profile-edit-field">
@@ -167,7 +184,7 @@
   <div class="profile-modal" id="delete-account-modal" hidden>
     <div class="profile-modal-backdrop" data-close-delete-modal></div>
     <div class="profile-modal-dialog delete-account-dialog" role="dialog" aria-modal="true" aria-labelledby="delete-account-title" aria-describedby="delete-account-description">
-      <button type="button" class="profile-modal-close" aria-label="Fechar confirmacao" data-close-delete-modal>&times;</button>
+      <button type="button" class="profile-modal-close" aria-label="Fechar confirmação" data-close-delete-modal>&times;</button>
       <span class="section-tag">Ação irreversível</span>
       <h2 id="delete-account-title">Excluir conta e todos os dados?</h2>
       <p id="delete-account-description" class="delete-account-description">
@@ -197,7 +214,7 @@
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.3/dist/umd/supabase.js" integrity="sha384-qafw21c/iciq0VXsi9FzkfoQv5I/V0iqE4lSNcKXPnW9/UTJLnv5CcN4FHxVLnKg" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="../scripts/script-cookie-consent.js"></script>
   <script src="../scripts/script-perfil.js"></script>
 </body>

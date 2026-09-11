@@ -14,20 +14,30 @@
     <link rel="apple-touch-icon" href="../assets/images/pwa-icon-180.png">
 
     <title>AIDA.ON - Selecionar Imagem</title>
-    <link rel="icon" id="favicon" type="image/png" href="../assets/images/AIDABranco.ico">
+    <!-- SEO e compartilhamento -->
+    <meta name="description" content="Envie uma foto e receba uma leitura técnica dos indícios de geração ou manipulação por IA, explicada em linguagem simples.">
+    <link rel="canonical" href="https://aida-on.vercel.app/image">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="AIDA.ON">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:title" content="AIDA Image — Enviar imagem para análise">
+    <meta property="og:description" content="Envie uma foto e receba uma leitura técnica dos indícios de geração ou manipulação por IA, explicada em linguagem simples.">
+    <meta property="og:url" content="https://aida-on.vercel.app/image">
+    <meta property="og:image" content="https://aida-on.vercel.app/assets/images/pwa-icon-512.png">
+    <meta property="og:image:alt" content="Logotipo do AIDA.ON">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="AIDA Image — Enviar imagem para análise">
+    <meta name="twitter:description" content="Envie uma foto e receba uma leitura técnica dos indícios de geração ou manipulação por IA, explicada em linguagem simples.">
+    <meta name="twitter:image" content="https://aida-on.vercel.app/assets/images/pwa-icon-512.png">
+    <link rel="icon" id="favicon" type="image/x-icon" href="../assets/images/AIDABranco.ico">
     <link rel="stylesheet" href="../styles/style-shared-theme.css">
+    <link rel="stylesheet" href="../styles/aida-design-system.css">
     <link rel="stylesheet" href="../styles/style-ferramenta.css">
-    <script>
-        if (["localhost", "127.0.0.1"].includes(location.hostname) && "serviceWorker" in navigator) {
-            navigator.serviceWorker.getRegistrations().then((regs) => regs.forEach((reg) => reg.unregister()));
-            if ("caches" in window) {
-                caches.keys().then((keys) => keys.forEach((key) => caches.delete(key)));
-            }
-        }
-    </script>
+    <script src="../scripts/aida-dev-sw-reset.js"></script>
 </head>
 
 <body class="aida-shell selecao-page">
+    <a class="aida-skip-link" href="#conteudo">Pular para o conteúdo</a>
     <header class="page-header">
         <a href="../index.html" aria-label="Página inicial">
             <img src="../assets/images/LogoBranca.png" alt="Logo AIDA.ON" class="brand-logo">
@@ -39,7 +49,7 @@
         </div>
     </header>
 
-    <main class="page-frame selecao-main">
+    <main id="conteudo" class="page-frame selecao-main">
         <section class="selecao-panel glass-panel">
             <div class="selecao-intro">
                 <span class="page-kicker">Nova análise</span>
@@ -79,7 +89,7 @@
 
                 <!-- Sem as extensões explícitas o seletor do Windows esconde
                      .heic/.avif: o sistema não os registra como "image/*". -->
-                <input type="file" id="inputFileBotao"
+                <input type="file" aria-label="Selecionar imagem do dispositivo" id="inputFileBotao"
                        accept="image/*,.heic,.heif,.avif,.jpg,.jpeg,.png,.webp,.bmp" hidden>
 
                 <button type="button" id="btnAcaoSelecionar" class="aida-button">Selecionar imagem</button>

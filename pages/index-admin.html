@@ -5,14 +5,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#10403b">
   <link rel="manifest" href="../manifest.webmanifest">
-  <link rel="icon" type="image/png" href="../assets/images/AIDABranco.ico">
+  <link id="favicon" rel="icon" type="image/x-icon" href="../assets/images/AIDABranco.ico">
   <title>AIDA.ON - Painel Administrativo</title>
+  <!-- SEO e compartilhamento -->
+  <meta name="description" content="Área restrita de operação do AIDA.ON.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="AIDA.ON">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:title" content="Painel administrativo — AIDA.ON">
+  <meta property="og:description" content="Área restrita de operação do AIDA.ON.">
+  <meta property="og:url" content="https://aida-on.vercel.app/admin">
+  <meta property="og:image" content="https://aida-on.vercel.app/assets/images/pwa-icon-512.png">
+  <meta property="og:image:alt" content="Logotipo do AIDA.ON">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Painel administrativo — AIDA.ON">
+  <meta name="twitter:description" content="Área restrita de operação do AIDA.ON.">
+  <meta name="twitter:image" content="https://aida-on.vercel.app/assets/images/pwa-icon-512.png">
   <link rel="stylesheet" href="../styles/style-shared-theme.css">
+  <link rel="stylesheet" href="../styles/aida-design-system.css">
   <link rel="stylesheet" href="../styles/style-administrador.css">
 </head>
 <body class="aida-shell admin-page">
+  <a class="aida-skip-link" href="#conteudo">Pular para o conteúdo</a>
   <header class="page-header admin-header">
-    <a href="../index.html" aria-label="Pagina inicial">
+    <a href="../index.html" aria-label="Página inicial">
       <img src="../assets/images/LogoBranca.png" alt="Logo AIDA.ON" class="brand-logo">
     </a>
 
@@ -22,78 +39,78 @@
     </div>
   </header>
 
-  <main class="page-frame admin-main">
+  <main id="conteudo" class="page-frame admin-main">
     <section class="glass-panel admin-hero">
       <div class="admin-hero-copy">
         <span class="page-kicker">Central operacional</span>
         <h1 class="page-title">Painel administrativo AIDA.ON</h1>
         <p class="page-copy">
-          Controle acessos, mensagens, modos de operacao, metodos e contas em uma estrutura
-          separada por sessoes. O foco aqui e facilitar leitura, decisao e manutencao do sistema.
+          Controle acessos, mensagens, modos de operação, métodos e contas em uma estrutura
+          separada por sessões. O foco aqui é facilitar leitura, decisão e manutenção do sistema.
         </p>
 
         <div class="hero-tags">
-          <span class="hero-tag">Operacao</span>
-          <span class="hero-tag">Manutencao</span>
-          <span class="hero-tag">Usuarios</span>
-          <span class="hero-tag">Metodos</span>
+          <span class="hero-tag">Operação</span>
+          <span class="hero-tag">Manutenção</span>
+          <span class="hero-tag">Usuários</span>
+          <span class="hero-tag">Métodos</span>
         </div>
       </div>
 
       <aside class="admin-hero-side">
         <article class="hero-side-card">
-          <span class="hero-side-label">Sessao ativa</span>
+          <span class="hero-side-label">Sessão ativa</span>
           <strong>Admin</strong>
           <p>Controle elevado liberado para este navegador.</p>
         </article>
 
         <article class="hero-side-card">
-          <span class="hero-side-label">Ultimo acesso</span>
+          <span class="hero-side-label">Último acesso</span>
           <strong id="adminLastAccess">Agora</strong>
-          <p>Historico local do painel administrativo.</p>
+          <p>Histórico local do painel administrativo.</p>
         </article>
 
         <article class="hero-side-card">
-          <span class="hero-side-label">Contato visivel</span>
+          <span class="hero-side-label">Contato visível</span>
           <strong id="adminSupportPreview">admin@gmail.com</strong>
-          <p>Email usado nos avisos e na tela de manutencao.</p>
+          <p>Email usado nos avisos e na tela de manutenção.</p>
         </article>
       </aside>
     </section>
 
     <section class="admin-stats">
       <article class="glass-card stat-card">
-        <span class="stat-label">Usuarios</span>
+        <span class="stat-label">Usuários</span>
         <strong id="statUsers">--</strong>
         <p>Contas conhecidas pelo painel.</p>
       </article>
 
       <article class="glass-card stat-card">
-        <span class="stat-label">Analises</span>
+        <span class="stat-label">Análises</span>
         <strong id="statAnalyses">--</strong>
         <p>Processamentos registrados na base.</p>
       </article>
 
       <article class="glass-card stat-card">
-        <span class="stat-label">Modulos</span>
+        <span class="stat-label">Módulos</span>
         <strong id="statTools">--</strong>
-        <p>Paginas e fluxos mapeados no sistema.</p>
+        <p>Páginas e fluxos mapeados no sistema.</p>
       </article>
 
       <article class="glass-card stat-card">
         <span class="stat-label">Controles ativos</span>
         <strong id="statConfigs">--</strong>
-        <p>Preferencias administrativas ligadas.</p>
+        <p>Preferências administrativas ligadas.</p>
       </article>
     </section>
 
     <section class="glass-panel admin-section">
       <div class="section-head">
         <div>
-          <span class="page-kicker">Operacao do site</span>
-          <h2>Configuracoes principais</h2>
+          <span class="page-kicker">Operação do site</span>
+          <h2>Configurações principais</h2>
           <p class="admin-muted">
-            Ajuste comunicacao, acessos publicos e comportamento da experiencia sem precisar
+            Ajuste comunicação, acessos públicos e comportamento da experiência sem precisar
             navegar por blocos apertados.
           </p>
         </div>
@@ -103,7 +120,7 @@
       <form id="adminConfigForm" class="admin-form">
         <section class="admin-subsection">
           <div class="subsection-head">
-            <span class="subsection-kicker">Comunicacao</span>
+            <span class="subsection-kicker">Comunicação</span>
             <h3>Mensagem e identidade operacional</h3>
           </div>
 
@@ -114,13 +131,13 @@
             </div>
 
             <div class="admin-field">
-              <label for="configAnalysisButtonLabel">Texto do botao principal da analise</label>
+              <label for="configAnalysisButtonLabel">Texto do botão principal da análise</label>
               <input id="configAnalysisButtonLabel" type="text" class="field-input" placeholder="Analisar imagem">
             </div>
 
             <div class="admin-field admin-field-wide">
               <label for="configAnnouncement">Mensagem institucional</label>
-              <textarea id="configAnnouncement" rows="4" class="field-textarea" placeholder="Escreva um aviso rapido para os usuarios."></textarea>
+              <textarea id="configAnnouncement" rows="4" class="field-textarea" placeholder="Escreva um aviso rápido para os usuários."></textarea>
             </div>
           </div>
         </section>
@@ -128,8 +145,8 @@
         <div class="admin-two-column">
           <section class="admin-subsection">
             <div class="subsection-head">
-              <span class="subsection-kicker">Fluxo publico</span>
-              <h3>Regras de acesso e experiencia</h3>
+              <span class="subsection-kicker">Fluxo público</span>
+              <h3>Regras de acesso e experiência</h3>
             </div>
 
             <div class="toggle-stack">
@@ -137,39 +154,39 @@
                 <input id="configAllowRegistrations" type="checkbox">
                 <div>
                   <strong>Permitir novos cadastros</strong>
-                  <span>Deixa o cadastro publico aberto para novas contas entrarem no sistema.</span>
+                  <span>Deixa o cadastro público aberto para novas contas entrarem no sistema.</span>
                 </div>
               </label>
 
               <label class="toggle-row">
                 <input id="configEnableInstallPrompt" type="checkbox">
                 <div>
-                  <strong>Exibir convite de instalacao</strong>
-                  <span>Mostra o convite para instalar o app depois da analise ser concluida.</span>
+                  <strong>Exibir convite de instalação</strong>
+                  <span>Mostra o convite para instalar o app depois da análise ser concluída.</span>
                 </div>
               </label>
 
               <label class="toggle-row">
                 <input id="configMaintenanceMode" type="checkbox">
                 <div>
-                  <strong>Modo manutencao</strong>
-                  <span>Envia usuarios da ferramenta para a tela de manutencao enquanto a area estiver em fase de desenvolvimento.</span>
+                  <strong>Modo manutenção</strong>
+                  <span>Envia usuários da ferramenta para a tela de manutenção enquanto a área estiver em fase de desenvolvimento.</span>
                 </div>
               </label>
 
               <label class="toggle-row">
                 <input id="configAllowUploadPage" type="checkbox">
                 <div>
-                  <strong>Liberar pagina de upload</strong>
-                  <span>Abre ou fecha a etapa em que o usuario seleciona e troca a imagem.</span>
+                  <strong>Liberar página de upload</strong>
+                  <span>Abre ou fecha a etapa em que o usuário seleciona e troca a imagem.</span>
                 </div>
               </label>
 
               <label class="toggle-row">
                 <input id="configAllowHistoryPage" type="checkbox">
                 <div>
-                  <strong>Liberar historico</strong>
-                  <span>Permite que cada usuario veja o proprio historico de analises.</span>
+                  <strong>Liberar histórico</strong>
+                  <span>Permite que cada usuário veja o próprio histórico de análises.</span>
                 </div>
               </label>
 
@@ -177,31 +194,31 @@
                 <input id="configAllowProfilePage" type="checkbox">
                 <div>
                   <strong>Liberar perfil</strong>
-                  <span>Mostra a area de conta com dados pessoais e atalhos da sessao.</span>
+                  <span>Mostra a área de conta com dados pessoais e atalhos da sessão.</span>
                 </div>
               </label>
 
               <label class="toggle-row">
                 <input id="configLockAnalysisPage" type="checkbox">
                 <div>
-                  <strong>Travar analise</strong>
-                  <span>Desliga o processamento e deixa a tela de analise em pausa.</span>
+                  <strong>Travar análise</strong>
+                  <span>Desliga o processamento e deixa a tela de análise em pausa.</span>
                 </div>
               </label>
 
               <label class="toggle-row">
                 <input id="configDefaultWatermarkCheck" type="checkbox">
                 <div>
-                  <strong>Marca visual ligada por padrao</strong>
-                  <span>Define se a checagem de marca visual ja inicia ativada na ferramenta.</span>
+                  <strong>Marca visual ligada por padrão</strong>
+                  <span>Define se a checagem de marca visual já inicia ativada na ferramenta.</span>
                 </div>
               </label>
 
               <label class="toggle-row">
                 <input id="configDefaultMetadataCheck" type="checkbox">
                 <div>
-                  <strong>Metadados ligados por padrao</strong>
-                  <span>Define se a leitura de metadados ja entra ligada na analise.</span>
+                  <strong>Metadados ligados por padrão</strong>
+                  <span>Define se a leitura de metadados já entra ligada na análise.</span>
                 </div>
               </label>
             </div>
@@ -209,19 +226,19 @@
 
           <section class="admin-subsection admin-subsection-highlight">
             <div class="subsection-head">
-              <span class="subsection-kicker">Manutencao</span>
-              <h3>Experiencia de acesso controlado</h3>
+              <span class="subsection-kicker">Manutenção</span>
+              <h3>Experiência de acesso controlado</h3>
             </div>
 
             <p class="admin-muted">
-              Quando o modo manutencao estiver ativo, o usuario comum sera levado para uma tela
-              dedicada informando que a ferramenta esta temporariamente em fase de desenvolvimento.
+              Quando o modo manutenção estiver ativo, o usuário comum será levado para uma tela
+              dedicada informando que a ferramenta está temporariamente em fase de desenvolvimento.
             </p>
 
             <article class="maintenance-code-card">
               <span>Status atual da tela</span>
               <strong>Em fase de desenvolvimento</strong>
-              <p>Enquanto esse modo estiver ativo, o acesso comum a ferramenta fica temporariamente indisponivel.</p>
+              <p>Enquanto esse modo estiver ativo, o acesso comum a ferramenta fica temporariamente indisponível.</p>
             </article>
 
             <div class="preview-panel">
@@ -232,8 +249,8 @@
         </div>
 
         <div class="admin-form-actions">
-          <button type="submit" class="aida-button">Salvar configuracoes</button>
-          <button id="btnResetConfig" type="button" class="aida-button secondary">Restaurar padrao</button>
+          <button type="submit" class="aida-button">Salvar configurações</button>
+          <button id="btnResetConfig" type="button" class="aida-button secondary">Restaurar padrão</button>
         </div>
       </form>
     </section>
@@ -242,7 +259,7 @@
       <section class="glass-panel admin-section">
         <div class="section-head">
           <div>
-            <span class="page-kicker">Acao rapida</span>
+            <span class="page-kicker">Ação rápida</span>
             <h2>Comandos operacionais</h2>
           </div>
         </div>
@@ -250,12 +267,12 @@
         <div class="quick-actions">
           <button id="btnPresetOpen" type="button" class="quick-action-row">
             <strong>Modo aberto</strong>
-            <span>Liga o fluxo padrao para testes e apresentacoes.</span>
+            <span>Liga o fluxo padrão para testes e apresentações.</span>
           </button>
 
           <button id="btnPresetRestrict" type="button" class="quick-action-row">
             <strong>Modo restrito</strong>
-            <span>Ativa manutencao, fecha cadastros e deixa a operacao sob controle.</span>
+            <span>Ativa manutenção, fecha cadastros e deixa a operação sob controle.</span>
           </button>
 
           <button id="btnClearAnnouncement" type="button" class="quick-action-row">
@@ -265,7 +282,7 @@
 
           <button id="btnUnlockUsers" type="button" class="quick-action-row">
             <strong>Desbloquear contas</strong>
-            <span>Remove bloqueios locais e restaura o acesso dos usuarios.</span>
+            <span>Remove bloqueios locais e restaura o acesso dos usuários.</span>
           </button>
         </div>
       </section>
@@ -279,17 +296,17 @@
         </div>
 
         <p class="admin-muted">
-          Um quadro rapido para acompanhar o volume de bloqueios e a disponibilidade tecnica dos metodos.
+          Um quadro rápido para acompanhar o volume de bloqueios e a disponibilidade técnica dos métodos.
         </p>
 
         <div class="admin-mini-board">
           <article class="mini-card">
-            <span>Contas com restricao</span>
+            <span>Contas com restrição</span>
             <strong id="blockedUsersCount">0</strong>
           </article>
 
           <article class="mini-card">
-            <span>Metodos ativos</span>
+            <span>Métodos ativos</span>
             <strong id="activeMethodsCount">0</strong>
           </article>
         </div>
@@ -300,9 +317,9 @@
       <div class="section-head">
         <div>
           <span class="page-kicker">Mapa do sistema</span>
-          <h2>Paginas e modulos controlados</h2>
+          <h2>Páginas e módulos controlados</h2>
           <p class="admin-muted">
-            Cada linha resume o estado operacional do modulo e facilita a abertura direta para inspecao.
+            Cada linha resume o estado operacional do módulo e facilita a abertura direta para inspeção.
           </p>
         </div>
       </div>
@@ -313,10 +330,10 @@
     <section class="glass-panel admin-section">
       <div class="section-head">
         <div>
-          <span class="page-kicker">Metodos</span>
-          <h2>Configuracao da ferramenta de analise</h2>
+          <span class="page-kicker">Métodos</span>
+          <h2>Configuração da ferramenta de análise</h2>
           <p class="admin-muted">
-            Renomeie, descreva e ajuste a disponibilidade operacional de cada metodo em blocos mais amplos.
+            Renomeie, descreva e ajuste a disponibilidade operacional de cada método em blocos mais amplos.
           </p>
         </div>
       </div>
@@ -327,18 +344,18 @@
     <section class="glass-panel admin-section admin-users-section">
       <div class="section-head">
         <div>
-          <span class="page-kicker">Usuarios</span>
-          <h2>Gestao de contas</h2>
+          <span class="page-kicker">Usuários</span>
+          <h2>Gestão de contas</h2>
         </div>
         <button id="btnRefreshData" type="button" class="aida-button secondary">Atualizar dados</button>
       </div>
 
       <div class="users-toolbar">
-        <input id="userSearchInput" type="search" class="field-input user-search-input" placeholder="Buscar por nome ou email">
-        <p id="blockedUsersInfo" class="admin-muted">Nenhuma conta com restricao no momento.</p>
+        <input aria-label="Buscar usuário por nome ou e-mail" id="userSearchInput" type="search" class="field-input user-search-input" placeholder="Buscar por nome ou email">
+        <p id="blockedUsersInfo" class="admin-muted">Nenhuma conta com restrição no momento.</p>
       </div>
 
-      <p id="usersStatus" class="admin-muted">Carregando usuarios...</p>
+      <p id="usersStatus" class="admin-muted">Carregando usuários...</p>
       <div class="table-shell">
         <table class="admin-table">
           <thead>
@@ -347,7 +364,7 @@
               <th>Email</th>
               <th>Origem</th>
               <th>Status</th>
-              <th>Acoes</th>
+              <th>Ações</th>
             </tr>
           </thead>
           <tbody id="usersTableBody"></tbody>
@@ -359,16 +376,17 @@
       <div class="section-head">
         <div>
           <span class="page-kicker">Atividade</span>
-          <h2>Leitura de metodos usados</h2>
+          <h2>Leitura de métodos usados</h2>
         </div>
       </div>
 
-      <p id="analysisStatus" class="admin-muted">Carregando estatisticas...</p>
+      <p id="analysisStatus" class="admin-muted">Carregando estatísticas...</p>
       <div id="methodsList" class="methods-list"></div>
     </section>
   </main>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.3/dist/umd/supabase.js" integrity="sha384-qafw21c/iciq0VXsi9FzkfoQv5I/V0iqE4lSNcKXPnW9/UTJLnv5CcN4FHxVLnKg" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="../scripts/aida-admin-auth.js"></script>
   <script src="../scripts/script-pwa-register.js"></script>
   <script src="../scripts/script-cookie-consent.js"></script>
   <script src="../scripts/script-administrador.js"></script>

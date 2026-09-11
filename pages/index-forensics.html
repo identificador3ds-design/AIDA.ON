@@ -10,9 +10,23 @@
 
     <link rel="manifest" href="../manifest.webmanifest">
     <link rel="apple-touch-icon" href="../assets/images/pwa-icon-180.png">
-    <link rel="icon" type="image/png" href="../assets/images/AIDABranco.ico">
+    <link id="favicon" rel="icon" type="image/x-icon" href="../assets/images/AIDABranco.ico">
 
     <title>AIDA Forensics | Investigação da análise</title>
+    <!-- SEO e compartilhamento -->
+    <link rel="canonical" href="https://aida-on.vercel.app/forensics">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="AIDA.ON">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:title" content="AIDA Forensics — Investigação da análise">
+    <meta property="og:description" content="Reabre uma análise já executada e mostra o material que sustentou a leitura: métodos, mapas visuais, metadados e proveniência.">
+    <meta property="og:url" content="https://aida-on.vercel.app/forensics">
+    <meta property="og:image" content="https://aida-on.vercel.app/assets/images/pwa-icon-512.png">
+    <meta property="og:image:alt" content="Logotipo do AIDA.ON">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="AIDA Forensics — Investigação da análise">
+    <meta name="twitter:description" content="Reabre uma análise já executada e mostra o material que sustentou a leitura: métodos, mapas visuais, metadados e proveniência.">
+    <meta name="twitter:image" content="https://aida-on.vercel.app/assets/images/pwa-icon-512.png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,18 +38,19 @@
 </head>
 
 <body class="aida-shell">
+    <a class="aida-skip-link" href="#conteudo">Pular para o conteúdo</a>
     <header class="page-header">
-        <a href="./index-apresentacao.html" aria-label="Pagina inicial do AIDA">
+        <a href="./index-apresentacao.html" aria-label="Página inicial do AIDA">
             <img src="../assets/images/LogoBranca.png" alt="Logo AIDA.ON" class="brand-logo">
         </a>
 
-        <nav class="aida-row" aria-label="Navegacao da plataforma">
+        <nav class="aida-row" aria-label="Navegação da plataforma">
             <a href="./index-historico.html" class="top-link">Histórico</a>
             <a href="./index-seleciona.html" class="top-link">Nova análise</a>
         </nav>
     </header>
 
-    <main class="page-frame forensics-main">
+    <main id="conteudo" class="page-frame forensics-main">
         <section class="fo-topo">
             <div>
                 <span class="aida-eyebrow">AIDA Forensics</span>

@@ -5,31 +5,48 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AIDA | Acesso</title>
+  <!-- SEO e compartilhamento -->
+  <meta name="description" content="Entre na sua conta AIDA.ON para analisar imagens e acompanhar o histórico das suas análises.">
+  <link rel="canonical" href="https://aida-on.vercel.app/login">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="AIDA.ON">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:title" content="Acesso — AIDA.ON">
+  <meta property="og:description" content="Entre na sua conta AIDA.ON para analisar imagens e acompanhar o histórico das suas análises.">
+  <meta property="og:url" content="https://aida-on.vercel.app/login">
+  <meta property="og:image" content="https://aida-on.vercel.app/assets/images/pwa-icon-512.png">
+  <meta property="og:image:alt" content="Logotipo do AIDA.ON">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Acesso — AIDA.ON">
+  <meta name="twitter:description" content="Entre na sua conta AIDA.ON para analisar imagens e acompanhar o histórico das suas análises.">
+  <meta name="twitter:image" content="https://aida-on.vercel.app/assets/images/pwa-icon-512.png">
+  <link rel="stylesheet" href="../styles/aida-design-system.css">
   <link rel="stylesheet" href="../styles/style-login.css">
-  <link rel="icon" type="image/png" href="../assets/images/AIDABranco.ico">
+  <link id="favicon" rel="icon" type="image/x-icon" href="../assets/images/AIDABranco.ico">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Afacad:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
-  <a href="../index.html" class="back-link" aria-label="Voltar para a pagina inicial">
+  <a class="aida-skip-link" href="#conteudo">Pular para o conteúdo</a>
+  <a href="../index.html" class="back-link" aria-label="Voltar para a página inicial">
     <img src="../assets/images/login-Vector 5.svg" alt="">
   </a>
 
-  <main class="auth-card" data-auth-mode="signup">
+  <main id="conteudo" class="auth-card" data-auth-mode="signup">
     <section class="panel panel--brand">
       <div class="panel__content panel__content--brand">
         <img class="brand-logo" src="../assets/images/login-Group 1.png" alt="Logo AIDA">
 
         <div class="brand-copy" data-copy-signin>
-          <h1>A porta da verdade esta aberta.</h1>
-          <p>Entre e descubra o que e real e o que so parece real na inteligencia artificial.</p>
+          <h1>A porta da verdade está aberta.</h1>
+          <p>Entre e descubra o que é real e o que só parece real na inteligência artificial.</p>
           <button type="button" class="ghost-button" data-mode-target="signin">SIGN IN</button>
         </div>
 
         <div class="brand-copy" data-copy-signup>
-          <h1>Voce consegue ver alem da resposta?</h1>
+          <h1>Você consegue ver além da resposta?</h1>
           <p>Crie sua conta e abra a porta para investigar o que a IA mostra e o que ela esconde.</p>
           <button type="button" class="ghost-button" data-mode-target="signup">REGISTRAR</button>
         </div>
@@ -50,7 +67,8 @@
                   <path d="M3 8l9 6 9-6"></path>
                 </svg>
               </span>
-              <input type="email" id="loginEmail" placeholder="Email" autocomplete="email" required>
+              <span class="aida-visually-hidden">E-mail</span>
+              <input type="email" id="loginEmail" placeholder="E-mail" autocomplete="email" required>
             </label>
 
             <label class="input-wrap">
@@ -60,7 +78,8 @@
                   <path d="M8 11V8a4 4 0 0 1 8 0v3"></path>
                 </svg>
               </span>
-              <input type="password" id="loginPassword" placeholder="Password" autocomplete="current-password" required>
+              <span class="aida-visually-hidden">Senha</span>
+              <input type="password" id="loginPassword" placeholder="Senha" autocomplete="current-password" required>
             </label>
 
             <button type="submit" class="primary-button">ENTRAR</button>
@@ -84,7 +103,8 @@
                   <path d="M4 20a8 8 0 0 1 16 0"></path>
                 </svg>
               </span>
-              <input type="text" id="regName" placeholder="Name" autocomplete="name" required>
+              <span class="aida-visually-hidden">Nome</span>
+              <input type="text" id="regName" placeholder="Nome" autocomplete="name" required>
             </label>
 
             <label class="input-wrap">
@@ -94,7 +114,8 @@
                   <path d="M3 8l9 6 9-6"></path>
                 </svg>
               </span>
-              <input type="email" id="regEmail" placeholder="Email" autocomplete="email" required>
+              <span class="aida-visually-hidden">E-mail</span>
+              <input type="email" id="regEmail" placeholder="E-mail" autocomplete="email" required>
             </label>
 
             <label class="input-wrap">
@@ -104,19 +125,20 @@
                   <path d="M8 11V8a4 4 0 0 1 8 0v3"></path>
                 </svg>
               </span>
-              <input type="password" id="regPassword" placeholder="Password" autocomplete="new-password" required>
+              <span class="aida-visually-hidden">Senha</span>
+              <input type="password" id="regPassword" placeholder="Senha" autocomplete="new-password" required>
             </label>
 
             <button type="submit" class="primary-button">Registrar</button>
             <p class="privacy-note">
-              Ao registrar, voce concorda com o
+              Ao registrar, você concorda com o
               <a href="./index-privacidade.html?from=login" target="_blank" rel="noreferrer">Aviso de Privacidade</a>.
             </p>
             <div class="oauth-divider" aria-hidden="true"><span>ou</span></div>
             <button type="button" class="google-button" data-google-auth>
               <span class="google-icon" aria-hidden="true">G</span>
             </button>
-            <button type="button" class="switch-link" data-mode-target="signin">Ja possui uma conta?</button>
+            <button type="button" class="switch-link" data-mode-target="signin">Já possui uma conta?</button>
           </form>
         </section>
       </div>
@@ -125,7 +147,8 @@
     </section>
   </main>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.3/dist/umd/supabase.js" integrity="sha384-qafw21c/iciq0VXsi9FzkfoQv5I/V0iqE4lSNcKXPnW9/UTJLnv5CcN4FHxVLnKg" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="../scripts/aida-admin-auth.js"></script>
   <script src="../scripts/script-cookie-consent.js"></script>
   <script src="../scripts/script-login.js"></script>
 </body>

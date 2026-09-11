@@ -699,6 +699,58 @@
   );
 }
 
+/* Link "pular para o conteudo": fica fora da tela ate receber foco pelo
+   teclado. Quem navega por Tab pula o cabecalho e o menu de uma vez. */
+.aida-skip-link {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  z-index: 999;
+  transform: translate(-50%, -120%);
+  padding: 10px 18px;
+  border-radius: 0 0 var(--aida-radius-md, 18px) var(--aida-radius-md, 18px);
+  background: var(--aida-mint, #8fd8b7);
+  font-family: var(--aida-font);
+  font-weight: var(--aida-fw-semibold, 600);
+  text-decoration: none;
+  transition: transform 160ms ease;
+}
+
+/* `:link`/`:visited` sobem a especificidade para 0,2,0. Sem isso, o
+   `body.aida-shell a { color: inherit }` do tema compartilhado (0,1,2) vencia e
+   o texto claro sobre o menta caia para 1,6:1 de contraste. */
+.aida-skip-link:link,
+.aida-skip-link:visited {
+  color: var(--aida-text-invert, #0f3833);
+}
+
+.aida-skip-link:focus,
+.aida-skip-link:focus-visible {
+  transform: translate(-50%, 0);
+  outline: 2px solid var(--aida-text, #f4f8ff);
+  outline-offset: 2px;
+}
+
+/* Foco visivel por padrao em tudo que recebe teclado. O navegador ja faz isso,
+   mas varias folhas do projeto zeram `outline` — esta regra devolve o anel. */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+summary:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--aida-mint, #8fd8b7);
+  outline-offset: 2px;
+  border-radius: var(--aida-radius-sm, 10px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aida-skip-link {
+    transition: none;
+  }
+}
+
 .aida-visually-hidden {
   position: absolute;
   width: 1px;

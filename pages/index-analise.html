@@ -12,31 +12,41 @@
     <link rel="manifest" href="../manifest.webmanifest">
     <link rel="apple-touch-icon" href="../assets/images/pwa-icon-180.png">
 
-    <title>AIDA.ON - Analise da Imagem</title>
-    <link rel="icon" id="favicon" type="image/png" href="../assets/images/AIDABranco.ico">
+    <title>AIDA.ON - Análise da Imagem</title>
+    <!-- SEO e compartilhamento -->
+    <meta name="description" content="Resultado da análise da imagem enviada, com score de autenticidade, mapas visuais por método e as ressalvas técnicas da leitura.">
+    <meta name="robots" content="noindex, nofollow">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="AIDA.ON">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:title" content="Análise da imagem — AIDA.ON">
+    <meta property="og:description" content="Resultado da análise da imagem enviada, com score de autenticidade, mapas visuais por método e as ressalvas técnicas da leitura.">
+    <meta property="og:url" content="https://aida-on.vercel.app/analise">
+    <meta property="og:image" content="https://aida-on.vercel.app/assets/images/pwa-icon-512.png">
+    <meta property="og:image:alt" content="Logotipo do AIDA.ON">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Análise da imagem — AIDA.ON">
+    <meta name="twitter:description" content="Resultado da análise da imagem enviada, com score de autenticidade, mapas visuais por método e as ressalvas técnicas da leitura.">
+    <meta name="twitter:image" content="https://aida-on.vercel.app/assets/images/pwa-icon-512.png">
+    <link rel="icon" id="favicon" type="image/x-icon" href="../assets/images/AIDABranco.ico">
     <link rel="stylesheet" href="../styles/style-shared-theme.css">
+    <link rel="stylesheet" href="../styles/aida-design-system.css">
     <!-- A versao no fim do caminho e o que invalida o cache do navegador. O CSS
          estava sem ela: quem ja visitou continuaria com a folha antiga e a
          mensagem de "previa indisponivel" apareceria sem estilo. -->
-    <link rel="stylesheet" href="../styles/style-analise.css?v=20260813-previa-heic">
-    <script>
-        if (["localhost", "127.0.0.1"].includes(location.hostname) && "serviceWorker" in navigator) {
-            navigator.serviceWorker.getRegistrations().then((regs) => regs.forEach((reg) => reg.unregister()));
-            if ("caches" in window) {
-                caches.keys().then((keys) => keys.forEach((key) => caches.delete(key)));
-            }
-        }
-    </script>
+    <link rel="stylesheet" href="../styles/style-analise.css?v=20260818-scan-largura">
+    <script src="../scripts/aida-dev-sw-reset.js"></script>
 </head>
 
 <body class="aida-shell analysis-page">
+    <a class="aida-skip-link" href="#conteudo">Pular para o conteúdo</a>
     <header class="page-header">
-        <a href="../index.html" aria-label="Pagina inicial">
+        <a href="../index.html" aria-label="Página inicial">
             <img src="../assets/images/LogoBranca.png" alt="Logo AIDA.ON" class="brand-logo">
         </a>
 
         <div class="analysis-header-actions">
-            <a href="./index-historico.html" class="top-link">Historico</a>
+            <a href="./index-historico.html" class="top-link">Histórico</a>
 
             <div class="dropdown">
                 <button class="dropbtn" id="nome-usuario2" type="button">Minha conta</button>
@@ -48,7 +58,7 @@
         </div>
     </header>
 
-    <main class="page-frame analysis-main">
+    <main id="conteudo" class="page-frame analysis-main">
         <section class="analysis-copy">
             <div class="analysis-steps" aria-label="Passos da análise">
                 <div class="analysis-step">
@@ -73,13 +83,13 @@
                     <img id="imagemPreview" src="#" alt="Sua imagem selecionada" class="imagem-preview" hidden>
                 </div>
                 <div class="field-group" id="retencaoAnaliseGroup">
-                    <span class="field-label">Historico e retencao</span>
+                    <span class="field-label">Histórico e retenção</span>
 
                     <label class="analysis-check">
                         <input type="checkbox" id="checkSalvarHistorico">
                         <div>
-                            <strong>Salvar esta analise no historico</strong>
-                            <span>Quando desligado, a imagem e usada para processar a resposta e nao e salva na sua conta.</span>
+                            <strong>Salvar esta análise no histórico</strong>
+                            <span>Quando desligado, a imagem é usada para processar a resposta e não é salva na sua conta.</span>
                         </div>
                     </label>
                 </div>
@@ -94,25 +104,65 @@
                     <!-- Extensões explícitas: com apenas "image/*" o seletor do
                          Windows esconde arquivos .heic/.avif, porque o sistema não
                          os registra como imagem. -->
-                    <input type="file" id="inputTrocarImagem"
+                    <input type="file" aria-label="Trocar a imagem analisada" id="inputTrocarImagem"
                            accept="image/*,.heic,.heif,.avif,.jpg,.jpeg,.png,.webp,.bmp" hidden>
                 </div>
 
                 <a href="./index-seleciona.html" class="inline-link">Voltar para escolher outra imagem</a>
 
                 <div id="statusAnalise" class="analysis-runtime-status" aria-live="polite">
-                    Carregando script da analise...
+                    Carregando script da análise...
                 </div>
             </section>
 
             
         </section>
 
+        <!-- Painel de analise: miniatura da propria imagem enviada, faixa de
+             varredura e leitura de estado. Nao existe barra de porcentagem
+             porque a API responde de uma vez so — nao ha progresso real a
+             reportar, e inventar um numero seria mentir sobre o processo. -->
         <div id="loading" class="loading-state glass-card" style="display: none;">
-            <div class="spinner" aria-hidden="true"></div>
+            <div class="scanner-panel" aria-hidden="true">
+                <div class="scanner-frame" id="scannerFrame">
+                    <!-- Duas camadas da MESMA imagem: a de baixo e a original, a de
+                         cima recebe tratamento visual de "analise" e so aparece na
+                         area por onde a linha ja passou. E representacao de leitura,
+                         nao o resultado de nenhum metodo. -->
+                    <div class="scanner-camadas" id="scannerCamadas">
+                        <img id="loadingThumb" class="scanner-thumb" src="" alt="">
+                        <div class="scanner-camada-analise" id="scannerCamadaAnalise">
+                            <img id="loadingThumbAnalise" class="scanner-thumb scanner-thumb--analise" src="" alt="">
+                        </div>
+                    </div>
+
+                    <span class="scanner-grid"></span>
+                    <span class="scanner-band" id="scannerBand"></span>
+                    <span class="scanner-linha" id="scannerLinha"></span>
+
+                    <span class="scanner-canto scanner-canto--tl"></span>
+                    <span class="scanner-canto scanner-canto--tr"></span>
+                    <span class="scanner-canto scanner-canto--bl"></span>
+                    <span class="scanner-canto scanner-canto--br"></span>
+
+                    <span class="scanner-ponto scanner-ponto--a"></span>
+                    <span class="scanner-ponto scanner-ponto--b"></span>
+                    <span class="scanner-ponto scanner-ponto--c"></span>
+
+                    <span class="scanner-moldura scanner-moldura--a"></span>
+                    <span class="scanner-moldura scanner-moldura--b"></span>
+
+                    <span class="scanner-sem-previa" id="scannerSemPrevia">sem prévia</span>
+                </div>
+            </div>
+
             <div class="loading-copy">
-                <strong>Analisando imagem...</strong>
-                <p>Estamos preparando um resumo simples para você entender o resultado.</p>
+                <span class="scanner-tag" aria-hidden="true">
+                    <span class="scanner-dot"></span>AIDA Image · leitura em curso
+                </span>
+                <strong id="loadingMensagem" aria-live="polite">Preparando imagem...</strong>
+                <p>A análise roda no servidor. Assim que terminar, o resultado aparece logo abaixo.</p>
+                <span class="scanner-pulso" aria-hidden="true"><span class="scanner-pulso__barra"></span></span>
             </div>
         </div>
 
@@ -134,7 +184,7 @@
                     <p class="result-copy">Esta é a visualização gerada pelo método escolhido.</p>
 
                     <div class="result-visual">
-                        <img id="imagemProcessada" src="#" alt="Resultado da analise" class="imagem-preview">
+                        <img id="imagemProcessada" src="#" alt="Resultado da análise" class="imagem-preview">
                     </div>
                 </section>
 
@@ -233,7 +283,7 @@
             </button>
 
             <div class="install-app-head">
-                <img src="../assets/images/pwa-icon-192.png" alt="Icone do AIDA.ON" class="install-app-icon">
+                <img src="../assets/images/pwa-icon-192.png" alt="Ícone do AIDA.ON" class="install-app-icon">
 
                 <div class="install-app-copy">
                     <span class="section-tag">Acesso rápido</span>
@@ -269,7 +319,7 @@
             <div class="analysis-tutorial-head">
                 <div>
                     <span id="tutorialStepBadge" class="section-tag">Passo 1 de 4</span>
-                    <h3 id="tutorialTitle">Como usar a analise</h3>
+                    <h3 id="tutorialTitle">Como usar a análise</h3>
                 </div>
 
                 <button id="tutorialSkip" type="button" class="analysis-tutorial-skip">Pular</button>
@@ -287,7 +337,7 @@
 
             <div class="analysis-tutorial-actions">
                 <button id="tutorialPrev" type="button" class="aida-button secondary">Voltar</button>
-                <button id="tutorialNext" type="button" class="aida-button">Proximo</button>
+                <button id="tutorialNext" type="button" class="aida-button">Próximo</button>
             </div>
         </div>
     </div>
@@ -296,14 +346,17 @@
         id="btnReabrirTutorial"
         type="button"
         class="tutorial-fab"
-        aria-label="Refazer tutorial da analise"
+        aria-label="Refazer tutorial da análise"
         title="Refazer tutorial"
     >
         Tutorial
     </button>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.3/dist/umd/supabase.js" integrity="sha384-qafw21c/iciq0VXsi9FzkfoQv5I/V0iqE4lSNcKXPnW9/UTJLnv5CcN4FHxVLnKg" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="../scripts/script-cookie-consent.js"></script>
-    <script src="../scripts/script-analise.js?v=20260813-previa-heic"></script>
+    <!-- Mesma versao ja usada em index-solucoes/index-video/index-api. O loading
+         funciona sem ela (as animacoes caem para CSS); GSAP so suaviza. -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/gsap.min.js" integrity="sha384-UoFnwgbUNlK0Rwou15cSoyrXQvKrOUxV8AkCoGKSSd0sxVeJ95ARU8uGMkMZhzpB" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="../scripts/script-analise.js?v=20260818-scan-largura"></script>
 </body>
 </html>

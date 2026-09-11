@@ -10,6 +10,12 @@ const favicon = document.getElementById('favicon');
 
 function updateFavicon() {
 
+  /* Nem toda pagina declara <link id="favicon">. Sem esta guarda, o erro
+     interrompe o script inteiro — inclusive o que vem depois. */
+  if (!favicon) {
+    return;
+  }
+
   if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
     favicon.href = '../assets/images/AIDABranco.ico';
   } else {
@@ -221,22 +227,20 @@ function salvarAdminConfig(configuracao) {
   return configNormalizado;
 }
 
-function usuarioEhAdmin() {
-  const tipo = localStorage.getItem("usuarioTipo");
-  const email = (localStorage.getItem("usuarioEmail") || "").trim().toLowerCase();
-  return tipo === "admin" || email === ADMIN_EMAIL;
-}
+/* A autorizacao do painel e decidida pelo backend: lemos o papel assinado no
+   JWT da sessao do Supabase. Escrever `usuarioTipo=admin` no console do
+   navegador nao abre mais nada. */
+async function redirecionarSeNaoAdmin() {
+  const { autenticado, admin } = await window.AidaAdminAuth.verificarAdmin(_supabase);
 
-function redirecionarSeNaoAdmin() {
-  if (usuarioEhAdmin()) {
+  if (admin) {
+    localStorage.setItem("usuarioTipo", "admin");
     return false;
   }
 
-  const possuiSessaoComum =
-    Boolean(localStorage.getItem("usuarioNome")) ||
-    Boolean(localStorage.getItem("usuarioEmail"));
+  localStorage.removeItem("usuarioTipo");
 
-  if (possuiSessaoComum) {
+  if (autenticado) {
     window.location.href = "./index-apresentacao.html";
     return true;
   }
@@ -1320,7 +1324,7 @@ function configurarEventos() {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
-  if (redirecionarSeNaoAdmin()) {
+  if (await redirecionarSeNaoAdmin()) {
     return;
   }
 

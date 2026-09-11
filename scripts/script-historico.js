@@ -375,4 +375,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   carregarHistorico();
 });
 
+/* O "Voltar" prefere o historico do navegador, mas o href aponta para o perfil:
+   assim o link continua funcionando com JavaScript desativado, com clique do
+   meio e com "abrir em nova aba" — coisas que `javascript:void(0)` quebrava. */
+document.addEventListener("DOMContentLoaded", () => {
+  const botaoVoltar = document.querySelector("[data-voltar]");
 
+  botaoVoltar?.addEventListener("click", (evento) => {
+    if (window.history.length > 1) {
+      evento.preventDefault();
+      window.history.back();
+    }
+  });
+});

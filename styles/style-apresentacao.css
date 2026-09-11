@@ -937,6 +937,9 @@ section {
   padding: 4px 10px;
   border-radius: 999px;
   background: var(--green);
+  /* Texto escuro sobre o verde-menta: em branco o contraste ficava em 2,5:1,
+     abaixo do minimo 4,5:1 da WCAG AA para texto deste tamanho. */
+  color: var(--aida-text-invert, #0f3833);
   font-size: 0.82rem;
   font-weight: 700;
 }

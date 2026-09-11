@@ -428,19 +428,384 @@
   border-bottom: 1px solid rgba(143, 216, 183, 0.28);
 }
 
+/* A entrada e a saida do painel sao feitas em JS (GSAP quando disponivel,
+   opacidade com transicao quando nao). Uma `animation` aqui venceria o estilo
+   inline do GSAP no cascade e travaria o fade-out. */
 .loading-state {
   width: 100%;
-  padding: 18px 20px;
+  /* Mesma coluna do card principal: `.analysis-content` limita o conteudo a
+     720px centralizados, e o painel e irmao dele no grid — sem este teto ele
+     esticaria ate a largura inteira e ficaria mais largo que o card de cima. */
+  max-width: 720px;
+  margin-inline: auto;
+  padding: 20px;
   display: flex;
   align-items: center;
-  gap: 18px;
-  animation: pulse-in 0.35s ease both;
+  gap: 22px;
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .loading-copy strong {
   display: block;
   font-size: 1.06rem;
 }
+
+/* ==========================================================================
+   Painel de varredura do loading — miniatura da imagem enviada sob leitura
+   ========================================================================== */
+
+/* Posicao da linha de varredura: 0 no topo do quadro, 1 na base. Tudo o que se
+   move na leitura (faixa, fio de luz, camada analisada, brilho dos cantos) le
+   esta mesma variavel — e por isso que nada sai de sincronia. Registrada com
+   @property porque, sem tipo declarado, o CSS nao consegue interpolar o valor
+   no fallback sem GSAP. */
+@property --scan {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
+.scanner-panel {
+  flex: 0 0 auto;
+  width: 208px;
+  max-width: 42vw;
+}
+
+.scanner-frame {
+  --scan: 0;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-radius: 16px;
+  border: 1px solid rgba(143, 216, 183, 0.34);
+  background: rgba(6, 26, 24, 0.9);
+  box-shadow:
+    0 0 0 1px rgba(4, 8, 20, 0.35),
+    0 0 22px rgba(143, 216, 183, 0.16),
+    inset 0 0 26px rgba(4, 20, 18, 0.55);
+  animation: scanner-varre 3.6s linear infinite;
+}
+
+/* Envelope das duas camadas: recebe o micro respiro (escala/deslocamento) para
+   que a foto nunca pareca congelada dentro do quadro. */
+.scanner-camadas {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
+}
+
+.scanner-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  /* A miniatura e o pano de fundo da leitura, nao o assunto: rebaixada para
+     que faixa, cantos e pontos continuem legiveis sobre qualquer foto. */
+  filter: saturate(0.75) brightness(0.72) contrast(1.06);
+}
+
+/* Camada de cima: a MESMA imagem com aparencia de material ja processado. So
+   fica visivel na area por onde a linha ja passou — o corte acompanha --scan.
+   E encenacao do loading, nao saida de metodo nenhum. */
+.scanner-camada-analise {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  clip-path: inset(0 0 calc((1 - var(--scan)) * 100%) 0);
+  animation: scanner-ciclo 3.6s linear infinite;
+}
+
+.scanner-thumb--analise {
+  filter: grayscale(0.6) contrast(1.55) brightness(0.9) saturate(1.2);
+}
+
+/* Verniz tecnico sobre a camada analisada: microlinhas horizontais e um tom
+   frio discreto. Sutil de proposito — sugere leitura, nao vira efeito. */
+.scanner-camada-analise::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.55;
+  mix-blend-mode: screen;
+  background:
+    repeating-linear-gradient(
+      180deg,
+      rgba(143, 216, 183, 0.15) 0 1px,
+      rgba(143, 216, 183, 0) 1px 3px
+    ),
+    linear-gradient(180deg, rgba(143, 216, 183, 0.14), rgba(120, 190, 220, 0.1));
+}
+
+.scanner-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(209, 213, 219, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(209, 213, 219, 0.07) 1px, transparent 1px);
+  background-size: 26px 26px, 26px 26px;
+  pointer-events: none;
+}
+
+/* Faixa e fio ocupam a altura inteira do quadro e sao empurrados por
+   translateY: como a porcentagem do translate se refere a propria altura, o
+   deslocamento vira exatamente a fracao --scan do quadro — e o navegador
+   resolve isso na composicao, sem recalcular layout a cada quadro. */
+.scanner-band,
+.scanner-linha {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 100%;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  will-change: transform;
+  transform: translateY(calc(var(--scan) * 100%));
+  animation: scanner-ciclo 3.6s linear infinite;
+}
+
+/* Rastro luminoso logo acima do fio: a regiao recem-lida ainda brilha. */
+.scanner-band::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 100%;
+  height: 30%;
+  background: linear-gradient(
+    180deg,
+    rgba(143, 216, 183, 0) 0%,
+    rgba(143, 216, 183, 0.07) 55%,
+    rgba(143, 216, 183, 0.2) 90%,
+    rgba(143, 216, 183, 0.3) 100%
+  );
+}
+
+/* Halo em volta do fio: a faixa proxima da linha parece estar sendo lida agora. */
+.scanner-linha::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -14px;
+  height: 28px;
+  background: radial-gradient(
+    62% 100% at 50% 50%,
+    rgba(143, 216, 183, 0.32),
+    rgba(143, 216, 183, 0) 74%
+  );
+}
+
+/* O fio propriamente dito: 1px, com nucleo claro e brilho em duas camadas. */
+.scanner-linha::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--highlight) 12%,
+    rgba(236, 255, 246, 0.95) 50%,
+    var(--highlight) 88%,
+    transparent
+  );
+  box-shadow:
+    0 0 10px rgba(143, 216, 183, 0.7),
+    0 0 22px rgba(143, 216, 183, 0.32);
+}
+
+.scanner-canto {
+  position: absolute;
+  width: 13px;
+  height: 13px;
+  border: 1px solid var(--highlight);
+  opacity: 0.5;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.scanner-canto--tl { top: 7px; left: 7px; border-right: 0; border-bottom: 0; }
+.scanner-canto--tr { top: 7px; right: 7px; border-left: 0; border-bottom: 0; }
+.scanner-canto--bl { bottom: 7px; left: 7px; border-right: 0; border-top: 0; }
+.scanner-canto--br { bottom: 7px; right: 7px; border-left: 0; border-top: 0; }
+
+/* Os cantos acendem quando a linha passa perto deles: os de cima no comeco do
+   ciclo, os de baixo no fim. Sem keyframe proprio — e a mesma --scan. */
+.scanner-canto--tl,
+.scanner-canto--tr {
+  opacity: calc(0.42 + 0.5 * max(0, 1 - var(--scan) * 5));
+}
+
+.scanner-canto--bl,
+.scanner-canto--br {
+  opacity: calc(0.42 + 0.5 * max(0, (var(--scan) - 0.8) * 5));
+}
+
+/* Poucos pontos, aparecendo e sumindo em posicoes diferentes: sugerem regioes
+   sendo notadas. Com GSAP as posicoes sao sorteadas a cada ciclo; sem ele
+   ficam nestas tres e apenas pulsam. */
+.scanner-ponto {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  border-radius: 50%;
+  background: var(--highlight);
+  box-shadow: 0 0 9px rgba(143, 216, 183, 0.65);
+  opacity: 0;
+  pointer-events: none;
+  animation: scanner-ponto-vida 3.2s ease-in-out infinite;
+}
+
+.scanner-ponto--a { top: 30%; left: 24%; }
+.scanner-ponto--b { top: 58%; left: 63%; animation-delay: 1.05s; }
+.scanner-ponto--c { top: 73%; left: 37%; animation-delay: 2.1s; }
+
+/* Molduras de inspecao: aparecem por pouco tempo sobre uma regiao, pulsam e
+   somem. Duas bastam — mais que isso vira poluicao sobre a foto. */
+.scanner-moldura {
+  position: absolute;
+  width: 28%;
+  height: 30%;
+  border: 1px solid rgba(143, 216, 183, 0.75);
+  border-radius: 4px;
+  box-shadow:
+    0 0 10px rgba(143, 216, 183, 0.22),
+    inset 0 0 12px rgba(143, 216, 183, 0.1);
+  opacity: 0;
+  pointer-events: none;
+  animation: scanner-moldura-vida 5.4s ease-in-out infinite;
+}
+
+.scanner-moldura--a { top: 20%; left: 16%; }
+.scanner-moldura--b { top: 50%; left: 55%; animation-delay: 2.7s; }
+
+/* HEIC/TIFF nao renderizam no navegador. Sem miniatura o quadro continua de pe,
+   com a varredura rodando sobre o fundo e um rotulo dizendo o que houve. */
+.scanner-sem-previa {
+  position: absolute;
+  inset: auto 0 50% 0;
+  transform: translateY(50%);
+  display: none;
+  text-align: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(209, 213, 219, 0.66);
+}
+
+.loading-state[data-previa="indisponivel"] .scanner-thumb { visibility: hidden; }
+.loading-state[data-previa="indisponivel"] .scanner-camada-analise { display: none; }
+.loading-state[data-previa="indisponivel"] .scanner-sem-previa { display: block; }
+
+.scanner-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--highlight);
+}
+
+.scanner-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--highlight);
+  box-shadow: 0 0 8px rgba(143, 216, 183, 0.7);
+  animation: scanner-piscar 1.4s ease-in-out infinite;
+}
+
+/* Barra de atividade, nao de progresso: a API responde de uma vez so e nao
+   informa etapas concluidas, entao o movimento e indeterminado de proposito. */
+.scanner-pulso {
+  display: block;
+  position: relative;
+  width: min(240px, 100%);
+  height: 3px;
+  margin-top: 14px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(143, 216, 183, 0.14);
+}
+
+.scanner-pulso__barra {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 38%;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, var(--highlight), transparent);
+  animation: scanner-atividade 1.7s ease-in-out infinite;
+}
+
+/* Quando o GSAP assume, as keyframes saem de cena: uma `animation` venceria os
+   estilos inline do JS no cascade e as duas brigariam pelo mesmo eixo. */
+.loading-state[data-motor="gsap"] .scanner-frame,
+.loading-state[data-motor="gsap"] .scanner-band,
+.loading-state[data-motor="gsap"] .scanner-linha,
+.loading-state[data-motor="gsap"] .scanner-camada-analise,
+.loading-state[data-motor="gsap"] .scanner-ponto,
+.loading-state[data-motor="gsap"] .scanner-moldura,
+.loading-state[data-motor="gsap"] .scanner-pulso__barra,
+.loading-state[data-motor="gsap"] .scanner-dot {
+  animation: none;
+}
+
+/* Fallback sem GSAP: a propria --scan e interpolada, entao faixa, fio, camada
+   analisada e cantos continuam sincronizados pelo mesmo relogio de 3.6s. */
+@keyframes scanner-varre {
+  0% { --scan: 0; }
+  84% { --scan: 1; }
+  100% { --scan: 1; }
+}
+
+/* O reinicio nao e um corte seco: o que foi varrido some antes de a linha
+   voltar ao topo, e a leitura recomeca do zero. */
+@keyframes scanner-ciclo {
+  0% { opacity: 0; }
+  7%, 82% { opacity: 1; }
+  93%, 100% { opacity: 0; }
+}
+
+@keyframes scanner-ponto-vida {
+  0%, 100% { opacity: 0; transform: scale(0.5); }
+  14% { opacity: 0.95; transform: scale(1.3); }
+  46% { opacity: 0.4; transform: scale(1); }
+  70% { opacity: 0; transform: scale(0.6); }
+}
+
+@keyframes scanner-moldura-vida {
+  0%, 100% { opacity: 0; transform: scale(0.94); }
+  8% { opacity: 0.85; transform: scale(1); }
+  18% { opacity: 0.45; }
+  28% { opacity: 0.8; }
+  40% { opacity: 0; transform: scale(1.04); }
+}
+
+@keyframes scanner-piscar {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.25; }
+}
+
+@keyframes scanner-atividade {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(340%); }
+}
+
+/* Nao ha bloco de `prefers-reduced-motion` aqui de proposito: a varredura roda
+   sempre, por decisao de produto. O painel so aparece durante a analise e sai
+   sozinho quando ela termina, entao o movimento tem inicio e fim — nao e uma
+   animacao permanente na tela. */
 
 .spinner {
   width: 54px;
@@ -1131,6 +1496,11 @@ body.tutorial-active .tutorial-fab {
     grid-template-columns: 1fr;
   }
 
+  /* A coluna deixa de ter teto aqui, entao o painel solta o dele junto. */
+  .loading-state {
+    max-width: none;
+  }
+
   .container-controles {
     order: 2;
   }
@@ -1203,6 +1573,11 @@ body.tutorial-active .tutorial-fab {
     padding: 18px;
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .scanner-panel {
+    width: 100%;
+    max-width: none;
   }
 
   #toast-container {

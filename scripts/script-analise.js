@@ -35,8 +35,25 @@ const porcentagemIA = document.getElementById("porcentagemIA");
 const tituloMetodo = document.getElementById("tituloMetodo");
 const textoMetodo = document.getElementById("textoMetodo");
 const statusAnalise = document.getElementById("statusAnalise");
+const loadingThumb = document.getElementById("loadingThumb");
+const loadingMensagem = document.getElementById("loadingMensagem");
+const scannerBand = document.getElementById("scannerBand");
+const scannerLinha = document.getElementById("scannerLinha");
+const scannerFrame = document.getElementById("scannerFrame");
+const scannerCamadas = document.getElementById("scannerCamadas");
+const scannerCamadaAnalise = document.getElementById("scannerCamadaAnalise");
+const loadingThumbAnalise = document.getElementById("loadingThumbAnalise");
+const scannerPulso = document.querySelector(".scanner-pulso__barra");
+const scannerDot = document.querySelector(".scanner-dot");
+const scannerPontos = Array.from(document.querySelectorAll(".scanner-ponto"));
+const scannerMolduras = Array.from(document.querySelectorAll(".scanner-moldura"));
+const scannerCantos = Array.from(document.querySelectorAll(".scanner-canto"));
 
 let imagemAtual = null;
+// Guardadas para a miniatura do loading: o painel mostra a propria imagem
+// enviada, e a extensao decide se o navegador consegue exibi-la.
+let previaDataUrl = null;
+let previaExtensao = "";
 let abortController = null;
 let analiseEmAndamento = false;
 
@@ -251,6 +268,8 @@ function mostrarImagem(dataUrl) {
   }
 
   const extensao = extensaoDe(nomeOriginal);
+  previaDataUrl = dataUrl;
+  previaExtensao = extensao;
   aplicarPrevia(imagemPreview, dataUrl, extensao);
   aplicarPrevia(imagemProcessada, dataUrl, extensao);
 
@@ -265,8 +284,359 @@ function mostrarImagem(dataUrl) {
   }
 }
 
+// Rotulos de etapa da leitura, nao medicao. A API responde de uma vez so e nao
+// reporta progresso, entao nada aqui vira porcentagem: o painel diz o que esta
+// sendo feito, sem afirmar quanto falta. A ultima mensagem fica no ar ate a
+// resposta chegar — a barra de atividade continua se movendo para deixar claro
+// que o processo nao travou.
+const MENSAGENS_ANALISE = [
+  "Preparando imagem...",
+  "Extraindo características...",
+  "Executando análise forense...",
+  "Analisando padrões visuais...",
+  "Calculando probabilidades...",
+  "Consolidando resultados...",
+  "Finalizando análise...",
+];
+
+const INTERVALO_MENSAGEM_MS = 1700;
+
+// Painel de varredura do loading. Com GSAP as transicoes sao encadeadas; sem
+// ele as keyframes do CSS assumem e o texto troca direto — o estado final e o
+// mesmo nos dois caminhos. A varredura nao consulta `prefers-reduced-motion`:
+// e uma escolha de produto, e o painel dura so o tempo da analise.
+const painelVarredura = (() => {
+  let timerMensagem = null;
+  // Varios loops independentes (varredura, pontos, molduras, cantos, respiro da
+  // imagem) em vez de uma timeline unica: cada um tem seu proprio ritmo, e
+  // amarrar tudo num relogio so faria o painel inteiro pulsar em bloco.
+  let loops = [];
+  let indice = 0;
+
+  // Posicao da linha, de 0 (topo) a 1 (base). O GSAP anima este objeto e cada
+  // quadro escreve o valor em --scan; o CSS deriva dali a faixa, o fio, o corte
+  // da camada analisada e o brilho dos cantos — por isso nada sai de sincronia.
+  const estadoScan = { p: 0 };
+
+  function usarGsap() {
+    return Boolean(window.gsap);
+  }
+
+  function aplicarMiniatura() {
+    if (!loading || !loadingThumb) return;
+
+    const semPrevia =
+      !previaDataUrl || EXTENSOES_SEM_PREVIA_NO_NAVEGADOR.includes(previaExtensao);
+
+    if (semPrevia) {
+      loading.dataset.previa = "indisponivel";
+      loadingThumb.removeAttribute("src");
+      if (loadingThumbAnalise) loadingThumbAnalise.removeAttribute("src");
+      return;
+    }
+
+    // `onerror` antes do `src`: com data URL a falha dispara de imediato.
+    loadingThumb.onerror = () => {
+      loading.dataset.previa = "indisponivel";
+    };
+    loading.dataset.previa = "ok";
+    loadingThumb.src = previaDataUrl;
+    // A camada de cima e a mesma foto: o que muda e o tratamento visual do CSS.
+    if (loadingThumbAnalise) loadingThumbAnalise.src = previaDataUrl;
+  }
+
+  function trocarMensagem(texto) {
+    if (!loadingMensagem) return;
+
+    if (!usarGsap()) {
+      loadingMensagem.textContent = texto;
+      return;
+    }
+
+    window.gsap.to(loadingMensagem, {
+      opacity: 0,
+      y: -6,
+      duration: 0.22,
+      ease: "power2.in",
+      overwrite: "auto",
+      onComplete: () => {
+        loadingMensagem.textContent = texto;
+        window.gsap.fromTo(
+          loadingMensagem,
+          { opacity: 0, y: 6 },
+          { opacity: 1, y: 0, duration: 0.28, ease: "power2.out", overwrite: "auto" }
+        );
+      },
+    });
+  }
+
+  function agendarMensagem() {
+    timerMensagem = window.setTimeout(() => {
+      if (indice >= MENSAGENS_ANALISE.length - 1) return;
+      indice += 1;
+      trocarMensagem(MENSAGENS_ANALISE[indice]);
+      agendarMensagem();
+    }, INTERVALO_MENSAGEM_MS);
+  }
+
+  function aleatorio(minimo, maximo) {
+    return minimo + Math.random() * (maximo - minimo);
+  }
+
+  function aplicarScan() {
+    if (scannerFrame) scannerFrame.style.setProperty("--scan", estadoScan.p);
+  }
+
+  // A linha desce sempre no mesmo sentido — subir de volta pareceria rebobinar,
+  // nao varrer. O reinicio nao e um corte seco: o que ja foi lido se apaga junto
+  // com a linha antes de o ciclo recomecar do topo.
+  function loopVarredura(gsap) {
+    const varridos = [scannerBand, scannerLinha, scannerCamadaAnalise].filter(Boolean);
+    if (!varridos.length && !scannerFrame) return;
+
+    const linha = gsap.timeline({ repeat: -1 });
+
+    linha.call(() => {
+      estadoScan.p = 0;
+      aplicarScan();
+    }, null, 0);
+
+    if (varridos.length) {
+      linha
+        .fromTo(varridos, { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power1.out" }, 0)
+        .to(varridos, { opacity: 0, duration: 0.5, ease: "power1.inOut" }, 3);
+    }
+
+    linha
+      .to(estadoScan, { p: 1, duration: 3, ease: "none", onUpdate: aplicarScan }, 0)
+      .to({}, { duration: 0.35 }, 3.5);
+
+    loops.push(linha);
+  }
+
+  // Poucos pontos, sorteando posicao nova a cada volta: sugerem regioes sendo
+  // notadas sem virar chuva de particulas sobre a foto.
+  function loopPontos(gsap) {
+    scannerPontos.forEach((ponto, i) => {
+      const recolocar = () => {
+        gsap.set(ponto, {
+          top: aleatorio(14, 82) + "%",
+          left: aleatorio(12, 84) + "%",
+        });
+      };
+
+      recolocar();
+      const vida = gsap.timeline({ repeat: -1, delay: i * 0.8, onRepeat: recolocar });
+      vida
+        .fromTo(
+          ponto,
+          { opacity: 0, scale: 0.4 },
+          { opacity: 0.95, scale: 1.35, duration: 0.45, ease: "power2.out" }
+        )
+        .to(ponto, { opacity: 0.4, scale: 1, duration: 0.6, ease: "sine.inOut" })
+        .to(ponto, { opacity: 0, scale: 0.55, duration: 0.5, ease: "power2.in" }, "+=0.4")
+        .to({}, { duration: aleatorio(0.5, 1.3) });
+
+      loops.push(vida);
+    });
+  }
+
+  // Molduras de inspecao: uma regiao entra em foco por pouco tempo, pulsa e sai.
+  // Tamanho e posicao mudam a cada aparicao para nao virarem enfeite fixo.
+  function loopMolduras(gsap) {
+    scannerMolduras.forEach((moldura, i) => {
+      const recolocar = () => {
+        const largura = aleatorio(22, 34);
+        const altura = aleatorio(24, 38);
+        gsap.set(moldura, {
+          width: largura + "%",
+          height: altura + "%",
+          top: aleatorio(8, 88 - altura) + "%",
+          left: aleatorio(8, 88 - largura) + "%",
+        });
+      };
+
+      recolocar();
+      const vida = gsap.timeline({ repeat: -1, delay: 1 + i * 2.4, onRepeat: recolocar });
+      vida
+        .fromTo(
+          moldura,
+          { opacity: 0, scale: 0.93 },
+          { opacity: 0.85, scale: 1, duration: 0.4, ease: "power2.out" }
+        )
+        .to(moldura, { opacity: 0.45, duration: 0.5, ease: "sine.inOut", yoyo: true, repeat: 1 })
+        .to(moldura, { opacity: 0, scale: 1.04, duration: 0.45, ease: "power2.in" })
+        .to({}, { duration: aleatorio(1.4, 2.4) });
+
+      loops.push(vida);
+    });
+  }
+
+  // Os cantos so respiram aqui: o brilho deles quando a linha passa vem do CSS,
+  // que le a mesma --scan. Escala de leve, sem virar pisca-pisca.
+  function loopCantos(gsap) {
+    if (!scannerCantos.length) return;
+    loops.push(
+      gsap.to(scannerCantos, {
+        scale: 1.12,
+        duration: 1.3,
+        ease: "sine.inOut",
+        yoyo: true,
+        repeat: -1,
+        stagger: 0.18,
+      })
+    );
+  }
+
+  // Micro respiro da foto: sem ele o quadro parece um still com uma linha por
+  // cima. A amplitude e pequena de proposito.
+  function loopRespiro(gsap) {
+    if (!scannerCamadas) return;
+    loops.push(
+      gsap.to(scannerCamadas, {
+        scale: 1.015,
+        y: -1.5,
+        duration: 4.2,
+        ease: "sine.inOut",
+        yoyo: true,
+        repeat: -1,
+      })
+    );
+  }
+
+  function loopIndicadores(gsap) {
+    if (scannerPulso) {
+      loops.push(
+        gsap.fromTo(
+          scannerPulso,
+          { xPercent: -100 },
+          { xPercent: 340, duration: 1.5, ease: "sine.inOut", repeat: -1 }
+        )
+      );
+    }
+
+    if (scannerDot) {
+      loops.push(
+        gsap.to(scannerDot, {
+          opacity: 0.25,
+          duration: 0.7,
+          ease: "sine.inOut",
+          yoyo: true,
+          repeat: -1,
+        })
+      );
+    }
+  }
+
+  function encerrarLoops() {
+    loops.forEach((loop) => loop.kill());
+    loops = [];
+
+    if (window.gsap) {
+      const alvos = [
+        scannerBand,
+        scannerLinha,
+        scannerCamadaAnalise,
+        scannerCamadas,
+        scannerPulso,
+        scannerDot,
+      ]
+        .concat(scannerPontos, scannerMolduras, scannerCantos)
+        .filter(Boolean);
+      if (alvos.length) window.gsap.set(alvos, { clearProps: "all" });
+    }
+
+    // Sem isto a --scan inline sobreviveria ao fim da analise e travaria o
+    // fallback em CSS na posicao onde a leitura parou.
+    if (scannerFrame) scannerFrame.style.removeProperty("--scan");
+    estadoScan.p = 0;
+  }
+
+  function iniciarLoopGsap() {
+    const gsap = window.gsap;
+    encerrarLoops();
+    loopVarredura(gsap);
+    loopPontos(gsap);
+    loopMolduras(gsap);
+    loopCantos(gsap);
+    loopRespiro(gsap);
+    loopIndicadores(gsap);
+  }
+
+  function iniciar() {
+    if (!loading) return;
+
+    aplicarMiniatura();
+    indice = 0;
+    if (loadingMensagem) loadingMensagem.textContent = MENSAGENS_ANALISE[0];
+
+    loading.style.display = "flex";
+
+    if (!usarGsap()) {
+      delete loading.dataset.motor;
+      loading.style.opacity = "1";
+      agendarMensagem();
+      return;
+    }
+
+    const gsap = window.gsap;
+    loading.dataset.motor = "gsap";
+    gsap.killTweensOf([loading, loadingMensagem]);
+    gsap.set(loadingMensagem, { opacity: 1, y: 0 });
+
+    gsap.fromTo(
+      loading,
+      { opacity: 0, y: 14, scale: 0.985 },
+      { opacity: 1, y: 0, scale: 1, duration: 0.45, ease: "power2.out", clearProps: "scale" }
+    );
+
+    iniciarLoopGsap();
+    agendarMensagem();
+  }
+
+  function finalizar() {
+    if (!loading) return;
+
+    window.clearTimeout(timerMensagem);
+    timerMensagem = null;
+
+    const esconder = () => {
+      encerrarLoops();
+      loading.style.display = "none";
+      delete loading.dataset.motor;
+    };
+
+    if (!usarGsap()) {
+      esconder();
+      return;
+    }
+
+    const gsap = window.gsap;
+    // A troca de mensagem pode estar no meio do fade: sem matar o tween, o
+    // `onComplete` dele reescreveria o texto depois do painel ja ter saido.
+    gsap.killTweensOf([loading, loadingMensagem]);
+    gsap.to(loading, {
+      opacity: 0,
+      y: -10,
+      duration: 0.32,
+      ease: "power2.in",
+      onComplete: () => {
+        esconder();
+        gsap.set(loading, { opacity: 1, y: 0 });
+      },
+    });
+  }
+
+  return { iniciar, finalizar };
+})();
+
 function setCarregando(ativo) {
-  if (loading) loading.style.display = ativo ? "flex" : "none";
+  if (ativo) {
+    painelVarredura.iniciar();
+  } else {
+    painelVarredura.finalizar();
+  }
+
   if (btnVerificar) {
     btnVerificar.disabled = ativo;
     btnVerificar.textContent = ativo ? "Analisando..." : "Analisar imagem";
@@ -384,7 +754,12 @@ function exibirResultado(dados, baseApi) {
 
   if (areaResultado) {
     areaResultado.style.display = "block";
-    areaResultado.scrollIntoView({ behavior: "smooth", block: "start" });
+    // O painel de varredura ainda esta saindo de cena neste ponto. Rolar agora
+    // miraria uma posicao que deixa de existir quando ele colapsa; esperar a
+    // saida faz o resultado parar onde deveria.
+    window.setTimeout(() => {
+      areaResultado.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 380);
   }
 
   const isLogged = localStorage.getItem("usuarioNome") || localStorage.getItem("usuarioEmail");

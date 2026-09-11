@@ -10,9 +10,23 @@
 
     <link rel="manifest" href="../manifest.webmanifest">
     <link rel="apple-touch-icon" href="../assets/images/pwa-icon-180.png">
-    <link rel="icon" type="image/png" href="../assets/images/AIDABranco.ico">
+    <link id="favicon" rel="icon" type="image/x-icon" href="../assets/images/AIDABranco.ico">
 
     <title>AIDA Video | Em desenvolvimento</title>
+    <!-- SEO e compartilhamento -->
+    <link rel="canonical" href="https://aida-on.vercel.app/video">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="AIDA.ON">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:title" content="AIDA Video — Análise temporal de vídeo">
+    <meta property="og:description" content="Leitura de vídeo quadro a quadro sobre o mesmo núcleo do AIDA Image, com amostragem por cortes de cena e agregação temporal. Em desenvolvimento.">
+    <meta property="og:url" content="https://aida-on.vercel.app/video">
+    <meta property="og:image" content="https://aida-on.vercel.app/assets/images/pwa-icon-512.png">
+    <meta property="og:image:alt" content="Logotipo do AIDA.ON">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="AIDA Video — Análise temporal de vídeo">
+    <meta name="twitter:description" content="Leitura de vídeo quadro a quadro sobre o mesmo núcleo do AIDA Image, com amostragem por cortes de cena e agregação temporal. Em desenvolvimento.">
+    <meta name="twitter:image" content="https://aida-on.vercel.app/assets/images/pwa-icon-512.png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,18 +39,19 @@
 </head>
 
 <body class="aida-shell" style="--produto-accent: var(--aida-video);">
+    <a class="aida-skip-link" href="#conteudo">Pular para o conteúdo</a>
     <header class="page-header">
-        <a href="./index-apresentacao.html" aria-label="Pagina inicial do AIDA">
+        <a href="./index-apresentacao.html" aria-label="Página inicial do AIDA">
             <img src="../assets/images/LogoBranca.png" alt="Logo AIDA.ON" class="brand-logo">
         </a>
 
-        <nav class="aida-row" aria-label="Navegacao da plataforma">
+        <nav class="aida-row" aria-label="Navegação da plataforma">
             <a href="./index-apresentacao.html#solucoes" class="top-link">Soluções</a>
             <a href="./index-seleciona.html" class="top-link">Analisar imagem</a>
         </nav>
     </header>
 
-    <main class="page-frame produto-main">
+    <main id="conteudo" class="page-frame produto-main">
 
         <!-- ================= Topo ================= -->
         <section class="produto-hero">
@@ -376,7 +391,7 @@
         </div>
     </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/gsap.min.js" integrity="sha384-UoFnwgbUNlK0Rwou15cSoyrXQvKrOUxV8AkCoGKSSd0sxVeJ95ARU8uGMkMZhzpB" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="../scripts/script-cookie-consent.js"></script>
     <script src="../scripts/aida-solucoes.js"></script>
 </body>

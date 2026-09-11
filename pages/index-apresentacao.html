@@ -5,25 +5,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AIDA - Apresentação</title>
-    <link rel="icon" id="favicon" type="image/png" href="../assets/images/AIDABranco.ico">
+    <!-- SEO e compartilhamento -->
+    <meta name="description" content="Plataforma que combina forense digital, análise estatística e espectral para apontar indícios de geração ou manipulação de imagens por inteligência artificial.">
+    <link rel="canonical" href="https://aida-on.vercel.app/apresentacao">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="AIDA.ON">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:title" content="AIDA.ON — AI Detector & Analyzer">
+    <meta property="og:description" content="Plataforma que combina forense digital, análise estatística e espectral para apontar indícios de geração ou manipulação de imagens por inteligência artificial.">
+    <meta property="og:url" content="https://aida-on.vercel.app/apresentacao">
+    <meta property="og:image" content="https://aida-on.vercel.app/assets/images/pwa-icon-512.png">
+    <meta property="og:image:alt" content="Logotipo do AIDA.ON">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="AIDA.ON — AI Detector & Analyzer">
+    <meta name="twitter:description" content="Plataforma que combina forense digital, análise estatística e espectral para apontar indícios de geração ou manipulação de imagens por inteligência artificial.">
+    <meta name="twitter:image" content="https://aida-on.vercel.app/assets/images/pwa-icon-512.png">
+    <link rel="icon" id="favicon" type="image/x-icon" href="../assets/images/AIDABranco.ico">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Afacad:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha384-/o6I2CkkWC//PSjvWC/eYN7l3xM3tJm8ZzVkCOfp//W05QcE3mlGskpoHB6XqI+B" crossorigin="anonymous" referrerpolicy="no-referrer">
     <!-- A versão no fim do caminho é o que invalida o cache do navegador. Sem
          ela, quem já visitou continuaria com a folha antiga — no caso desta
          mudança, com as regras de parallax que deixaram de existir. -->
-    <link rel="stylesheet" href="../styles/style-apresentacao.css?v=20260816-sem-parallax">
+    <link rel="stylesheet" href="../styles/aida-design-system.css">
+    <link rel="stylesheet" href="../styles/style-apresentacao.css?v=20260819-melhorias">
 </head>
 
 <body>
+    <a class="aida-skip-link" href="#topo">Pular para o conteúdo</a>
     <header class="cabecalho">
         <div class="headcontent">
             <a href="#topo" class="brand" aria-label="Voltar ao topo">
                 <img src="../assets/images/LogoBranca.png" alt="Logo da AIDA.ON" class="logoaida">
             </a>
 
-            <nav class="navbar" id="menu-principal" aria-label="Navegacao principal">
+            <nav class="navbar" id="menu-principal" aria-label="Navegação principal">
                 <a href="#sobre" class="ancoranav">Sobre</a>
                 <a href="#funcionamento" class="ancoranav">Funcionamento</a>
                 <a href="./index-solucoes.html" class="ancoranav">Soluções</a>
@@ -69,7 +86,7 @@
         <section class="hero secao-recortada">
             <div class="hero-inner">
                 <div class="hero-copy">
-                    <span class="hero-badge">Analise forense de imagens</span>
+                    <span class="hero-badge">Análise forense de imagens</span>
                     <h1 class="hero-title">Seja bem-vindo a verdade digital.</h1>
                     <p class="hero-text">
                         AIDA identifica sinais de manipulação e geração por inteligência
@@ -91,7 +108,7 @@
         <section class="sobre secao-recortada" id="sobre">
             <div class="content">
                 <div class="sobre-visual">
-                    <img src="../assets/images/Group 11.png" alt="Ilustracao de analise de imagens">
+                    <img src="../assets/images/Group 11.png" alt="Ilustração de análise de imagens">
                 </div>
 
                 <div class="sobre-copy">
@@ -99,7 +116,7 @@
                     <h2 class="section-title">Uma ferramenta criada para validar a autenticidade visual.</h2>
                     <p class="section-text">
                         A plataforma combina técnicas de forense digital, estatística e análise espectral para a
-                        identificaçãoo de conteúdos sintéticos e manipulados.
+                        identificação de conteúdos sintéticos e manipulados.
                     </p>
 
 
@@ -107,7 +124,7 @@
                         <article class="sobre-card">
                             <img src="../assets/images/circle-info-solid-full.svg" alt="" class="imgsobre">
                             <h3>Visão clara</h3>
-                            <p>Explica o processo de leitura da imagem com uma experiencia direta e objetiva.</p>
+                            <p>Explica o processo de leitura da imagem com uma experiência direta e objetiva.</p>
                         </article>
 
                         <article class="sobre-card">
@@ -124,7 +141,7 @@
 
                         <article class="sobre-card">
                             <img src="../assets/images/eye-solid-full.svg" alt="" class="imgsobre">
-                            <h3>Analise técnica</h3>
+                            <h3>Análise técnica</h3>
                             <p>Organiza resultados de forma compreensivel para apoiar estudo, validação e tomada de
                                 decisão.</p>
                         </article>
@@ -143,7 +160,7 @@
                         <h2 class="title-func">Funcionamento.</h2>
                     </div>
                     <p class="subtitle-func">
-                        Um fluxo em quatro etapas, organizado em linha, inspirado exclusivamente na referência enviada.
+                        Um fluxo em quatro etapas, do envio da imagem até a leitura do resultado.
                     </p>
                 </div>
 
@@ -159,14 +176,14 @@
                         <span class="func-index">02</span>
                         <img src="../assets/images/gears-solid-full.svg" alt="" class="func-icon">
                         <h3>Leitura inicial</h3>
-                        <p>Os dados visuais são preparados para os testes tecnicos da análise.</p>
+                        <p>Os dados visuais são preparados para os testes técnicos da análise.</p>
                     </article>
 
                     <article class="func-card">
                         <span class="func-index">03</span>
                         <img src="../assets/images/circle-nodes-solid-full.svg" alt="" class="func-icon">
                         <h3>Processamento</h3>
-                        <p>Os métodos de detecção comparam sinais, artefatos e inconsistencias.</p>
+                        <p>Os métodos de detecção comparam sinais, artefatos e inconsistências.</p>
                     </article>
 
                     <article class="func-card">
@@ -196,14 +213,14 @@
                         <article class="card-content">
                             <img src="../assets/images/code-solid-full.svg" alt="" class="imgtech">
                             <h3>Tecnologias usadas</h3>
-                            <p>HTML, CSS, JavaScript, React, Python, GSAP, Git e banco de dados sustentam a experiencia
+                            <p>HTML, CSS, JavaScript, React, Python, GSAP, Git e banco de dados sustentam a experiência
                                 e o processamento.</p>
                         </article>
 
                         <article class="card-content">
                             <img src="../assets/images/file-code-solid-full.svg" alt="" class="imgtech">
                             <h3>Métodos adotados</h3>
-                            <p>FFT, PSEM e análise estatistica apoiam a interpretação dos sinais presentes em cada
+                            <p>FFT, PSEM e análise estatística apoiam a interpretação dos sinais presentes em cada
                                 imagem enviada.</p>
                         </article>
                     </div>
@@ -232,7 +249,7 @@
 
         <section class="team-section" id="equipe">
             <div class="team-wrapper">
-                <div class="team-icons" aria-label="Areas da equipe">
+                <div class="team-icons" aria-label="Áreas da equipe">
                     <i class="fa-solid fa-file-lines icon active" id="icon0"></i>
                     <i class="fa-solid fa-search icon" id="icon1"></i>
                     <i class="fa-solid fa-database icon" id="icon2"></i>
@@ -252,7 +269,7 @@
                     <p id="memberDescription" class="team-description">
                         Responsável pela estruturação e manutenção da documentação técnica do projeto. Atua na
                         organização das metodologias utilizadas, registro dos processos de desenvolvimento e
-                        elaboração de relatorios e materiais explicativos.
+                        elaboração de relatórios e materiais explicativos.
                     </p>
                 </div>
             </div>
@@ -270,15 +287,15 @@
             <div class="ferramenta-container">
                 <div class="new-feature-badge">
                     <span class="badge-tag">Novidade</span>
-                    <span class="badge-text">Conheça a nossa nova análise estatistica</span>
+                    <span class="badge-text">Conheça a nossa nova análise estatística</span>
                     <i class="fa-solid fa-arrow-right"></i>
                 </div>
 
                 <div class="contentferr">
                     <h2 class="titleferr">Experimente o AIDA agora.</h2>
                     <p class="subtitleferr">
-                        Faca o upload de qualquer imagem e descubra em segundos se ha indicios de geração por
-                        inteligencia artificial.
+                        Faça o upload de qualquer imagem e descubra em segundos se há indícios de geração por
+                        inteligência artificial.
                     </p>
                 </div>
 
@@ -321,7 +338,6 @@
                 <span class="foot-title">Apoiadores</span>
                 <ul class="foot-list">
                     <li><a href="https://progrid.net.br/home.html" target="_blank" rel="noreferrer">ProgrID</a></li>
-                    <li>Empresa 2</li>
                     <li><a href="./index-apoiadores.html">Ver página de apoiadores</a></li>
                 </ul>
             </div>
@@ -341,14 +357,14 @@
         </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/gsap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/SplitText.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/gsap.min.js" integrity="sha384-UoFnwgbUNlK0Rwou15cSoyrXQvKrOUxV8AkCoGKSSd0sxVeJ95ARU8uGMkMZhzpB" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/SplitText.min.js" integrity="sha384-og/mrD2vdMqjyGxWqnubcUzxmFGIKlqgiUIJVC/vl7T5XcGvrS+LTFHrx7FntOhn" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/ScrollTrigger.min.js" integrity="sha384-s2VjM2y83PpWd6b7vX27Pt3ZhwavFDwKXFvapmlQrOzBo9vX990dSgHdpqPgOfF0" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="../scripts/script-cookie-consent.js"></script>
     <!-- Mesma versão da folha de estilo: sem ela, quem já visitou continuaria
          rodando o script antigo, com o parallax e a animação que apagava os
          logos de tecnologia. -->
-    <script src="../scripts/script-apresentacao.js?v=20260816-sem-parallax"></script>
+    <script src="../scripts/script-apresentacao.js?v=20260819-melhorias"></script>
 </body>
 
 </html>

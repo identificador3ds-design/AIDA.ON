@@ -24,7 +24,7 @@ body {
   justify-content: center;
   padding: clamp(16px, 3vw, 32px);
   overflow-x: hidden;
-  font-family: "Montserrat", sans-serif;
+  font-family: var(--aida-font, "Afacad", Arial, sans-serif);
   background: #012823 url("../assets/images/Group 15.png") center/cover no-repeat;
 }
 

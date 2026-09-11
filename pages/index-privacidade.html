@@ -6,20 +6,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#10403b">
   <title>AIDA.ON - Aviso de Privacidade</title>
-  <link rel="icon" type="image/png" href="../assets/images/AIDABranco.ico">
+  <!-- SEO e compartilhamento -->
+  <meta name="description" content="Como o AIDA.ON coleta, usa, armazena e protege dados pessoais e imagens enviadas para análise, conforme a LGPD.">
+  <link rel="canonical" href="https://aida-on.vercel.app/privacidade">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="AIDA.ON">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:title" content="Aviso de Privacidade — AIDA.ON">
+  <meta property="og:description" content="Como o AIDA.ON coleta, usa, armazena e protege dados pessoais e imagens enviadas para análise, conforme a LGPD.">
+  <meta property="og:url" content="https://aida-on.vercel.app/privacidade">
+  <meta property="og:image" content="https://aida-on.vercel.app/assets/images/pwa-icon-512.png">
+  <meta property="og:image:alt" content="Logotipo do AIDA.ON">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Aviso de Privacidade — AIDA.ON">
+  <meta name="twitter:description" content="Como o AIDA.ON coleta, usa, armazena e protege dados pessoais e imagens enviadas para análise, conforme a LGPD.">
+  <meta name="twitter:image" content="https://aida-on.vercel.app/assets/images/pwa-icon-512.png">
+  <link id="favicon" rel="icon" type="image/x-icon" href="../assets/images/AIDABranco.ico">
+  <link rel="stylesheet" href="../styles/aida-design-system.css">
   <link rel="stylesheet" href="../styles/style-privacidade.css">
 </head>
 
 <body class="privacy-page">
+  <a class="aida-skip-link" href="#conteudo">Pular para o conteúdo</a>
   <header class="privacy-header">
-    <a href="../index.html" class="privacy-brand" aria-label="Pagina inicial">
+    <a href="../index.html" class="privacy-brand" aria-label="Página inicial">
       <img src="../assets/images/LogoBranca.png" alt="Logo AIDA.ON">
     </a>
 
     <a href="./index-login.html" class="privacy-back-link" id="privacyBackLink">Voltar</a>
   </header>
 
-  <main class="privacy-main">
+  <main id="conteudo" class="privacy-main">
     <aside class="privacy-sidebar">
       <span class="sidebar-title">Índice</span>
       <a href="#introducao">1. Introdução</a>
@@ -142,7 +159,7 @@
         <p>Se você tiver quaisquer dúvidas sobre esta Política de Privacidade, solicitações sobre seus dados pessoais ou
           reclamações sobre o tratamento, entre em contato diretamente com o nosso Encarregado pelo Tratamento de Dados
           Pessoais através do canal oficial:</p>
-        <p><strong>E-mail:</strong> contato@aida.com.br</p>
+        <p><strong>E-mail:</strong> contato@aida.com</p>
         <p>Responderemos às solicitações formais dentro do prazo regulamentado pelas diretrizes da ANPD (Autoridade
           Nacional de Proteção de Dados).</p>
       </div>
@@ -150,15 +167,7 @@
   </main>
 
   <script src="../scripts/script-cookie-consent.js"></script>
-  <script>
-    const privacyBackLink = document.getElementById("privacyBackLink");
-    const privacySource = new URLSearchParams(window.location.search).get("from");
-
-    if (privacyBackLink) {
-      privacyBackLink.href =
-        privacySource === "perfil" ? "./index-perfil.html" : "./index-login.html";
-    }
-  </script>
+  <script src="../scripts/script-privacidade.js"></script>
 </body>
 
 </html>

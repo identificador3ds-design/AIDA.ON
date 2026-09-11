@@ -21,67 +21,102 @@
   "rewrites": [
     {
       "source": "/solucoes",
-      "destination": "/pages/index-solucoes.html"
+      "destination": "/pages/index-solucoes"
     },
     {
       "source": "/image",
-      "destination": "/pages/index-seleciona.html"
+      "destination": "/pages/index-seleciona"
     },
     {
       "source": "/forensics",
-      "destination": "/pages/index-forensics.html"
+      "destination": "/pages/index-forensics"
     },
     {
       "source": "/video",
-      "destination": "/pages/index-video.html"
+      "destination": "/pages/index-video"
     },
     {
       "source": "/api",
-      "destination": "/pages/index-api.html"
+      "destination": "/pages/index-api"
     },
     {
       "source": "/admin",
-      "destination": "/pages/index-admin.html"
+      "destination": "/pages/index-admin"
     },
     {
       "source": "/analise",
-      "destination": "/pages/index-analise.html"
+      "destination": "/pages/index-analise"
     },
     {
       "source": "/apresentacao",
-      "destination": "/pages/index-apresentacao.html"
+      "destination": "/pages/index-apresentacao"
     },
     {
       "source": "/apoiadores",
-      "destination": "/pages/index-apoiadores.html"
+      "destination": "/pages/index-apoiadores"
     },
     {
       "source": "/historico",
-      "destination": "/pages/index-historico.html"
+      "destination": "/pages/index-historico"
     },
     {
       "source": "/login",
-      "destination": "/pages/index-login.html"
+      "destination": "/pages/index-login"
     },
     {
       "source": "/manutencao",
-      "destination": "/pages/index-manutencao.html"
+      "destination": "/pages/index-manutencao"
     },
     {
       "source": "/perfil",
-      "destination": "/pages/index-perfil.html"
+      "destination": "/pages/index-perfil"
     },
     {
       "source": "/privacidade",
-      "destination": "/pages/index-privacidade.html"
+      "destination": "/pages/index-privacidade"
     },
     {
       "source": "/selecionar",
-      "destination": "/pages/index-seleciona.html"
+      "destination": "/pages/index-seleciona"
     },
     {
       "source": "/validador",
-      "destination": "/pages/validador_tac_aida.html"
+      "destination": "/pages/validador_tac_aida"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=63072000; includeSubDomains; preload"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:; img-src 'self' data: blob: https://nwzijdudhemuibsyzpub.supabase.co https://aidaon-aida-api.hf.space; media-src 'self' data: blob:; connect-src 'self' https://nwzijdudhemuibsyzpub.supabase.co wss://nwzijdudhemuibsyzpub.supabase.co https://aidaon-aida-api.hf.space; worker-src 'self'; manifest-src 'self'; upgrade-insecure-requests"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "accelerometer=(), autoplay=(self), camera=(), display-capture=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()"
+        },
+        {
+          "key": "Cross-Origin-Opener-Policy",
+          "value": "same-origin"
+        }
+      ]
     }
   ]
 }

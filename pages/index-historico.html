@@ -3,24 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AIDA.ON - Historico de Analises</title>
-    <link id="favicon" rel="icon" type="image/png" href="../assets/images/AIDABranco.ico">
+    <title>AIDA.ON - Histórico de Análises</title>
+    <!-- SEO e compartilhamento -->
+    <meta name="description" content="Suas análises salvas, com data, resultado e acesso à investigação forense de cada uma.">
+    <meta name="robots" content="noindex, nofollow">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="AIDA.ON">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:title" content="Histórico de análises — AIDA.ON">
+    <meta property="og:description" content="Suas análises salvas, com data, resultado e acesso à investigação forense de cada uma.">
+    <meta property="og:url" content="https://aida-on.vercel.app/historico">
+    <meta property="og:image" content="https://aida-on.vercel.app/assets/images/pwa-icon-512.png">
+    <meta property="og:image:alt" content="Logotipo do AIDA.ON">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Histórico de análises — AIDA.ON">
+    <meta name="twitter:description" content="Suas análises salvas, com data, resultado e acesso à investigação forense de cada uma.">
+    <meta name="twitter:image" content="https://aida-on.vercel.app/assets/images/pwa-icon-512.png">
+    <link id="favicon" rel="icon" type="image/x-icon" href="../assets/images/AIDABranco.ico">
     <link rel="stylesheet" href="../styles/style-shared-theme.css">
+    <link rel="stylesheet" href="../styles/aida-design-system.css">
     <link rel="stylesheet" href="../styles/style-analise.css">
     <link rel="stylesheet" href="../styles/style-perfil.css">
     <link rel="stylesheet" href="../styles/style-historico.css">
 </head>
 <body class="aida-shell analysis-page">
+    <a class="aida-skip-link" href="#conteudo">Pular para o conteúdo</a>
     <header class="page-header">
-        <a href="../index.html" aria-label="Pagina inicial">
+        <a href="../index.html" aria-label="Página inicial">
             <img src="../assets/images/LogoBranca.png" alt="Logo AIDA.ON" class="brand-logo">
         </a>
         <div class="history-header-actions">
-            <a href="javascript:void(0)" onclick="if(window.history.length > 1) { window.history.back(); } else { window.location.href='./index-perfil.html'; }" class="top-link">Voltar</a>
+            <a href="./index-perfil.html" data-voltar class="top-link">Voltar</a>
         </div>
     </header>
 
-    <main class="page-frame profile-main">
+    <main id="conteudo" class="page-frame profile-main">
         <div class="profile-container">
             <section class="profile-section">
                 <div class="section-header" style="justify-content: space-between; align-items: flex-end;">
@@ -42,11 +59,11 @@
         <div class="modal-shell glass-panel">
             <button class="btn-fechar-modal" type="button" aria-label="Fechar modal">&times;</button>
             <h3 id="modalTitulo" style="color: var(--highlight); margin-top: 0;">Evidência</h3>
-            <img id="modalImgProcessada" src="" alt="Resultado da evidencia" style="width: 100%; border-radius: 12px; background: rgba(0,0,0,0.5);">
+            <img id="modalImgProcessada" src="" alt="Resultado da evidência" style="width: 100%; border-radius: 12px; background: rgba(0,0,0,0.5);">
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.3/dist/umd/supabase.js" integrity="sha384-qafw21c/iciq0VXsi9FzkfoQv5I/V0iqE4lSNcKXPnW9/UTJLnv5CcN4FHxVLnKg" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="../scripts/script-cookie-consent.js"></script>
     <script src="../scripts/script-historico.js"></script>
 </body>

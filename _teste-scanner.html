@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnostico do scanner - AIDA Image</title>
+    <link rel="stylesheet" href="./styles/style-shared-theme.css">
+    <link rel="stylesheet" href="./styles/style-analise.css?v=20260818-scan-largura">
+    <style>
+        body { background: #061a18; color: #d1d5db; font-family: system-ui, sans-serif; padding: 28px; }
+        .diag { max-width: 760px; margin: 0 auto; display: grid; gap: 18px; }
+        .diag h1 { font-size: 1.1rem; letter-spacing: .04em; text-transform: uppercase; color: #8fd8b7; }
+        .diag table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+        .diag td { padding: 7px 10px; border-bottom: 1px solid rgba(143,216,183,.18); }
+        .diag td:first-child { color: rgba(209,213,219,.7); width: 48%; }
+        .ok { color: #8fd8b7; font-weight: 700; }
+        .ruim { color: #ff8f8f; font-weight: 700; }
+        .palco { background: rgba(4,20,18,.6); border: 1px solid rgba(143,216,183,.2); border-radius: 18px; padding: 18px; }
+    </style>
+</head>
+<body>
+    <div class="diag">
+        <h1>Diagnostico do scanner do AIDA Image</h1>
+        <p>Esta pagina carrega o <strong>mesmo CSS e o mesmo JavaScript</strong> da tela de analise e liga o painel de leitura sem depender da API. Se aqui animar e na tela real nao, o problema esta no fluxo da analise; se aqui tambem ficar parado, os numeros abaixo dizem por que.</p>
+
+        <div class="palco">
+            <div id="loading" class="loading-state glass-card" style="display: none;">
+                <div class="scanner-panel" aria-hidden="true">
+                    <div class="scanner-frame" id="scannerFrame">
+                        <div class="scanner-camadas" id="scannerCamadas">
+                            <img id="loadingThumb" class="scanner-thumb" src="" alt="">
+                            <div class="scanner-camada-analise" id="scannerCamadaAnalise">
+                                <img id="loadingThumbAnalise" class="scanner-thumb scanner-thumb--analise" src="" alt="">
+                            </div>
+                        </div>
+
+                        <span class="scanner-grid"></span>
+                        <span class="scanner-band" id="scannerBand"></span>
+                        <span class="scanner-linha" id="scannerLinha"></span>
+
+                        <span class="scanner-canto scanner-canto--tl"></span>
+                        <span class="scanner-canto scanner-canto--tr"></span>
+                        <span class="scanner-canto scanner-canto--bl"></span>
+                        <span class="scanner-canto scanner-canto--br"></span>
+
+                        <span class="scanner-ponto scanner-ponto--a"></span>
+                        <span class="scanner-ponto scanner-ponto--b"></span>
+                        <span class="scanner-ponto scanner-ponto--c"></span>
+
+                        <span class="scanner-moldura scanner-moldura--a"></span>
+                        <span class="scanner-moldura scanner-moldura--b"></span>
+
+                        <span class="scanner-sem-previa" id="scannerSemPrevia">sem prévia</span>
+                    </div>
+                </div>
+
+                <div class="loading-copy">
+                    <span class="scanner-tag" aria-hidden="true">
+                        <span class="scanner-dot"></span>AIDA Image · leitura em curso
+                    </span>
+                    <strong id="loadingMensagem" aria-live="polite">Preparando imagem...</strong>
+                    <p>Painel de diagnostico: a leitura roda em loop e nao para sozinha.</p>
+                    <span class="scanner-pulso" aria-hidden="true"><span class="scanner-pulso__barra"></span></span>
+                </div>
+            </div>
+        </div>
+
+        <p>
+            <button id="btnForcar" type="button" style="padding:10px 16px;border-radius:10px;border:1px solid #8fd8b7;background:transparent;color:#8fd8b7;font-weight:700;cursor:pointer;">
+                Forcar animacao (ignorar reduced-motion)
+            </button>
+            <span id="statusForcar" style="margin-left:10px;font-size:.85rem;"></span>
+        </p>
+
+        <table>
+            <tbody id="tabelaDiag"></tbody>
+        </table>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/gsap.min.js"></script>
+    <script>
+        // O script da analise cria um cliente Supabase assim que carrega. Aqui a
+        // API nao entra na conta, entao um duble basta para o arquivo carregar.
+        window.supabase = { createClient: () => ({
+            auth: {
+                getSession: async () => ({ data: { session: null } }),
+                onAuthStateChange: () => ({ data: { subscription: { unsubscribe() {} } } }),
+                signOut: async () => ({}),
+            },
+            from: () => ({ select: () => ({ eq: () => ({ single: async () => ({ data: null, error: null }) }) }) }),
+        }) };
+    </script>
+    <script src="./scripts/script-analise.js?v=20260818-scan-largura"></script>
+    <script>
+        const linhas = [];
+        function anota(rotulo, valor, bom) {
+            linhas.push(
+                "<tr><td>" + rotulo + "</td><td class='" +
+                (bom === undefined ? "" : bom ? "ok" : "ruim") + "'>" + valor + "</td></tr>"
+            );
+        }
+
+        (async () => {
+            const reduzido = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+            anota("GSAP carregado", window.gsap ? "sim (" + window.gsap.version + ")" : "NAO", !!window.gsap);
+            anota("prefers-reduced-motion: reduce", reduzido ? "SIM — animacoes desligadas no sistema" : "nao", !reduzido);
+            anota("Suporte a @property", typeof CSS.registerProperty === "function" ? "sim" : "NAO", typeof CSS.registerProperty === "function");
+            anota("Funcao setCarregando disponivel", typeof setCarregando === "function" ? "sim" : "NAO", typeof setCarregando === "function");
+
+            const css = [...document.styleSheets].map((f) => f.href).filter((h) => h && h.includes("style-analise"));
+            anota("CSS carregado", css.length ? css[0].split("/").pop() : "NENHUM", css.length > 0);
+
+            // Liga o painel com uma imagem de exemplo do proprio projeto.
+            try {
+                const r = await fetch("./assets/images/exemplo-lsb-ia.png");
+                const b = await r.blob();
+                previaDataUrl = await new Promise((res) => { const fr = new FileReader(); fr.onload = () => res(fr.result); fr.readAsDataURL(b); });
+                previaExtensao = "png";
+                setCarregando(true);
+                anota("Painel ligado", "sim", true);
+            } catch (e) {
+                anota("Painel ligado", "falhou: " + e.message, false);
+            }
+
+            const frame = document.getElementById("scannerFrame");
+            anota("Motor em uso", document.getElementById("loading").dataset.motor === "gsap" ? "GSAP" : "keyframes CSS (fallback)");
+
+            // Mede se --scan realmente muda ao longo de 1,2s.
+            const leituras = [];
+            for (let i = 0; i < 6; i++) {
+                await new Promise((r) => setTimeout(r, 200));
+                const inline = frame.style.getPropertyValue("--scan");
+                leituras.push(inline !== "" ? (+inline).toFixed(2) : (+getComputedStyle(frame).getPropertyValue("--scan")).toFixed(2));
+            }
+            const mexeu = new Set(leituras).size > 1;
+            anota("Posicao da linha (--scan) em 1,2s", leituras.join(" -> "), mexeu);
+            anota("VEREDITO", mexeu ? "A VARREDURA ESTA ANIMANDO" : "A VARREDURA ESTA PARADA", mexeu);
+
+            document.getElementById("tabelaDiag").innerHTML = linhas.join("");
+        })();
+
+        // Mostra a animacao como ela e, mesmo com o sistema pedindo menos
+        // movimento. Serve so para conferir aqui: a tela real continua
+        // respeitando a preferencia do sistema.
+        document.getElementById("btnForcar").addEventListener("click", async () => {
+            const original = window.matchMedia.bind(window);
+            window.matchMedia = (q) => (q.includes("prefers-reduced-motion")
+                ? { matches: false, addListener() {}, removeListener() {}, addEventListener() {}, removeEventListener() {} }
+                : original(q));
+
+            setCarregando(false);
+            await new Promise((r) => setTimeout(r, 400));
+            setCarregando(true);
+
+            const frame = document.getElementById("scannerFrame");
+            const leituras = [];
+            for (let i = 0; i < 6; i++) {
+                await new Promise((r) => setTimeout(r, 200));
+                leituras.push((+frame.style.getPropertyValue("--scan")).toFixed(2));
+            }
+            const mexeu = new Set(leituras).size > 1;
+            document.getElementById("statusForcar").innerHTML =
+                "<span class='" + (mexeu ? "ok" : "ruim") + "'>" +
+                (mexeu ? "animando: " : "ainda parado: ") + leituras.join(" -> ") + "</span>";
+        });
+    </script>
+</body>
+</html>

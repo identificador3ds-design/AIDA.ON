@@ -3,6 +3,17 @@
   "trailingSlash": false,
   "redirects": [
     {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "aida-on.vercel.app"
+        }
+      ],
+      "destination": "https://aida-on.com.br/:path*",
+      "permanent": true
+    },
+    {
       "source": "/forense",
       "destination": "/forensics",
       "permanent": false

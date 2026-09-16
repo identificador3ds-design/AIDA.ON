@@ -6,7 +6,7 @@ O **AIDA** é uma plataforma web desenvolvida para analisar imagens e identifica
 
 O projeto nasceu como Trabalho de Conclusão de Curso do Técnico em Desenvolvimento de Sistemas da **ETEC Deputado Salim Sedeh**, evoluindo para uma aplicação funcional que combina análise computacional, Machine Learning, experiência do usuário e investigação de características presentes em imagens digitais.
 
-🌐 **Aplicação:** https://aida-on.vercel.app
+🌐 **Aplicação:** https://aida-on.com.br
 
 ---
 
@@ -335,7 +335,7 @@ O AIDA continua recebendo:
 
 **Acesse a aplicação:**
 
-https://aida-on.vercel.app
+https://aida-on.com.br
 
 ---
 

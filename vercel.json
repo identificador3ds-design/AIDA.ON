@@ -21,7 +21,7 @@
           "key": "code"
         }
       ],
-      "destination": "/login",
+      "destination": "/pages/index-login",
       "permanent": false
     },
     {
@@ -32,7 +32,7 @@
           "key": "error"
         }
       ],
-      "destination": "/login",
+      "destination": "/pages/index-login",
       "permanent": false
     },
     {

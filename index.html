@@ -15,8 +15,10 @@
     <link rel="icon" type="image/x-icon" href="assets/images/AIDABranco.ico">
     <link rel="canonical" href="https://aida-on.com.br/apresentacao">
     <title>AIDA | AI Detector &amp; Analyzer</title>
-    <!-- Um unico mecanismo de redirecionamento: o meta refresh cobre tambem
-         quem chega com JavaScript desativado. -->
+    <!-- Retorno do OAuth que cair na raiz e encaminhado para o login com a
+         query preservada; nos demais casos vale o meta refresh abaixo, que
+         cobre tambem quem chega com JavaScript desativado. -->
+    <script src="scripts/script-index.js"></script>
     <meta http-equiv="refresh" content="0;url=pages/index-apresentacao.html">
 </head>
 

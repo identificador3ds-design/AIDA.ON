@@ -198,10 +198,67 @@ function arquivoParaDataUrl(arquivo) {
 // Nenhum navegador de desktop decodifica HEIC/HEIF, e TIFF só em parte. O
 // backend lê esses formatos via pillow-heif, então a análise roda normalmente —
 // quem falha é apenas o <img>, que ficava com o ícone de imagem quebrada e dava
-// a impressão de que a análise tinha dado errado. Converter no cliente exigiria
-// um decodificador WASM de ~2 MB; enquanto não houver prévia vinda da API, o
-// caminho honesto é dizer que a visualização não existe, sem sugerir falha.
+// a impressão de que a análise tinha dado errado. Para HEIC/HEIF geramos uma
+// prévia JPEG no próprio navegador (ver `converterHeicParaPrevia`); a lista
+// abaixo fica só com o que continua sem saída, e serve de fallback quando a
+// conversão falha.
 const EXTENSOES_SEM_PREVIA_NO_NAVEGADOR = ["heic", "heif", "tif", "tiff"];
+const EXTENSOES_HEIC = ["heic", "heif"];
+
+// Decodificador HEIC em JS (libheif compilado), ~1,3 MB. Só é baixado quando o
+// usuário escolhe um .heic, por isso nao entra como <script> fixo no HTML. O
+// hash SRI segue o mesmo padrao dos outros CDNs da pagina.
+const HEIC2ANY_URL = "https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js";
+const HEIC2ANY_SRI = "sha384-OTofQ0MEeiSgh62havBcemCIK0gqj809wX6UA0uPISNMRnR6NZyCdGzX3SbLrgwL";
+let carregamentoHeic2any = null;
+
+function carregarHeic2any() {
+  if (window.heic2any) return Promise.resolve(window.heic2any);
+  if (carregamentoHeic2any) return carregamentoHeic2any;
+
+  carregamentoHeic2any = new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = HEIC2ANY_URL;
+    script.integrity = HEIC2ANY_SRI;
+    script.crossOrigin = "anonymous";
+    script.referrerPolicy = "no-referrer";
+    script.onload = () => {
+      if (window.heic2any) resolve(window.heic2any);
+      else reject(new Error("heic2any carregou mas nao expos a funcao global."));
+    };
+    script.onerror = () => {
+      // Sem cache da falha: se a rede oscilou, a proxima troca de imagem tenta de novo.
+      carregamentoHeic2any = null;
+      reject(new Error("Nao foi possivel baixar o decodificador HEIC."));
+    };
+    document.head.appendChild(script);
+  });
+  return carregamentoHeic2any;
+}
+
+// Converte o HEIC para um JPEG *só de exibição* e devolve uma object URL. O
+// `File` original nao e tocado: `imagemAtual` continua sendo o .heic e e ele
+// que vai para a API. Qualidade baixa de proposito — e uma miniatura.
+async function converterHeicParaPrevia(arquivo) {
+  const heic2any = await carregarHeic2any();
+  const resultado = await heic2any({ blob: arquivo, toType: "image/jpeg", quality: 0.7 });
+  // Um HEIC pode conter varias imagens (burst/live photo); a primeira e a principal.
+  const blob = Array.isArray(resultado) ? resultado[0] : resultado;
+  return URL.createObjectURL(blob);
+}
+
+// Object URL da ultima previa convertida, para liberar memoria na troca. Contador
+// de versao: se o usuario trocar de imagem no meio de uma conversao lenta, o
+// resultado atrasado e descartado em vez de sobrescrever a previa nova.
+let previaObjectUrl = null;
+let versaoPrevia = 0;
+
+function liberarPreviaConvertida() {
+  if (previaObjectUrl) {
+    URL.revokeObjectURL(previaObjectUrl);
+    previaObjectUrl = null;
+  }
+}
 
 function extensaoDe(nome) {
   return (nome || "").split(".").pop()?.toLowerCase() || "";
@@ -268,6 +325,7 @@ function mostrarImagem(dataUrl) {
   }
 
   const extensao = extensaoDe(nomeOriginal);
+  liberarPreviaConvertida();
   previaDataUrl = dataUrl;
   previaExtensao = extensao;
   aplicarPrevia(imagemPreview, dataUrl, extensao);
@@ -279,9 +337,57 @@ function mostrarImagem(dataUrl) {
       : "Imagem pronta";
   }
 
+  // A analise nao depende da previa: o botao libera antes da conversao HEIC
+  // terminar, e a miniatura entra quando ficar pronta.
   if (btnVerificar) {
     btnVerificar.disabled = false;
   }
+
+  if (EXTENSOES_HEIC.includes(extensao)) {
+    gerarPreviaHeic(imagemAtual, extensao);
+  }
+}
+
+// Roda em segundo plano depois de `mostrarImagem`. Enquanto converte, a tela
+// mostra o aviso padrao de "sem previa"; se der certo, ele e substituido pela
+// miniatura JPEG. Se falhar (CDN fora, HEIC corrompido), o aviso permanece —
+// exatamente o comportamento anterior, entao nada piora.
+async function gerarPreviaHeic(arquivo, extensao) {
+  const versao = ++versaoPrevia;
+
+  if (previewStatus) {
+    previewStatus.textContent = "Gerando prévia da imagem HEIC...";
+  }
+
+  let url;
+  try {
+    url = await converterHeicParaPrevia(arquivo);
+  } catch (erro) {
+    console.warn("Previa HEIC indisponivel:", erro);
+    if (versao === versaoPrevia && previewStatus) {
+      previewStatus.textContent = "Imagem pronta (sem prévia neste formato)";
+    }
+    return;
+  }
+
+  // O usuario trocou de imagem enquanto convertiamos: descarta o resultado.
+  if (versao !== versaoPrevia) {
+    URL.revokeObjectURL(url);
+    return;
+  }
+
+  previaObjectUrl = url;
+  previaDataUrl = url;
+  // A previa agora e um JPEG comum: "jpg" faz `aplicarPrevia` e a miniatura do
+  // loading seguirem o caminho normal de exibicao.
+  previaExtensao = "jpg";
+  aplicarPrevia(imagemPreview, url, previaExtensao);
+  aplicarPrevia(imagemProcessada, url, previaExtensao);
+
+  if (previewStatus) {
+    previewStatus.textContent = "Imagem pronta";
+  }
+  registrarStatus(`Prévia ${extensao.toUpperCase()} gerada no navegador; o arquivo original segue para a análise.`);
 }
 
 // Rotulos de etapa da leitura, nao medicao. A API responde de uma vez so e nao
@@ -1337,9 +1443,18 @@ async function salvarHistoricoSupabase(arquivo, dadosAnalisados, baseApi) {
   }
 }
 
+// Mesma regra da tela de selecao: no Windows um .heic/.avif chega com `type`
+// vazio, entao a extensao e a unica pista quando o MIME nao ajuda.
+const EXTENSOES_ACEITAS_TROCA = ["heic", "heif", "avif", "jpg", "jpeg", "png", "webp", "bmp"];
+
+function pareceImagem(arquivo) {
+  if (arquivo.type) return arquivo.type.startsWith("image/");
+  return EXTENSOES_ACEITAS_TROCA.includes(extensaoDe(arquivo.name));
+}
+
 async function trocarImagem(arquivo) {
   if (!arquivo) return;
-  if (!arquivo.type.startsWith("image/")) {
+  if (!pareceImagem(arquivo)) {
     alert("Selecione um arquivo de imagem valido.");
     return;
   }
@@ -1352,6 +1467,13 @@ async function trocarImagem(arquivo) {
 
   const dataUrl = await arquivoParaDataUrl(arquivo);
   await salvarImagemSelecionada(dataUrl);
+  // Sem isto o nome (e a extensao) da imagem anterior ficava valendo para a
+  // nova: `mostrarImagem` nao saberia que agora e um HEIC.
+  try {
+    sessionStorage.setItem("AIDA_NomeArquivoSelecionado", arquivo.name || "");
+  } catch (erro) {
+    /* espaco esgotado: o nome e opcional */
+  }
   mostrarImagem(dataUrl);
   if (areaResultado) areaResultado.style.display = "none";
 }

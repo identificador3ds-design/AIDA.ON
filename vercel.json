@@ -127,7 +127,7 @@
         },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:; img-src 'self' data: blob: https://nwzijdudhemuibsyzpub.supabase.co https://aidaon-aida-api.hf.space; media-src 'self' data: blob:; connect-src 'self' https://nwzijdudhemuibsyzpub.supabase.co wss://nwzijdudhemuibsyzpub.supabase.co https://aidaon-aida-api.hf.space; worker-src 'self'; manifest-src 'self'; upgrade-insecure-requests"
+          "value": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:; img-src 'self' data: blob: https://nwzijdudhemuibsyzpub.supabase.co https://aidaon-aida-api.hf.space; media-src 'self' data: blob:; connect-src 'self' https://nwzijdudhemuibsyzpub.supabase.co wss://nwzijdudhemuibsyzpub.supabase.co https://aidaon-aida-api.hf.space; worker-src 'self' blob:; manifest-src 'self'; upgrade-insecure-requests"
         },
         {
           "key": "X-Content-Type-Options",

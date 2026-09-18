@@ -383,6 +383,9 @@ async function gerarPreviaHeic(arquivo, extensao) {
   previaExtensao = "jpg";
   aplicarPrevia(imagemPreview, url, previaExtensao);
   aplicarPrevia(imagemProcessada, url, previaExtensao);
+  // Se o usuario ja clicou em "Verificar", o painel de varredura esta na tela
+  // com "sem previa": entrega a miniatura para ele tambem.
+  painelVarredura.atualizarMiniatura();
 
   if (previewStatus) {
     previewStatus.textContent = "Imagem pronta";
@@ -733,7 +736,14 @@ const painelVarredura = (() => {
     });
   }
 
-  return { iniciar, finalizar };
+  // A conversao HEIC pode terminar com a analise ja em curso: o painel foi
+  // montado sem previa e precisa receber a miniatura tardia.
+  function atualizarMiniatura() {
+    if (!loading || loading.style.display !== "flex") return;
+    aplicarMiniatura();
+  }
+
+  return { iniciar, finalizar, atualizarMiniatura };
 })();
 
 function setCarregando(ativo) {

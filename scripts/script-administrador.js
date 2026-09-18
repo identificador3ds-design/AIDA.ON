@@ -224,6 +224,16 @@ function obterAdminConfig() {
 function salvarAdminConfig(configuracao) {
   const configNormalizado = normalizarAdminConfig(configuracao);
   localStorage.setItem(CHAVE_ADMIN_CONFIG, JSON.stringify(configNormalizado));
+
+  // Publica para todos os navegadores (tabela admin_config; ver
+  // docs/migracao-admin-painel.sql). Best-effort: o local já está salvo.
+  _supabase
+    .from("admin_config")
+    .upsert({ id: 1, config: configNormalizado, atualizado_em: new Date().toISOString() })
+    .then(({ error }) => {
+      if (error) console.warn("Configuração não publicada no Supabase:", error.message);
+    });
+
   return configNormalizado;
 }
 

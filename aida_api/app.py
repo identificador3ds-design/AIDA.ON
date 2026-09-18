@@ -108,6 +108,10 @@ def criar_app():
     # ----------------------------------------------------------------- #
     # Autenticacao e cota
     # ----------------------------------------------------------------- #
+    def registro_chave_usa_cota():
+        """Chaves de desenvolvimento (AIDA_API_DEV_KEYS) não têm plano no banco."""
+        return getattr(g, "chave", {}).get("origem") == "supabase"
+
     def _chave_do_cabecalho():
         cabecalho = request.headers.get("Authorization", "")
         if not cabecalho.startswith("Bearer "):
@@ -148,6 +152,21 @@ def criar_app():
             g.chave = registro_chave
             g.chave_id = chaves_api.hash_chave(chave)
             g.prefixo_chave = registro_chave.get("prefixo") or chaves_api.prefixo_de(chave)
+
+            if chaves_api.tokens_esgotados(registro_chave):
+                registro.registrar(
+                    {
+                        "route": request.path,
+                        "key_prefix": g.prefixo_chave,
+                        "status": 402,
+                        "error_code": "quota_exhausted",
+                    }
+                )
+                return responder_erro(
+                    "quota_exhausted",
+                    "Cota de análises do plano esgotada. Contate o suporte para ampliar.",
+                    402,
+                )
 
             veredito = limitador.consumir(
                 g.chave_id, registro_chave.get("limite_por_janela")
@@ -294,6 +313,8 @@ def criar_app():
                 analysis_id=id_analise,
                 duracao_borda_s=time.perf_counter() - inicio,
             )
+            if registro_chave_usa_cota():
+                chaves_api.consumir_token(g.chave_id)
             registro.registrar(
                 {**evento, "status": 200, "cache": "hit", "result": corpo["result"],
                  "analysis_id": id_analise,
@@ -347,6 +368,8 @@ def criar_app():
 
         id_analise = resposta_core.get("id_analise") or digest[:32]
         analises.guardar(chave_cache, id_analise, resposta_core)
+        if registro_chave_usa_cota():
+            chaves_api.consumir_token(g.chave_id)
 
         corpo = mapear_analise(
             resposta_core,

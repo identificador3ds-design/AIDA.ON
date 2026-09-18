@@ -764,7 +764,12 @@ function exibirResultado(dados, baseApi) {
 
   const isLogged = localStorage.getItem("usuarioNome") || localStorage.getItem("usuarioEmail");
   if (!isLogged) {
-    localStorage.setItem("AIDA_AnaliseUnlogged", "true");
+    // Conta a análise sem login; a trava respeita o limite definido pelo admin.
+    if (typeof window.aidaRegistrarAnaliseDeslogada === "function") {
+      window.aidaRegistrarAnaliseDeslogada();
+    } else {
+      localStorage.setItem("AIDA_AnaliseUnlogged", "true");
+    }
   }
 }
 

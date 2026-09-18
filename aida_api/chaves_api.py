@@ -223,6 +223,39 @@ def _marcar_uso(hash_):
     threading.Thread(target=tarefa, daemon=True).start()
 
 
+def tokens_esgotados(registro):
+    """Cota do plano esgotada? `tokens_total` 0 significa ilimitado."""
+    total = int(registro.get("tokens_total") or 0)
+    return total > 0 and int(registro.get("tokens_usados") or 0) >= total
+
+
+def consumir_token(hash_):
+    """Debita uma análise da cota do plano, sem segurar a resposta.
+
+    Passa pela função SQL `api_consumir_token` (docs/migracao-admin-painel.sql)
+    para o incremento ser atômico entre workers.
+    """
+
+    def tarefa():
+        try:
+            resposta = requests.post(
+                f"{config.SUPABASE_URL}/rest/v1/rpc/api_consumir_token",
+                json={"p_hash": hash_},
+                headers=_cabecalhos(),
+                timeout=config.SUPABASE_TIMEOUT_S,
+            )
+            linhas = resposta.json() if resposta.status_code < 400 else None
+            if isinstance(linhas, list) and linhas:
+                with _lock_cache:
+                    item = _cache_validacao.get(hash_)
+                    if item and item[1]:
+                        item[1].update(linhas[0])
+        except (requests.RequestException, ValueError):
+            pass  # a cota volta a ser lida do banco quando o cache expirar
+
+    threading.Thread(target=tarefa, daemon=True).start()
+
+
 def revogar_chave(prefixo):
     """Revoga por prefixo. Devolve quantas linhas foram afetadas."""
     _exigir_supabase()
@@ -244,7 +277,7 @@ def listar_chaves(incluir_revogadas=False):
     """Lista as chaves. O hash nunca sai daqui — e material de verificacao."""
     _exigir_supabase()
     params = {
-        "select": "prefixo,descricao,escopo,limite_por_janela,revogada,criada_em,ultimo_uso_em,expira_em",
+        "select": "prefixo,descricao,empresa,plano,tokens_total,tokens_usados,escopo,limite_por_janela,revogada,criada_em,ultimo_uso_em,expira_em",
         "order": "criada_em.desc",
     }
     if not incluir_revogadas:

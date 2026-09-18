@@ -1166,8 +1166,9 @@ async function executarAnalise(event) {
           registrarStatus("Histórico salvo com sucesso na nuvem.", "sucesso");
         })
         .catch((erro) => {
+          // Sem popup: quem não está logado não tem histórico para salvar.
           console.warn("Nao foi possivel sincronizar com o Supabase:", erro);
-          alert("Não foi possível salvar a imagem no histórico. Detalhes: " + erro.message);
+          registrarStatus("Histórico não salvo (faça login para guardar suas análises).", "erro");
         });
     }
   } catch (erro) {

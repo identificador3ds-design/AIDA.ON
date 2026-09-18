@@ -229,31 +229,9 @@ def tokens_esgotados(registro):
     return total > 0 and int(registro.get("tokens_usados") or 0) >= total
 
 
-def consumir_token(hash_):
-    """Debita uma análise da cota do plano, sem segurar a resposta.
-
-    Passa pela função SQL `api_consumir_token` (docs/migracao-admin-painel.sql)
-    para o incremento ser atômico entre workers.
-    """
-
-    def tarefa():
-        try:
-            resposta = requests.post(
-                f"{config.SUPABASE_URL}/rest/v1/rpc/api_consumir_token",
-                json={"p_hash": hash_},
-                headers=_cabecalhos(),
-                timeout=config.SUPABASE_TIMEOUT_S,
-            )
-            linhas = resposta.json() if resposta.status_code < 400 else None
-            if isinstance(linhas, list) and linhas:
-                with _lock_cache:
-                    item = _cache_validacao.get(hash_)
-                    if item and item[1]:
-                        item[1].update(linhas[0])
-        except (requests.RequestException, ValueError):
-            pass  # a cota volta a ser lida do banco quando o cache expirar
-
-    threading.Thread(target=tarefa, daemon=True).start()
+# O débito de tokens acontece no banco: trigger `api_calls_debita_token`
+# (docs/migracao-admin-painel.sql) incrementa `tokens_usados` a cada chamada
+# 200 registrada em api_calls. Aqui só se lê a cota.
 
 
 def revogar_chave(prefixo):

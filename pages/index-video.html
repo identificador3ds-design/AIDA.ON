@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#10403b">
     <meta name="description"
-        content="AIDA Video: analise de conteudo em video por frames e agregacao temporal. Solucao em desenvolvimento.">
+        content="AIDA Video: envio e analise de video por frames, audio e agregacao temporal. Solucao em desenvolvimento.">
 
     <link rel="manifest" href="../manifest.webmanifest">
     <link rel="apple-touch-icon" href="../assets/images/pwa-icon-180.png">
@@ -75,17 +75,18 @@
                     <div class="aida-state aida-state--desenvolvimento" style="margin-top: 24px;" role="status">
                         <span class="aida-state__icon" aria-hidden="true"></span>
                         <div>
-                            <p class="aida-state__title">Ainda não é possível enviar vídeos</p>
+                            <p class="aida-state__title">Envio de vídeo em teste</p>
                             <p class="aida-state__text">
-                                Esta página descreve o que está sendo construído. Não há upload, fila de
-                                processamento nem resultado de vídeo disponíveis nesta versão da plataforma.
+                                O envio já funciona de forma experimental: o vídeo é processado pelo servidor do
+                                AIDA Video, que por enquanto roda na máquina de quem testa. O resultado ainda não
+                                foi calibrado para uso público.
                             </p>
                         </div>
                     </div>
 
                     <div class="produto-hero__actions">
-                        <a href="./index-seleciona.html" class="aida-btn">
-                            Analisar uma imagem agora
+                        <a href="#testar" class="aida-btn">
+                            Enviar um vídeo
                             <span class="aida-btn__arrow" aria-hidden="true">&rarr;</span>
                         </a>
                         <a href="#roadmap" class="aida-btn aida-btn--ghost">Ver o roadmap</a>
@@ -154,6 +155,123 @@
             </div>
         </section>
 
+        <!-- ================= Testar agora =================
+             Tudo aqui é preenchido por scripts/script-video.js, que fala com o
+             servidor do AIDA Video (aida_video/servidor.py). O endereço padrão
+             fica em data-api-padrao. -->
+        <section class="produto-bloco" id="testar" aria-labelledby="testarTitulo">
+            <span class="aida-eyebrow">Testar agora</span>
+            <h2 class="aida-title-2" id="testarTitulo">Envie um vídeo para análise.</h2>
+            <p class="aida-text" style="max-width: 70ch;">
+                O vídeo é separado em frames, cada frame passa pelo AIDA Core e o áudio é lido à parte. O
+                resultado aparece ao longo da linha do tempo, frame a frame, e pode ser baixado em JSON.
+            </p>
+
+            <div class="aida-state aida-state--carregando" id="vidServidor" role="status" aria-live="polite">
+                <span class="aida-state__icon" aria-hidden="true"></span>
+                <div>
+                    <p class="aida-state__title" id="vidServidorTitulo">Procurando o servidor de vídeo…</p>
+                    <p class="aida-state__text" id="vidServidorTexto"></p>
+                </div>
+            </div>
+
+            <form class="vid-form" id="vidForm" data-api-padrao="http://127.0.0.1:7870" novalidate>
+                <label class="vid-drop" id="vidDrop" for="vidArquivo">
+                    <input type="file" id="vidArquivo" name="video" class="vid-drop__input"
+                           accept="video/*,.mp4,.mov,.webm,.mkv,.avi,.3gp">
+                    <img src="../assets/images/file-arrow-up-solid-full.svg" alt="" class="vid-drop__icone"
+                         width="36" height="36">
+                    <span class="vid-drop__titulo" id="vidDropTitulo">Escolha ou arraste um vídeo</span>
+                    <span class="vid-drop__texto" id="vidDropTexto">MP4, MOV, WEBM, MKV, AVI ou 3GP</span>
+                </label>
+
+                <video class="vid-previa" id="vidPrevia" controls muted playsinline preload="metadata" hidden></video>
+
+                <div class="vid-opcoes">
+                    <label class="vid-campo">
+                        <span>Intervalo entre frames</span>
+                        <select id="vidIntervalo" name="intervalo_s">
+                            <option value="0.5">0,5 s</option>
+                            <option value="1" selected>1 s</option>
+                            <option value="2">2 s</option>
+                            <option value="5">5 s</option>
+                        </select>
+                    </label>
+
+                    <label class="vid-campo">
+                        <span>Máximo de frames</span>
+                        <input type="number" id="vidMaxFrames" name="max_frames" value="40" min="1" max="120"
+                               step="1" inputmode="numeric">
+                    </label>
+
+                    <label class="vid-campo vid-campo--check">
+                        <input type="checkbox" id="vidAudio" name="audio" checked>
+                        <span>Analisar também o áudio</span>
+                    </label>
+                </div>
+
+                <details class="vid-avancado">
+                    <summary>Endereço do servidor</summary>
+                    <label class="vid-campo">
+                        <span>URL do servidor do AIDA Video</span>
+                        <input type="url" id="vidApi" name="api" spellcheck="false" autocomplete="off"
+                               placeholder="http://127.0.0.1:7870">
+                    </label>
+                    <p class="aida-text--sm" style="margin: 8px 0 0;">
+                        Também dá para usar <code>?video_api=http://host:porta</code> no endereço da página.
+                    </p>
+                </details>
+
+                <button type="submit" class="aida-btn" id="vidEnviar" disabled>
+                    Analisar vídeo
+                    <span class="aida-btn__arrow" aria-hidden="true">&rarr;</span>
+                </button>
+            </form>
+
+            <div class="vid-progresso" id="vidProgresso" hidden aria-live="polite">
+                <p class="vid-progresso__titulo" id="vidProgressoTitulo"></p>
+                <p class="aida-text--sm vid-progresso__texto" id="vidProgressoTexto"></p>
+                <div class="vid-barra" id="vidBarra" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+                     aria-valuenow="0" aria-labelledby="vidProgressoTitulo">
+                    <span class="vid-barra__preenchida" id="vidBarraPreenchida"></span>
+                </div>
+            </div>
+
+            <div class="vid-resultado" id="vidResultado" hidden>
+                <div class="aida-state" id="vidVeredito" role="status" aria-live="polite">
+                    <span class="aida-state__icon" aria-hidden="true"></span>
+                    <div>
+                        <p class="aida-state__title" id="vidVereditoTitulo"></p>
+                        <ul class="vid-motivos" id="vidMotivos"></ul>
+                    </div>
+                </div>
+
+                <dl class="vid-numeros" id="vidNumeros"></dl>
+
+                <h3 class="vid-subtitulo">Linha do tempo</h3>
+                <div class="vid-legenda" aria-hidden="true">
+                    <span><i class="vid-cor--real"></i>Real</span>
+                    <span><i class="vid-cor--ia"></i>IA/manipulada</span>
+                    <span><i class="vid-cor--inconclusivo"></i>Inconclusivo</span>
+                    <span><i class="vid-cor--neutro"></i>Erro ou fora de domínio</span>
+                </div>
+                <div class="vid-linha" id="vidLinha"></div>
+
+                <h3 class="vid-subtitulo">Frames analisados</h3>
+                <div class="vid-frames" id="vidFrames"></div>
+
+                <h3 class="vid-subtitulo">Áudio</h3>
+                <div class="vid-audio" id="vidAudioResultado"></div>
+
+                <p class="aida-text--sm vid-ressalva" id="vidRessalva"></p>
+
+                <div class="produto-hero__actions">
+                    <button type="button" class="aida-btn aida-btn--ghost" id="vidBaixar" hidden>Baixar relatório (JSON)</button>
+                    <button type="button" class="aida-btn aida-btn--ghost" id="vidNovo">Analisar outro vídeo</button>
+                </div>
+            </div>
+        </section>
+
         <!-- ================= Objetivo ================= -->
         <section class="produto-bloco">
             <span class="aida-eyebrow">Objetivo</span>
@@ -200,8 +318,8 @@
             <span class="aida-eyebrow">Funcionamento planejado</span>
             <h2 class="aida-title-2">Do arquivo à leitura temporal.</h2>
             <p class="aida-text" style="max-width: 70ch;">
-                O desenho abaixo é a arquitetura pretendida. Nenhuma dessas etapas está implementada para
-                vídeo nesta versão.
+                As cinco etapas já rodam no servidor experimental usado em "Testar agora". O que falta é
+                calibrar a agregação com mais vídeos e publicar o servidor junto do Core.
             </p>
 
             <div class="produto-fluxo">
@@ -328,7 +446,7 @@
                             Aceitar o envio, validar formato e duração e expor os metadados do contêiner.
                         </p>
                     </div>
-                    <span class="aida-status aida-status--planejado">Planejado</span>
+                    <span class="aida-status aida-status--beta">Em teste</span>
                 </li>
 
                 <li class="roadmap__item">
@@ -340,7 +458,7 @@
                             praticamente idênticos.
                         </p>
                     </div>
-                    <span class="aida-status aida-status--planejado">Planejado</span>
+                    <span class="aida-status aida-status--beta">Em teste</span>
                 </li>
 
                 <li class="roadmap__item">
@@ -352,7 +470,7 @@
                             repetidos.
                         </p>
                     </div>
-                    <span class="aida-status aida-status--planejado">Planejado</span>
+                    <span class="aida-status aida-status--beta">Em teste</span>
                 </li>
 
                 <li class="roadmap__item">
@@ -364,7 +482,7 @@
                             onde e quanto os frames discordam.
                         </p>
                     </div>
-                    <span class="aida-status aida-status--planejado">Planejado</span>
+                    <span class="aida-status aida-status--beta">Em teste</span>
                 </li>
 
                 <li class="roadmap__item">
@@ -376,7 +494,7 @@
                             detalhada.
                         </p>
                     </div>
-                    <span class="aida-status aida-status--planejado">Planejado</span>
+                    <span class="aida-status aida-status--beta">Em teste</span>
                 </li>
             </ol>
         </section>
@@ -394,6 +512,7 @@
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/gsap.min.js" integrity="sha384-UoFnwgbUNlK0Rwou15cSoyrXQvKrOUxV8AkCoGKSSd0sxVeJ95ARU8uGMkMZhzpB" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="../scripts/script-cookie-consent.js"></script>
     <script src="../scripts/aida-solucoes.js"></script>
+    <script src="../scripts/script-video.js"></script>
 </body>
 
 </html>

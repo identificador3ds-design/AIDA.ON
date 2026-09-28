@@ -540,3 +540,10 @@ def test_pagina_do_video_oferece_envio_ligado_ao_script():
 
     # Texto do servidor nunca vira HTML.
     assert "innerHTML" not in js
+
+
+def test_sistema_leva_a_analise_de_video():
+    """Quem entra no sistema cai na seleção de imagem; sem link, o vídeo some."""
+    for nome in ("index-seleciona.html", "index-analise.html", "index-forensics.html"):
+        html = (RAIZ / "pages" / nome).read_text(encoding="utf-8")
+        assert 'href="./index-video.html#testar"' in html, f"{nome} não leva ao vídeo"

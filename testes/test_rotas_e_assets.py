@@ -519,3 +519,24 @@ def test_cards_continuam_pausando_fora_da_viewport():
     assert "visibilitychange" in js
     assert "prefers-reduced-motion" in js
     assert "is-static" in js
+
+
+def test_pagina_do_video_oferece_envio_ligado_ao_script():
+    """A seção "Testar agora" e o script precisam concordar nos ids.
+
+    script-video.js aborta em silêncio se #vidForm faltar, e um id trocado
+    derruba a página só no meio de uma análise.
+    """
+    html = (RAIZ / "pages" / "index-video.html").read_text(encoding="utf-8")
+    js = (RAIZ / "scripts" / "script-video.js").read_text(encoding="utf-8")
+
+    assert "../scripts/script-video.js" in html
+    assert 'id="testar"' in html and 'type="file"' in html
+
+    ids_usados = set(re.findall(r'\$\("(vid\w+)"\)', js))
+    assert ids_usados, "o script deveria buscar os elementos por id"
+    faltando = sorted(i for i in ids_usados if f'id="{i}"' not in html)
+    assert not faltando, f"ids usados pelo script e ausentes na página: {faltando}"
+
+    # Texto do servidor nunca vira HTML.
+    assert "innerHTML" not in js

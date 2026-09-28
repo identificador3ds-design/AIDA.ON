@@ -47,20 +47,33 @@ drop policy if exists "api_calls: admin le" on public.api_calls;
 create policy "api_calls: admin le"
   on public.api_calls for select using (public.e_admin());
 
--- 4. Consumo atômico de token, chamado pela API (service role) a cada análise.
-create or replace function public.api_consumir_token(p_hash text)
-returns table (tokens_total integer, tokens_usados integer)
-language sql
+-- 4. Débito de token por análise atendida.
+--    A API já grava cada chamada em api_calls; o trigger debita 1 token da
+--    chave sempre que entra uma análise com status 200. Assim a cota conta
+--    mesmo com a API publicada antes desta migração.
+create or replace function public.api_calls_debita_token()
+returns trigger
+language plpgsql
 security definer
 set search_path = public
 as $$
-  update public.api_keys
-     set tokens_usados = tokens_usados + 1
-   where hash_chave = p_hash
-  returning tokens_total, tokens_usados;
+begin
+  if new.status = 200 and new.rota like '/v1/analyze/%' and new.prefixo_chave is not null then
+    update public.api_keys
+       set tokens_usados = tokens_usados + 1
+     where prefixo = new.prefixo_chave;
+  end if;
+  return new;
+end;
 $$;
 
-revoke all on function public.api_consumir_token(text) from public, anon, authenticated;
+drop trigger if exists api_calls_debita_token on public.api_calls;
+create trigger api_calls_debita_token
+  after insert on public.api_calls
+  for each row execute function public.api_calls_debita_token();
+
+-- Versão anterior desta migração criava uma RPC; não é mais usada.
+drop function if exists public.api_consumir_token(text);
 
 -- 5. Admin pode apagar contas (a tabela usuarios já tem policy de admin em
 --    supabase-admin-setup.sql). Nada a fazer aqui.

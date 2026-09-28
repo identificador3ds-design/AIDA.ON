@@ -108,10 +108,6 @@ def criar_app():
     # ----------------------------------------------------------------- #
     # Autenticacao e cota
     # ----------------------------------------------------------------- #
-    def registro_chave_usa_cota():
-        """Chaves de desenvolvimento (AIDA_API_DEV_KEYS) não têm plano no banco."""
-        return getattr(g, "chave", {}).get("origem") == "supabase"
-
     def _chave_do_cabecalho():
         cabecalho = request.headers.get("Authorization", "")
         if not cabecalho.startswith("Bearer "):
@@ -313,8 +309,6 @@ def criar_app():
                 analysis_id=id_analise,
                 duracao_borda_s=time.perf_counter() - inicio,
             )
-            if registro_chave_usa_cota():
-                chaves_api.consumir_token(g.chave_id)
             registro.registrar(
                 {**evento, "status": 200, "cache": "hit", "result": corpo["result"],
                  "analysis_id": id_analise,
@@ -368,8 +362,6 @@ def criar_app():
 
         id_analise = resposta_core.get("id_analise") or digest[:32]
         analises.guardar(chave_cache, id_analise, resposta_core)
-        if registro_chave_usa_cota():
-            chaves_api.consumir_token(g.chave_id)
 
         corpo = mapear_analise(
             resposta_core,

@@ -55,10 +55,18 @@ def test_sem_rotas_duplicadas(vercel):
     assert not duplicadas, f"origens duplicadas: {duplicadas}"
 
 
+def _arquivo_do_destino(vercel, destino):
+    """Com `cleanUrls`, o Vercel serve `/pages/x` a partir de `pages/x.html`."""
+    caminho = RAIZ / destino.lstrip("/")
+    if vercel.get("cleanUrls") and not caminho.suffix:
+        caminho = caminho.with_name(caminho.name + ".html")
+    return caminho
+
+
 def test_destinos_existem_no_disco(vercel):
     for regra in vercel["rewrites"]:
-        destino = regra["destination"].lstrip("/")
-        assert (RAIZ / destino).is_file(), f"destino inexistente: {destino}"
+        destino = regra["destination"]
+        assert _arquivo_do_destino(vercel, destino).is_file(), f"destino inexistente: {destino}"
 
 
 def test_rotas_das_solucoes_existem(vercel):
@@ -82,7 +90,7 @@ def test_image_aponta_para_a_selecao(vercel):
     """`index-analise.html` sem imagem escolhida abriria em estado vazio."""
     destino = next(r["destination"] for r in vercel["rewrites"] if r["source"] == "/image")
 
-    assert destino.endswith("index-seleciona.html")
+    assert _arquivo_do_destino(vercel, destino).name == "index-seleciona.html"
 
 
 # --------------------------------------------------------------------------- #
@@ -156,17 +164,29 @@ def test_estados_dos_produtos_refletem_a_realidade():
 
     assert estados["image"] == "disponivel"
     assert estados["forensics"] == "beta"
-    assert estados["video"] == "desenvolvimento"
+    assert estados["video"] == "beta"
     assert estados["api"] == "desenvolvimento"
 
 
 def test_cards_em_desenvolvimento_nao_oferecem_envio():
-    """O card do Video não pode dar a impressão de que já aceita upload."""
+    """O card da API não pode dar a impressão de que já aceita envio."""
     html = (RAIZ / "pages" / "index-solucoes.html").read_text(encoding="utf-8")
-    bloco_video = html.split('data-sol="video"')[1].split("</article>")[0]
+    bloco_api = html.split('data-sol="api"')[1].split("</article>")[0]
 
-    for termo in ("Enviar vídeo", "Enviar video", "Analisar vídeo", "Analisar video"):
-        assert termo not in bloco_video
+    for termo in ("Enviar imagem", "Analisar imagem", "Enviar vídeo", "Analisar vídeo"):
+        assert termo not in bloco_api
+
+
+def test_video_publicado_liberado_na_csp():
+    """O card do Video leva ao envio; o Space precisa estar na CSP, senão o navegador bloqueia."""
+    config = json.loads((RAIZ / "vercel.json").read_text(encoding="utf-8"))
+    csp = next(
+        h["value"] for regra in config["headers"] for h in regra["headers"]
+        if h["key"] == "Content-Security-Policy"
+    )
+    diretivas = dict(d.strip().split(" ", 1) for d in csp.split(";") if " " in d.strip())
+    for diretiva in ("connect-src", "img-src"):
+        assert "https://aidaon-aida-video.hf.space" in diretivas[diretiva]
 
 
 def test_cards_nao_exibem_porcentagem_de_resultado():
@@ -178,7 +198,7 @@ def test_cards_nao_exibem_porcentagem_de_resultado():
 
 
 def test_paginas_de_produto_marcam_em_desenvolvimento():
-    for nome in ("index-video.html", "index-api.html"):
+    for nome in ("index-api.html",):
         html = (RAIZ / "pages" / nome).read_text(encoding="utf-8")
         assert "aida-status--desenvolvimento" in html
         assert "Em desenvolvimento" in html

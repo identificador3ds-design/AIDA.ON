@@ -1,0 +1,14 @@
+# AIDA Video + AIDA Audio.
+# Separado do requirements.txt da raiz de proposito: o PyAV traz as bibliotecas
+# do FFmpeg (~30 MB) e nao deve entrar no deploy do site/API.
+#
+#   pip install -r aida_video/requirements.txt
+
+av>=14              # decodifica video e audio; FFmpeg embutido, nao precisa instalar ffmpeg
+numpy>=1.24
+scipy>=1.11         # FFT e DCT das caracteristicas de audio
+opencv-python-headless>=4.8
+requests>=2.31      # cliente do AIDA Core
+scikit-learn>=1.3   # classificador de audio
+joblib>=1.3
+pytest>=8

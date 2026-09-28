@@ -232,11 +232,18 @@ document.addEventListener("DOMContentLoaded", () => {
       }, 10);
     }
 
+    // O decodificador HEIC (WASM, ~2 MB) sobe enquanto o usuario ainda esta no
+    // dialogo de arquivos ou arrastando: quando o .heic chega, ja esta pronto.
+    function precarregarDecodificadorHeic() {
+      if (window.AidaPreviaHeic) window.AidaPreviaHeic.precarregar();
+    }
+
     btnAcaoSelecionar.addEventListener("click", (e) => {
       const isLogged = localStorage.getItem("usuarioNome") || localStorage.getItem("usuarioEmail");
       if (!isLogged && localStorage.getItem("AIDA_AnaliseUnlogged") === "true") {
         exibirLoginOverlay(e);
       } else {
+        precarregarDecodificadorHeic();
         inputFileBotao.value = "";
         inputFileBotao.click();
       }
@@ -285,6 +292,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
       limparErro();
 
+      // HEIC: a previa JPEG comeca a ser gerada agora, em paralelo com a leitura
+      // do arquivo, para a tela de analise ja abrir com a miniatura. O File
+      // enviado ao backend continua sendo o .heic original. Prévia anterior e
+      // descartada para nao aparecer a foto errada se esta conversao falhar.
+      const previaHeic = window.AidaPreviaHeic;
+      if (previaHeic) previaHeic.limpar();
+      const promessaPrevia =
+        previaHeic && previaHeic.ehHeic(arquivo)
+          ? previaHeic.gerar(arquivo).catch((erro) => {
+              console.warn("Previa HEIC nao gerada na selecao:", erro);
+              return null;
+            })
+          : Promise.resolve(null);
+
       const reader = new FileReader();
       reader.onload = async (evento) => {
         await salvarImagemSelecionada(evento.target.result);
@@ -297,6 +318,11 @@ document.addEventListener("DOMContentLoaded", () => {
         } catch (erro) {
           /* espaço esgotado: o nome é opcional, seguimos sem ele */
         }
+        // Espera a previa so ate um limite: normalmente ela chega em menos de
+        // 1 s e a proxima tela abre com a miniatura pronta. Se demorar mais
+        // (maquina lenta, WASM ainda baixando), segue sem ela e a tela de
+        // analise termina a conversao por conta propria.
+        await Promise.race([promessaPrevia, new Promise((r) => setTimeout(r, 4000))]);
         window.location.href = "./index-analise.html";
       };
       reader.onerror = () => {
@@ -328,6 +354,7 @@ document.addEventListener("DOMContentLoaded", () => {
           areaSoltar.classList.add("arrastando");
         });
       });
+      areaSoltar.addEventListener("dragenter", precarregarDecodificadorHeic);
 
       ["dragleave", "dragend"].forEach((evento) => {
         areaSoltar.addEventListener(evento, () => {

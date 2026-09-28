@@ -1,3 +1,6 @@
 __pycache__/
 *.py[cod]
 .claude/
+
+# modelos treinados ficam no Space aidaon/aida-video, nao no site
+aida_audio/modelos/*.joblib

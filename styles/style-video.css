@@ -1,0 +1,384 @@
+/* ==========================================================================
+   AIDA Video — área de teste (index-video.html, seção #testar)
+   Depende de aida-design-system.css (tokens) e aida-produto.css (layout).
+   ========================================================================== */
+
+.vid-teste {
+  display: grid;
+  gap: var(--aida-space-6);
+  margin-top: var(--aida-space-8);
+  padding: var(--aida-space-8);
+}
+
+.vid-teste [hidden] {
+  display: none !important;
+}
+
+.vid-teste code {
+  font-family: var(--aida-font-mono);
+  font-size: 0.92em;
+  padding: 1px 6px;
+  border-radius: var(--aida-radius-sm);
+  background: var(--aida-surface-2);
+  color: var(--aida-text);
+}
+
+/* ------------------------------------------------------------------ envio */
+
+.vid-form {
+  display: grid;
+  gap: var(--aida-space-5);
+}
+
+.vid-drop {
+  position: relative;
+  display: grid;
+  place-items: center;
+  gap: var(--aida-space-2);
+  min-height: 150px;
+  padding: var(--aida-space-6);
+  border: 1.5px dashed var(--aida-line-strong);
+  border-radius: var(--aida-radius-lg);
+  background: var(--aida-surface-0);
+  text-align: center;
+  cursor: pointer;
+  transition: border-color var(--aida-dur-fast) var(--aida-ease-out),
+    background var(--aida-dur-fast) var(--aida-ease-out);
+}
+
+.vid-drop input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.vid-drop:hover,
+.vid-drop:focus-within,
+.vid-drop--sobre {
+  border-color: var(--aida-video);
+  background: var(--aida-surface-1);
+}
+
+.vid-drop:focus-within {
+  outline: 2px solid var(--aida-video);
+  outline-offset: 3px;
+}
+
+.vid-drop--cheio {
+  border-style: solid;
+  border-color: var(--aida-mint-line);
+}
+
+.vid-drop--erro {
+  border-color: var(--aida-danger);
+  background: var(--aida-danger-bg);
+}
+
+.vid-drop--erro .vid-drop__texto {
+  color: var(--aida-danger);
+}
+
+.vid-drop__titulo {
+  font-size: var(--aida-fs-body-lg);
+  font-weight: var(--aida-fw-semibold);
+  color: var(--aida-text);
+  overflow-wrap: anywhere;
+}
+
+.vid-drop__texto {
+  font-size: var(--aida-fs-caption);
+  color: var(--aida-text-3);
+}
+
+.vid-previa {
+  width: 100%;
+  max-height: 360px;
+  border-radius: var(--aida-radius-md);
+  background: #000;
+}
+
+.vid-opcoes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  align-items: end;
+  gap: var(--aida-space-4);
+}
+
+.vid-check {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--aida-space-2);
+  min-height: 44px;
+  color: var(--aida-text-2);
+  cursor: pointer;
+}
+
+.vid-check input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--aida-mint);
+}
+
+.vid-avancado summary {
+  cursor: pointer;
+  color: var(--aida-text-3);
+  font-size: var(--aida-fs-caption);
+}
+
+.vid-avancado .aida-field {
+  margin-top: var(--aida-space-3);
+}
+
+.vid-form .aida-btn {
+  justify-self: start;
+}
+
+.vid-form .aida-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ------------------------------------------------------------------ progresso */
+
+.vid-progresso {
+  display: grid;
+  gap: var(--aida-space-3);
+}
+
+.vid-barra {
+  height: 8px;
+  overflow: hidden;
+  border-radius: var(--aida-radius-pill);
+  background: var(--aida-surface-2);
+}
+
+.vid-barra span {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--aida-video);
+  transition: width var(--aida-dur-base) var(--aida-ease-out);
+}
+
+/* ------------------------------------------------------------------ resultado */
+
+.vid-resultado {
+  display: grid;
+  gap: var(--aida-space-6);
+}
+
+.vid-motivos {
+  margin: var(--aida-space-2) 0 0;
+  padding-left: 1.1em;
+  color: var(--aida-text-2);
+  font-size: var(--aida-fs-caption);
+}
+
+.vid-motivos li + li {
+  margin-top: 2px;
+}
+
+.vid-numeros {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--aida-space-3);
+  margin: 0;
+}
+
+.vid-numero {
+  padding: var(--aida-space-3) var(--aida-space-4);
+  border: 1px solid var(--aida-line-soft);
+  border-radius: var(--aida-radius-md);
+  background: var(--aida-surface-0);
+}
+
+.vid-numero dt {
+  font-size: var(--aida-fs-micro);
+  color: var(--aida-text-3);
+  text-transform: uppercase;
+  letter-spacing: var(--aida-ls-eyebrow);
+}
+
+.vid-numero dd {
+  margin: 4px 0 0;
+  font-size: var(--aida-fs-body-lg);
+  font-weight: var(--aida-fw-semibold);
+  color: var(--aida-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.vid-bloco .aida-title-3 {
+  margin: 0 0 var(--aida-space-3);
+}
+
+/* Cores por resultado: as mesmas na linha do tempo, nos frames e na legenda. */
+.vid-cor--real { --_cor: var(--aida-success); }
+.vid-cor--ia { --_cor: var(--aida-danger); }
+.vid-cor--inconclusivo { --_cor: var(--aida-warning); }
+.vid-cor--neutro { --_cor: var(--aida-neutral); }
+
+.vid-linha {
+  position: relative;
+  height: 28px;
+  border-radius: var(--aida-radius-sm);
+  background: var(--aida-surface-1);
+  overflow: hidden;
+}
+
+.vid-linha__seg {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  padding: 0;
+  border: 0;
+  border-right: 1px solid rgba(0, 0, 0, 0.35);
+  background: var(--_cor);
+  opacity: 0.85;
+  cursor: pointer;
+}
+
+.vid-linha__seg:hover,
+.vid-linha__seg:focus-visible {
+  opacity: 1;
+  outline: 2px solid var(--aida-text);
+  outline-offset: -2px;
+}
+
+.vid-legenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--aida-space-2) var(--aida-space-5);
+  margin: var(--aida-space-3) 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--aida-fs-caption);
+  color: var(--aida-text-3);
+}
+
+.vid-legenda li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.vid-cor {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  background: var(--_cor);
+}
+
+.vid-frames {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: var(--aida-space-3);
+}
+
+.vid-frame {
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid var(--aida-line-soft);
+  border-top: 3px solid var(--_cor);
+  border-radius: var(--aida-radius-md);
+  background: var(--aida-surface-0);
+}
+
+.vid-frame:focus {
+  outline: 2px solid var(--aida-text);
+  outline-offset: 2px;
+}
+
+.vid-frame--real { --_cor: var(--aida-success); }
+.vid-frame--ia { --_cor: var(--aida-danger); }
+.vid-frame--inconclusivo { --_cor: var(--aida-warning); }
+.vid-frame--neutro { --_cor: var(--aida-neutral); }
+
+.vid-frame img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  background: #000;
+}
+
+.vid-frame figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 8px;
+  padding: var(--aida-space-2) var(--aida-space-3);
+  font-size: var(--aida-fs-caption);
+}
+
+.vid-frame__tempo {
+  color: var(--aida-text-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.vid-frame__rotulo {
+  color: var(--_cor);
+  font-weight: var(--aida-fw-semibold);
+}
+
+.vid-frame__prob {
+  margin-left: auto;
+  color: var(--aida-text-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.vid-audio {
+  padding: var(--aida-space-4);
+  border: 1px solid var(--aida-line-soft);
+  border-radius: var(--aida-radius-md);
+  background: var(--aida-surface-0);
+  color: var(--aida-text-2);
+}
+
+.vid-audio__linha {
+  margin: 0 0 var(--aida-space-2);
+}
+
+.vid-pilula {
+  display: inline-block;
+  margin-right: var(--aida-space-2);
+  padding: 2px 10px;
+  border: 1px solid var(--_cor);
+  border-radius: var(--aida-radius-pill);
+  color: var(--_cor);
+  font-size: var(--aida-fs-caption);
+  font-weight: var(--aida-fw-semibold);
+}
+
+.vid-ressalva {
+  margin: 0;
+  color: var(--aida-text-3);
+}
+
+.vid-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--aida-space-3);
+}
+
+@media (max-width: 640px) {
+  .vid-teste {
+    padding: var(--aida-space-5);
+  }
+
+  .vid-frames {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .vid-form .aida-btn {
+    justify-self: stretch;
+    justify-content: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vid-barra span,
+  .vid-drop {
+    transition: none;
+  }
+}

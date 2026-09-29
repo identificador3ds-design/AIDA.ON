@@ -1,0 +1,2437 @@
+{
+ "descricao": "Leituras de producao (29/09/2026) de 14 videos REAIS (teste1-14, VIDEOS GATO): quadros do Core R6fp6, movimento e audio. Os videos nao estao no repositorio; so o necessario para refazer a decisao.",
+ "videos": {
+  "teste1": {
+   "resultado_producao": "REAL",
+   "frames": [
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.015454020232953423,
+     "fora_de_dominio": false,
+     "tempo_s": 0.026
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.0168362091066021,
+     "fora_de_dominio": false,
+     "tempo_s": 0.627
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.02338275002852324,
+     "fora_de_dominio": false,
+     "tempo_s": 1.228
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.023153720148216556,
+     "fora_de_dominio": false,
+     "tempo_s": 1.83
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.02338275002852324,
+     "fora_de_dominio": false,
+     "tempo_s": 2.431
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.025505568601371865,
+     "fora_de_dominio": false,
+     "tempo_s": 3.032
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.022943010087727676,
+     "fora_de_dominio": false,
+     "tempo_s": 3.633
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.025505568601371865,
+     "fora_de_dominio": false,
+     "tempo_s": 4.234
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.021319514217715906,
+     "fora_de_dominio": false,
+     "tempo_s": 4.836
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.10174442571147882,
+     "fora_de_dominio": false,
+     "tempo_s": 5.437
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.020353476053410924,
+     "fora_de_dominio": false,
+     "tempo_s": 6.038
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.021319514217715906,
+     "fora_de_dominio": false,
+     "tempo_s": 6.639
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.022381881413735302,
+     "fora_de_dominio": false,
+     "tempo_s": 7.24
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.020353476053410924,
+     "fora_de_dominio": false,
+     "tempo_s": 7.842
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.02054902299661862,
+     "fora_de_dominio": false,
+     "tempo_s": 8.443
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.022861662114728308,
+     "fora_de_dominio": false,
+     "tempo_s": 9.044
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.02252560195506831,
+     "fora_de_dominio": false,
+     "tempo_s": 9.645
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.021751082434188083,
+     "fora_de_dominio": false,
+     "tempo_s": 10.246
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.021751082434188083,
+     "fora_de_dominio": false,
+     "tempo_s": 10.848
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.019374612366565205,
+     "fora_de_dominio": false,
+     "tempo_s": 11.449
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.025505568601371865,
+     "fora_de_dominio": false,
+     "tempo_s": 12.05
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.025505568601371865,
+     "fora_de_dominio": false,
+     "tempo_s": 12.651
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.016134589271784492,
+     "fora_de_dominio": false,
+     "tempo_s": 13.252
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.01591297879646769,
+     "fora_de_dominio": false,
+     "tempo_s": 13.854
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.03394509580227539,
+     "fora_de_dominio": false,
+     "tempo_s": 14.455
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.020700653306604352,
+     "fora_de_dominio": false,
+     "tempo_s": 15.056
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.022381881413735302,
+     "fora_de_dominio": false,
+     "tempo_s": 15.657
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.018265876689845723,
+     "fora_de_dominio": false,
+     "tempo_s": 16.259
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.020353476053410924,
+     "fora_de_dominio": false,
+     "tempo_s": 16.86
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.02338275002852324,
+     "fora_de_dominio": false,
+     "tempo_s": 17.461
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.017811555006530966,
+     "fora_de_dominio": false,
+     "tempo_s": 18.062
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.09398122089853966,
+     "fora_de_dominio": false,
+     "tempo_s": 18.663
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.01850583559211013,
+     "fora_de_dominio": false,
+     "tempo_s": 19.265
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.01831219635302413,
+     "fora_de_dominio": false,
+     "tempo_s": 19.866
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.01764718644800773,
+     "fora_de_dominio": false,
+     "tempo_s": 20.467
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.025505568601371865,
+     "fora_de_dominio": false,
+     "tempo_s": 21.068
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.016671919499190724,
+     "fora_de_dominio": false,
+     "tempo_s": 21.669
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.01831219635302413,
+     "fora_de_dominio": false,
+     "tempo_s": 22.27
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.020353476053410924,
+     "fora_de_dominio": false,
+     "tempo_s": 22.872
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.02167368573761978,
+     "fora_de_dominio": false,
+     "tempo_s": 23.473
+    }
+   ],
+   "trajetoria": {
+    "disponivel": true,
+    "probabilidade_ia": 0.1554,
+    "usa_core": true
+   },
+   "audio": {
+    "resultado": "REAL",
+    "probabilidade_ia": 0.1826,
+    "limiar": 0.6298,
+    "presente": true
+   }
+  },
+  "teste2": {
+   "resultado_producao": "REAL",
+   "frames": [
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.2750836883063565,
+     "fora_de_dominio": false,
+     "tempo_s": 0.0
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.03565660360573635,
+     "fora_de_dominio": false,
+     "tempo_s": 0.601
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.0741668645376507,
+     "fora_de_dominio": false,
+     "tempo_s": 1.002
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.015259777295472048,
+     "fora_de_dominio": false,
+     "tempo_s": 1.603
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.015270764111391662,
+     "fora_de_dominio": false,
+     "tempo_s": 2.204
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.10357506361015396,
+     "fora_de_dominio": false,
+     "tempo_s": 2.806
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.027372021116759692,
+     "fora_de_dominio": false,
+     "tempo_s": 3.006
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.31699124084659264,
+     "fora_de_dominio": false,
+     "tempo_s": 3.206
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.01712391049966926,
+     "fora_de_dominio": false,
+     "tempo_s": 3.807
+    },
+    {
+     "resultado": "IA/MANIPULADA",
+     "probabilidade_ia": 0.9381918607983208,
+     "fora_de_dominio": false,
+     "tempo_s": 4.216
+    },
+    {
+     "resultado": "IA/MANIPULADA",
+     "probabilidade_ia": 0.9248159350675762,
+     "fora_de_dominio": false,
+     "tempo_s": 4.416
+    },
+    {
+     "resultado": "IA/MANIPULADA",
+     "probabilidade_ia": 0.9145050804670348,
+     "fora_de_dominio": false,
+     "tempo_s": 4.608
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.018771301567184952,
+     "fora_de_dominio": false,
+     "tempo_s": 4.808
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.01769571133248972,
+     "fora_de_dominio": false,
+     "tempo_s": 5.009
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.0147233977396368,
+     "fora_de_dominio": false,
+     "tempo_s": 5.209
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.0143576707624751,
+     "fora_de_dominio": false,
+     "tempo_s": 5.81
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014823330938870737,
+     "fora_de_dominio": false,
+     "tempo_s": 6.411
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.015063099347055672,
+     "fora_de_dominio": false,
+     "tempo_s": 7.013
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.016121374828342847,
+     "fora_de_dominio": false,
+     "tempo_s": 7.614
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.015197575494507239,
+     "fora_de_dominio": false,
+     "tempo_s": 8.215
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014825746533363248,
+     "fora_de_dominio": false,
+     "tempo_s": 8.816
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.01488863406962512,
+     "fora_de_dominio": false,
+     "tempo_s": 9.417
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.013980387374690754,
+     "fora_de_dominio": false,
+     "tempo_s": 10.019
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.0584996373977845,
+     "fora_de_dominio": false,
+     "tempo_s": 10.219
+    },
+    {
+     "resultado": "IA/MANIPULADA",
+     "probabilidade_ia": 0.9496657641936612,
+     "fora_de_dominio": false,
+     "tempo_s": 10.419
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.020898743843353853,
+     "fora_de_dominio": false,
+     "tempo_s": 11.021
+    }
+   ],
+   "trajetoria": {
+    "disponivel": true,
+    "probabilidade_ia": 0.0072,
+    "usa_core": true
+   },
+   "audio": {
+    "resultado": "REAL",
+    "probabilidade_ia": 0.0327,
+    "limiar": 0.6298,
+    "presente": true
+   }
+  },
+  "teste3": {
+   "resultado_producao": "REAL",
+   "frames": [
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.5649912506885746,
+     "fora_de_dominio": false,
+     "tempo_s": 0.0
+    },
+    {
+     "resultado": "INCONCLUSIVO",
+     "probabilidade_ia": 0.662399123240455,
+     "fora_de_dominio": false,
+     "tempo_s": 0.2
+    },
+    {
+     "resultado": "IA/MANIPULADA",
+     "probabilidade_ia": 0.8795698528362532,
+     "fora_de_dominio": false,
+     "tempo_s": 0.401
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.019834155976181277,
+     "fora_de_dominio": false,
+     "tempo_s": 0.601
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.018409390228778227,
+     "fora_de_dominio": false,
+     "tempo_s": 0.81
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014724928207013467,
+     "fora_de_dominio": false,
+     "tempo_s": 1.402
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.01437816642524272,
+     "fora_de_dominio": false,
+     "tempo_s": 2.003
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.015087477678076451,
+     "fora_de_dominio": false,
+     "tempo_s": 2.42
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.016290679665928447,
+     "fora_de_dominio": false,
+     "tempo_s": 3.019
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.01740274274392544,
+     "fora_de_dominio": false,
+     "tempo_s": 3.618
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.13135044397121212,
+     "fora_de_dominio": false,
+     "tempo_s": 4.218
+    },
+    {
+     "resultado": "IA/MANIPULADA",
+     "probabilidade_ia": 0.9105625850119766,
+     "fora_de_dominio": false,
+     "tempo_s": 4.417
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.02851148191833036,
+     "fora_de_dominio": false,
+     "tempo_s": 4.6
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.20439660215022148,
+     "fora_de_dominio": false,
+     "tempo_s": 4.801
+    }
+   ],
+   "trajetoria": {
+    "disponivel": true,
+    "probabilidade_ia": 0.0202,
+    "usa_core": true
+   },
+   "audio": {
+    "resultado": "REAL",
+    "probabilidade_ia": 0.139,
+    "limiar": 0.6298,
+    "presente": true
+   }
+  },
+  "teste4": {
+   "resultado_producao": "REAL",
+   "frames": [
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014384237203844987,
+     "fora_de_dominio": false,
+     "tempo_s": 0.0
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.015640147953947078,
+     "fora_de_dominio": false,
+     "tempo_s": 0.602
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014449595958724084,
+     "fora_de_dominio": false,
+     "tempo_s": 1.201
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.013839588491616648,
+     "fora_de_dominio": false,
+     "tempo_s": 1.801
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.015122907337260046,
+     "fora_de_dominio": false,
+     "tempo_s": 2.402
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.016247556863890993,
+     "fora_de_dominio": false,
+     "tempo_s": 3.003
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014776633267575482,
+     "fora_de_dominio": false,
+     "tempo_s": 3.604
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.015983314002742506,
+     "fora_de_dominio": false,
+     "tempo_s": 4.203
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.0142528466242908,
+     "fora_de_dominio": false,
+     "tempo_s": 4.803
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.013808666393174143,
+     "fora_de_dominio": false,
+     "tempo_s": 5.403
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014094727564977868,
+     "fora_de_dominio": false,
+     "tempo_s": 6.003
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.0142528466242908,
+     "fora_de_dominio": false,
+     "tempo_s": 6.603
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014094727564977868,
+     "fora_de_dominio": false,
+     "tempo_s": 7.203
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014008834321694847,
+     "fora_de_dominio": false,
+     "tempo_s": 7.804
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014140096802671587,
+     "fora_de_dominio": false,
+     "tempo_s": 8.404
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.0142528466242908,
+     "fora_de_dominio": false,
+     "tempo_s": 9.004
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014027983416813697,
+     "fora_de_dominio": false,
+     "tempo_s": 9.604
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.02388506238009071,
+     "fora_de_dominio": false,
+     "tempo_s": 10.203
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.02110144724803441,
+     "fora_de_dominio": false,
+     "tempo_s": 10.803
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.018793026276113196,
+     "fora_de_dominio": false,
+     "tempo_s": 11.404
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.01998188823739194,
+     "fora_de_dominio": false,
+     "tempo_s": 12.004
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.02143852373578591,
+     "fora_de_dominio": false,
+     "tempo_s": 12.603
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.016751020392890486,
+     "fora_de_dominio": false,
+     "tempo_s": 13.203
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.01968165224643995,
+     "fora_de_dominio": false,
+     "tempo_s": 13.804
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.015300906847574685,
+     "fora_de_dominio": false,
+     "tempo_s": 14.403
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.013812425132820112,
+     "fora_de_dominio": false,
+     "tempo_s": 15.004
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.016852983236163053,
+     "fora_de_dominio": false,
+     "tempo_s": 15.605
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.01594859359037698,
+     "fora_de_dominio": false,
+     "tempo_s": 16.204
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.01480966876102396,
+     "fora_de_dominio": false,
+     "tempo_s": 16.803
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014616077630799978,
+     "fora_de_dominio": false,
+     "tempo_s": 17.403
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.015306682263763648,
+     "fora_de_dominio": false,
+     "tempo_s": 18.003
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.01518021202131413,
+     "fora_de_dominio": false,
+     "tempo_s": 18.604
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.016727680330637665,
+     "fora_de_dominio": false,
+     "tempo_s": 19.204
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014322716780355783,
+     "fora_de_dominio": false,
+     "tempo_s": 19.804
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014051864337545884,
+     "fora_de_dominio": false,
+     "tempo_s": 20.405
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014129266120175807,
+     "fora_de_dominio": false,
+     "tempo_s": 21.005
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014129266120175807,
+     "fora_de_dominio": false,
+     "tempo_s": 21.605
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014009078990963021,
+     "fora_de_dominio": false,
+     "tempo_s": 22.205
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014068090723696573,
+     "fora_de_dominio": false,
+     "tempo_s": 22.805
+    }
+   ],
+   "trajetoria": {
+    "disponivel": true,
+    "probabilidade_ia": 0.0084,
+    "usa_core": true
+   },
+   "audio": {
+    "resultado": "REAL",
+    "probabilidade_ia": 0.0438,
+    "limiar": 0.6298,
+    "presente": true
+   }
+  },
+  "teste5": {
+   "resultado_producao": "REAL",
+   "frames": [
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.017860371865343404,
+     "fora_de_dominio": false,
+     "tempo_s": 0.017
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.032411312054435745,
+     "fora_de_dominio": false,
+     "tempo_s": 0.649
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.016164731850571695,
+     "fora_de_dominio": false,
+     "tempo_s": 1.249
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.013812611721861266,
+     "fora_de_dominio": false,
+     "tempo_s": 1.917
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.013779665194975038,
+     "fora_de_dominio": false,
+     "tempo_s": 2.517
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.013760428074529462,
+     "fora_de_dominio": false,
+     "tempo_s": 3.116
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.013720379099458294,
+     "fora_de_dominio": false,
+     "tempo_s": 3.748
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014215540034416944,
+     "fora_de_dominio": false,
+     "tempo_s": 4.348
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.013685661554423969,
+     "fora_de_dominio": false,
+     "tempo_s": 4.949
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.013767140149414377,
+     "fora_de_dominio": false,
+     "tempo_s": 5.55
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.013855853122304992,
+     "fora_de_dominio": false,
+     "tempo_s": 6.149
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014859615605070497,
+     "fora_de_dominio": false,
+     "tempo_s": 6.749
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014643494292467392,
+     "fora_de_dominio": false,
+     "tempo_s": 7.349
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.01968750614027925,
+     "fora_de_dominio": false,
+     "tempo_s": 7.948
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.015298086325629266,
+     "fora_de_dominio": false,
+     "tempo_s": 8.547
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.01945153680757444,
+     "fora_de_dominio": false,
+     "tempo_s": 9.147
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.01787408822361884,
+     "fora_de_dominio": false,
+     "tempo_s": 9.746
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014686972612227069,
+     "fora_de_dominio": false,
+     "tempo_s": 10.345
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.01470268183741709,
+     "fora_de_dominio": false,
+     "tempo_s": 10.943
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.08950861311451044,
+     "fora_de_dominio": false,
+     "tempo_s": 11.543
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.015609319716428304,
+     "fora_de_dominio": false,
+     "tempo_s": 12.142
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.015175893006803012,
+     "fora_de_dominio": false,
+     "tempo_s": 12.739
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014530856601064238,
+     "fora_de_dominio": false,
+     "tempo_s": 13.336
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.016624629223834723,
+     "fora_de_dominio": false,
+     "tempo_s": 13.934
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.015781488889850738,
+     "fora_de_dominio": false,
+     "tempo_s": 14.533
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.14520060994179756,
+     "fora_de_dominio": false,
+     "tempo_s": 15.132
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.12642794824189246,
+     "fora_de_dominio": false,
+     "tempo_s": 15.732
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.09023834307129552,
+     "fora_de_dominio": false,
+     "tempo_s": 16.331
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.12238343212748856,
+     "fora_de_dominio": false,
+     "tempo_s": 16.93
+    },
+    {
+     "resultado": "INCONCLUSIVO",
+     "probabilidade_ia": 0.6141687679745573,
+     "fora_de_dominio": false,
+     "tempo_s": 17.53
+    },
+    {
+     "resultado": "IA/MANIPULADA",
+     "probabilidade_ia": 0.9320144590570568,
+     "fora_de_dominio": false,
+     "tempo_s": 18.129
+    },
+    {
+     "resultado": "IA/MANIPULADA",
+     "probabilidade_ia": 0.915891039759255,
+     "fora_de_dominio": false,
+     "tempo_s": 18.32
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.07198228757952377,
+     "fora_de_dominio": false,
+     "tempo_s": 18.928
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.013950869793235586,
+     "fora_de_dominio": false,
+     "tempo_s": 19.532
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.017982077439679632,
+     "fora_de_dominio": false,
+     "tempo_s": 19.733
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.015061688436938265,
+     "fora_de_dominio": false,
+     "tempo_s": 20.332
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.01373000512775915,
+     "fora_de_dominio": false,
+     "tempo_s": 20.93
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.013802280459252103,
+     "fora_de_dominio": false,
+     "tempo_s": 21.529
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.01367890478126493,
+     "fora_de_dominio": false,
+     "tempo_s": 22.128
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.2566833279519383,
+     "fora_de_dominio": false,
+     "tempo_s": 22.728
+    }
+   ],
+   "trajetoria": {
+    "disponivel": true,
+    "probabilidade_ia": 0.0068,
+    "usa_core": true
+   },
+   "audio": {
+    "resultado": "REAL",
+    "probabilidade_ia": 0.1588,
+    "limiar": 0.6298,
+    "presente": true
+   }
+  },
+  "teste6": {
+   "resultado_producao": "REAL",
+   "frames": [
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.23481239733673048,
+     "fora_de_dominio": false,
+     "tempo_s": 0.019
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.026589450109822835,
+     "fora_de_dominio": false,
+     "tempo_s": 0.652
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.12013287216979227,
+     "fora_de_dominio": false,
+     "tempo_s": 1.251
+    },
+    {
+     "resultado": "INCONCLUSIVO",
+     "probabilidade_ia": 0.7673362060260024,
+     "fora_de_dominio": false,
+     "tempo_s": 1.85
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.018370922481678716,
+     "fora_de_dominio": false,
+     "tempo_s": 2.45
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.08013978321263028,
+     "fora_de_dominio": false,
+     "tempo_s": 3.049
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.051166753034307066,
+     "fora_de_dominio": false,
+     "tempo_s": 3.649
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014711095658190265,
+     "fora_de_dominio": false,
+     "tempo_s": 4.249
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014711095658190265,
+     "fora_de_dominio": false,
+     "tempo_s": 4.848
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014877272466343301,
+     "fora_de_dominio": false,
+     "tempo_s": 5.481
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.01509387475855123,
+     "fora_de_dominio": false,
+     "tempo_s": 6.08
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.01387480554806929,
+     "fora_de_dominio": false,
+     "tempo_s": 6.68
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.013839907031248672,
+     "fora_de_dominio": false,
+     "tempo_s": 7.279
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.015634197362368443,
+     "fora_de_dominio": false,
+     "tempo_s": 7.878
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.21444924020912676,
+     "fora_de_dominio": false,
+     "tempo_s": 8.477
+    }
+   ],
+   "trajetoria": {
+    "disponivel": true,
+    "probabilidade_ia": 0.0229,
+    "usa_core": true
+   },
+   "audio": {
+    "resultado": "REAL",
+    "probabilidade_ia": 0.0512,
+    "limiar": 0.6298,
+    "presente": true
+   }
+  },
+  "teste7": {
+   "resultado_producao": "REAL",
+   "frames": [
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.01477473595589584,
+     "fora_de_dominio": false,
+     "tempo_s": 0.0
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014296030904684233,
+     "fora_de_dominio": false,
+     "tempo_s": 0.6
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014505233513046988,
+     "fora_de_dominio": false,
+     "tempo_s": 1.233
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014337710488505006,
+     "fora_de_dominio": false,
+     "tempo_s": 1.833
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.015229042295656843,
+     "fora_de_dominio": false,
+     "tempo_s": 2.433
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014221276928424505,
+     "fora_de_dominio": false,
+     "tempo_s": 3.033
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014161930430630215,
+     "fora_de_dominio": false,
+     "tempo_s": 3.633
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.013759043005678765,
+     "fora_de_dominio": false,
+     "tempo_s": 4.233
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014296030904684233,
+     "fora_de_dominio": false,
+     "tempo_s": 4.833
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014337710488505006,
+     "fora_de_dominio": false,
+     "tempo_s": 5.433
+    }
+   ],
+   "trajetoria": {
+    "disponivel": true,
+    "probabilidade_ia": 0.3759,
+    "usa_core": true
+   },
+   "audio": {
+    "resultado": "REAL",
+    "probabilidade_ia": 0.2475,
+    "limiar": 0.6298,
+    "presente": true
+   }
+  },
+  "teste8": {
+   "resultado_producao": "REAL",
+   "frames": [
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.01430168658759035,
+     "fora_de_dominio": false,
+     "tempo_s": 0.0
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014850899455524182,
+     "fora_de_dominio": false,
+     "tempo_s": 0.6
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014585801084074085,
+     "fora_de_dominio": false,
+     "tempo_s": 1.233
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014131194569801313,
+     "fora_de_dominio": false,
+     "tempo_s": 1.833
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.015373407743267302,
+     "fora_de_dominio": false,
+     "tempo_s": 2.433
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014386310160046044,
+     "fora_de_dominio": false,
+     "tempo_s": 3.033
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014189302887764162,
+     "fora_de_dominio": false,
+     "tempo_s": 3.633
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014367057652743064,
+     "fora_de_dominio": false,
+     "tempo_s": 4.233
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014035003173239339,
+     "fora_de_dominio": false,
+     "tempo_s": 4.833
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014746004866102766,
+     "fora_de_dominio": false,
+     "tempo_s": 5.433
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.01528005256329532,
+     "fora_de_dominio": false,
+     "tempo_s": 6.033
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014407619057286625,
+     "fora_de_dominio": false,
+     "tempo_s": 6.633
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.015064106480033417,
+     "fora_de_dominio": false,
+     "tempo_s": 7.233
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014357150016906819,
+     "fora_de_dominio": false,
+     "tempo_s": 7.833
+    }
+   ],
+   "trajetoria": {
+    "disponivel": true,
+    "probabilidade_ia": 0.2272,
+    "usa_core": true
+   },
+   "audio": {
+    "resultado": "REAL",
+    "probabilidade_ia": 0.2398,
+    "limiar": 0.6298,
+    "presente": true
+   }
+  },
+  "teste9": {
+   "resultado_producao": "REAL",
+   "frames": [
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014081769184827255,
+     "fora_de_dominio": false,
+     "tempo_s": 0.0
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014226763198513584,
+     "fora_de_dominio": false,
+     "tempo_s": 0.6
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.01458469523054996,
+     "fora_de_dominio": false,
+     "tempo_s": 1.233
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014926011824985192,
+     "fora_de_dominio": false,
+     "tempo_s": 1.833
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014505233513046988,
+     "fora_de_dominio": false,
+     "tempo_s": 2.433
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014431939406542497,
+     "fora_de_dominio": false,
+     "tempo_s": 3.033
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014402468669954137,
+     "fora_de_dominio": false,
+     "tempo_s": 3.633
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014540093502904541,
+     "fora_de_dominio": false,
+     "tempo_s": 4.233
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.013961104586634935,
+     "fora_de_dominio": false,
+     "tempo_s": 4.833
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.01436612538644418,
+     "fora_de_dominio": false,
+     "tempo_s": 5.433
+    }
+   ],
+   "trajetoria": {
+    "disponivel": true,
+    "probabilidade_ia": 0.1627,
+    "usa_core": true
+   },
+   "audio": {
+    "resultado": "REAL",
+    "probabilidade_ia": 0.2571,
+    "limiar": 0.6298,
+    "presente": true
+   }
+  },
+  "teste10": {
+   "resultado_producao": "INCONCLUSIVO",
+   "frames": [
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.03498033300267968,
+     "fora_de_dominio": false,
+     "tempo_s": 0.0
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.016305132080760676,
+     "fora_de_dominio": false,
+     "tempo_s": 0.6
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.016467894642495325,
+     "fora_de_dominio": false,
+     "tempo_s": 1.2
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.02238880652149543,
+     "fora_de_dominio": false,
+     "tempo_s": 1.799
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.04658786623596833,
+     "fora_de_dominio": false,
+     "tempo_s": 2.399
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.042878399008887035,
+     "fora_de_dominio": false,
+     "tempo_s": 2.999
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.021583519757961474,
+     "fora_de_dominio": false,
+     "tempo_s": 3.599
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.015104913152028658,
+     "fora_de_dominio": false,
+     "tempo_s": 4.199
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.031561306526420314,
+     "fora_de_dominio": false,
+     "tempo_s": 4.798
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.021720433197188735,
+     "fora_de_dominio": false,
+     "tempo_s": 5.398
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.02005435325546213,
+     "fora_de_dominio": false,
+     "tempo_s": 5.998
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.042878399008887035,
+     "fora_de_dominio": false,
+     "tempo_s": 6.598
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.019878988970606394,
+     "fora_de_dominio": false,
+     "tempo_s": 7.198
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.05567411776206094,
+     "fora_de_dominio": false,
+     "tempo_s": 7.931
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.021583519757961474,
+     "fora_de_dominio": false,
+     "tempo_s": 8.531
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.017722637400546866,
+     "fora_de_dominio": false,
+     "tempo_s": 9.131
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.017052067998207375,
+     "fora_de_dominio": false,
+     "tempo_s": 9.73
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.015849522361359555,
+     "fora_de_dominio": false,
+     "tempo_s": 10.33
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.015849522361359555,
+     "fora_de_dominio": false,
+     "tempo_s": 10.93
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.016728189999135022,
+     "fora_de_dominio": false,
+     "tempo_s": 11.53
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.016728189999135022,
+     "fora_de_dominio": false,
+     "tempo_s": 12.13
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.027745499955862746,
+     "fora_de_dominio": false,
+     "tempo_s": 12.729
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.017688653219308268,
+     "fora_de_dominio": false,
+     "tempo_s": 13.329
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.02848991419583795,
+     "fora_de_dominio": false,
+     "tempo_s": 13.929
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.03245193754255062,
+     "fora_de_dominio": false,
+     "tempo_s": 14.529
+    }
+   ],
+   "trajetoria": {
+    "disponivel": true,
+    "probabilidade_ia": 0.664,
+    "usa_core": true
+   },
+   "audio": {
+    "resultado": "REAL",
+    "probabilidade_ia": 0.4441,
+    "limiar": 0.6298,
+    "presente": true
+   }
+  },
+  "teste11": {
+   "resultado_producao": "REAL",
+   "frames": [
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.04337685237246531,
+     "fora_de_dominio": false,
+     "tempo_s": 0.0
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.03756956398378403,
+     "fora_de_dominio": false,
+     "tempo_s": 0.63
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.019833150495343857,
+     "fora_de_dominio": false,
+     "tempo_s": 1.261
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.06867969973615408,
+     "fora_de_dominio": false,
+     "tempo_s": 1.891
+    },
+    {
+     "resultado": "INCONCLUSIVO",
+     "probabilidade_ia": 0.7457616368354772,
+     "fora_de_dominio": false,
+     "tempo_s": 2.521
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.5352870269323863,
+     "fora_de_dominio": false,
+     "tempo_s": 3.151
+    },
+    {
+     "resultado": "INCONCLUSIVO",
+     "probabilidade_ia": 0.7335125420313333,
+     "fora_de_dominio": false,
+     "tempo_s": 3.782
+    },
+    {
+     "resultado": "INCONCLUSIVO",
+     "probabilidade_ia": 0.6821263691839661,
+     "fora_de_dominio": false,
+     "tempo_s": 4.412
+    },
+    {
+     "resultado": "INCONCLUSIVO",
+     "probabilidade_ia": 0.8002329650404594,
+     "fora_de_dominio": false,
+     "tempo_s": 5.043
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.12757581866043355,
+     "fora_de_dominio": false,
+     "tempo_s": 5.673
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.18409973098526763,
+     "fora_de_dominio": false,
+     "tempo_s": 6.303
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.11129660611926409,
+     "fora_de_dominio": false,
+     "tempo_s": 6.934
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.044230960925859285,
+     "fora_de_dominio": false,
+     "tempo_s": 7.564
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.02346879507432376,
+     "fora_de_dominio": false,
+     "tempo_s": 8.194
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.01949888143616379,
+     "fora_de_dominio": false,
+     "tempo_s": 8.824
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.019120414409551718,
+     "fora_de_dominio": false,
+     "tempo_s": 9.455
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.04495500767902646,
+     "fora_de_dominio": false,
+     "tempo_s": 9.875
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.015252266346429956,
+     "fora_de_dominio": false,
+     "tempo_s": 10.505
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.017241985491556908,
+     "fora_de_dominio": false,
+     "tempo_s": 11.136
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.25491588048210273,
+     "fora_de_dominio": false,
+     "tempo_s": 11.766
+    },
+    {
+     "resultado": "INCONCLUSIVO",
+     "probabilidade_ia": 0.8363894213401204,
+     "fora_de_dominio": false,
+     "tempo_s": 12.396
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.16501194473378672,
+     "fora_de_dominio": false,
+     "tempo_s": 13.027
+    },
+    {
+     "resultado": "INCONCLUSIVO",
+     "probabilidade_ia": 0.6411830025420818,
+     "fora_de_dominio": false,
+     "tempo_s": 13.657
+    },
+    {
+     "resultado": "INCONCLUSIVO",
+     "probabilidade_ia": 0.7972306098814728,
+     "fora_de_dominio": false,
+     "tempo_s": 14.287
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.07900850022451548,
+     "fora_de_dominio": false,
+     "tempo_s": 14.918
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.046889803854500325,
+     "fora_de_dominio": false,
+     "tempo_s": 15.548
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.140334271204258,
+     "fora_de_dominio": false,
+     "tempo_s": 16.178
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.03509203826398297,
+     "fora_de_dominio": false,
+     "tempo_s": 16.809
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.020361416475860185,
+     "fora_de_dominio": false,
+     "tempo_s": 17.439
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.017223500622172122,
+     "fora_de_dominio": false,
+     "tempo_s": 18.069
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.5237115057172947,
+     "fora_de_dominio": false,
+     "tempo_s": 18.7
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.11435604658610889,
+     "fora_de_dominio": false,
+     "tempo_s": 19.33
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.020980253051807837,
+     "fora_de_dominio": false,
+     "tempo_s": 19.96
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.03106845016857208,
+     "fora_de_dominio": false,
+     "tempo_s": 20.591
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.044770998968011524,
+     "fora_de_dominio": false,
+     "tempo_s": 21.221
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.042283336630347924,
+     "fora_de_dominio": false,
+     "tempo_s": 21.851
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.01827433240434322,
+     "fora_de_dominio": false,
+     "tempo_s": 22.481
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.02172132234784113,
+     "fora_de_dominio": false,
+     "tempo_s": 23.112
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.018562327881657216,
+     "fora_de_dominio": false,
+     "tempo_s": 23.742
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.02172132234784113,
+     "fora_de_dominio": false,
+     "tempo_s": 24.372
+    }
+   ],
+   "trajetoria": {
+    "disponivel": true,
+    "probabilidade_ia": 0.1158,
+    "usa_core": true
+   },
+   "audio": {
+    "resultado": "IA/MANIPULADA",
+    "probabilidade_ia": 0.6402,
+    "limiar": 0.6298,
+    "presente": true
+   }
+  },
+  "teste12": {
+   "resultado_producao": "REAL",
+   "frames": [
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.018581877235219615,
+     "fora_de_dominio": false,
+     "tempo_s": 0.0
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.021438984688214785,
+     "fora_de_dominio": false,
+     "tempo_s": 0.6
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.015926738987844486,
+     "fora_de_dominio": false,
+     "tempo_s": 1.233
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.01968479148651734,
+     "fora_de_dominio": false,
+     "tempo_s": 1.833
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.016154475251419182,
+     "fora_de_dominio": false,
+     "tempo_s": 2.433
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.017625336629172043,
+     "fora_de_dominio": false,
+     "tempo_s": 3.033
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.015181394307509139,
+     "fora_de_dominio": false,
+     "tempo_s": 3.633
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.015790853973813607,
+     "fora_de_dominio": false,
+     "tempo_s": 4.233
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.018468999719898953,
+     "fora_de_dominio": false,
+     "tempo_s": 4.833
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.01674894767088495,
+     "fora_de_dominio": false,
+     "tempo_s": 5.433
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.03523451898278113,
+     "fora_de_dominio": false,
+     "tempo_s": 6.033
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.05224093664380306,
+     "fora_de_dominio": false,
+     "tempo_s": 6.633
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.022714362313073864,
+     "fora_de_dominio": false,
+     "tempo_s": 7.233
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.023733201867247485,
+     "fora_de_dominio": false,
+     "tempo_s": 7.833
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.039367061115143695,
+     "fora_de_dominio": false,
+     "tempo_s": 8.433
+    }
+   ],
+   "trajetoria": {
+    "disponivel": true,
+    "probabilidade_ia": 0.0279,
+    "usa_core": true
+   },
+   "audio": {
+    "resultado": "REAL",
+    "probabilidade_ia": 0.4458,
+    "limiar": 0.6298,
+    "presente": true
+   }
+  },
+  "teste13": {
+   "resultado_producao": "REAL",
+   "frames": [
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014015614126631265,
+     "fora_de_dominio": false,
+     "tempo_s": 0.0
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.01448774910099303,
+     "fora_de_dominio": false,
+     "tempo_s": 0.6
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014304502085053322,
+     "fora_de_dominio": false,
+     "tempo_s": 1.2
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014254573348671664,
+     "fora_de_dominio": false,
+     "tempo_s": 1.799
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014090786646895125,
+     "fora_de_dominio": false,
+     "tempo_s": 2.399
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014261404126891884,
+     "fora_de_dominio": false,
+     "tempo_s": 2.999
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.013926265492361303,
+     "fora_de_dominio": false,
+     "tempo_s": 3.599
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.01461907815820719,
+     "fora_de_dominio": false,
+     "tempo_s": 4.199
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014249088490273953,
+     "fora_de_dominio": false,
+     "tempo_s": 4.799
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014212003401085497,
+     "fora_de_dominio": false,
+     "tempo_s": 5.398
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014261337050471572,
+     "fora_de_dominio": false,
+     "tempo_s": 5.998
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.013964991971576628,
+     "fora_de_dominio": false,
+     "tempo_s": 6.598
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014369477617290403,
+     "fora_de_dominio": false,
+     "tempo_s": 7.198
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014182285956331607,
+     "fora_de_dominio": false,
+     "tempo_s": 7.831
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.013926265492361303,
+     "fora_de_dominio": false,
+     "tempo_s": 8.464
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.013917448923997298,
+     "fora_de_dominio": false,
+     "tempo_s": 9.064
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.01400560398656955,
+     "fora_de_dominio": false,
+     "tempo_s": 9.664
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014315926579530567,
+     "fora_de_dominio": false,
+     "tempo_s": 10.264
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014181395891963308,
+     "fora_de_dominio": false,
+     "tempo_s": 10.863
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014490701343163326,
+     "fora_de_dominio": false,
+     "tempo_s": 11.463
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.015535010273498823,
+     "fora_de_dominio": false,
+     "tempo_s": 12.063
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.01413994536277905,
+     "fora_de_dominio": false,
+     "tempo_s": 12.663
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014026710603791617,
+     "fora_de_dominio": false,
+     "tempo_s": 13.263
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.013906377517393998,
+     "fora_de_dominio": false,
+     "tempo_s": 13.862
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.013846219839192568,
+     "fora_de_dominio": false,
+     "tempo_s": 14.462
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014292953018161293,
+     "fora_de_dominio": false,
+     "tempo_s": 15.062
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014129591631462358,
+     "fora_de_dominio": false,
+     "tempo_s": 15.662
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.0142715233926488,
+     "fora_de_dominio": false,
+     "tempo_s": 16.262
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014292953018161293,
+     "fora_de_dominio": false,
+     "tempo_s": 16.862
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014721974099424011,
+     "fora_de_dominio": false,
+     "tempo_s": 17.461
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014599403250304238,
+     "fora_de_dominio": false,
+     "tempo_s": 18.061
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014100768945261242,
+     "fora_de_dominio": false,
+     "tempo_s": 18.661
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014831571223296343,
+     "fora_de_dominio": false,
+     "tempo_s": 19.261
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014531410537280787,
+     "fora_de_dominio": false,
+     "tempo_s": 19.861
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.01418319361854517,
+     "fora_de_dominio": false,
+     "tempo_s": 20.46
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.016351858379937148,
+     "fora_de_dominio": false,
+     "tempo_s": 21.06
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014261337050471572,
+     "fora_de_dominio": false,
+     "tempo_s": 21.66
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014074015505732118,
+     "fora_de_dominio": false,
+     "tempo_s": 22.26
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.01436986877465536,
+     "fora_de_dominio": false,
+     "tempo_s": 22.86
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014684131878453459,
+     "fora_de_dominio": false,
+     "tempo_s": 23.459
+    }
+   ],
+   "trajetoria": {
+    "disponivel": true,
+    "probabilidade_ia": 0.0197,
+    "usa_core": true
+   },
+   "audio": {
+    "resultado": "REAL",
+    "probabilidade_ia": 0.1487,
+    "limiar": 0.6298,
+    "presente": true
+   }
+  },
+  "teste14": {
+   "resultado_producao": "REAL",
+   "frames": [
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.015070410128497549,
+     "fora_de_dominio": false,
+     "tempo_s": 0.0
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014792297871302158,
+     "fora_de_dominio": false,
+     "tempo_s": 0.6
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.015093689728972286,
+     "fora_de_dominio": false,
+     "tempo_s": 1.2
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014497508391502005,
+     "fora_de_dominio": false,
+     "tempo_s": 1.8
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014120518146239092,
+     "fora_de_dominio": false,
+     "tempo_s": 2.4
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.013871979005437825,
+     "fora_de_dominio": false,
+     "tempo_s": 3.0
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.016746825722548736,
+     "fora_de_dominio": false,
+     "tempo_s": 3.6
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.01624891219903207,
+     "fora_de_dominio": false,
+     "tempo_s": 4.2
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014330622988533645,
+     "fora_de_dominio": false,
+     "tempo_s": 5.4
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014681892861288617,
+     "fora_de_dominio": false,
+     "tempo_s": 6.0
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.01536605238272841,
+     "fora_de_dominio": false,
+     "tempo_s": 6.6
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014330622988533645,
+     "fora_de_dominio": false,
+     "tempo_s": 7.2
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014569587263349469,
+     "fora_de_dominio": false,
+     "tempo_s": 7.8
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014330622988533645,
+     "fora_de_dominio": false,
+     "tempo_s": 8.4
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.020223665497869837,
+     "fora_de_dominio": false,
+     "tempo_s": 9.0
+    },
+    {
+     "resultado": "IA/MANIPULADA",
+     "probabilidade_ia": 0.9442972779484148,
+     "fora_de_dominio": false,
+     "tempo_s": 9.2
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.5494083757609172,
+     "fora_de_dominio": false,
+     "tempo_s": 9.4
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.015242877278024832,
+     "fora_de_dominio": false,
+     "tempo_s": 9.8
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.03197151002925988,
+     "fora_de_dominio": false,
+     "tempo_s": 10.402
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014158550335513602,
+     "fora_de_dominio": false,
+     "tempo_s": 11.002
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014869624849769692,
+     "fora_de_dominio": false,
+     "tempo_s": 11.602
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014869624849769692,
+     "fora_de_dominio": false,
+     "tempo_s": 12.202
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.029913467335093293,
+     "fora_de_dominio": false,
+     "tempo_s": 12.802
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.021048050398507368,
+     "fora_de_dominio": false,
+     "tempo_s": 13.402
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.01673773888876374,
+     "fora_de_dominio": false,
+     "tempo_s": 14.002
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.03582493468604965,
+     "fora_de_dominio": false,
+     "tempo_s": 14.602
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014656013134203798,
+     "fora_de_dominio": false,
+     "tempo_s": 15.202
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.01913424952908507,
+     "fora_de_dominio": false,
+     "tempo_s": 15.802
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.013918146277125383,
+     "fora_de_dominio": false,
+     "tempo_s": 16.402
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.01391215340255609,
+     "fora_de_dominio": false,
+     "tempo_s": 17.002
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014724857094281153,
+     "fora_de_dominio": false,
+     "tempo_s": 17.602
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.014128822954687205,
+     "fora_de_dominio": false,
+     "tempo_s": 18.202
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.06442365830322146,
+     "fora_de_dominio": false,
+     "tempo_s": 18.802
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.01567758250192589,
+     "fora_de_dominio": false,
+     "tempo_s": 19.402
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.016939045241404462,
+     "fora_de_dominio": false,
+     "tempo_s": 20.002
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.029673554285808774,
+     "fora_de_dominio": false,
+     "tempo_s": 20.602
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.08577679868002386,
+     "fora_de_dominio": false,
+     "tempo_s": 21.202
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.05093492271230555,
+     "fora_de_dominio": false,
+     "tempo_s": 21.802
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.06338328953981845,
+     "fora_de_dominio": false,
+     "tempo_s": 22.402
+    },
+    {
+     "resultado": "REAL",
+     "probabilidade_ia": 0.07999083390896825,
+     "fora_de_dominio": false,
+     "tempo_s": 23.002
+    }
+   ],
+   "trajetoria": {
+    "disponivel": true,
+    "probabilidade_ia": 0.1399,
+    "usa_core": true
+   },
+   "audio": {
+    "resultado": "REAL",
+    "probabilidade_ia": 0.2394,
+    "limiar": 0.6298,
+    "presente": true
+   }
+  }
+ }
+}

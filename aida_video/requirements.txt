@@ -4,7 +4,7 @@
 #
 #   pip install -r aida_video/requirements.txt
 
-av>=14              # decodifica video e audio; FFmpeg embutido, nao precisa instalar ffmpeg
+av>=14,<19          # 19 mudou a API de abertura (metadata_errors); decodifica video e audio; FFmpeg embutido, nao precisa instalar ffmpeg
 numpy>=1.24
 scipy>=1.11         # FFT e DCT das caracteristicas de audio
 opencv-python-headless>=4.8

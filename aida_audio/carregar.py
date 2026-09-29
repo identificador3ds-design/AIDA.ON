@@ -39,8 +39,12 @@ def _abrir(caminho):
         raise ValueError(f"Arquivo vazio: {caminho.name}")
     try:
         # Tags de audiolivro (MLS) vem em Latin-1: com o padrao "strict" o PyAV
-        # falha ao abrir o arquivo inteiro por causa do titulo.
-        return av.open(str(caminho), metadata_errors="replace")
+        # falha ao abrir o arquivo inteiro por causa do titulo. O PyAV 19 tirou
+        # o parametro `metadata_errors`; nele a abertura segue sem ele.
+        try:
+            return av.open(str(caminho), metadata_errors="replace")
+        except TypeError:
+            return av.open(str(caminho))
     except av.FFmpegError as exc:
         raise ValueError(f"Não foi possível abrir '{caminho.name}' como mídia: {descrever_erro_ffmpeg(exc)}") from exc
 

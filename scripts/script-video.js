@@ -52,6 +52,12 @@
     ressalva: $("vidRessalva"),
     baixar: $("vidBaixar"),
     novo: $("vidNovo"),
+    // Tela no padrão do AIDA Image: o painel de envio sai de cena quando o
+    // resultado final chega e volta em "Analisar outro vídeo".
+    painelEnvio: $("vidPainelEnvio"),
+    significado: $("vidSignificado"),
+    verComo: $("vidVerComo"),
+    comoFunciona: $("vidComoFunciona"),
   };
   if (!el.form) return;
 
@@ -134,15 +140,16 @@
       const saude = await resposta.json();
       servidorOk = true;
       definirEstado(el.servidor, "sucesso");
-      el.servidorTitulo.textContent = "Servidor de vídeo conectado";
+      el.servidorTitulo.textContent = "Servidor pronto para analisar";
+      const recursos = ["imagem"];
+      if (saude.trajetoria_disponivel) recursos.push("movimento");
+      if (saude.modelo_audio_disponivel) recursos.push("áudio");
       el.servidorTexto.textContent =
-        `Core: ${saude.core_url} · limite ${formatarTamanho((saude.tamanho_max_mb || 0) * 1024 * 1024)} por vídeo · ` +
-        (saude.modelo_audio_disponivel
-          ? "modelo de áudio treinado"
-          : "sem modelo de áudio treinado (o áudio sairá inconclusivo)") +
-        (saude.trajetoria_disponivel
-          ? " · análise de movimento ativa"
-          : " · análise de movimento desligada (falta torch/timm ou o modelo)");
+        `Até ${saude.tamanho_max_mb >= 1024 ? formatarTamanho(saude.tamanho_max_mb * 1024 * 1024) : Math.round(saude.tamanho_max_mb || 0) + " MB"} por vídeo · leituras ativas: ` +
+        recursos.join(", ") + ".";
+      el.servidor.title =
+        `Core: ${saude.core_url} · áudio: ${saude.modelo_audio_disponivel ? "modelo treinado" : "sem modelo"}` +
+        ` · movimento: ${saude.trajetoria_disponivel ? "ativo" : "desligado"}`;
       if (saude.max_frames) el.maxFrames.max = saude.max_frames;
       limiteMb = saude.tamanho_max_mb || null;
       if (arquivoAtual) escolherArquivo(arquivoAtual); // reavalia o tamanho
@@ -241,6 +248,7 @@
     el.resultado.hidden = false;
     definirEstado(el.veredito, "erro");
     el.vereditoTitulo.textContent = "Não foi possível analisar o vídeo";
+    if (el.significado) el.significado.textContent = "";
     el.motivos.replaceChildren(criar("li", null, mensagem));
     [el.numeros, el.linha, el.frames, el.audioResultado].forEach((n) => n.replaceChildren());
     el.ressalva.textContent = "";
@@ -358,6 +366,7 @@
       el.resultado.hidden = false;
       definirEstado(el.veredito, "analisando");
       el.vereditoTitulo.textContent = "Análise em andamento";
+      if (el.significado) el.significado.textContent = "Os quadros aparecem abaixo conforme são analisados.";
       el.motivos.replaceChildren();
       el.numeros.replaceChildren();
       el.audioResultado.textContent = "O áudio é analisado depois dos frames.";
@@ -430,6 +439,28 @@
     return par;
   }
 
+  function explicarResultado(relatorio) {
+    const v = relatorio.visual || {};
+    const t = relatorio.trajetoria || {};
+    const a = relatorio.audio || {};
+    const fontes = [];
+    if ((v.resultado_frames || v.resultado) === "IA/MANIPULADA") fontes.push("em vários quadros da imagem");
+    if (t.disponivel && typeof t.probabilidade_ia === "number" && t.probabilidade_ia >= 0.65) fontes.push("no movimento da cena");
+    if (a.resultado === "IA/MANIPULADA") fontes.push("no áudio");
+    const juntar = (itens) => itens.length > 1 ? `${itens.slice(0, -1).join(", ")} e ${itens[itens.length - 1]}` : itens[0];
+
+    if (relatorio.resultado === "IA/MANIPULADA") {
+      return fontes.length
+        ? `A AIDA encontrou sinais de geração por IA ${juntar(fontes)}. Isso indica que o vídeo, ou parte dele, pode ter sido criado ou alterado por inteligência artificial.`
+        : "A AIDA encontrou sinais de geração por IA neste vídeo.";
+    }
+    if (relatorio.resultado === "REAL") {
+      return "Nenhuma das leituras encontrou sinais relevantes de IA: os quadros, o movimento" +
+        (a.resultado ? " e o áudio" : "") + " se comportam como os de uma gravação de câmera.";
+    }
+    return "Os sinais ficaram fracos ou divididos entre as leituras. Em vez de arriscar, a AIDA marcou o vídeo como inconclusivo; veja abaixo em que trechos cada leitura apontou.";
+  }
+
   function mostrarRelatorio(relatorio, id) {
     relatorioAtual = relatorio;
     el.resultado.hidden = false;
@@ -438,6 +469,7 @@
     const tipo = { "REAL": "sucesso", "IA/MANIPULADA": "erro", "INCONCLUSIVO": "baixa-confianca" }[relatorio.resultado];
     definirEstado(el.veredito, tipo || "baixa-confianca");
     el.vereditoTitulo.textContent = `Resultado do vídeo: ${(ROTULOS[relatorio.resultado] || ROTULOS.INCONCLUSIVO).texto}`;
+    if (el.significado) el.significado.textContent = explicarResultado(relatorio);
     el.motivos.replaceChildren(...(relatorio.motivos || []).map((m) => criar("li", null, m)));
 
     const v = relatorio.visual || {};
@@ -470,6 +502,7 @@
 
     desenharAudio(relatorio.audio || {});
     el.ressalva.textContent = relatorio.ressalva || "";
+    if (el.painelEnvio) el.painelEnvio.hidden = true;
     el.resultado.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
@@ -521,13 +554,25 @@
     el.arquivo.value = "";
     arquivoAtual = null;
     el.drop.classList.remove("vid-drop--cheio", "vid-drop--erro");
-    el.dropTitulo.textContent = "Escolha ou arraste um vídeo";
-    el.dropTexto.textContent = "MP4, MOV, WEBM, MKV, AVI ou 3GP";
+    el.dropTitulo.textContent = "Selecione seu vídeo";
+    el.dropTexto.textContent = "Escolha um arquivo do seu celular ou arraste o vídeo para cá, se estiver no computador.";
     el.previa.hidden = true;
     el.previa.removeAttribute("src");
+    if (el.painelEnvio) el.painelEnvio.hidden = false;
     atualizarBotao();
-    el.form.scrollIntoView({ behavior: "smooth", block: "start" });
+    (el.painelEnvio || el.form).scrollIntoView({ behavior: "smooth", block: "start" });
   });
+
+  if (el.verComo) {
+    el.verComo.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (el.painelEnvio) el.painelEnvio.hidden = false;
+      if (el.comoFunciona) {
+        el.comoFunciona.open = true;
+        el.comoFunciona.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    });
+  }
 
   // ?video_api=http://host:porta sobrepõe o endereço (e fica lembrado).
   const daUrl = new URLSearchParams(location.search).get("video_api");

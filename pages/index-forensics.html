@@ -34,7 +34,7 @@
 
     <link rel="stylesheet" href="../styles/style-shared-theme.css">
     <link rel="stylesheet" href="../styles/aida-design-system.css">
-    <link rel="stylesheet" href="../styles/style-forensics.css">
+    <link rel="stylesheet" href="../styles/style-forensics.css?v=20260929-v2">
 </head>
 
 <body class="aida-shell">
@@ -47,7 +47,7 @@
         <nav class="aida-row" aria-label="Navegação da plataforma">
             <a href="./index-historico.html" class="top-link">Histórico</a>
             <a href="./index-seleciona.html" class="top-link">Nova análise</a>
-            <a href="./index-video.html#testar" class="top-link">Analisar vídeo</a>
+            <a href="./index-video.html" class="top-link">Analisar vídeo</a>
         </nav>
     </header>
 
@@ -57,8 +57,9 @@
                 <span class="aida-eyebrow">AIDA Forensics</span>
                 <h1 class="fo-topo__titulo">Os indícios <span>por trás</span> da análise.</h1>
                 <p class="aida-text" style="max-width: 62ch;">
-                    Esta página não refaz a análise: ela reabre a que já foi executada e mostra o material
-                    que sustentou a leitura — métodos, mapas, metadados e proveniência.
+                    Aqui você vê por que o AIDA chegou ao resultado. Cada parte começa com uma explicação
+                    em linguagem simples e traz, logo abaixo, o detalhe técnico para quem quiser conferir.
+                    A página não refaz a análise: ela reabre a que já foi executada.
                 </p>
 
                 <div class="fo-identificacao" id="foIdentificacao" hidden>
@@ -68,7 +69,7 @@
                 </div>
             </div>
 
-            <span class="aida-status aida-status--beta">Beta</span>
+            <span class="aida-status aida-status--disponivel">Versão inicial</span>
         </section>
 
         <!-- Estados da página. Um por vez; o script escolhe. -->
@@ -115,11 +116,22 @@
         <!-- ============================ Dossiê ============================ -->
         <div id="foDossie" class="fo-grade" hidden>
 
+            <!-- Resumo em linguagem simples: montado pelo script a partir do dossiê. -->
+            <section class="fo-bloco fo-resumo" aria-labelledby="foResumoTitulo">
+                <div class="fo-bloco__cabecalho">
+                    <h2 class="fo-bloco__titulo" id="foResumoTitulo">Em poucas palavras</h2>
+                    <span class="fo-selo fo-selo--leigo">Linguagem simples</span>
+                </div>
+                <ul class="fo-resumo__lista" id="foResumoLeigo"></ul>
+            </section>
+
             <!-- Leitura -->
             <section class="fo-bloco fo-bloco--meio">
                 <div class="fo-bloco__cabecalho">
                     <h2 class="fo-bloco__titulo">Leitura</h2>
                 </div>
+
+                <p class="fo-leigo"><span class="fo-leigo__rotulo">Em linguagem simples</span> É o veredito da análise. A régua abaixo funciona como um termômetro: quanto mais à direita, mais a imagem se parece com as geradas por IA. Perto do meio existe uma faixa de dúvida; quando o resultado cai nela, o AIDA prefere dizer “inconclusivo” a arriscar.</p>
 
                 <div class="fo-veredito">
                     <span class="fo-veredito__rotulo" id="foVeredito" data-estado="INCONCLUSIVO">—</span>
@@ -133,7 +145,7 @@
                         <span class="fo-escala__rotulo">Escala de exibição</span>
                         <span class="fo-escala__valor" id="foProbExibicao">—</span>
                         <span class="fo-escala__detalhe">
-                            Chance de IA na escala mostrada ao usuário, com corte em 50%.
+                            O número mostrado ao usuário. Acima de 50%, a leitura aponta para IA.
                         </span>
                     </div>
 
@@ -141,7 +153,8 @@
                         <span class="fo-escala__rotulo">Escala calibrada</span>
                         <span class="fo-escala__valor" id="foProbCalibrada">—</span>
                         <span class="fo-escala__detalhe">
-                            Probabilidade usada nas métricas. O corte operacional não cai em 50%.
+                            A mesma medida na escala interna do modelo, usada para decidir e para as métricas.
+                            Nela o ponto de corte não fica em 50%: ele é o traço vertical da régua.
                         </span>
                     </div>
                 </div>
@@ -170,9 +183,12 @@
                     <span class="fo-selo" id="foFusao">—</span>
                 </div>
 
+                <p class="fo-leigo"><span class="fo-leigo__rotulo">Em linguagem simples</span> Três “especialistas” olham a imagem de jeitos diferentes e cada um dá uma nota de 0 a 100: perto de 0, a imagem parece uma foto real; perto de 100, parece gerada por IA. A decisão final não é a média simples: um quarto modelo aprendeu, com milhares de exemplos, quanto confiar em cada um.</p>
+
                 <p class="fo-bloco__nota">
-                    Cada módulo devolve um score independente. Módulos que não participaram desta análise não
-                    aparecem — ausência não é score zero.
+                    Detalhe técnico: cada módulo devolve um score independente em [0, 1], combinado por um
+                    meta-modelo calibrado (fusão). Módulos que não participaram não aparecem — ausência não é
+                    score zero.
                 </p>
 
                 <div id="foMetodos" style="margin-top: 20px;"></div>
@@ -184,6 +200,8 @@
                     <h2 class="fo-bloco__titulo">Evidências visuais</h2>
                     <span class="fo-selo" id="foMapasInfo">—</span>
                 </div>
+
+                <p class="fo-leigo"><span class="fo-leigo__rotulo">Em linguagem simples</span> São “raios-X” da imagem. Cada mapa destaca um tipo de detalhe (bordas, ruído, frequências) para uma pessoa conferir com os próprios olhos. Área clara não quer dizer “aqui foi editado”: quer dizer “aqui a medição reagiu mais”.</p>
 
                 <p class="fo-bloco__nota">
                     Os mapas mostram <strong>onde o sinal medido é mais forte</strong> — não onde houve
@@ -210,6 +228,8 @@
                     <span class="fo-selo" id="foProvStatus">—</span>
                 </div>
 
+                <p class="fo-leigo"><span class="fo-leigo__rotulo">Em linguagem simples</span> É como conferir o “documento de identidade” do arquivo: algumas câmeras e ferramentas de IA gravam dentro dele quem o criou, às vezes com assinatura digital (C2PA). Não achar nada é o mais comum e não prova nada: prints e aplicativos de mensagem apagam esses dados.</p>
+
                 <p class="fo-bloco__nota" id="foProvResumo"></p>
 
                 <dl class="fo-dados" id="foProvDados" style="margin-top: 20px;"></dl>
@@ -222,6 +242,8 @@
                 <div class="fo-bloco__cabecalho">
                     <h2 class="fo-bloco__titulo">Arquivo analisado</h2>
                 </div>
+
+                <p class="fo-leigo"><span class="fo-leigo__rotulo">Em linguagem simples</span> As características técnicas do arquivo no momento da análise: tamanho, formato e resolução. Elas ajudam a entender quanto detalhe havia disponível para medir.</p>
 
                 <p class="fo-bloco__nota">
                     O AIDA não guarda a imagem no servidor: estes campos vêm da leitura feita durante a
@@ -237,6 +259,8 @@
                 <div class="fo-bloco__cabecalho">
                     <h2 class="fo-bloco__titulo">Qualidade e limitações</h2>
                 </div>
+
+                <p class="fo-leigo"><span class="fo-leigo__rotulo">Em linguagem simples</span> Imagens muito pequenas, borradas ou comprimidas várias vezes (como as reenviadas por WhatsApp) guardam menos pistas. Aqui aparece o que pode ter deixado esta leitura menos segura.</p>
 
                 <p class="fo-bloco__nota">
                     O que restringiu esta leitura. Compressão, redimensionamento e reencaminhamento apagam
@@ -256,6 +280,26 @@
             </div>
         </div>
 
+        <details class="fo-glossario" id="foGlossario">
+            <summary class="fo-glossario__resumo">
+                <span class="aida-eyebrow" style="margin-bottom: 0;">Glossário</span>
+                <strong>O que significa cada termo técnico</strong>
+            </summary>
+            <dl class="fo-glossario__lista">
+                <div><dt>Limiar (ponto de corte)</dt><dd>Valor da escala interna a partir do qual a leitura passa a apontar para IA. Foi escolhido em dados de validação para limitar os falsos positivos em fotos reais.</dd></div>
+                <div><dt>Faixa de dúvida (abstenção)</dt><dd>Intervalo em torno do limiar em que o sistema não decide e responde “inconclusivo”. Prefere-se não responder a errar com confiança.</dd></div>
+                <div><dt>Calibração</dt><dd>Ajuste que faz a probabilidade corresponder à frequência real de acerto: entre as imagens que recebem 80%, cerca de 80% devem ser mesmo de IA.</dd></div>
+                <div><dt>CLIP</dt><dd>Rede neural pré-treinada em centenas de milhões de pares imagem-texto. O AIDA usa a representação que ela extrai da imagem (ViT-B/32) e treinou uma camada própria para separar foto real de imagem gerada.</dd></div>
+                <div><dt>Módulo forense</dt><dd>Medidas explícitas do sinal: espectro de Fourier, textura, ruído residual, estatística de dígitos e qualidade. Cada número tem definição conhecida, por isso é o módulo mais auditável.</dd></div>
+                <div><dt>RIGID</dt><dd>Mede quanto a representação da imagem muda sob pequenas perturbações. Conteúdo sintético tende a reagir de forma diferente de uma captura de câmera.</dd></div>
+                <div><dt>Fusão monotônica</dt><dd>Modelo que combina os três módulos. “Monotônica” garante que aumentar o sinal de IA de um módulo nunca diminui a probabilidade final.</dd></div>
+                <div><dt>Espectro de Fourier</dt><dd>A imagem descrita como soma de padrões de frequência. Geradores e reamostragens podem deixar picos regulares nessa representação.</dd></div>
+                <div><dt>C2PA / Content Credentials</dt><dd>Padrão aberto de assinatura digital que registra a origem e as edições de um arquivo. Quando presente e íntegro, é a evidência mais forte sobre a origem.</dd></div>
+                <div><dt>EXIF, XMP e IPTC</dt><dd>Campos de metadados gravados no arquivo (câmera, data, software). São texto livre: podem ser apagados ou falsificados.</dd></div>
+                <div><dt>Fora de domínio</dt><dd>Imagem que não é fotográfica (desenho, print de texto, gráfico). O modelo não foi feito para isso e não dá probabilidade.</dd></div>
+            </dl>
+        </details>
+
         <div class="fo-acoes" id="foAcoes" hidden>
             <a href="./index-seleciona.html" class="aida-btn">Analisar outra imagem</a>
             <a href="./index-historico.html" class="aida-btn aida-btn--ghost">Voltar ao histórico</a>
@@ -263,7 +307,7 @@
     </main>
 
     <script src="../scripts/script-cookie-consent.js"></script>
-    <script src="../scripts/script-forensics.js"></script>
+    <script src="../scripts/script-forensics.js?v=20260929-v1"></script>
 </body>
 
 </html>

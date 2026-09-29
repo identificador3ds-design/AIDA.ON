@@ -382,3 +382,224 @@
     transition: none;
   }
 }
+
+
+/* ==========================================================================
+   Tela de envio no padrão do AIDA Image (versão inicial, 2026-09)
+   O painel de envio usa as classes de style-ferramenta.css (.selecao-*); o
+   resultado vem num painel separado, mais largo, abaixo.
+   ========================================================================== */
+
+.video-page [hidden] {
+  display: none !important;
+}
+
+.video-main {
+  gap: var(--aida-space-8);
+  align-content: start;
+}
+
+.video-page .selecao-panel {
+  max-width: 800px;
+}
+
+.selecao-steps--tres .selecao-step {
+  flex: 1 1 180px;
+  justify-content: center;
+}
+
+/* Cartão de envio: visual do AIDA Image, comportamento do AIDA Video. */
+.video-page .vid-drop {
+  min-height: 0;
+  padding: clamp(22px, 3.2vw, 32px);
+  gap: 16px;
+  border: 1px dashed rgba(143, 216, 183, 0.28);
+  background: var(--aida-glass-card);
+}
+
+.video-page .vid-drop:hover,
+.video-page .vid-drop--sobre {
+  border-color: rgba(143, 216, 183, 0.6);
+  background: rgba(143, 216, 183, 0.06);
+}
+
+.video-page .vid-drop--cheio {
+  border-style: solid;
+  border-color: var(--aida-mint-line);
+}
+
+.video-page .vid-drop--erro {
+  border-color: var(--aida-danger);
+  background: var(--aida-danger-bg);
+}
+
+.video-page .vid-drop__titulo {
+  font-size: clamp(1.35rem, 2.6vw, 1.75rem);
+  font-weight: var(--aida-fw-bold);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.video-page .vid-drop__texto {
+  max-width: 44ch;
+  font-size: var(--aida-fs-body);
+  line-height: 1.6;
+  color: var(--aida-text-2);
+}
+
+.vid-drop__botao {
+  min-width: min(280px, 100%);
+  padding: 0 32px;
+  pointer-events: none;
+}
+
+.vid-servidor {
+  padding: var(--aida-space-3) var(--aida-space-4);
+}
+
+.vid-servidor .aida-state__title {
+  font-size: var(--aida-fs-body);
+}
+
+.video-page .vid-form .vid-enviar {
+  justify-self: center;
+  min-width: min(280px, 100%);
+}
+
+/* Ajustes opcionais recolhidos: a tarefa da tela é escolher o vídeo. */
+.vid-ajustes {
+  border: 1px solid var(--aida-line-soft);
+  border-radius: var(--aida-radius-md);
+  background: var(--aida-surface-0);
+}
+
+.vid-ajustes__resumo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+  padding: var(--aida-space-3) var(--aida-space-4);
+  cursor: pointer;
+  font-weight: var(--aida-fw-semibold);
+  color: var(--aida-text);
+}
+
+.vid-ajustes__resumo small {
+  font-weight: var(--aida-fw-regular);
+  color: var(--aida-text-3);
+}
+
+.vid-ajustes .vid-opcoes,
+.vid-ajustes .vid-avancado {
+  padding: 0 var(--aida-space-4) var(--aida-space-4);
+}
+
+/* Como funciona -------------------------------------------------------------- */
+
+.vid-etapas {
+  display: grid;
+  gap: var(--aida-space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.vid-etapa {
+  display: grid;
+  grid-template-columns: 36px 1fr;
+  gap: var(--aida-space-3);
+  padding: var(--aida-space-4);
+  border: 1px solid var(--aida-line-soft);
+  border-radius: var(--aida-radius-md);
+  background: var(--aida-surface-0);
+  text-align: left;
+}
+
+.vid-etapa__num {
+  width: 32px;
+  height: 32px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(143, 216, 183, 0.16);
+  color: var(--aida-mint);
+  font-weight: var(--aida-fw-bold);
+}
+
+.vid-etapa strong {
+  display: block;
+  margin-bottom: 4px;
+  font-size: var(--aida-fs-body-lg);
+  color: var(--aida-text);
+}
+
+.vid-etapa p {
+  margin: 0 0 6px;
+  line-height: 1.55;
+  color: var(--aida-text);
+}
+
+.vid-etapa small {
+  display: block;
+  font-size: var(--aida-fs-caption);
+  line-height: 1.55;
+  color: var(--aida-text-3);
+}
+
+.vid-como__numeros {
+  padding: var(--aida-space-4);
+  border-left: 3px solid var(--aida-mint);
+  border-radius: 0 var(--aida-radius-md) var(--aida-radius-md) 0;
+  background: var(--aida-mint-soft);
+  text-align: left;
+}
+
+.vid-como__numeros p {
+  margin: 0;
+  line-height: 1.6;
+  color: var(--aida-text);
+}
+
+/* Resultado ------------------------------------------------------------------ */
+
+.video-page .vid-resultado {
+  width: 100%;
+  max-width: 1100px;
+  padding: clamp(24px, 4vw, 40px);
+  animation: rise-up 0.6s ease both;
+}
+
+.vid-resultado__topo {
+  display: grid;
+  gap: 6px;
+}
+
+.vid-resultado__titulo {
+  margin: 0;
+  font-size: clamp(1.6rem, 3vw, 2.3rem);
+  letter-spacing: -0.02em;
+}
+
+.vid-significado {
+  margin: 6px 0 0;
+  font-size: var(--aida-fs-body-lg);
+  line-height: 1.5;
+  color: var(--aida-text);
+}
+
+.vid-bloco__ajuda {
+  margin: -6px 0 var(--aida-space-3);
+  font-size: var(--aida-fs-caption);
+  color: var(--aida-text-3);
+}
+
+@media (max-width: 640px) {
+  .selecao-steps--tres .selecao-step {
+    flex-basis: 100%;
+    justify-content: flex-start;
+  }
+
+  .vid-etapa {
+    grid-template-columns: 1fr;
+  }
+}

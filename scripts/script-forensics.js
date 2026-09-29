@@ -300,10 +300,108 @@
     }
 
     el("foReguaInfo").textContent =
-      "limiar " + (isFinite(limiar) ? limiar.toFixed(3) : "—") +
+      "corte em " + (isFinite(limiar) ? Math.round(limiar * 100) + "%" : "—") +
       (banda.length === 2
-        ? " · abstenção " + Number(banda[0]).toFixed(2) + "–" + Number(banda[1]).toFixed(2)
+        ? " · faixa de dúvida " + Math.round(Number(banda[0]) * 100) + "%–" + Math.round(Number(banda[1]) * 100) + "%"
         : "");
+    el("foReguaInfo").title =
+      "Limiar " + (isFinite(limiar) ? limiar.toFixed(3) : "—") +
+      (banda.length === 2 ? " · banda de abstenção " + Number(banda[0]).toFixed(3) + "–" + Number(banda[1]).toFixed(3) : "");
+  }
+
+  function leituraScore(valor) {
+    if (!isFinite(valor)) return "";
+    if (valor >= 0.8) return "Leitura: aponta com força para IA.";
+    if (valor >= 0.6) return "Leitura: tende a IA.";
+    if (valor > 0.4) return "Leitura: sem posição clara.";
+    if (valor > 0.2) return "Leitura: tende a foto real.";
+    return "Leitura: aponta com força para foto real.";
+  }
+
+  var NOMES_FUSAO = {
+    gradient_boosting_monotonico: "gradient boosting monotônico",
+    gradient_boosting: "gradient boosting",
+    regressao_logistica: "regressão logística",
+    random_forest: "random forest",
+    media: "média dos módulos",
+  };
+
+  function nomeFusao(metodo) {
+    var bruto = String(metodo || "");
+    var chave = bruto.replace(/^B4:/, "");
+    return NOMES_FUSAO[chave] || chave || "—";
+  }
+
+  // Já com a contração: "o sinal mais forte veio da rede neural".
+  var NOMES_CURTOS_MODULO = { clip: "da rede neural (CLIP)", forense: "das medidas forenses", rigid: "do teste de estabilidade (RIGID)" };
+
+  function renderizarResumoLeigo(dossie) {
+    var alvo = el("foResumoLeigo");
+    if (!alvo) return;
+    alvo.innerHTML = "";
+    var r = dossie.resultado || {};
+    var itens = [];
+    var confianca = String(r.confianca || "").toLowerCase();
+
+    if (r.fora_de_dominio) {
+      itens.push("A imagem não parece ser uma fotografia (pode ser desenho, print de texto ou gráfico). " +
+        "O AIDA foi feito para fotos, então não deu uma probabilidade.");
+    } else if (r.resultado === "IA/MANIPULADA") {
+      itens.push("O AIDA encontrou sinais" + (confianca === "alta" ? " fortes" : "") +
+        " de que esta imagem foi gerada ou alterada por inteligência artificial.");
+    } else if (r.resultado === "REAL") {
+      itens.push("O AIDA não encontrou sinais relevantes de geração por IA: a imagem se comporta como uma foto de câmera.");
+    } else {
+      itens.push("Os sinais ficaram no meio do caminho. Em vez de arriscar, o AIDA marcou o resultado como inconclusivo.");
+    }
+
+    if (!r.fora_de_dominio && isFinite(Number(r.probabilidade_ia_exibicao))) {
+      itens.push("Chance de IA na escala mostrada: " + porcentagem(r.probabilidade_ia_exibicao) +
+        (confianca ? " (confiança " + confianca + ")." : "."));
+    }
+
+    var metodos = (dossie.metodos || []).filter(function (m) { return isFinite(Number(m.score)); });
+    if (metodos.length) {
+      var paraIa = metodos.filter(function (m) { return Number(m.score) >= 0.6; }).length;
+      var paraReal = metodos.filter(function (m) { return Number(m.score) <= 0.4; }).length;
+      var maisForte = metodos.slice().sort(function (a, b) {
+        return Math.abs(Number(b.score) - 0.5) - Math.abs(Number(a.score) - 0.5);
+      })[0];
+      var nomeForte = NOMES_CURTOS_MODULO[maisForte.chave] || ("de " + (maisForte.nome || maisForte.chave));
+      var neutros = metodos.length - paraIa - paraReal;
+      var verbo = function (n) { return n === 1 ? " apontou" : " apontaram"; };
+      var frase;
+      if (paraIa === metodos.length) frase = "Todos os " + metodos.length + " métodos apontaram para IA.";
+      else if (paraReal === metodos.length) frase = "Todos os " + metodos.length + " métodos apontaram para foto real.";
+      else {
+        frase = paraIa + " de " + metodos.length + " métodos" + verbo(paraIa) + " para IA e " + paraReal +
+          verbo(paraReal) + " para foto real";
+        frase += neutros === 1 ? "; o outro ficou neutro." : neutros > 1 ? "; os outros ficaram neutros." : ".";
+      }
+      itens.push(frase + " O sinal mais forte veio " + nomeForte + ".");
+    }
+
+    var p = dossie.proveniencia || {};
+    if (p.status && p.status !== "NO_PROVENANCE_FOUND" && p.status !== "UNKNOWN") {
+      itens.push("Registro de origem no arquivo: " + (ROTULO_PROVENIENCIA[p.status] || p.status).toLowerCase() + ".");
+    } else {
+      itens.push("O arquivo não trazia registro de origem, o que é comum em imagens reenviadas e não prova nada.");
+    }
+
+    var limitacoes = (dossie.limitacoes || []).concat(dossie.avisos_qualidade || []);
+    if (limitacoes.length) {
+      itens.push(limitacoes.length === 1
+        ? "Um fator pode ter reduzido a precisão desta leitura (veja “Qualidade e limitações”)."
+        : limitacoes.length + " fatores podem ter reduzido a precisão desta leitura (veja “Qualidade e limitações”).");
+    }
+
+    itens.push("Lembre-se: é um indício técnico para apoiar a sua avaliação, não uma prova.");
+
+    itens.forEach(function (frase) {
+      var item = document.createElement("li");
+      item.textContent = frase;
+      alvo.appendChild(item);
+    });
   }
 
   function renderizarMetodos(dossie) {
@@ -313,9 +411,9 @@
     var metodos = dossie.metodos || [];
     var fusao = dossie.fusao || {};
 
-    el("foFusao").textContent = fusao.calibrado
-      ? "Fusão calibrada (" + texto(fusao.metodo) + ")"
-      : "Fusão não calibrada (" + texto(fusao.metodo) + ")";
+    el("foFusao").textContent = (fusao.calibrado ? "Combinação calibrada" : "Combinação sem calibração") +
+      " · " + nomeFusao(fusao.metodo);
+    el("foFusao").title = "Método técnico: " + texto(fusao.metodo);
 
     if (!metodos.length) {
       var vazio = document.createElement("p");
@@ -338,7 +436,9 @@
 
       var score = document.createElement("span");
       score.className = "fo-metodo__score";
-      score.textContent = Number(metodo.score).toFixed(3);
+      var valorScore = Number(metodo.score);
+      score.textContent = isFinite(valorScore) ? Math.round(valorScore * 100) + " / 100" : "—";
+      score.title = "Score bruto: " + (isFinite(valorScore) ? valorScore.toFixed(3) : "—");
 
       topo.appendChild(nome);
       topo.appendChild(score);
@@ -350,12 +450,17 @@
       preenchimento.style.width = "0%";
       barra.appendChild(preenchimento);
 
+      var leitura = document.createElement("p");
+      leitura.className = "fo-metodo__leitura";
+      leitura.textContent = leituraScore(valorScore);
+
       var descricao = document.createElement("p");
       descricao.className = "fo-metodo__descricao";
       descricao.textContent = metodo.descricao || "";
 
       bloco.appendChild(topo);
       bloco.appendChild(barra);
+      bloco.appendChild(leitura);
       bloco.appendChild(descricao);
       alvo.appendChild(bloco);
 
@@ -524,6 +629,18 @@
     if (a.observacao) el("foArquivoNota").textContent = a.observacao;
   }
 
+  var ROTULO_PROVENIENCIA = {
+    AI_PROVENANCE_CONFIRMED: "Assinatura declara IA",
+    AI_EDIT_PROVENANCE: "Assinatura declara edição por IA",
+    AI_PROVENANCE_LIKELY: "Metadados declaram IA",
+    METADATA_AI_SIGNAL: "Metadados citam ferramenta de IA",
+    C2PA_PRESENT: "Com credencial, sem menção a IA",
+    C2PA_INVALID: "Credencial inválida",
+    CAPTURE_PROVENANCE_CONFIRMED: "Assinatura declara câmera",
+    NO_PROVENANCE_FOUND: "Sem registro de origem",
+    UNKNOWN: "Origem não verificada",
+  };
+
   var RESUMO_PROVENIENCIA = {
     AI_PROVENANCE_CONFIRMED: "O arquivo carrega uma credencial assinada declarando geração por IA.",
     AI_EDIT_PROVENANCE: "A credencial assinada declara que partes da imagem foram criadas ou alteradas por IA.",
@@ -542,7 +659,8 @@
     var p = dossie.proveniencia || {};
     var status = p.status || "UNKNOWN";
 
-    el("foProvStatus").textContent = status;
+    el("foProvStatus").textContent = ROTULO_PROVENIENCIA[status] || ROTULO_PROVENIENCIA.UNKNOWN;
+    el("foProvStatus").title = "Código técnico: " + status;
     el("foProvResumo").textContent = RESUMO_PROVENIENCIA[status] || RESUMO_PROVENIENCIA.UNKNOWN;
 
     var alvo = el("foProvDados");
@@ -615,6 +733,7 @@
 
   function renderizar(dossie, base, imagemOriginal) {
     renderizarIdentificacao(dossie);
+    renderizarResumoLeigo(dossie);
     renderizarLeitura(dossie);
     renderizarMetodos(dossie);
     renderizarMapas(dossie, base, imagemOriginal);

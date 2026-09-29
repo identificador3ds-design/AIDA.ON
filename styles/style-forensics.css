@@ -47,9 +47,16 @@
   color: var(--aida-text-3);
 }
 
+.fo-identificacao span {
+  min-width: 0;
+  max-width: 100%;
+}
+
 .fo-identificacao strong {
   color: var(--aida-text-2);
   font-weight: var(--aida-fw-semibold);
+  /* Nomes de arquivo longos sem espaço estouravam a largura no celular. */
+  overflow-wrap: anywhere;
 }
 
 /* --------------------------------------------------------------------------
@@ -522,4 +529,150 @@
   .fo-barra__preenchimento {
     transition: none;
   }
+}
+
+
+/* ==========================================================================
+   Camada em linguagem simples (versão inicial, 2026-09)
+   Cada bloco abre com uma explicação para leigos; o detalhe técnico segue
+   logo abaixo, no estilo de nota que já existia.
+   ========================================================================== */
+
+.fo-leigo {
+  margin: 0 0 var(--aida-space-4);
+  padding: var(--aida-space-3) var(--aida-space-4);
+  border-left: 3px solid var(--aida-mint);
+  border-radius: 0 var(--aida-radius-md) var(--aida-radius-md) 0;
+  background: var(--aida-mint-soft);
+  font-size: var(--aida-fs-body);
+  line-height: var(--aida-lh-body);
+  color: var(--aida-text);
+}
+
+.fo-leigo__rotulo {
+  display: block;
+  margin-bottom: 4px;
+  font-size: var(--aida-fs-micro);
+  font-weight: var(--aida-fw-bold);
+  letter-spacing: var(--aida-ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--aida-mint);
+}
+
+.fo-resumo {
+  border-color: var(--aida-mint-line);
+}
+
+.fo-selo--leigo {
+  color: var(--aida-mint);
+  border-color: var(--aida-mint-line);
+}
+
+.fo-resumo__lista {
+  display: grid;
+  gap: var(--aida-space-3);
+  margin: var(--aida-space-2) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fo-resumo__lista li {
+  position: relative;
+  padding-left: 28px;
+  font-size: var(--aida-fs-body-lg);
+  line-height: var(--aida-lh-snug);
+  color: var(--aida-text);
+}
+
+.fo-resumo__lista li::before {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 0.55em;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--aida-mint);
+  box-shadow: 0 0 0 4px var(--aida-mint-soft);
+}
+
+.fo-resumo__lista li:last-child {
+  font-size: var(--aida-fs-body);
+  color: var(--aida-text-3);
+}
+
+.fo-resumo__lista li:last-child::before {
+  background: transparent;
+  border: 1px solid var(--aida-text-3);
+  box-shadow: none;
+}
+
+.fo-metodo__leitura {
+  margin: 8px 0 4px;
+  font-size: var(--aida-fs-caption);
+  font-weight: var(--aida-fw-semibold);
+  color: var(--aida-text-2);
+}
+
+.fo-glossario {
+  margin-top: var(--aida-space-6);
+  border: 1px solid var(--aida-line-soft);
+  border-radius: var(--aida-radius-lg);
+  background: var(--aida-glass-card);
+  backdrop-filter: blur(12px);
+}
+
+.fo-glossario__resumo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: var(--aida-space-5) var(--aida-space-6);
+  cursor: pointer;
+  list-style: none;
+}
+
+.fo-glossario__resumo::-webkit-details-marker {
+  display: none;
+}
+
+.fo-glossario__resumo strong {
+  font-size: var(--aida-fs-h3);
+  color: var(--aida-text);
+}
+
+.fo-glossario__resumo strong::after {
+  content: " +";
+  color: var(--aida-mint);
+}
+
+.fo-glossario[open] .fo-glossario__resumo strong::after {
+  content: " –";
+}
+
+.fo-glossario__lista {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--aida-space-4);
+  margin: 0;
+  padding: 0 var(--aida-space-6) var(--aida-space-6);
+}
+
+.fo-glossario__lista div {
+  padding: var(--aida-space-4);
+  border: 1px solid var(--aida-line-soft);
+  border-radius: var(--aida-radius-md);
+  background: var(--aida-surface-1);
+}
+
+.fo-glossario__lista dt {
+  margin-bottom: 6px;
+  font-weight: var(--aida-fw-bold);
+  color: var(--aida-text);
+}
+
+.fo-glossario__lista dd {
+  margin: 0;
+  font-size: var(--aida-fs-caption);
+  line-height: 1.55;
+  color: var(--aida-text-2);
 }

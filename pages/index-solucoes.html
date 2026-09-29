@@ -34,7 +34,7 @@
 
     <link rel="stylesheet" href="../styles/style-shared-theme.css">
     <link rel="stylesheet" href="../styles/aida-design-system.css">
-    <link rel="stylesheet" href="../styles/aida-solucoes.css?v=20260816-demos">
+    <link rel="stylesheet" href="../styles/aida-solucoes.css?v=20260929-v1">
 </head>
 
 <body class="aida-shell">
@@ -71,9 +71,28 @@
                 <div>
                     <span class="aida-eyebrow">Soluções AIDA</span>
                     <h1 class="aida-title-2">Quatro frentes, uma mesma análise.</h1>
+                    <p class="aida-text solucoes__sub">
+                        O mesmo núcleo de detecção atende fotos, vídeos, investigações detalhadas e outros
+                        sistemas. Escolha pelo que você tem em mãos.
+                    </p>
                 </div>
-
             </div>
+
+            <nav class="sol-guia" aria-label="Qual solução usar">
+                <span class="sol-guia__rotulo">Qual solução usar?</span>
+                <a class="sol-guia__item" href="#sol-image" data-alvo="image">
+                    <strong>Tenho uma foto</strong><span>AIDA Image</span>
+                </a>
+                <a class="sol-guia__item" href="#sol-forensics" data-alvo="forensics">
+                    <strong>Quero entender o resultado</strong><span>AIDA Forensics</span>
+                </a>
+                <a class="sol-guia__item" href="#sol-video" data-alvo="video">
+                    <strong>Tenho um vídeo</strong><span>AIDA Video</span>
+                </a>
+                <a class="sol-guia__item" href="#sol-api" data-alvo="api">
+                    <strong>Quero integrar ao meu sistema</strong><span>AIDA API</span>
+                </a>
+            </nav>
 
             <div class="sol-grid">
                 <!-- ---------- AIDA Image ----------
@@ -82,7 +101,7 @@
                      mostra o estado do processo e a família de medida em curso.
                      Nenhum número aparece — o card demonstra que HÁ análise,
                      não qual foi o veredito. -->
-                <article class="sol-card sol-card--image" data-sol="image">
+                <article class="sol-card sol-card--image" data-sol="image" id="sol-image">
                     <div class="sol-card__stage">
                         <span class="sol-card__note">demonstração</span>
 
@@ -121,9 +140,14 @@
                             <span class="aida-status aida-status--disponivel">Disponível</span>
                         </div>
                         <p class="sol-card__text">
-                            Envie uma imagem e receba uma leitura rápida e objetiva sobre indícios de
-                            geração ou manipulação por inteligência artificial.
+                            Envie uma foto e receba, em segundos, uma leitura sobre indícios de geração ou
+                            manipulação por inteligência artificial, explicada em linguagem simples.
                         </p>
+                        <ul class="sol-card__pontos">
+                            <li>Veredito em três estados: real, IA ou inconclusivo</li>
+                            <li>Probabilidade e nível de confiança</li>
+                            <li>Mapas visuais e leitura da proveniência do arquivo</li>
+                        </ul>
                         <a href="./index-seleciona.html" class="aida-btn aida-btn--ghost aida-btn--sm sol-card__cta">
                             Analisar uma imagem
                             <span class="aida-btn__arrow" aria-hidden="true">&rarr;</span>
@@ -137,7 +161,7 @@
                      residual, produzidos pelas funções do pipeline. A
                      continuidade da foto é intencional: o Image dá o resultado,
                      o Forensics mostra em cima de quê. -->
-                <article class="sol-card sol-card--forensics" data-sol="forensics">
+                <article class="sol-card sol-card--forensics" data-sol="forensics" id="sol-forensics">
                     <div class="sol-card__stage">
                         <span class="sol-card__note">saída real</span>
 
@@ -176,12 +200,17 @@
                     <div class="sol-card__body">
                         <div class="sol-card__head">
                             <h2 class="sol-card__title">AIDA <span>Forensics</span></h2>
-                            <span class="aida-status aida-status--beta">Beta</span>
+                            <span class="aida-status aida-status--disponivel">Versão inicial</span>
                         </div>
                         <p class="sol-card__text">
-                            Investigue os indícios por trás da análise: espectro, gradiente, ruído residual,
-                            metadados e proveniência da mesma imagem, lado a lado.
+                            Abra qualquer análise e veja por que o AIDA chegou ao resultado: cada método,
+                            cada mapa e o registro de origem, com explicação simples e detalhe técnico.
                         </p>
+                        <ul class="sol-card__pontos">
+                            <li>Resumo em linguagem simples, para leigos</li>
+                            <li>Nota de cada método e régua de decisão</li>
+                            <li>Glossário dos termos técnicos</li>
+                        </ul>
                         <a href="./index-forensics.html" class="aida-btn aida-btn--ghost aida-btn--sm sol-card__cta">
                             Abrir o Forensics
                             <span class="aida-btn__arrow" aria-hidden="true">&rarr;</span>
@@ -191,12 +220,12 @@
 
                 <!-- ---------- AIDA Video ----------
                      Frames reais numa linha do tempo. Não é um player: não há
-                     controle de reprodução. O envio de vídeos está aberto (Beta)
+                     controle de reprodução. O envio de vídeos está aberto (versão inicial)
                      pelo Space aidaon/aida-video. Os frames vêm de um travelling sobre uma
                      fotografia panorâmica real — ver PROCEDENCIA.md. -->
-                <article class="sol-card sol-card--video" data-sol="video">
+                <article class="sol-card sol-card--video" data-sol="video" id="sol-video">
                     <div class="sol-card__stage">
-                        <span class="sol-card__note">conceito</span>
+                        <span class="sol-card__note">demonstração</span>
 
                         <div class="sol-fx fx-vid">
                             <div class="fx-vid__strip" aria-hidden="true">
@@ -256,13 +285,18 @@
                     <div class="sol-card__body">
                         <div class="sol-card__head">
                             <h2 class="sol-card__title">AIDA <span>Video</span></h2>
-                            <span class="aida-status aida-status--beta">Beta</span>
+                            <span class="aida-status aida-status--disponivel">Versão inicial</span>
                         </div>
                         <p class="sol-card__text">
-                            Envie um vídeo e acompanhe a análise frame a frame: leitura de cada quadro,
-                            agregação temporal, movimento e trilha de áudio.
+                            Envie um vídeo e acompanhe a análise quadro a quadro. A AIDA examina a imagem,
+                            o movimento da cena e o áudio, e mostra em que trechos os indícios aparecem.
                         </p>
-                        <a href="./index-video.html#testar" class="aida-btn aida-btn--ghost aida-btn--sm sol-card__cta">
+                        <ul class="sol-card__pontos">
+                            <li>Linha do tempo com o resultado de cada trecho</li>
+                            <li>Leitura do movimento e da trilha de áudio</li>
+                            <li>Relatório completo para baixar</li>
+                        </ul>
+                        <a href="./index-video.html" class="aida-btn aida-btn--ghost aida-btn--sm sol-card__cta">
                             Analisar um vídeo
                             <span class="aida-btn__arrow" aria-hidden="true">&rarr;</span>
                         </a>
@@ -274,9 +308,9 @@
                      mostra a FORMA do contrato — os campos existem, os valores
                      aparecem elididos. Nenhuma credencial, host real ou número
                      de resultado. -->
-                <article class="sol-card sol-card--api" data-sol="api">
+                <article class="sol-card sol-card--api" data-sol="api" id="sol-api">
                     <div class="sol-card__stage">
-                        <span class="sol-card__note">conceito</span>
+                        <span class="sol-card__note">demonstração</span>
 
                         <div class="sol-fx fx-api">
                             <div class="fx-api__graph">
@@ -321,19 +355,47 @@
                     <div class="sol-card__body">
                         <div class="sol-card__head">
                             <h2 class="sol-card__title">AIDA <span>API</span></h2>
-                            <span class="aida-status aida-status--desenvolvimento">Em desenvolvimento</span>
+                            <span class="aida-status aida-status--disponivel">Versão inicial</span>
                         </div>
                         <p class="sol-card__text">
-                            Integre a tecnologia AIDA ao seu sistema: envio da imagem, resposta em JSON e as
-                            mesmas evidências da interface. Endpoints públicos ainda não estão abertos.
+                            Integre o AIDA ao seu sistema: envie a imagem por HTTP e receba em JSON o mesmo
+                            resultado da plataforma, com chave de acesso e limite de uso.
                         </p>
+                        <ul class="sol-card__pontos">
+                            <li>Contrato versionado /v1</li>
+                            <li>Três estados, scores por método e evidências</li>
+                            <li>Documentação e verificação de saúde abertas</li>
+                        </ul>
                         <a href="./index-api.html" class="aida-btn aida-btn--ghost aida-btn--sm sol-card__cta">
-                            Ver a proposta da API
+                            Conhecer a API
                             <span class="aida-btn__arrow" aria-hidden="true">&rarr;</span>
                         </a>
                     </div>
                 </article>
             </div>
+
+            <section class="sol-conexao" aria-labelledby="solConexaoTitulo">
+                <span class="aida-eyebrow">Como se conectam</span>
+                <h2 class="aida-title-3" id="solConexaoTitulo">Um só núcleo, quatro portas de entrada.</h2>
+                <ol class="sol-conexao__lista">
+                    <li>
+                        <span class="sol-conexao__num">1</span>
+                        <div><strong>AIDA Core</strong><p>Três métodos independentes (rede neural CLIP, medidas forenses e RIGID) combinados por uma fusão calibrada.</p></div>
+                    </li>
+                    <li>
+                        <span class="sol-conexao__num">2</span>
+                        <div><strong>Image e Video</strong><p>Usam o Core para fotos e, quadro a quadro, para vídeos, somando movimento e áudio.</p></div>
+                    </li>
+                    <li>
+                        <span class="sol-conexao__num">3</span>
+                        <div><strong>Forensics</strong><p>Reabre qualquer análise e mostra o material que sustentou o resultado.</p></div>
+                    </li>
+                    <li>
+                        <span class="sol-conexao__num">4</span>
+                        <div><strong>API</strong><p>Entrega o mesmo resultado a outros sistemas, sem uma segunda lógica de decisão.</p></div>
+                    </li>
+                </ol>
+            </section>
 
             <div class="solucoes__rodape">
                 <p class="aida-text--sm">

@@ -124,7 +124,8 @@ def test_recursos_locais_existem(pagina):
                                  "aida-solucoes.js"]),
         ("index-forensics.html", ["aida-design-system.css", "style-forensics.css",
                                   "script-forensics.js"]),
-        ("index-video.html", ["aida-design-system.css", "aida-produto.css"]),
+        ("index-video.html", ["aida-design-system.css", "style-ferramenta.css", "style-video.css",
+                              "script-video.js"]),
         ("index-api.html", ["aida-design-system.css", "aida-produto.css"]),
     ],
 )
@@ -150,8 +151,10 @@ def test_pagina_de_solucoes_declara_os_quatro_cards():
 def test_estados_dos_produtos_refletem_a_realidade():
     """O selo é declaração de estado, não enfeite.
 
-    Video e API não têm implementação; anunciá-los como disponíveis levaria o
-    visitante a tentar usar o que não existe.
+    Desde set/2026 as quatro soluções têm implementação: Image está disponível
+    e Forensics, Video e API estão em versão inicial (selo verde com o texto
+    "Versão inicial"). Nenhum card pode voltar a dizer beta ou em
+    desenvolvimento sem que isso seja verdade.
     """
     html = (RAIZ / "pages" / "index-solucoes.html").read_text(encoding="utf-8")
     cards = html.split('data-sol="')
@@ -162,10 +165,13 @@ def test_estados_dos_produtos_refletem_a_realidade():
         marca = re.search(r"aida-status aida-status--(\w+)", trecho)
         estados[produto] = marca.group(1) if marca else None
 
-    assert estados["image"] == "disponivel"
-    assert estados["forensics"] == "beta"
-    assert estados["video"] == "beta"
-    assert estados["api"] == "desenvolvimento"
+    assert estados == {"image": "disponivel", "forensics": "disponivel",
+                       "video": "disponivel", "api": "disponivel"}
+
+    for produto in ("forensics", "video", "api"):
+        bloco = html.split(f'data-sol="{produto}"')[1].split("</article>")[0]
+        assert "Versão inicial" in bloco, f"card {produto} deveria dizer versão inicial"
+    assert not re.search(r"aida-status--(beta|desenvolvimento)", html)
 
 
 def test_cards_em_desenvolvimento_nao_oferecem_envio():
@@ -197,11 +203,20 @@ def test_cards_nao_exibem_porcentagem_de_resultado():
     assert not re.search(r"\d{1,3}\s?%", secao), "há porcentagem na seção de soluções"
 
 
-def test_paginas_de_produto_marcam_em_desenvolvimento():
-    for nome in ("index-api.html",):
-        html = (RAIZ / "pages" / nome).read_text(encoding="utf-8")
-        assert "aida-status--desenvolvimento" in html
-        assert "Em desenvolvimento" in html
+def test_pagina_da_api_mostra_status_ao_vivo():
+    """A página descreve o contrato real; se o serviço está no ar, quem diz é o /v1/health.
+
+    Um selo fixo de "disponível" mentiria no dia em que a API cair, e um
+    "em desenvolvimento" fixo mentiria com a API no ar.
+    """
+    html = (RAIZ / "pages" / "index-api.html").read_text(encoding="utf-8")
+    js = (RAIZ / "scripts" / "script-api.js").read_text(encoding="utf-8")
+
+    assert 'id="apiStatus"' in html and "../scripts/script-api.js" in html
+    assert "/v1/health" in js
+    assert "Em desenvolvimento" not in html
+    for rota in ("/v1/analyze/image", "/v1/analysis/", "/v1/evidence/", "/v1/health", "/v1/contract", "/v1/docs"):
+        assert rota in html, f"endpoint ausente da referência: {rota}"
 
 
 def test_pagina_da_api_nao_expoe_credencial():
@@ -219,7 +234,8 @@ def test_roadmaps_nao_prometem_datas():
 
     for nome in ("index-video.html", "index-api.html"):
         html = (RAIZ / "pages" / nome).read_text(encoding="utf-8")
-        roadmap = html.split('id="roadmap"')[1]
+        # As versões iniciais não têm mais roadmap; se um voltar, vale a mesma regra.
+        roadmap = html.split('id="roadmap"')[1] if 'id="roadmap"' in html else ""
 
         assert not re.search(meses, roadmap, re.IGNORECASE)
         assert not re.search(r"\b20[2-9]\d\b", roadmap)
@@ -542,7 +558,7 @@ def test_cards_continuam_pausando_fora_da_viewport():
 
 
 def test_pagina_do_video_oferece_envio_ligado_ao_script():
-    """A seção "Testar agora" e o script precisam concordar nos ids.
+    """O painel de envio e o script precisam concordar nos ids.
 
     script-video.js aborta em silêncio se #vidForm faltar, e um id trocado
     derruba a página só no meio de uma análise.
@@ -551,7 +567,7 @@ def test_pagina_do_video_oferece_envio_ligado_ao_script():
     js = (RAIZ / "scripts" / "script-video.js").read_text(encoding="utf-8")
 
     assert "../scripts/script-video.js" in html
-    assert 'id="testar"' in html and 'type="file"' in html
+    assert 'id="vidPainelEnvio"' in html and 'type="file"' in html
 
     ids_usados = set(re.findall(r'\$\("(vid\w+)"\)', js))
     assert ids_usados, "o script deveria buscar os elementos por id"
@@ -566,4 +582,4 @@ def test_sistema_leva_a_analise_de_video():
     """Quem entra no sistema cai na seleção de imagem; sem link, o vídeo some."""
     for nome in ("index-seleciona.html", "index-analise.html", "index-forensics.html"):
         html = (RAIZ / "pages" / nome).read_text(encoding="utf-8")
-        assert 'href="./index-video.html#testar"' in html, f"{nome} não leva ao vídeo"
+        assert 'href="./index-video.html"' in html, f"{nome} não leva ao vídeo"

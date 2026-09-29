@@ -6,26 +6,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#10403b">
     <meta name="description"
-        content="AIDA Video: analise de conteudo em video por frames, movimento e audio. Beta aberto para teste.">
+        content="AIDA Video: envie um vídeo e receba uma leitura dos indícios de geração por IA na imagem, no movimento e no áudio, explicada em linguagem simples.">
 
     <link rel="manifest" href="../manifest.webmanifest">
     <link rel="apple-touch-icon" href="../assets/images/pwa-icon-180.png">
     <link id="favicon" rel="icon" type="image/x-icon" href="../assets/images/AIDABranco.ico">
 
-    <title>AIDA Video | Beta</title>
+    <title>AIDA Video — Enviar vídeo para análise</title>
     <!-- SEO e compartilhamento -->
     <link rel="canonical" href="https://aida-on.com.br/video">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="AIDA.ON">
     <meta property="og:locale" content="pt_BR">
-    <meta property="og:title" content="AIDA Video — Análise temporal de vídeo">
-    <meta property="og:description" content="Leitura de vídeo quadro a quadro sobre o mesmo núcleo do AIDA Image, com amostragem por cortes de cena e agregação temporal. Beta aberto para teste.">
+    <meta property="og:title" content="AIDA Video — Enviar vídeo para análise">
+    <meta property="og:description" content="Envie um vídeo e veja, frame a frame, os indícios de geração por IA na imagem, no movimento e no áudio.">
     <meta property="og:url" content="https://aida-on.com.br/video">
     <meta property="og:image" content="https://aida-on.com.br/assets/images/pwa-icon-512.png">
     <meta property="og:image:alt" content="Logotipo do AIDA.ON">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="AIDA Video — Análise temporal de vídeo">
-    <meta name="twitter:description" content="Leitura de vídeo quadro a quadro sobre o mesmo núcleo do AIDA Image, com amostragem por cortes de cena e agregação temporal. Beta aberto para teste.">
+    <meta name="twitter:title" content="AIDA Video — Enviar vídeo para análise">
+    <meta name="twitter:description" content="Envie um vídeo e veja, frame a frame, os indícios de geração por IA na imagem, no movimento e no áudio.">
     <meta name="twitter:image" content="https://aida-on.com.br/assets/images/pwa-icon-512.png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -34,492 +34,287 @@
 
     <link rel="stylesheet" href="../styles/style-shared-theme.css">
     <link rel="stylesheet" href="../styles/aida-design-system.css">
-    <link rel="stylesheet" href="../styles/aida-solucoes.css">
-    <link rel="stylesheet" href="../styles/aida-produto.css">
-    <link rel="stylesheet" href="../styles/style-video.css?v=20260924-limite">
+    <link rel="stylesheet" href="../styles/style-ferramenta.css">
+    <link rel="stylesheet" href="../styles/style-video.css?v=20260929-v1">
 </head>
 
-<body class="aida-shell" style="--produto-accent: var(--aida-video);">
+<!-- Mesma estrutura da tela de envio do AIDA Image (index-seleciona.html):
+     painel com passos, cartão de envio e "Como funciona" recolhido. O resultado
+     vem num painel separado, só com o que diz respeito ao vídeo enviado; a
+     explicação do método fica no bloco "Como funciona", para quem quiser. -->
+<body class="aida-shell selecao-page video-page">
     <a class="aida-skip-link" href="#conteudo">Pular para o conteúdo</a>
     <header class="page-header">
         <a href="./index-apresentacao.html" aria-label="Página inicial do AIDA">
             <img src="../assets/images/LogoBranca.png" alt="Logo AIDA.ON" class="brand-logo">
         </a>
 
-        <nav class="aida-row" aria-label="Navegação da plataforma">
-            <a href="./index-apresentacao.html#solucoes" class="top-link">Soluções</a>
+        <div class="selecao-header-actions">
             <a href="./index-seleciona.html" class="top-link">Analisar imagem</a>
-        </nav>
+            <a href="./index-solucoes.html" class="top-link">Soluções</a>
+            <a href="./index-historico.html" class="top-link">Histórico</a>
+        </div>
     </header>
 
-    <main id="conteudo" class="page-frame produto-main">
+    <main id="conteudo" class="page-frame selecao-main video-main">
+        <!-- ================= Envio ================= -->
+        <section class="selecao-panel glass-panel" id="vidPainelEnvio" aria-labelledby="vidTitulo">
+            <div class="selecao-intro">
+                <span class="page-kicker">AIDA Video · versão inicial</span>
+                <h1 class="page-title" id="vidTitulo">Escolha o vídeo para analisar</h1>
+                <p class="page-copy">
+                    Envie um vídeo do seu dispositivo. A AIDA separa os quadros, examina a imagem, o
+                    movimento e o som, e explica em linguagem simples os indícios de que ele pode ter sido
+                    gerado por IA.
+                </p>
+            </div>
 
-        <!-- ================= Topo ================= -->
-        <section class="produto-hero">
-            <div class="produto-hero__inner">
-                <div class="produto-hero__copy">
-                    <div class="produto-hero__badges">
-                        <span class="aida-eyebrow" style="margin-bottom: 0;">Soluções AIDA</span>
-                        <span class="aida-status aida-status--beta">Beta</span>
-                    </div>
+            <ol class="selecao-steps selecao-steps--tres" aria-label="Passos da análise">
+                <li class="selecao-step">
+                    <span aria-hidden="true">1</span>
+                    <strong>Escolha o vídeo</strong>
+                </li>
+                <li class="selecao-step">
+                    <span aria-hidden="true">2</span>
+                    <strong>Acompanhe a análise</strong>
+                </li>
+                <li class="selecao-step">
+                    <span aria-hidden="true">3</span>
+                    <strong>Veja o resultado</strong>
+                </li>
+            </ol>
 
-                    <h1 class="produto-hero__title">AIDA <span>Video</span></h1>
-
-                    <p class="aida-text">
-                        A análise de vídeo estende o AIDA para conteúdos que mudam ao longo do tempo. Em vez de
-                        uma leitura única, o vídeo é decomposto em frames, cada frame é analisado pelo mesmo
-                        núcleo do AIDA Image e os resultados são combinados em uma leitura temporal.
-                    </p>
-
-                    <!-- O estado precisa aparecer como texto, não só como selo: quem
-                         chega pela busca não vê a pílula do topo. -->
-                    <div class="aida-state aida-state--beta" style="margin-top: 24px;" role="status">
-                        <span class="aida-state__icon" aria-hidden="true"></span>
-                        <div>
-                            <p class="aida-state__title">Beta aberto: envie um vídeo</p>
-                            <p class="aida-state__text">
-                                A análise roda nos servidores do AIDA e o vídeo é apagado ao fim da análise. As
-                                regras de agregação e o modelo de áudio ainda estão em calibração.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="produto-hero__actions">
-                        <a href="#testar" class="aida-btn">
-                            Testar um vídeo
-                            <span class="aida-btn__arrow" aria-hidden="true">&rarr;</span>
-                        </a>
-                        <a href="#roadmap" class="aida-btn aida-btn--ghost">Ver o roadmap</a>
-                    </div>
-                </div>
-
-                <!-- Mesmo palco animado do card da Home, em tamanho maior. -->
-                <div class="produto-hero__visual" data-solucoes>
-                    <div class="produto-hero__palco sol-card--video" data-sol="video">
-                        <div class="sol-card__stage produto-hero__stage">
-                            <!-- Mesmo palco do card da página de soluções: os frames são os
-                                 mesmos arquivos, e a leitura temporal é a mesma. -->
-                            <div class="sol-fx fx-vid">
-                                <div class="fx-vid__strip" aria-hidden="true">
-                                    <figure class="fx-vid__frame">
-                                        <img src="../assets/demos/video/frame_01.webp" width="320" height="240"
-                                             loading="lazy" decoding="async" alt="">
-                                    </figure>
-                                    <figure class="fx-vid__frame">
-                                        <img src="../assets/demos/video/frame_02.webp" width="320" height="240"
-                                             loading="lazy" decoding="async" alt="">
-                                    </figure>
-                                    <figure class="fx-vid__frame">
-                                        <img src="../assets/demos/video/frame_03.webp" width="320" height="240"
-                                             loading="lazy" decoding="async" alt="">
-                                    </figure>
-                                    <figure class="fx-vid__frame">
-                                        <img src="../assets/demos/video/frame_04.webp" width="320" height="240"
-                                             loading="lazy" decoding="async" alt="">
-                                    </figure>
-                                    <figure class="fx-vid__frame">
-                                        <img src="../assets/demos/video/frame_05.webp" width="320" height="240"
-                                             loading="lazy" decoding="async" alt="">
-                                    </figure>
-                                    <figure class="fx-vid__frame">
-                                        <img src="../assets/demos/video/frame_06.webp" width="320" height="240"
-                                             loading="lazy" decoding="async" alt="">
-                                    </figure>
-
-                                    <div class="fx-vid__dots">
-                                        <span class="fx-vid__dot"></span>
-                                        <span class="fx-vid__dot"></span>
-                                        <span class="fx-vid__dot"></span>
-                                        <span class="fx-vid__dot"></span>
-                                        <span class="fx-vid__dot"></span>
-                                        <span class="fx-vid__dot"></span>
-                                    </div>
-                                </div>
-
-                                <div class="fx-vid__track" aria-hidden="true">
-                                    <div class="fx-vid__ticks">
-                                        <span></span><span></span><span></span>
-                                        <span></span><span></span><span></span>
-                                    </div>
-                                    <div class="fx-vid__playhead"></div>
-                                </div>
-
-                                <div class="sol-fx__barra" aria-hidden="true">
-                                    <span>frames</span>
-                                    <span class="sol-fx__marca">análise temporal</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            <div class="aida-state aida-state--carregando vid-servidor" id="vidServidor" role="status">
+                <span class="aida-state__icon" aria-hidden="true"></span>
+                <div>
+                    <p class="aida-state__title" id="vidServidorTitulo">Conectando ao servidor de vídeo…</p>
+                    <p class="aida-state__text" id="vidServidorTexto"></p>
                 </div>
             </div>
-        </section>
 
-        <!-- ================= Teste ================= -->
-        <section class="produto-bloco" id="testar">
-            <span class="aida-eyebrow">Testar agora</span>
-            <h2 class="aida-title-2">Envie um vídeo e acompanhe frame a frame.</h2>
-            <p class="aida-text" style="max-width: 70ch;">
-                O vídeo é processado pelo servidor do AIDA Video: ele separa os frames, envia cada um ao
-                AIDA Core, junta os resultados em uma leitura temporal e analisa a trilha de áudio.
-            </p>
+            <form id="vidForm" class="vid-form" novalidate>
+                <label class="selecao-upload glass-card vid-drop" id="vidDrop" for="vidArquivo">
+                    <span class="selecao-upload-icon" aria-hidden="true">
+                        <svg viewBox="0 0 640 640" role="presentation" focusable="false">
+                            <path fill="currentColor"
+                                  d="M96 160C96 124.7 124.7 96 160 96L416 96C451.3 96 480 124.7 480 160L480 243.4L552.4 191.3C573.6 176 603.2 191.2 603.2 217.4L603.2 422.6C603.2 448.8 573.6 464 552.4 448.7L480 396.6L480 480C480 515.3 451.3 544 416 544L160 544C124.7 544 96 515.3 96 480L96 160zM262.3 243.4C251.7 237.2 238.4 244.9 238.4 257.1L238.4 382.9C238.4 395.1 251.7 402.8 262.3 396.6L369.8 333.7C380.2 327.6 380.2 312.4 369.8 306.3L262.3 243.4z" />
+                        </svg>
+                    </span>
 
-            <div class="vid-teste aida-card aida-card--panel">
-                <div class="aida-state aida-state--carregando" id="vidServidor" role="status">
-                    <span class="aida-state__icon" aria-hidden="true"></span>
-                    <div>
-                        <p class="aida-state__title" id="vidServidorTitulo">Procurando o servidor de vídeo…</p>
-                        <p class="aida-state__text" id="vidServidorTexto"></p>
-                    </div>
-                </div>
+                    <span class="selecao-upload-copy">
+                        <span class="section-tag">Upload</span>
+                        <span class="vid-drop__titulo" id="vidDropTitulo">Selecione seu vídeo</span>
+                        <span class="vid-drop__texto" id="vidDropTexto">
+                            Escolha um arquivo do seu celular ou arraste o vídeo para cá, se estiver no computador.
+                        </span>
+                    </span>
 
-                <form id="vidForm" class="vid-form" novalidate>
-                    <label class="vid-drop" id="vidDrop" for="vidArquivo">
-                        <input type="file" id="vidArquivo" name="video"
-                               accept="video/*,.mkv,.avi,.3gp,.webm,.mov">
-                        <span class="vid-drop__titulo" id="vidDropTitulo">Escolha ou arraste um vídeo</span>
-                        <span class="vid-drop__texto" id="vidDropTexto">MP4, MOV, WEBM, MKV, AVI ou 3GP</span>
-                    </label>
+                    <input type="file" id="vidArquivo" name="video" aria-label="Selecionar vídeo do dispositivo"
+                           accept="video/*,.mp4,.mov,.webm,.mkv,.avi,.3gp,.m4v">
 
-                    <video id="vidPrevia" class="vid-previa" controls muted playsinline hidden></video>
+                    <span class="aida-button vid-drop__botao" aria-hidden="true">Selecionar vídeo</span>
+
+                    <span class="selecao-formats">Formatos aceitos: MP4, MOV, WEBM, MKV, AVI e 3GP.</span>
+                </label>
+
+                <video id="vidPrevia" class="vid-previa" controls muted playsinline hidden></video>
+
+                <details class="vid-ajustes">
+                    <summary class="vid-ajustes__resumo">
+                        <span>Ajustes da análise</span>
+                        <small>opcional · padrão: 1 quadro por segundo, até 40 quadros, com áudio</small>
+                    </summary>
 
                     <div class="vid-opcoes">
                         <div class="aida-field">
-                            <label class="aida-field__label" for="vidIntervalo">Um frame a cada</label>
+                            <label class="aida-field__label" for="vidIntervalo">Um quadro a cada</label>
                             <select class="aida-input" id="vidIntervalo">
                                 <option value="0.5">0,5 segundo</option>
                                 <option value="1" selected>1 segundo</option>
                                 <option value="2">2 segundos</option>
                                 <option value="5">5 segundos</option>
                             </select>
+                            <span class="aida-field__hint">Mais quadros cobrem melhor o vídeo, mas demoram mais.</span>
                         </div>
                         <div class="aida-field">
-                            <label class="aida-field__label" for="vidMaxFrames">Máximo de frames</label>
+                            <label class="aida-field__label" for="vidMaxFrames">Máximo de quadros</label>
                             <input class="aida-input" id="vidMaxFrames" type="number" min="1" max="120" value="40">
-                            <span class="aida-field__hint">Cada frame leva cerca de 2 s no Core.</span>
+                            <span class="aida-field__hint">Cada quadro leva cerca de 2 s para ser analisado.</span>
                         </div>
                         <label class="vid-check">
                             <input type="checkbox" id="vidAudio" checked>
-                            Analisar o áudio
+                            Analisar também o áudio
                         </label>
                     </div>
 
                     <details class="vid-avancado">
-                        <summary>Endereço do servidor</summary>
+                        <summary>Endereço do servidor (uso técnico)</summary>
                         <div class="aida-field">
                             <label class="aida-field__label" for="vidApi">URL do AIDA Video</label>
                             <input class="aida-input" id="vidApi" type="url" spellcheck="false">
                         </div>
                     </details>
+                </details>
 
-                    <button type="submit" class="aida-btn" id="vidEnviar" disabled>
-                        Analisar vídeo
-                        <span class="aida-btn__arrow" aria-hidden="true">&rarr;</span>
-                    </button>
-                </form>
+                <button type="submit" class="aida-btn vid-enviar" id="vidEnviar" disabled>
+                    Analisar vídeo
+                    <span class="aida-btn__arrow" aria-hidden="true">&rarr;</span>
+                </button>
+            </form>
 
-                <div id="vidProgresso" class="vid-progresso" hidden>
-                    <div class="aida-state aida-state--analisando" role="status" aria-live="polite">
-                        <span class="aida-state__icon" aria-hidden="true"></span>
-                        <div>
-                            <p class="aida-state__title" id="vidProgressoTitulo">Enviando o vídeo…</p>
-                            <p class="aida-state__text" id="vidProgressoTexto"></p>
-                        </div>
-                    </div>
-                    <div class="vid-barra" role="progressbar" aria-valuemin="0" aria-valuemax="100"
-                         aria-labelledby="vidProgressoTitulo" id="vidBarra">
-                        <span id="vidBarraPreenchida"></span>
+            <div id="vidProgresso" class="vid-progresso" hidden>
+                <div class="aida-state aida-state--analisando" role="status" aria-live="polite">
+                    <span class="aida-state__icon" aria-hidden="true"></span>
+                    <div>
+                        <p class="aida-state__title" id="vidProgressoTitulo">Enviando o vídeo…</p>
+                        <p class="aida-state__text" id="vidProgressoTexto"></p>
                     </div>
                 </div>
-
-                <div id="vidResultado" class="vid-resultado" hidden>
-                    <div class="aida-state" id="vidVeredito" role="status">
-                        <span class="aida-state__icon" aria-hidden="true"></span>
-                        <div>
-                            <p class="aida-state__title" id="vidVereditoTitulo"></p>
-                            <ul class="vid-motivos" id="vidMotivos"></ul>
-                        </div>
-                    </div>
-
-                    <dl class="vid-numeros" id="vidNumeros"></dl>
-
-                    <div class="vid-bloco">
-                        <h3 class="aida-title-3">Linha do tempo</h3>
-                        <div class="vid-linha" id="vidLinha" role="img"
-                             aria-label="Resultado de cada frame ao longo do vídeo"></div>
-                        <ul class="vid-legenda" aria-hidden="true">
-                            <li><span class="vid-cor vid-cor--real"></span>Real</li>
-                            <li><span class="vid-cor vid-cor--ia"></span>IA/manipulada</li>
-                            <li><span class="vid-cor vid-cor--inconclusivo"></span>Inconclusivo</li>
-                            <li><span class="vid-cor vid-cor--neutro"></span>Fora de domínio ou erro</li>
-                        </ul>
-                    </div>
-
-                    <div class="vid-bloco">
-                        <h3 class="aida-title-3">Frames analisados</h3>
-                        <div class="vid-frames" id="vidFrames"></div>
-                    </div>
-
-                    <div class="vid-bloco" id="vidAudioBloco">
-                        <h3 class="aida-title-3">Áudio</h3>
-                        <div id="vidAudioResultado" class="vid-audio"></div>
-                    </div>
-
-                    <p class="aida-text--sm vid-ressalva" id="vidRessalva"></p>
-
-                    <div class="vid-acoes">
-                        <button type="button" class="aida-btn aida-btn--ghost aida-btn--sm" id="vidBaixar">
-                            Baixar relatório (JSON)
-                        </button>
-                        <button type="button" class="aida-btn aida-btn--quiet aida-btn--sm" id="vidNovo">
-                            Analisar outro vídeo
-                        </button>
-                    </div>
+                <div class="vid-barra" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+                     aria-labelledby="vidProgressoTitulo" id="vidBarra">
+                    <span id="vidBarraPreenchida"></span>
                 </div>
             </div>
+
+            <!-- ============ Como funciona (explicação do método) ============ -->
+            <details class="metodos-detalhes vid-como" id="vidComoFunciona">
+                <summary class="metodos-summary">
+                    <span class="metodos-summary-texto">
+                        <span class="section-tag">Como funciona</span>
+                        <strong>Veja como a AIDA analisa um vídeo</strong>
+                    </span>
+                </summary>
+
+                <div class="metodos-corpo">
+                    <p class="metodos-intro">
+                        Um vídeo é, na prática, uma sequência de fotos com som. A AIDA faz quatro leituras
+                        independentes e só no fim junta tudo. Em cada item, a primeira frase é a ideia em
+                        linguagem simples; o texto menor traz o detalhe técnico.
+                    </p>
+
+                    <ol class="vid-etapas">
+                        <li class="vid-etapa">
+                            <span class="vid-etapa__num" aria-hidden="true">1</span>
+                            <div>
+                                <strong>Quadro a quadro</strong>
+                                <p>O vídeo é separado em fotos (por padrão, uma por segundo) e cada foto passa pelo mesmo detector do AIDA Image.</p>
+                                <small>Amostragem por intervalo e nos cortes de cena, até o limite de quadros. Cada quadro é
+                                    analisado pelo AIDA Core: CLIP ViT-B/32, módulo forense (espectro, textura, ruído) e RIGID,
+                                    combinados por uma fusão calibrada. Quadros que não são fotográficos (tela preta, texto,
+                                    cartela) não votam.</small>
+                            </div>
+                        </li>
+                        <li class="vid-etapa">
+                            <span class="vid-etapa__num" aria-hidden="true">2</span>
+                            <div>
+                                <strong>Movimento</strong>
+                                <p>Vídeos gerados por IA costumam ter um jeito próprio de se mover: formas que escorregam ou se deformam de maneira suave demais. A AIDA mede esse “jeito de andar” da cena.</p>
+                                <small>24 quadros seguidos viram pontos no espaço de representação do DINOv2; distâncias e
+                                    curvaturas dessa trajetória (método ReStraV) alimentam uma regressão logística junto com a
+                                    mediana do Core. Acima de 65% aponta IA, abaixo de 35% aponta real; no meio, dúvida.</small>
+                            </div>
+                        </li>
+                        <li class="vid-etapa">
+                            <span class="vid-etapa__num" aria-hidden="true">3</span>
+                            <div>
+                                <strong>Áudio</strong>
+                                <p>A trilha de som é analisada à parte: vozes sintéticas e sons gerados deixam marcas no espectro que o ouvido não percebe.</p>
+                                <small>Cerca de 200 características (MFCC, LFCC, deltas e medidas espectrais) em um Random Forest
+                                    treinado com audiolivros, vozes sintéticas de 16 sistemas e trilhas de vídeos reais e
+                                    gerados. Áudio muito curto ou quase todo em silêncio fica inconclusivo.</small>
+                            </div>
+                        </li>
+                        <li class="vid-etapa">
+                            <span class="vid-etapa__num" aria-hidden="true">4</span>
+                            <div>
+                                <strong>Conclusão</strong>
+                                <p>A imagem tem a palavra principal. O áudio serve para desempatar e para pegar vozes clonadas sobre imagens reais.</p>
+                                <small>Imagem com indício de IA → IA. Imagem inconclusiva → decide o áudio, se conclusivo. Imagem
+                                    real com áudio muito forte de IA (≥ 90%) → IA; com áudio fraco de IA → inconclusivo. Imagem e
+                                    áudio reais → real.</small>
+                            </div>
+                        </li>
+                    </ol>
+
+                    <div class="vid-como__numeros">
+                        <p><strong>Como o resultado foi medido.</strong> Em 336 vídeos (166 reais de celular e 170 de 10
+                            geradores, entre eles Sora, Veo, Kling e Wan), avaliando cada gerador sem que ele tivesse
+                            sido visto no treino: cerca de 6% dos vídeos reais foram marcados como IA, 78% dos vídeos de
+                            IA foram detectados e 6% ficaram inconclusivos.</p>
+                    </div>
+
+                    <p class="metodos-aviso">
+                        Compressão forte de redes sociais, vídeos muito curtos e geradores muito recentes reduzem a
+                        precisão. O resultado é um indício técnico para apoiar a sua avaliação, não uma prova.
+                    </p>
+                </div>
+            </details>
+
+            <p class="selecao-note">
+                O vídeo é processado nos servidores do AIDA e apagado ao fim da análise. Veja o
+                <a href="./index-privacidade.html">Aviso de Privacidade</a>.
+            </p>
         </section>
 
-        <!-- ================= Objetivo ================= -->
-        <section class="produto-bloco">
-            <span class="aida-eyebrow">Objetivo</span>
-            <h2 class="aida-title-2">Levar a mesma análise para o tempo.</h2>
-            <p class="aida-text" style="max-width: 70ch;">
-                Uma imagem tem um único conjunto de evidências. Um vídeo tem muitos, e eles nem sempre
-                concordam entre si: um trecho pode conter um rosto sintetizado enquanto o restante da cena é
-                uma captura real. O objetivo do AIDA Video é tornar essa diferença visível, em vez de reduzir
-                o vídeo inteiro a um número só.
-            </p>
+        <!-- ================= Resultado ================= -->
+        <section id="vidResultado" class="vid-resultado glass-panel" aria-labelledby="vidResultadoTitulo" hidden>
+            <div class="vid-resultado__topo">
+                <span class="page-kicker">Resultado da análise</span>
+                <h2 class="vid-resultado__titulo" id="vidResultadoTitulo">Resultado do vídeo</h2>
+            </div>
 
-            <div class="produto-grid">
-                <article class="produto-item">
-                    <span class="produto-item__marca">01</span>
-                    <h3>Leitura por trecho</h3>
-                    <p>
-                        Os indícios são apresentados ao longo da linha do tempo, indicando em que parte do
-                        vídeo o sinal medido é mais forte.
-                    </p>
-                </article>
+            <div class="aida-state" id="vidVeredito" role="status">
+                <span class="aida-state__icon" aria-hidden="true"></span>
+                <div>
+                    <p class="aida-state__title" id="vidVereditoTitulo"></p>
+                    <p class="vid-significado" id="vidSignificado"></p>
+                    <ul class="vid-motivos" id="vidMotivos"></ul>
+                </div>
+            </div>
 
-                <article class="produto-item">
-                    <span class="produto-item__marca">02</span>
-                    <h3>Mesmo núcleo de análise</h3>
-                    <p>
-                        Cada frame passa pelo AIDA Core — os mesmos módulos, a mesma calibração e a mesma
-                        política de decisão já usados no AIDA Image.
-                    </p>
-                </article>
+            <dl class="vid-numeros" id="vidNumeros"></dl>
 
-                <article class="produto-item">
-                    <span class="produto-item__marca">03</span>
-                    <h3>Investigação no Forensics</h3>
-                    <p>
-                        Frames selecionados poderão ser abertos no AIDA Forensics, com as mesmas evidências
-                        visuais disponíveis hoje para imagens.
-                    </p>
-                </article>
+            <div class="vid-bloco">
+                <h3 class="aida-title-3">Linha do tempo</h3>
+                <p class="vid-bloco__ajuda">Cada faixa é um trecho do vídeo. Toque em uma faixa para ver o quadro correspondente.</p>
+                <div class="vid-linha" id="vidLinha" role="img"
+                     aria-label="Resultado de cada quadro ao longo do vídeo"></div>
+                <ul class="vid-legenda" aria-hidden="true">
+                    <li><span class="vid-cor vid-cor--real"></span>Real</li>
+                    <li><span class="vid-cor vid-cor--ia"></span>IA/manipulada</li>
+                    <li><span class="vid-cor vid-cor--inconclusivo"></span>Inconclusivo</li>
+                    <li><span class="vid-cor vid-cor--neutro"></span>Não analisável</li>
+                </ul>
+            </div>
+
+            <div class="vid-bloco">
+                <h3 class="aida-title-3">Quadros analisados</h3>
+                <div class="vid-frames" id="vidFrames"></div>
+            </div>
+
+            <div class="vid-bloco" id="vidAudioBloco">
+                <h3 class="aida-title-3">Áudio</h3>
+                <div id="vidAudioResultado" class="vid-audio"></div>
+            </div>
+
+            <p class="aida-text--sm vid-ressalva" id="vidRessalva"></p>
+
+            <div class="vid-acoes">
+                <button type="button" class="aida-btn aida-btn--sm" id="vidNovo">
+                    Analisar outro vídeo
+                </button>
+                <button type="button" class="aida-btn aida-btn--ghost aida-btn--sm" id="vidBaixar">
+                    Baixar relatório (JSON)
+                </button>
+                <a href="#vidComoFunciona" class="aida-btn aida-btn--quiet aida-btn--sm" id="vidVerComo">
+                    Como a análise funciona
+                </a>
             </div>
         </section>
-
-        <!-- ================= Funcionamento planejado ================= -->
-        <section class="produto-bloco">
-            <span class="aida-eyebrow">Funcionamento planejado</span>
-            <h2 class="aida-title-2">Do arquivo à leitura temporal.</h2>
-            <p class="aida-text" style="max-width: 70ch;">
-                As etapas 01 a 04 já existem como protótipo e podem ser testadas acima.
-                A etapa 05 tem a linha do tempo; a passagem para o Forensics ainda não existe.
-            </p>
-
-            <div class="produto-fluxo">
-                <article class="produto-fluxo__etapa">
-                    <span class="produto-fluxo__num">Etapa 01</span>
-                    <h3>Upload e leitura</h3>
-                    <p>Validação do arquivo, duração, resolução e codec, antes de qualquer processamento.</p>
-                </article>
-
-                <article class="produto-fluxo__etapa">
-                    <span class="produto-fluxo__num">Etapa 02</span>
-                    <h3>Extração de frames</h3>
-                    <p>Amostragem por intervalo e nos cortes de cena, para não analisar mil quadros iguais.</p>
-                </article>
-
-                <article class="produto-fluxo__etapa">
-                    <span class="produto-fluxo__num">Etapa 03</span>
-                    <h3>Análise individual</h3>
-                    <p>Cada frame amostrado atravessa o AIDA Core como se fosse uma imagem enviada.</p>
-                </article>
-
-                <article class="produto-fluxo__etapa">
-                    <span class="produto-fluxo__num">Etapa 04</span>
-                    <h3>Agregação temporal</h3>
-                    <p>Os scores por frame viram uma série; a agregação considera concordância e dispersão.</p>
-                </article>
-
-                <article class="produto-fluxo__etapa">
-                    <span class="produto-fluxo__num">Etapa 05</span>
-                    <h3>Resultado e Forensics</h3>
-                    <p>Leitura ao longo do tempo, com passagem para a investigação detalhada de cada frame.</p>
-                </article>
-            </div>
-        </section>
-
-        <!-- ================= AIDA Core ================= -->
-        <section class="produto-bloco">
-            <span class="aida-eyebrow">Uso do AIDA Core</span>
-            <h2 class="aida-title-2">Nada é reimplementado do zero.</h2>
-            <p class="aida-text" style="max-width: 70ch;">
-                O AIDA Core é a camada que já executa a análise de imagem hoje: extração de características,
-                módulos de detecção, fusão, calibração e política de decisão. O AIDA Video não cria um segundo
-                detector — ele alimenta o Core com frames e cuida do que é específico do vídeo: amostragem,
-                deduplicação de quadros parecidos e agregação da série de scores.
-            </p>
-
-            <div class="produto-grid">
-                <article class="produto-item">
-                    <span class="produto-item__marca">Core</span>
-                    <h3>O que vem pronto</h3>
-                    <p>
-                        Características espectrais, espaciais, de textura e ruído; módulos de detecção; fusão
-                        calibrada; banda de abstenção; evidências visuais e leitura de proveniência.
-                    </p>
-                </article>
-
-                <article class="produto-item">
-                    <span class="produto-item__marca">Video</span>
-                    <h3>O que é específico</h3>
-                    <p>
-                        Decodificação, amostragem de frames, detecção de cortes de cena, agregação temporal e
-                        apresentação do resultado ao longo da duração.
-                    </p>
-                </article>
-
-                <article class="produto-item">
-                    <span class="produto-item__marca">Aberto</span>
-                    <h3>O que ainda está em estudo</h3>
-                    <p>
-                        Como tratar compressão agressiva de plataformas de vídeo, que apaga parte dos sinais
-                        usados na análise de imagem, e qual amostragem equilibra custo e cobertura.
-                    </p>
-                </article>
-            </div>
-        </section>
-
-        <!-- ================= Casos de uso ================= -->
-        <section class="produto-bloco">
-            <span class="aida-eyebrow">Casos de uso</span>
-            <h2 class="aida-title-2">Onde a leitura temporal muda a conclusão.</h2>
-
-            <div class="produto-grid">
-                <article class="produto-item">
-                    <h3>Verificação jornalística</h3>
-                    <p>
-                        Localizar em que trecho de um vídeo em circulação os indícios se concentram, em vez de
-                        classificar a peça inteira de uma vez.
-                    </p>
-                </article>
-
-                <article class="produto-item">
-                    <h3>Educação e pesquisa</h3>
-                    <p>
-                        Mostrar, quadro a quadro, como os sinais medidos variam — inclusive quando eles não
-                        sustentam nenhuma conclusão.
-                    </p>
-                </article>
-
-                <article class="produto-item">
-                    <h3>Triagem de acervo</h3>
-                    <p>
-                        Apontar quais trechos merecem inspeção humana em coleções grandes, sem prometer um
-                        veredito automático.
-                    </p>
-                </article>
-            </div>
-        </section>
-
-        <!-- ================= Roadmap ================= -->
-        <section class="produto-bloco" id="roadmap">
-            <span class="aida-eyebrow">Roadmap</span>
-            <h2 class="aida-title-2">Etapas previstas.</h2>
-            <p class="aida-text" style="max-width: 70ch;">
-                A ordem reflete a dependência técnica entre as etapas. Não há datas: cada uma avança quando a
-                anterior estiver estável e avaliada.
-            </p>
-
-            <ol class="roadmap">
-                <li class="roadmap__item">
-                    <span class="roadmap__num">01</span>
-                    <div>
-                        <h3 class="roadmap__titulo">Upload e leitura do arquivo</h3>
-                        <p class="roadmap__texto">
-                            Aceitar o envio, validar formato e duração e expor os metadados do contêiner.
-                        </p>
-                    </div>
-                    <span class="aida-status aida-status--beta">Protótipo</span>
-                </li>
-
-                <li class="roadmap__item">
-                    <span class="roadmap__num">02</span>
-                    <div>
-                        <h3 class="roadmap__titulo">Extração de frames</h3>
-                        <p class="roadmap__texto">
-                            Amostragem por intervalo, detecção de cortes de cena e descarte de quadros
-                            praticamente idênticos.
-                        </p>
-                    </div>
-                    <span class="aida-status aida-status--beta">Protótipo</span>
-                </li>
-
-                <li class="roadmap__item">
-                    <span class="roadmap__num">03</span>
-                    <div>
-                        <h3 class="roadmap__titulo">Análise individual pelo Core</h3>
-                        <p class="roadmap__texto">
-                            Reaproveitar o pipeline de imagem por frame, com cache para não recalcular quadros
-                            repetidos.
-                        </p>
-                    </div>
-                    <span class="aida-status aida-status--beta">Protótipo</span>
-                </li>
-
-                <li class="roadmap__item">
-                    <span class="roadmap__num">04</span>
-                    <div>
-                        <h3 class="roadmap__titulo">Agregação temporal</h3>
-                        <p class="roadmap__texto">
-                            Transformar a série de scores em uma leitura única, preservando a informação de
-                            onde e quanto os frames discordam.
-                        </p>
-                    </div>
-                    <span class="aida-status aida-status--beta">Protótipo</span>
-                </li>
-
-                <li class="roadmap__item">
-                    <span class="roadmap__num">05</span>
-                    <div>
-                        <h3 class="roadmap__titulo">Resultado e passagem para o Forensics</h3>
-                        <p class="roadmap__texto">
-                            Linha do tempo com os indícios e abertura de qualquer frame na investigação
-                            detalhada.
-                        </p>
-                    </div>
-                    <span class="aida-status aida-status--planejado">Parcial</span>
-                </li>
-            </ol>
-        </section>
-
-        <div class="produto-rodape">
-            <p class="aida-text--sm" style="margin: 0;">
-                O resultado do AIDA é um indício técnico, nunca uma prova sobre a origem de um conteúdo.
-            </p>
-            <a href="./index-apresentacao.html#solucoes" class="aida-btn aida-btn--ghost aida-btn--sm">
-                Voltar para as soluções
-            </a>
-        </div>
     </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/gsap.min.js" integrity="sha384-UoFnwgbUNlK0Rwou15cSoyrXQvKrOUxV8AkCoGKSSd0sxVeJ95ARU8uGMkMZhzpB" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="../scripts/script-cookie-consent.js"></script>
-    <script src="../scripts/aida-solucoes.js"></script>
-    <script src="../scripts/script-video.js?v=20260928-space"></script>
+    <script src="../scripts/script-video.js?v=20260929-v1"></script>
 </body>
 
 </html>

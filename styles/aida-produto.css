@@ -692,3 +692,81 @@
     grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
   }
 }
+
+
+/* ==========================================================================
+   AIDA API — referência de endpoints e chamada para a chave (2026-09)
+   ========================================================================== */
+
+.produto-bloco code,
+.produto-fluxo__etapa code,
+.produto-item code {
+  font-family: var(--aida-font-mono);
+  font-size: 0.9em;
+  padding: 1px 6px;
+  border-radius: var(--aida-radius-sm);
+  background: var(--aida-surface-2);
+  color: var(--aida-text);
+}
+
+.api-tabela {
+  margin-top: var(--aida-space-6);
+  overflow-x: auto;
+  border: 1px solid var(--aida-line-soft);
+  border-radius: var(--aida-radius-lg);
+  background: var(--aida-glass-card);
+}
+
+.api-tabela table {
+  width: 100%;
+  min-width: 620px;
+  border-collapse: collapse;
+}
+
+.api-tabela th,
+.api-tabela td {
+  padding: var(--aida-space-3) var(--aida-space-4);
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--aida-line-soft);
+  font-size: var(--aida-fs-caption);
+  color: var(--aida-text-2);
+}
+
+.api-tabela th {
+  font-size: var(--aida-fs-micro);
+  letter-spacing: var(--aida-ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--aida-text-3);
+}
+
+.api-tabela tr:last-child td {
+  border-bottom: 0;
+}
+
+.api-verbo {
+  display: inline-block;
+  min-width: 46px;
+  padding: 2px 8px;
+  border-radius: var(--aida-radius-pill);
+  background: color-mix(in srgb, var(--aida-api) 22%, transparent);
+  color: var(--aida-api);
+  font-family: var(--aida-font-mono);
+  font-size: 0.78rem;
+  font-weight: var(--aida-fw-bold);
+  text-align: center;
+}
+
+.api-verbo--get {
+  background: var(--aida-info-bg);
+  color: var(--aida-info);
+}
+
+.api-chave {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--aida-space-5);
+  padding: var(--aida-space-8);
+}

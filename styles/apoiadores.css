@@ -2,7 +2,7 @@
   background:
     linear-gradient(to bottom, #0d312d 0%, rgba(13, 49, 45, 0) 18%),
     linear-gradient(180deg, rgba(15, 31, 34, 0.66), rgba(16, 64, 59, 0.56)),
-    url("../assets/images/FUNDO2.png") center/cover no-repeat fixed;
+    url("../assets/images/fundo2.webp") center/cover no-repeat fixed;
 }
 
 .page-apoiadores .cabecalho {
@@ -88,7 +88,7 @@
   background:
     linear-gradient(to bottom, #0f3833 0%, rgba(15, 56, 51, 0) 16%),
     linear-gradient(180deg, rgba(15, 31, 34, 0.66), rgba(16, 64, 59, 0.56)),
-    url("../assets/images/Frame 18.png") center/cover no-repeat;
+    url("../assets/images/frame-18.webp") center/cover no-repeat;
 }
 
 .apoio-section-head {
@@ -256,7 +256,7 @@
       rgba(16, 64, 59, 0.84) 48%,
       rgba(12, 49, 46, 0.88) 100%
     ),
-    url("../assets/images/FUNDO2.png");
+    url("../assets/images/fundo2.webp");
 
   background-size: cover;
   background-position: center;
@@ -296,7 +296,7 @@
       rgba(16, 64, 59, 0.88) 34%,
       rgba(25, 103, 95, 0.62) 100%
     ),
-    url("../assets/images/Frame 18.png") center/cover no-repeat;
+    url("../assets/images/frame-18.webp") center/cover no-repeat;
 }
 
 /* Cards dos apoiadores */
@@ -349,6 +349,6 @@
         rgba(16, 64, 59, 0.9),
         rgba(25, 103, 95, 0.64)
       ),
-      url("../assets/images/FUNDO2.png") center/cover no-repeat scroll;
+      url("../assets/images/fundo2.webp") center/cover no-repeat scroll;
   }
 }

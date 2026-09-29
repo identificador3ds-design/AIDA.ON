@@ -473,19 +473,25 @@ function setupGsapIntro() {
     return;
   }
 
+  // Sem animação para quem pediu menos movimento no sistema.
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    return;
+  }
+
+  // O texto do topo só desliza: começar em opacity 0 deixava o título quase
+  // invisível no celular enquanto a página ainda carregava (e atrasava o LCP).
   gsap.from(".hero-copy > *", {
-    y: 24,
-    opacity: 0,
-    duration: 0.6,
-    stagger: 0.08,
+    y: 16,
+    duration: 0.5,
+    stagger: 0.06,
     ease: "power2.out",
   });
 
   gsap.from(".hero-visual", {
-    x: 32,
+    x: 24,
     opacity: 0,
-    duration: 0.8,
-    delay: 0.16,
+    duration: 0.6,
+    delay: 0.1,
     ease: "power2.out",
   });
 }

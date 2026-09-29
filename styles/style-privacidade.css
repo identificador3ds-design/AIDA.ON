@@ -26,7 +26,7 @@ body.privacy-page {
   color: var(--privacy-text);
   background:
     linear-gradient(180deg, rgba(8, 31, 29, 0.86), rgba(12, 49, 46, 0.9)),
-    url("../assets/images/bg.png") center/cover fixed no-repeat,
+    url("../assets/images/bg.webp") center/cover fixed no-repeat,
     var(--privacy-bg);
 }
 

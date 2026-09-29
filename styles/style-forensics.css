@@ -676,3 +676,24 @@
   line-height: 1.55;
   color: var(--aida-text-2);
 }
+
+/* Quadro de vídeo aberto a partir do AIDA Video (sem mapas). */
+.fo-quadro-video {
+  margin: 0;
+  max-width: 480px;
+}
+
+.fo-quadro-video img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--aida-radius-md);
+  border: 1px solid var(--aida-line-soft);
+  background: #000;
+}
+
+.fo-quadro-video figcaption {
+  margin-top: var(--aida-space-2);
+  font-size: var(--aida-fs-caption);
+  color: var(--aida-text-3);
+}

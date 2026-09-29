@@ -327,6 +327,19 @@
   font-variant-numeric: tabular-nums;
 }
 
+.vid-frame__forense {
+  flex-basis: 100%;
+  color: var(--aida-green-400);
+  font-weight: var(--aida-fw-semibold);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.vid-frame__forense:hover,
+.vid-frame__forense:focus-visible {
+  color: var(--aida-text-1);
+}
+
 .vid-audio {
   padding: var(--aida-space-4);
   border: 1px solid var(--aida-line-soft);

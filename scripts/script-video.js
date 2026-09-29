@@ -57,6 +57,7 @@
     painelEnvio: $("vidPainelEnvio"),
     significado: $("vidSignificado"),
     verComo: $("vidVerComo"),
+    forense: $("vidForense"),
     comoFunciona: $("vidComoFunciona"),
   };
   if (!el.form) return;
@@ -68,6 +69,7 @@
   };
 
   let servidorOk = false;
+  let coreUrl = ""; // Core que analisou os quadros (informado por /video/saude)
   let limiteMb = null; // informado por /video/saude
   let arquivoAtual = null;
   let urlPrevia = null;
@@ -152,6 +154,7 @@
         ` · movimento: ${saude.trajetoria_disponivel ? "ativo" : "desligado"}`;
       if (saude.max_frames) el.maxFrames.max = saude.max_frames;
       limiteMb = saude.tamanho_max_mb || null;
+      coreUrl = saude.core_url || "";
       if (arquivoAtual) escolherArquivo(arquivoAtual); // reavalia o tamanho
     } catch (_) {
       servidorOk = false;
@@ -253,6 +256,7 @@
     [el.numeros, el.linha, el.frames, el.audioResultado].forEach((n) => n.replaceChildren());
     el.ressalva.textContent = "";
     el.baixar.hidden = true;
+    if (el.forense) el.forense.hidden = true;
     atualizarBotao();
   }
 
@@ -372,6 +376,7 @@
       el.audioResultado.textContent = "O áudio é analisado depois dos frames.";
       el.ressalva.textContent = "";
       el.baixar.hidden = true;
+      if (el.forense) el.forense.hidden = true;
     }
     consulta = setTimeout(() => consultar(0), INTERVALO_CONSULTA_MS);
   }
@@ -427,10 +432,70 @@
       if (!frame.erro && !frame.fora_de_dominio && typeof frame.probabilidade_ia === "number") {
         legenda.append(criar("span", "vid-frame__prob", `IA ${porcentagem(frame.probabilidade_ia)}`));
       }
+      if (frame.id_analise && !frame.erro) {
+        const link = linkForense(frame, id, "Investigar", "vid-frame__forense");
+        link.setAttribute("aria-label", `Investigar o quadro de ${tempo(frame.tempo_s)} no AIDA Forensics`);
+        legenda.append(link);
+      }
       cartao.append(img, legenda);
       if (frame.erro) cartao.title = frame.erro;
       el.frames.append(cartao);
     });
+  }
+
+  // ------------------------------------------------------------ AIDA Forensics
+  // Cada quadro passou pelo Core e tem um id_analise: o dossiê dele abre no
+  // Forensics, como uma análise de imagem. O repasse (mesma chave do AIDA
+  // Image) diz que a origem é um vídeo e aponta a imagem do quadro, para o
+  // Forensics não comparar os mapas com a última foto enviada em /analise.
+  const CHAVE_REPASSE_FORENSE = "AIDA_Forense";
+
+  function urlForense(frame, tarefaId) {
+    const parametros = new URLSearchParams({ id: frame.id_analise, origem: "video" });
+    if (coreUrl) parametros.set("base", coreUrl);
+    if (typeof frame.tempo_s === "number") parametros.set("t", frame.tempo_s.toFixed(1));
+    return `./index-forensics.html?${parametros.toString()}`;
+  }
+
+  function registrarRepasse(frame, tarefaId) {
+    const nomeVideo = (relatorioAtual && relatorioAtual.video) || (arquivoAtual && arquivoAtual.name) || "";
+    try {
+      sessionStorage.setItem(CHAVE_REPASSE_FORENSE, JSON.stringify({
+        id_analise: frame.id_analise,
+        base_api: coreUrl,
+        nome_imagem: `Quadro em ${tempo(frame.tempo_s)}` + (nomeVideo ? ` de ${nomeVideo}` : ""),
+        origem: "video",
+        nome_video: nomeVideo,
+        tempo_s: frame.tempo_s,
+        imagem_url: tarefaId ? urlFrame(tarefaId, frame.arquivo) : "",
+        quando: Date.now(),
+      }));
+    } catch (_) {
+      // Sem sessionStorage o link ainda funciona pelo id na URL.
+    }
+  }
+
+  function linkForense(frame, tarefaId, texto, classe) {
+    const link = criar("a", classe, texto);
+    link.href = urlForense(frame, tarefaId);
+    link.addEventListener("click", () => registrarRepasse(frame, tarefaId));
+    return link;
+  }
+
+  function quadroMaisSuspeito(frames) {
+    return (frames || [])
+      .filter((f) => f.id_analise && !f.erro && !f.fora_de_dominio && typeof f.probabilidade_ia === "number")
+      .reduce((melhor, f) => (!melhor || f.probabilidade_ia > melhor.probabilidade_ia ? f : melhor), null);
+  }
+
+  function prepararForense(frames, tarefaId) {
+    if (!el.forense) return;
+    const alvo = quadroMaisSuspeito(frames);
+    el.forense.hidden = !alvo;
+    if (!alvo) return;
+    el.forense.href = urlForense(alvo, tarefaId);
+    el.forense.textContent = `Investigar o quadro mais suspeito (${tempo(alvo.tempo_s)}, IA ${porcentagem(alvo.probabilidade_ia)})`;
+    el.forense.onclick = () => registrarRepasse(alvo, tarefaId);
   }
 
   function numero(rotulo, valor) {
@@ -501,6 +566,7 @@
     });
 
     desenharAudio(relatorio.audio || {});
+    prepararForense(relatorio.frames, id);
     el.ressalva.textContent = relatorio.ressalva || "";
     if (el.painelEnvio) el.painelEnvio.hidden = true;
     el.resultado.scrollIntoView({ behavior: "smooth", block: "start" });

@@ -78,6 +78,26 @@
      Identificação da análise
      --------------------------------------------------------------------- */
 
+  function formatarTempo(segundos) {
+    var s = Math.max(0, Math.round(segundos));
+    return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0");
+  }
+
+  // Quadro de vídeo: a imagem vem do servidor de vídeo, que só a guarda enquanto
+  // a tarefa está na memória. Se não carregar, a página segue sem comparação.
+  function carregarImagemRemota(url) {
+    return new Promise(function (resolve) {
+      if (!url) {
+        resolve(null);
+        return;
+      }
+      var img = new Image();
+      img.onload = function () { resolve(url); };
+      img.onerror = function () { resolve(null); };
+      img.src = url;
+    });
+  }
+
   function lerRepasse() {
     try {
       var bruto = sessionStorage.getItem(CHAVE_REPASSE);
@@ -96,10 +116,15 @@
       // A base só é reaproveitada quando o repasse fala da MESMA análise;
       // caso contrário, seria a base de outra execução.
       var mesma = repasse && repasse.id_analise === idNaUrl;
+      var origem = (mesma && repasse.origem) || parametros.get("origem") || "imagem";
+      var t = parseFloat(parametros.get("t"));
       return {
         id: idNaUrl,
         base: (mesma && repasse.base_api) || parametros.get("base") || "",
-        nome: (mesma && repasse.nome_imagem) || "",
+        nome: (mesma && repasse.nome_imagem) ||
+          (origem === "video" && !isNaN(t) ? "Quadro em " + formatarTempo(t) + " de um vídeo" : ""),
+        origem: origem,
+        imagemUrl: (mesma && repasse.imagem_url) || "",
       };
     }
 
@@ -108,6 +133,8 @@
         id: String(repasse.id_analise),
         base: repasse.base_api || "",
         nome: repasse.nome_imagem || "",
+        origem: repasse.origem || "imagem",
+        imagemUrl: repasse.imagem_url || "",
       };
     }
 
@@ -225,9 +252,10 @@
      Renderização
      --------------------------------------------------------------------- */
 
-  function renderizarIdentificacao(dossie) {
+  function renderizarIdentificacao(dossie, alvo) {
     el("foId").textContent = texto(dossie.id_analise);
-    el("foArquivo").textContent = texto(dossie.arquivo && dossie.arquivo.nome);
+    var doVideo = alvo && alvo.origem === "video" && alvo.nome;
+    el("foArquivo").textContent = doVideo ? alvo.nome : texto(dossie.arquivo && dossie.arquivo.nome);
     el("foData").textContent = texto(dossie.arquivo && dossie.arquivo.analisado_em);
   }
 
@@ -483,7 +511,7 @@
     }
   }
 
-  function renderizarMapas(dossie, base, imagemOriginal) {
+  function renderizarMapas(dossie, base, imagemOriginal, alvoAnalise) {
     var evidencias = dossie.evidencias || {};
     var mapas = evidencias.mapas || [];
     var alvo = el("foMapas");
@@ -495,6 +523,27 @@
 
     if (!mapas.length) {
       el("foSemMapas").hidden = false;
+      // Quadro de vídeo: o servidor de vídeo pede ao Core só a análise, sem mapas,
+      // para o vídeo inteiro caber no tempo. Mostra ao menos o quadro analisado.
+      if (alvoAnalise && alvoAnalise.origem === "video") {
+        var texto = el("foSemMapas").querySelector(".aida-state__text");
+        if (texto) {
+          texto.textContent = "Nos vídeos, cada quadro é analisado sem mapas visuais, para o vídeo inteiro " +
+            "ser processado a tempo. Para ver os mapas, envie este quadro como imagem no AIDA Image.";
+        }
+        if (imagemOriginal) {
+          var figura = document.createElement("figure");
+          figura.className = "fo-quadro-video";
+          var img = document.createElement("img");
+          img.src = imagemOriginal;
+          img.alt = "Quadro do vídeo analisado";
+          var legenda = document.createElement("figcaption");
+          legenda.textContent = alvoAnalise.nome || "Quadro do vídeo analisado";
+          figura.appendChild(img);
+          figura.appendChild(legenda);
+          alvo.appendChild(figura);
+        }
+      }
       return;
     }
     el("foSemMapas").hidden = true;
@@ -731,12 +780,17 @@
     });
   }
 
-  function renderizar(dossie, base, imagemOriginal) {
-    renderizarIdentificacao(dossie);
+  function renderizar(dossie, base, imagemOriginal, alvo) {
+    renderizarIdentificacao(dossie, alvo);
+    var nova = el("foNovaAnalise");
+    if (nova && alvo && alvo.origem === "video") {
+      nova.href = "./index-video.html";
+      nova.textContent = "Analisar outro vídeo";
+    }
     renderizarResumoLeigo(dossie);
     renderizarLeitura(dossie);
     renderizarMetodos(dossie);
-    renderizarMapas(dossie, base, imagemOriginal);
+    renderizarMapas(dossie, base, imagemOriginal, alvo);
     renderizarProveniencia(dossie);
     renderizarArquivo(dossie);
     renderizarQualidade(dossie);
@@ -780,15 +834,18 @@
 
     // A imagem original é opcional: sem ela a página perde a comparação lado a
     // lado, não o dossiê.
+    // Vindo de um vídeo, a "original" é o quadro, nunca a última foto do /analise.
     var imagemOriginal = null;
     try {
-      imagemOriginal = await obterImagemOriginal();
+      imagemOriginal = alvo.origem === "video"
+        ? await carregarImagemRemota(alvo.imagemUrl)
+        : await obterImagemOriginal();
     } catch (erro) {
       imagemOriginal = null;
     }
 
     try {
-      renderizar(resultado.dossie, resultado.base, imagemOriginal);
+      renderizar(resultado.dossie, resultado.base, imagemOriginal, alvo);
     } catch (erro) {
       if (window.console) console.error("[AIDA Forensics]", erro);
       mostrarErro(new Error("O dossiê veio em um formato que esta tela não reconhece."));

@@ -228,10 +228,11 @@
                             <span class="vid-etapa__num" aria-hidden="true">4</span>
                             <div>
                                 <strong>Conclusão</strong>
-                                <p>A imagem tem a palavra principal. O áudio serve para desempatar e para pegar vozes clonadas sobre imagens reais.</p>
-                                <small>Imagem com indício de IA → IA. Imagem inconclusiva → decide o áudio, se conclusivo. Imagem
-                                    real com áudio muito forte de IA (≥ 90%) → IA; com áudio fraco de IA → inconclusivo. Imagem e
-                                    áudio reais → real.</small>
+                                <p>Imagem, movimento e áudio são pesados juntos numa única probabilidade. Se o áudio está em dúvida, ele fica de fora e decidem a imagem e o movimento.</p>
+                                <small>Uma regressão logística combina a probabilidade do movimento, a fração de quadros reais e de
+                                    IA, o quadro mais suspeito e o áudio. Áudio a menos de 15 pontos do limiar dele (confiança
+                                    baixa) não entra na conta. Acima de 60% → IA; abaixo de 29% → real; no meio, inconclusivo.
+                                    Sem análise de movimento, valem as regras anteriores (a imagem decide e o áudio desempata).</small>
                             </div>
                         </li>
                     </ol>
@@ -239,8 +240,10 @@
                     <div class="vid-como__numeros">
                         <p><strong>Como o resultado foi medido.</strong> Em 336 vídeos (166 reais de celular e 170 de 10
                             geradores, entre eles Sora, Veo, Kling e Wan), avaliando cada gerador sem que ele tivesse
-                            sido visto no treino: cerca de 6% dos vídeos reais foram marcados como IA, 78% dos vídeos de
-                            IA foram detectados e 6% ficaram inconclusivos.</p>
+                            sido visto no treino: cerca de 4% dos vídeos reais foram marcados como IA, 77% dos vídeos de
+                            IA foram detectados e 16% ficaram inconclusivos. Em outros 14 vídeos reais, gravados à parte,
+                            nenhum foi marcado como IA (13 reais e 1 inconclusivo). O Sora 2 é o gerador mais difícil: menos
+                            da metade dos vídeos dele é detectada.</p>
                     </div>
 
                     <p class="metodos-aviso">

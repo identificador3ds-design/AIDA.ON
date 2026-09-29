@@ -66,13 +66,22 @@ def test_sem_trajetoria_o_voto_dos_frames_fica():
     assert combinar_visual(v, {"disponivel": False, "motivos": ["x"]}) is v
 
 
-@pytest.mark.parametrize("prob, esperado", [(0.9, IA), (0.65, IA), (0.5, INCONCLUSIVO), (0.35, REAL), (0.1, REAL)])
+@pytest.mark.parametrize("prob, esperado", [(0.9, IA), (0.75, IA), (0.5, INCONCLUSIVO), (0.35, REAL), (0.1, REAL)])
 def test_trajetoria_decide_quando_os_frames_nao_dizem_ia(prob, esperado):
     for frames in (REAL, INCONCLUSIVO):
         r = combinar_visual(_visual(frames), {"disponivel": True, "probabilidade_ia": prob, "usa_core": True})
         assert r["resultado"] == esperado
         assert r["resultado_frames"] == frames
         assert "movimento entre frames" in r["motivos"][0]
+
+
+@pytest.mark.parametrize("prob, esperado", [(0.65, INCONCLUSIVO), (0.74, INCONCLUSIVO), (0.75, IA)])
+def test_movimento_pouco_acima_do_limite_nao_derruba_frames_reais(prob, esperado):
+    r = combinar_visual(_visual(REAL), {"disponivel": True, "probabilidade_ia": prob, "usa_core": True})
+    assert r["resultado"] == esperado
+    # com os frames inconclusivos a margem nao vale: o movimento decide como antes
+    r = combinar_visual(_visual(INCONCLUSIVO), {"disponivel": True, "probabilidade_ia": prob, "usa_core": True})
+    assert r["resultado"] == IA
 
 
 def test_ia_pelos_frames_nao_e_desfeita_pela_trajetoria():

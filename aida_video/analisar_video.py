@@ -173,6 +173,16 @@ def analisar_video(
             audio = {"resultado": None, "presente": True, "motivos": ["análise de áudio desativada"]}
 
         conclusao = combinar(visual, audio, regras)
+        ponderada = None
+        if analisar_frames and regras is None:
+            from .fusao import carregar_modelo, combinar_ponderado
+
+            ponderada = combinar_ponderado(frames, trajetoria, audio, carregar_modelo())
+        if ponderada:
+            # Os motivos das regras continuam como evidência (frames, movimento, áudio).
+            ponderada["motivos"] += [m for m in conclusao["motivos"] if m not in ponderada["motivos"]]
+            ponderada["resultado_regras"] = conclusao["resultado"]
+            conclusao = ponderada
         relatorio = {
             "video": caminho_video.name,
             "data_hora": datetime.now().isoformat(timespec="seconds"),

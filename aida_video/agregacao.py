@@ -37,6 +37,12 @@ REGRAS_PADRAO = {
     # de fora, 336 videos): 14% inconclusivos; nos decididos 86% da IA detectada
     # e 6,9% de falso positivo (so os frames: 11% e 0,6%).
     "trajetoria_faixa_inconclusiva": (0.35, 0.65),
+    # Com os frames REAL, o movimento so marca IA sozinho a partir daqui; entre o
+    # limite de cima da faixa e este valor a imagem fica INCONCLUSIVA e o audio
+    # desempata. Nos 337 videos (frames REAL >= 70%, movimento 65-75%): 3 reais
+    # com audio REAL deixam de ser falso positivo, 5 IA com audio IA seguem IA,
+    # 3 IA sem audio conclusivo viram INCONCLUSIVO e nenhuma IA vira REAL.
+    "trajetoria_ia_com_frames_reais": 0.75,
     # Audio: acima disso, sozinho marca IA mesmo com a imagem REAL. Nenhum video
     # real de celular com imagem REAL passou de 0,80 (validacao fora da amostra).
     "audio_ia_forte": 0.90,
@@ -150,7 +156,9 @@ def combinar_visual(visual, trajetoria, regras=None):
 
     IA pelos frames continua valendo sozinho (quase nunca erra em video real).
     Fora isso decide a trajetoria: acima da faixa IA, abaixo REAL, dentro dela
-    INCONCLUSIVO. Sem trajetoria disponivel o voto dos frames fica como esta."""
+    INCONCLUSIVO. Com os frames REAL, o movimento pouco acima da faixa (ate
+    `trajetoria_ia_com_frames_reais`) tambem fica INCONCLUSIVO. Sem trajetoria
+    disponivel o voto dos frames fica como esta."""
     if not trajetoria or not trajetoria.get("disponivel"):
         return visual
     regras = {**REGRAS_PADRAO, **(regras or {})}
@@ -162,7 +170,11 @@ def combinar_visual(visual, trajetoria, regras=None):
     if visual["resultado"] == IA:
         saida["motivos"].append(motivo)
         return saida
-    if prob >= alto:
+    if visual["resultado"] == REAL and alto <= prob < regras["trajetoria_ia_com_frames_reais"]:
+        resultado = INCONCLUSIVO
+        motivo += (f" (pouco acima do limite de {alto:.0%} e os frames parecem reais; "
+                   "o movimento sozinho não basta)")
+    elif prob >= alto:
         resultado = IA
         motivo += " (movimento típico de vídeo gerado)"
     elif prob <= baixo:

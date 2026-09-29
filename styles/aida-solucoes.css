@@ -95,6 +95,7 @@
 .sol-card--forensics { --sol-accent: var(--aida-forensics); }
 .sol-card--video     { --sol-accent: var(--aida-video); }
 .sol-card--api       { --sol-accent: var(--aida-api); }
+.sol-card--documents { --sol-accent: var(--aida-documents); }
 
 /* Borda que responde ao cursor. Máscara de anel para colorir só a linha — o
    interior viraria glow. */
@@ -991,4 +992,64 @@
   .sol-conexao__lista {
     grid-template-columns: 1fr;
   }
+}
+
+/* ---------------------------------------------------------------- AIDA Documents
+   Recibo estilizado: linhas de texto e três marcas de conferência. */
+.fx-doc__quadro {
+  display: grid;
+  place-items: center;
+}
+
+.fx-doc__folha {
+  display: grid;
+  gap: 9px;
+  width: min(62%, 240px);
+  padding: 16px 18px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+.fx-doc__linha {
+  display: block;
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(16, 64, 59, 0.28);
+}
+
+.fx-doc__linha--titulo { width: 55%; height: 9px; background: rgba(16, 64, 59, 0.55); }
+.fx-doc__linha--curta { width: 60%; }
+
+.fx-doc__campo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.fx-doc__campo .fx-doc__linha { flex: 1; }
+
+.fx-doc__marca {
+  flex: none;
+  padding: 1px 6px;
+  border: 1px solid var(--aida-green-500);
+  border-radius: var(--aida-radius-pill);
+  color: var(--aida-green-500);
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 600;
+  animation: fx-doc-marca 4.5s var(--aida-ease-out, ease-out) infinite both;
+}
+
+.fx-doc__campo:nth-of-type(2) .fx-doc__marca { animation-delay: 0.6s; }
+.fx-doc__campo:nth-of-type(3) .fx-doc__marca { animation-delay: 1.2s; }
+
+@keyframes fx-doc-marca {
+  0%, 8% { opacity: 0; transform: translateX(-4px); }
+  18%, 85% { opacity: 1; transform: none; }
+  100% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fx-doc__marca { animation: none; }
 }

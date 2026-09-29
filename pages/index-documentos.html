@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#10403b">
+    <meta name="description"
+        content="AIDA Documents: envie um PDF (nota fiscal, recibo, comprovante) e veja os indícios técnicos de edição ou montagem, explicados em linguagem simples.">
+
+    <link rel="manifest" href="../manifest.webmanifest">
+    <link rel="apple-touch-icon" href="../assets/images/pwa-icon-180.png">
+    <link id="favicon" rel="icon" type="image/x-icon" href="../assets/images/AIDABranco.ico">
+
+    <title>AIDA Documents — Enviar PDF para análise</title>
+    <!-- SEO e compartilhamento -->
+    <link rel="canonical" href="https://aida-on.com.br/documentos">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="AIDA.ON">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:title" content="AIDA Documents — Enviar PDF para análise">
+    <meta property="og:description" content="Envie uma nota fiscal, recibo ou comprovante em PDF e veja os indícios técnicos de edição ou montagem.">
+    <meta property="og:url" content="https://aida-on.com.br/documentos">
+    <meta property="og:image" content="https://aida-on.com.br/assets/images/pwa-icon-512.png">
+    <meta property="og:image:alt" content="Logotipo do AIDA.ON">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="AIDA Documents — Enviar PDF para análise">
+    <meta name="twitter:description" content="Envie uma nota fiscal, recibo ou comprovante em PDF e veja os indícios técnicos de edição ou montagem.">
+    <meta name="twitter:image" content="https://aida-on.com.br/assets/images/pwa-icon-512.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Afacad:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../styles/style-shared-theme.css">
+    <link rel="stylesheet" href="../styles/aida-design-system.css">
+    <link rel="stylesheet" href="../styles/style-ferramenta.css">
+    <link rel="stylesheet" href="../styles/style-video.css?v=20260929-v1">
+    <link rel="stylesheet" href="../styles/style-documentos.css?v=20260929-v1">
+</head>
+
+<!-- Mesma estrutura da tela do AIDA Video (index-video.html), que reaproveita os
+     estilos vid-*. O servidor é o mesmo (Space aidaon/aida-video), nas rotas
+     /documento/*. -->
+<body class="aida-shell selecao-page video-page documentos-page">
+    <a class="aida-skip-link" href="#conteudo">Pular para o conteúdo</a>
+    <header class="page-header">
+        <a href="./index-apresentacao.html" aria-label="Página inicial do AIDA">
+            <img src="../assets/images/LogoBranca.png" alt="Logo AIDA.ON" class="brand-logo">
+        </a>
+
+        <div class="selecao-header-actions">
+            <a href="./index-seleciona.html" class="top-link">Analisar imagem</a>
+            <a href="./index-video.html" class="top-link">Analisar vídeo</a>
+            <a href="./index-solucoes.html" class="top-link">Soluções</a>
+        </div>
+    </header>
+
+    <main id="conteudo" class="page-frame selecao-main video-main">
+        <!-- ================= Envio ================= -->
+        <section class="selecao-panel glass-panel" id="docPainelEnvio" aria-labelledby="docTitulo">
+            <div class="selecao-intro">
+                <span class="page-kicker">AIDA Documents · versão inicial</span>
+                <h1 class="page-title" id="docTitulo">Escolha o PDF para analisar</h1>
+                <p class="page-copy">
+                    Envie uma nota fiscal, recibo, comprovante ou boleto em PDF. A AIDA confere os números de
+                    cadastro, a estrutura do arquivo e os valores, e explica em linguagem simples os indícios de
+                    que ele pode ter sido editado, montado ou gerado.
+                </p>
+            </div>
+
+            <ol class="selecao-steps selecao-steps--tres" aria-label="Passos da análise">
+                <li class="selecao-step">
+                    <span aria-hidden="true">1</span>
+                    <strong>Escolha o PDF</strong>
+                </li>
+                <li class="selecao-step">
+                    <span aria-hidden="true">2</span>
+                    <strong>A AIDA confere o arquivo</strong>
+                </li>
+                <li class="selecao-step">
+                    <span aria-hidden="true">3</span>
+                    <strong>Veja o resultado</strong>
+                </li>
+            </ol>
+
+            <div class="aida-state aida-state--carregando vid-servidor" id="docServidor" role="status">
+                <span class="aida-state__icon" aria-hidden="true"></span>
+                <div>
+                    <p class="aida-state__title" id="docServidorTitulo">Conectando ao servidor…</p>
+                    <p class="aida-state__text" id="docServidorTexto"></p>
+                </div>
+            </div>
+
+            <form id="docForm" class="vid-form" novalidate>
+                <label class="selecao-upload glass-card vid-drop" id="docDrop" for="docArquivo">
+                    <span class="selecao-upload-icon" aria-hidden="true">
+                        <svg viewBox="0 0 640 640" role="presentation" focusable="false">
+                            <path fill="currentColor"
+                                  d="M192 64C156.7 64 128 92.7 128 128L128 512C128 547.3 156.7 576 192 576L448 576C483.3 576 512 547.3 512 512L512 234.5C512 217.5 505.3 201.2 493.3 189.2L386.7 82.7C374.7 70.7 358.5 64 341.5 64L192 64zM453.5 240L360 240C346.7 240 336 229.3 336 216L336 122.5L453.5 240zM232 320L408 320C421.3 320 432 330.7 432 344C432 357.3 421.3 368 408 368L232 368C218.7 368 208 357.3 208 344C208 330.7 218.7 320 232 320zM232 416L408 416C421.3 416 432 426.7 432 440C432 453.3 421.3 464 408 464L232 464C218.7 464 208 453.3 208 440C208 426.7 218.7 416 232 416z" />
+                        </svg>
+                    </span>
+
+                    <span class="selecao-upload-copy">
+                        <span class="section-tag">Upload</span>
+                        <span class="vid-drop__titulo" id="docDropTitulo">Selecione o PDF</span>
+                        <span class="vid-drop__texto" id="docDropTexto">
+                            Escolha o arquivo original, do jeito que você recebeu. Evite prints ou PDFs refeitos.
+                        </span>
+                    </span>
+
+                    <input type="file" id="docArquivo" name="documento" aria-label="Selecionar PDF do dispositivo"
+                           accept="application/pdf,.pdf">
+
+                    <span class="aida-button vid-drop__botao" aria-hidden="true">Selecionar PDF</span>
+
+                    <span class="selecao-formats">Formato aceito: PDF, até 20 MB.</span>
+                </label>
+
+                <details class="vid-ajustes">
+                    <summary class="vid-ajustes__resumo">
+                        <span>Uso técnico</span>
+                        <small>endereço do servidor</small>
+                    </summary>
+                    <div class="aida-field">
+                        <label class="aida-field__label" for="docApi">URL do servidor AIDA</label>
+                        <input class="aida-input" id="docApi" type="url" spellcheck="false">
+                    </div>
+                </details>
+
+                <button type="submit" class="aida-btn vid-enviar" id="docEnviar" disabled>
+                    Analisar documento
+                    <span class="aida-btn__arrow" aria-hidden="true">&rarr;</span>
+                </button>
+            </form>
+
+            <div id="docProgresso" class="vid-progresso" hidden>
+                <div class="aida-state aida-state--analisando" role="status" aria-live="polite">
+                    <span class="aida-state__icon" aria-hidden="true"></span>
+                    <div>
+                        <p class="aida-state__title">Analisando o documento…</p>
+                        <p class="aida-state__text">Leva poucos segundos.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============ Como funciona ============ -->
+            <details class="metodos-detalhes vid-como" id="docComoFunciona">
+                <summary class="metodos-summary">
+                    <span class="metodos-summary-texto">
+                        <span class="section-tag">Como funciona</span>
+                        <strong>Veja como a AIDA analisa um documento</strong>
+                    </span>
+                </summary>
+
+                <div class="metodos-corpo">
+                    <p class="metodos-intro">
+                        Ferramentas de IA já produzem notas e recibos que enganam o olho humano e os detectores de
+                        imagem. Por isso a AIDA não olha só a aparência: confere o que a IA e os editores de PDF
+                        costumam errar. Em cada item, a primeira frase é a ideia; o texto menor traz o detalhe técnico.
+                    </p>
+
+                    <ol class="vid-etapas">
+                        <li class="vid-etapa">
+                            <span class="vid-etapa__num" aria-hidden="true">1</span>
+                            <div>
+                                <strong>Números de cadastro</strong>
+                                <p>CNPJ, CPF e a chave de acesso da nota têm dígitos de controle. Sistemas emissores nunca erram esses dígitos; quem edita ou inventa um documento, sim.</p>
+                                <small>Módulo 11 para CNPJ (inclusive o alfanumérico), CPF e chave de 44 dígitos da NF-e/NFC-e;
+                                    também a UF, o mês e o modelo da chave, e se o CNPJ do emitente embutido na chave aparece no
+                                    documento.</small>
+                            </div>
+                        </li>
+                        <li class="vid-etapa">
+                            <span class="vid-etapa__num" aria-hidden="true">2</span>
+                            <div>
+                                <strong>Estrutura do arquivo</strong>
+                                <p>Um PDF guarda rastros de como foi feito: se foi salvo por cima depois de pronto, se foi alterado depois de assinado, se é só uma foto dentro do PDF e qual programa o gerou.</p>
+                                <small>Revisões incrementais (seções %%EOF com objetos novos), bytes além do /ByteRange da
+                                    assinatura, páginas sem camada de texto, produtor (editor online, editor de imagem), fonte
+                                    embutida em dois subconjuntos e datas de criação e modificação.</small>
+                            </div>
+                        </li>
+                        <li class="vid-etapa">
+                            <span class="vid-etapa__num" aria-hidden="true">3</span>
+                            <div>
+                                <strong>Valores</strong>
+                                <p>Em listas grandes de valores reais, o primeiro dígito segue um padrão conhecido (mais 1 que 9). Números inventados costumam fugir dele.</p>
+                                <small>Lei de Benford no primeiro dígito dos valores em reais, com MAD de Nigrini e
+                                    qui-quadrado. Só entra na decisão com pelo menos 50 valores, porque em amostras pequenas o
+                                    desvio aparece por acaso.</small>
+                            </div>
+                        </li>
+                        <li class="vid-etapa">
+                            <span class="vid-etapa__num" aria-hidden="true">4</span>
+                            <div>
+                                <strong>Conclusão</strong>
+                                <p>Cada indício tem um peso. Um indício forte ou vários fracos juntos apontam manipulação; sem nada verificável, a AIDA prefere dizer que não dá para concluir.</p>
+                                <small>Suspeita = 1 − ∏(1 − peso). A partir de 60%: IA/manipulada. Abaixo de 25%, com texto
+                                    nativo e algo verificável: real. No meio: inconclusivo.</small>
+                            </div>
+                        </li>
+                    </ol>
+
+                    <p class="metodos-aviso">
+                        Versão inicial, ainda sem calibração com um conjunto grande de documentos. A AIDA não consulta a
+                        SEFAZ nem valida a assinatura digital: um documento com tudo certo aqui ainda deve ser conferido
+                        na fonte (portal da nota fiscal, banco ou emissor).
+                    </p>
+                </div>
+            </details>
+
+            <p class="selecao-note">
+                O PDF é lido na memória do servidor e descartado ao fim da análise; o texto do documento não é
+                guardado nem devolvido. Veja o <a href="./index-privacidade.html">Aviso de Privacidade</a>.
+            </p>
+        </section>
+
+        <!-- ================= Resultado ================= -->
+        <section id="docResultado" class="vid-resultado glass-panel" aria-labelledby="docResultadoTitulo" hidden>
+            <div class="vid-resultado__topo">
+                <span class="page-kicker">Resultado da análise</span>
+                <h2 class="vid-resultado__titulo" id="docResultadoTitulo">Resultado do documento</h2>
+            </div>
+
+            <div class="aida-state" id="docVeredito" role="status">
+                <span class="aida-state__icon" aria-hidden="true"></span>
+                <div>
+                    <p class="aida-state__title" id="docVereditoTitulo"></p>
+                    <p class="vid-significado" id="docSignificado"></p>
+                    <ul class="vid-motivos" id="docMotivos"></ul>
+                </div>
+            </div>
+
+            <dl class="vid-numeros" id="docNumeros"></dl>
+
+            <div class="vid-bloco">
+                <h3 class="aida-title-3">Indícios encontrados</h3>
+                <ul class="doc-indicios" id="docIndicios"></ul>
+            </div>
+
+            <div class="vid-bloco">
+                <h3 class="aida-title-3">Primeiro dígito dos valores</h3>
+                <p class="vid-bloco__ajuda" id="docBenfordAjuda"></p>
+                <div class="doc-benford" id="docBenford" role="img"
+                     aria-label="Frequência do primeiro dígito dos valores comparada com a Lei de Benford"></div>
+                <ul class="vid-legenda" aria-hidden="true">
+                    <li><span class="vid-cor doc-cor--observado"></span>No documento</li>
+                    <li><span class="vid-cor doc-cor--esperado"></span>Esperado (Benford)</li>
+                </ul>
+            </div>
+
+            <div class="vid-bloco" id="docLimitesBloco">
+                <h3 class="aida-title-3">Limites desta análise</h3>
+                <ul class="vid-motivos" id="docLimites"></ul>
+            </div>
+
+            <p class="aida-text--sm vid-ressalva" id="docRessalva"></p>
+
+            <div class="vid-acoes">
+                <button type="button" class="aida-btn aida-btn--sm" id="docNovo">
+                    Analisar outro documento
+                </button>
+                <button type="button" class="aida-btn aida-btn--ghost aida-btn--sm" id="docBaixar">
+                    Baixar relatório (JSON)
+                </button>
+                <a href="#docComoFunciona" class="aida-btn aida-btn--quiet aida-btn--sm" id="docVerComo">
+                    Como a análise funciona
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <script src="../scripts/script-cookie-consent.js"></script>
+    <script src="../scripts/script-documentos.js?v=20260929-v1"></script>
+</body>
+
+</html>

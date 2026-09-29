@@ -1,0 +1,88 @@
+/* AIDA Documents (pages/index-documentos.html).
+   A página reaproveita os estilos vid-* de style-video.css; aqui ficam só a
+   lista de indícios e o gráfico do primeiro dígito. */
+
+.doc-cor--observado { --_cor: var(--aida-green-400); }
+.doc-cor--esperado { --_cor: var(--aida-neutral); }
+
+/* ---------------------------------------------------------------- indícios */
+
+.doc-indicios {
+  display: grid;
+  gap: var(--aida-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.doc-indicio {
+  display: flex;
+  align-items: baseline;
+  gap: var(--aida-space-3);
+  padding: var(--aida-space-2) var(--aida-space-3);
+  border-left: 3px solid var(--_cor);
+  border-radius: var(--aida-radius-sm);
+  background: var(--aida-surface-1);
+  color: var(--aida-text-2);
+  overflow-wrap: anywhere;
+}
+
+.doc-indicio--forte { --_cor: var(--aida-danger); }
+.doc-indicio--medio { --_cor: var(--aida-warning); }
+.doc-indicio--fraco { --_cor: var(--aida-neutral); }
+.doc-indicio--nenhum { --_cor: var(--aida-success); }
+
+.doc-indicio__forca {
+  flex: none;
+  min-width: 4.5em;
+  color: var(--_cor);
+  font-size: var(--aida-fs-caption);
+  font-weight: var(--aida-fw-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ---------------------------------------------------------------- Benford */
+
+.doc-benford {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  gap: var(--aida-space-2);
+  height: 160px;
+  padding: var(--aida-space-3) var(--aida-space-3) 0;
+  border-radius: var(--aida-radius-sm);
+  background: var(--aida-surface-1);
+}
+
+.doc-benford:empty {
+  display: none;
+}
+
+.doc-benford__coluna {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.doc-benford__barras {
+  display: flex;
+  flex: 1;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 2px;
+}
+
+.doc-benford__barra {
+  width: 45%;
+  max-width: 18px;
+  min-height: 1px;
+  border-radius: 3px 3px 0 0;
+  background: var(--_cor);
+}
+
+.doc-benford__digito {
+  padding: 4px 0;
+  text-align: center;
+  font-size: var(--aida-fs-caption);
+  color: var(--aida-text-3);
+}

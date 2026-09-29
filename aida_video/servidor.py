@@ -136,6 +136,10 @@ def criar_app(fabrica_analisador=None, executar_em_thread=True, tamanho_max_mb=T
     # AIDA_VIDEO_CORS: origens separadas por virgula (no Space, so o site publicado).
     origens = [o.strip() for o in os.environ.get("AIDA_VIDEO_CORS", "*").split(",") if o.strip()]
     CORS(app, origins=origens or "*")
+    # AIDA Documents (PDF) usa o mesmo servidor: o site so conhece este e o Core.
+    from aida_documents.servidor import registrar as registrar_documentos
+
+    registrar_documentos(app)
     tarefas = Tarefas()
     app.config["TAREFAS"] = tarefas
     fabrica_analisador = fabrica_analisador or (lambda: AnalisadorCore())

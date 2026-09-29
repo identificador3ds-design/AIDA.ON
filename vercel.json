@@ -69,6 +69,10 @@
       "destination": "/pages/index-video"
     },
     {
+      "source": "/documentos",
+      "destination": "/pages/index-documentos"
+    },
+    {
       "source": "/api",
       "destination": "/pages/index-api"
     },

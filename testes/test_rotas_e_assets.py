@@ -151,8 +151,8 @@ def test_pagina_de_solucoes_declara_os_quatro_cards():
 def test_estados_dos_produtos_refletem_a_realidade():
     """O selo é declaração de estado, não enfeite.
 
-    Desde set/2026 as quatro soluções têm implementação: Image está disponível
-    e Forensics, Video e API estão em versão inicial (selo verde com o texto
+    Desde set/2026 as cinco soluções têm implementação: Image está disponível
+    e Forensics, Video, Documents e API estão em versão inicial (selo verde com o texto
     "Versão inicial"). Nenhum card pode voltar a dizer beta ou em
     desenvolvimento sem que isso seja verdade.
     """
@@ -166,9 +166,9 @@ def test_estados_dos_produtos_refletem_a_realidade():
         estados[produto] = marca.group(1) if marca else None
 
     assert estados == {"image": "disponivel", "forensics": "disponivel",
-                       "video": "disponivel", "api": "disponivel"}
+                       "video": "disponivel", "documents": "disponivel", "api": "disponivel"}
 
-    for produto in ("forensics", "video", "api"):
+    for produto in ("forensics", "video", "documents", "api"):
         bloco = html.split(f'data-sol="{produto}"')[1].split("</article>")[0]
         assert "Versão inicial" in bloco, f"card {produto} deveria dizer versão inicial"
     assert not re.search(r"aida-status--(beta|desenvolvimento)", html)

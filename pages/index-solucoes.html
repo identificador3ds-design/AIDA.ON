@@ -89,6 +89,9 @@
                 <a class="sol-guia__item" href="#sol-video" data-alvo="video">
                     <strong>Tenho um vídeo</strong><span>AIDA Video</span>
                 </a>
+                <a class="sol-guia__item" href="#sol-documents" data-alvo="documents">
+                    <strong>Tenho uma nota ou recibo</strong><span>AIDA Documents</span>
+                </a>
                 <a class="sol-guia__item" href="#sol-api" data-alvo="api">
                     <strong>Quero integrar ao meu sistema</strong><span>AIDA API</span>
                 </a>
@@ -298,6 +301,54 @@
                         </ul>
                         <a href="./index-video.html" class="aida-btn aida-btn--ghost aida-btn--sm sol-card__cta">
                             Analisar um vídeo
+                            <span class="aida-btn__arrow" aria-hidden="true">&rarr;</span>
+                        </a>
+                    </div>
+                </article>
+
+                <!-- ---------- AIDA Documents ----------
+                     Recibo desenhado em HTML (nenhum dado real): as marcas mostram as
+                     três conferências (cadastro, estrutura, valores), sem veredito. -->
+                <article class="sol-card sol-card--documents" data-sol="documents" id="sol-documents">
+                    <div class="sol-card__stage">
+                        <span class="sol-card__note">demonstração</span>
+
+                        <div class="sol-fx fx-doc">
+                            <div class="sol-fx__quadro fx-doc__quadro">
+                                <div class="fx-doc__folha" aria-hidden="true">
+                                    <span class="fx-doc__linha fx-doc__linha--titulo"></span>
+                                    <span class="fx-doc__campo"><span class="fx-doc__linha"></span><i class="fx-doc__marca">CNPJ ✓</i></span>
+                                    <span class="fx-doc__linha fx-doc__linha--curta"></span>
+                                    <span class="fx-doc__campo"><span class="fx-doc__linha"></span><i class="fx-doc__marca">R$ 1…9</i></span>
+                                    <span class="fx-doc__linha"></span>
+                                    <span class="fx-doc__campo"><span class="fx-doc__linha fx-doc__linha--curta"></span><i class="fx-doc__marca">%%EOF</i></span>
+                                </div>
+                                <span class="sol-fx__grade" aria-hidden="true"></span>
+                            </div>
+
+                            <div class="sol-fx__barra" aria-hidden="true">
+                                <span>pdf</span>
+                                <span class="sol-fx__marca">cadastro · estrutura · valores</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sol-card__body">
+                        <div class="sol-card__head">
+                            <h2 class="sol-card__title">AIDA <span>Documents</span></h2>
+                            <span class="aida-status aida-status--disponivel">Versão inicial</span>
+                        </div>
+                        <p class="sol-card__text">
+                            Envie uma nota fiscal, recibo ou comprovante em PDF. A AIDA confere os números de
+                            cadastro, os rastros de edição no arquivo e os valores, e explica cada indício.
+                        </p>
+                        <ul class="sol-card__pontos">
+                            <li>Dígitos de CNPJ, CPF e chave da NF-e conferidos</li>
+                            <li>Edições, assinatura e programa que gerou o PDF</li>
+                            <li>Lei de Benford nos valores, com gráfico</li>
+                        </ul>
+                        <a href="./index-documentos.html" class="aida-btn aida-btn--ghost aida-btn--sm sol-card__cta">
+                            Analisar um documento
                             <span class="aida-btn__arrow" aria-hidden="true">&rarr;</span>
                         </a>
                     </div>

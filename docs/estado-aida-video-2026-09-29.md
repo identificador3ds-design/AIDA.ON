@@ -54,12 +54,27 @@ fusão já usa `resultados_audio/com_videos/previsoes.csv`, que são notas fora 
 Efeito: FP 4,8% → 4,2%, IA detectada 80,0% → 77,1%, e **teste11 passa a REAL**. Nos 14 reais:
 13 REAL, 1 INCONCLUSIVO (teste10), 0 falsos positivos.
 
+## 2b. Publicação (29/09, noite)
+
+- Space `aidaon/aida-video`: commit `b6553fe` (fusão + movimento R6fp6) e `0af5ee8` (correção do
+  áudio). Site: `2080596` (números da página `/video`) e `cda94aa`.
+- **Incidente:** a reconstrução do Space instalou o PyAV 19, que tirou o parâmetro
+  `metadata_errors` de `av.open`. O áudio passou a falhar em todos os vídeos (`TypeError`),
+  e os vídeos foram decididos só pela imagem e movimento. Durou cerca de 1 hora.
+  Correção: `aida_audio/carregar.py` tenta sem o parâmetro, e `requirements.txt` fixa `av<19`.
+- **Conferido em produção** (depois da correção, com áudio funcionando): nos 14 vídeos reais,
+  **13 REAL, 1 INCONCLUSIVO (teste10), 0 falsos positivos**. O teste11 sai REAL (áudio 0,64 fica de
+  fora por confiança baixa). Tempo: 30 s a 2 min por vídeo. Relatórios em
+  `G:/Meu Drive/TCC/resultados_videos/testes_gato_2026-09-29/pos_fusao/`.
+- Lição: as dependências do Space devem ter versão máxima fixada; uma reconstrução sem mudança
+  de código pode trocar a biblioteca.
+
 ## 3. O que falta no vídeo
 
 | # | Item | Estado | Depende de |
 |---|---|---|---|
-| 1 | **Publicar** fusão + `trajetoria.joblib` novo + ajuste de `agregacao.py` + integração em `analisar_video.py` no Space | Pronto no pendrive, passou no critério (0 FP nos 14; FP nos 336 menor que o publicado) | Decisão do grupo: menos falsos positivos vs. mais inconclusivos |
-| 2 | Números da página `/video` | A página mostra ~78% / 6% FP / 6% inconclusivos; não batem com nenhuma das duas colunas acima | Item 1 (usar os números do que estiver publicado) |
+| 1 | Publicar a fusão no Space | **Feito** (29/09) | — |
+| 2 | Números da página `/video` | **Feito** (29/09) | — |
 | 3 | Vídeo → Forensics (link para o dossiê do quadro mais suspeito) | Não feito | — |
 | 4 | Sora 2 | 41–53% detectado no vídeo, 12% no áudio | Vídeos Sora 2 **com áudio** para treino |
 | 5 | Teste de vídeos reais fixo | Os 14 reais ainda não estão num teste automático | — |

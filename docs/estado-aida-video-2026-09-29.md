@@ -60,7 +60,7 @@ Efeito: FP 4,8% → 4,2%, IA detectada 80,0% → 77,1%, e **teste11 passa a REAL
   áudio). Site: `2080596` (números da página `/video`) e `cda94aa`.
 - **Incidente:** a reconstrução do Space instalou o PyAV 19, que tirou o parâmetro
   `metadata_errors` de `av.open`. O áudio passou a falhar em todos os vídeos (`TypeError`),
-  e os vídeos foram decididos só pela imagem e movimento. Durou cerca de 1 hora.
+  e os vídeos foram decididos só pela imagem e movimento. Durou cerca de 20 minutos.
   Correção: `aida_audio/carregar.py` tenta sem o parâmetro, e `requirements.txt` fixa `av<19`.
 - **Conferido em produção** (depois da correção, com áudio funcionando): nos 14 vídeos reais,
   **13 REAL, 1 INCONCLUSIVO (teste10), 0 falsos positivos**. O teste11 sai REAL (áudio 0,64 fica de
@@ -75,10 +75,10 @@ Efeito: FP 4,8% → 4,2%, IA detectada 80,0% → 77,1%, e **teste11 passa a REAL
 |---|---|---|---|
 | 1 | Publicar a fusão no Space | **Feito** (29/09) | — |
 | 2 | Números da página `/video` | **Feito** (29/09) | — |
-| 3 | Vídeo → Forensics (link para o dossiê do quadro mais suspeito) | Não feito | — |
-| 4 | Sora 2 | 41–53% detectado no vídeo, 12% no áudio | Vídeos Sora 2 **com áudio** para treino |
-| 5 | Teste de vídeos reais fixo | Os 14 reais ainda não estão num teste automático | — |
-| 6 | Conjunto externo novo | Os 336 foram usados para escolher regras e limiares; os números estão um pouco otimistas | Vídeos novos, nunca usados |
+| 3 | Vídeo → Forensics | **Feito** (29/09, `deb18a3`): "Investigar" em cada quadro e botão para o quadro mais suspeito; o Forensics identifica o quadro e o mostra (quadros de vídeo não têm mapas) | — |
+| 4 | Sora 2 | 41–53% detectado no vídeo, 12% no áudio | Vídeos Sora 2 **com áudio** para treino. Candidato: `YF789/sora2` no Hugging Face (94 Sora 2 + 93 Sora 2 Pro em MP4, ~1,1 GB, **sem licença declarada**). O conjunto da Rapidata só tem GIF (sem áudio). |
+| 5 | Teste de vídeos reais fixo | **Feito** (`01ff4ca`): `testes/test_aida_video_reais.py` refaz a decisão com as leituras de produção; falha se algum virar IA | — |
+| 6 | Conjunto externo novo | Os 336 foram usados para escolher regras e limiares; os números estão um pouco otimistas | Vídeos novos, nunca usados. O mesmo `YF789/sora2` tem 97 vídeos Veo 3.1 e 110 Veo 2, nunca vistos |
 | 7 | Tempo de processamento | 1 a 30 min por vídeo no Space (CPU básica, fila) | Hardware do Space ou menos quadros |
 
 ## 4. Como reproduzir

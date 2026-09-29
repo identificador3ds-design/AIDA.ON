@@ -41,8 +41,10 @@ def valores_benford(n, semente=0):
     return 10 ** np.random.default_rng(semente).uniform(1, 5, n)
 
 
-def nota(cnpj=CNPJ_OK, n_valores=120, produtor=None):
+def nota(cnpj=CNPJ_OK, n_valores=120, produtor="Emissor NF-e 4.0", chave=True):
     linhas = ["NOTA FISCAL", f"CNPJ {cnpj}", "Emissao 28/09/2026 14:32"]
+    if chave:
+        linhas.append(f"Chave de acesso {chave_nfe()}")
     linhas += [f"Item {i}  R$ {v:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".") for i, v in enumerate(valores_benford(n_valores))]
     return pdf_texto(linhas, produtor)
 
@@ -98,6 +100,17 @@ def test_pdf_limpo_e_real():
     assert r["estrutura"]["revisoes"] == 1
     assert r["benford"]["suficiente"]
     assert r["resultado"] == "REAL", r["indicios"]
+
+
+def test_orcamento_inventado_com_dv_certo_nao_e_real():
+    """CNPJ/CPF com DV certo saem de gerador: sem assinatura nem chave, nada comprova a origem."""
+    linhas = ["ORCAMENTO", f"Empresa CNPJ {CNPJ_OK}", "Cliente CPF 529.982.247-25"]
+    linhas += [f"Servico {i}  R$ {v:.2f}".replace(".", ",") for i, v in enumerate(valores_benford(15))]
+    r = analisar_bytes(pdf_texto(linhas))  # produtor padrao do ReportLab
+    assert r["identificadores"]["alertas"] == []
+    assert {i["indicio"] for i in r["indicios"]} == {"gerador_programatico"}
+    assert r["resultado"] == "INCONCLUSIVO"
+    assert any("comprova a origem" in m for m in r["motivos"])
 
 
 def test_cnpj_invalido_e_edicao_viram_manipulada():

@@ -21,14 +21,18 @@ Dependências: `pypdf` e `numpy` (já estão no projeto). `reportlab` só nos te
 | Assinatura | `estrutura.py` | bytes acrescentados depois do trecho coberto pelo `/ByteRange` | 0,50 |
 | Sem camada de texto | `estrutura.py` | páginas só com imagem (print, foto, montagem) | 0,35 / 0,20 |
 | Revisões incrementais | `estrutura.py` | seções `%%EOF` com objetos novos (ignora o trailer vazio do Word e a linearização) | 0,30 |
-| Ferramenta | `estrutura.py` | Producer/Creator de editor online, editor de imagem ou impressora virtual | 0,30 / 0,10 |
+| Ferramenta | `estrutura.py` | Producer/Creator de editor online ou de imagem (0,30), biblioteca de programação como ReportLab/FPDF/jsPDF (0,15), escritório ou impressora virtual (0,10) | 0,30 / 0,15 / 0,10 |
 | Fontes | `estrutura.py` | a mesma fonte embutida em dois subconjuntos (`ABCDEF+Arial` e `GHIJKL+Arial`) | 0,30 |
 | Benford | `benford.py` | 1º dígito dos valores monetários (`1.234,56`); MSE, MAD de Nigrini e qui-quadrado | 0,25 / 0,35 |
 | Datas | `estrutura.py` | modificação mais de 1 dia depois da criação | 0,15 |
 
 Suspeita combinada = `1 − ∏(1 − peso)`. `IA/MANIPULADA` a partir de 0,60. `REAL` só abaixo
-de 0,25 **e** com algo verificável (DV, Benford com N ≥ 50 ou assinatura intacta) e texto
-nativo em todas as páginas. O resto é `INCONCLUSIVO`, com o motivo.
+de 0,25 **e** com prova de origem (assinatura digital intacta ou chave de acesso de NF-e
+válida) e texto nativo em todas as páginas. O resto é `INCONCLUSIVO`, com o motivo.
+
+DV certo não é prova de nada: geradores de CNPJ/CPF acertam o dígito. Só o DV errado é
+indício. Um orçamento fictício gerado com ReportLab (29/09) saiu `REAL` na primeira versão
+por causa disso; agora sai `INCONCLUSIVO`, com o indício fraco "biblioteca de programação".
 
 ## O que já aprendemos
 

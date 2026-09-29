@@ -232,11 +232,11 @@
       return `A AIDA encontrou ${n} indício${n > 1 ? "s" : ""} de que este PDF foi editado, montado ou gerado fora de um sistema emissor. Confira o documento na fonte antes de aceitá-lo.`;
     }
     if (r.resultado === "REAL") {
-      return "Os números de cadastro conferem e o arquivo não mostra sinais de edição. Isso não garante que o documento seja verdadeiro: confira na fonte quando o valor for importante.";
+      return "O arquivo não mostra sinais de edição e traz uma prova de origem (assinatura digital intacta ou chave de acesso de nota fiscal). Ainda assim, confira na fonte quando o valor for importante.";
     }
     return n
-      ? "A AIDA encontrou indícios fracos, que sozinhos não bastam para afirmar manipulação. Veja abaixo o que chamou atenção."
-      : "O documento não tem o suficiente para uma conclusão (por exemplo, nenhum CNPJ, CPF ou chave de acesso para conferir).";
+      ? "A AIDA encontrou indícios fracos, que sozinhos não bastam para afirmar manipulação, e nada no arquivo comprova de onde ele veio. Veja abaixo o que chamou atenção."
+      : "Nenhum sinal de edição foi encontrado, mas nada no arquivo comprova de onde ele veio. Um documento inventado do zero também passa sem sinais de edição: confira com quem o emitiu.";
   }
 
   function numero(rotulo, valor) {

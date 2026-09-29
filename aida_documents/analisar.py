@@ -36,6 +36,7 @@ PESOS = {
     "revisoes_incrementais": 0.30,
     "ferramenta_edicao": 0.30,
     "ferramenta_escritorio": 0.10,
+    "gerador_programatico": 0.15,
     "sem_camada_texto_total": 0.35,
     "sem_camada_texto_parcial": 0.20,
     "fonte_subconjunto_duplicado": 0.30,
@@ -44,6 +45,7 @@ PESOS = {
     "benford_nao_conforme_forte": 0.35,
 }
 _ESCRITORIO = ("processador de texto", "impressão de navegador", "impressora virtual")
+_PROGRAMACAO = "biblioteca de programação"
 
 
 def _combinar(pesos):
@@ -90,8 +92,11 @@ def analisar_bytes(dados: bytes, nome="documento.pdf"):
     if edicoes > 0:
         indicio("revisoes_incrementais", f"{est['revisoes']} revisões salvas no arquivo (edição após a criação)")
     for ferramenta in est["ferramentas_edicao"]:
-        chave = "ferramenta_escritorio" if ferramenta.startswith(_ESCRITORIO) else "ferramenta_edicao"
-        indicio(chave, f"gerado ou salvo por {ferramenta}")
+        if ferramenta.startswith(_PROGRAMACAO):
+            indicio("gerador_programatico", f"montado por {ferramenta}: comum em documento feito por script ou IA")
+        else:
+            chave = "ferramenta_escritorio" if ferramenta.startswith(_ESCRITORIO) else "ferramenta_edicao"
+            indicio(chave, f"gerado ou salvo por {ferramenta}")
     if est["paginas_analisadas"] and est["paginas_sem_texto"] == est["paginas_analisadas"]:
         indicio("sem_camada_texto_total", "nenhuma página tem texto selecionável: é imagem (print, foto ou montagem)")
     elif est["paginas_sem_texto"]:
@@ -113,21 +118,28 @@ def analisar_bytes(dados: bytes, nome="documento.pdf"):
         limitacoes.append("a validade criptográfica da assinatura não é verificada (use o Verificador ITI/Adobe)")
 
     suspeita = _combinar(i["peso"] for i in indicios)
-    # REAL exige evidencia positiva: texto nativo + algo verificavel (DV, Benford ou assinatura intacta).
-    verificavel = (ids["cnpjs"] + ids["cpfs"] + ids["chaves_acesso"]) > 0 or benford["suficiente"] or (
-        est["assinaturas"] and not est["bytes_apos_assinatura"]
-    )
+    # REAL exige algo que comprove a ORIGEM, nao so a ausencia de edicao: CNPJ e CPF com
+    # DV certo saem de qualquer gerador (so o DV errado e indicio). Contam a assinatura
+    # digital intacta e a chave de acesso valida, que pode ser conferida na SEFAZ.
+    assinatura_intacta = bool(est["assinaturas"]) and not est["bytes_apos_assinatura"]
+    chave_ok = ids["chaves_acesso"] > 0 and not any("chave" in a for a in ids["alertas"])
+    origem_verificavel = assinatura_intacta or chave_ok
     motivos = []
     if suspeita >= LIMIAR_MANIPULADO:
         resultado = "IA/MANIPULADA"
-    elif suspeita < LIMIAR_REAL and verificavel and not est["paginas_sem_texto"]:
+    elif suspeita < LIMIAR_REAL and origem_verificavel and not est["paginas_sem_texto"]:
         resultado = "REAL"
+        if chave_ok:
+            limitacoes.append("a chave de acesso tem formato válido; confirme na SEFAZ que a nota existe e bate valor e data")
     else:
         resultado = "INCONCLUSIVO"
-        if not verificavel:
-            motivos.append("nada verificável no documento (sem CNPJ/CPF/chave, poucos valores, sem assinatura)")
-        elif suspeita > LIMIAR_REAL:
+        if suspeita > LIMIAR_REAL:
             motivos.append("indícios fracos: não bastam para afirmar manipulação")
+        if not origem_verificavel:
+            motivos.append(
+                "nada comprova a origem: sem assinatura digital e sem chave de acesso de nota fiscal "
+                "(CNPJ e CPF com dígito certo podem ser inventados)"
+            )
 
     return {
         "resultado": resultado,

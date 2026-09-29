@@ -42,6 +42,15 @@ PRODUTORES_EDICAO = {
     "google docs": "processador de texto (Google Docs)",
     "skia/pdf": "impressão de navegador (Chrome/Skia)",
     "camscanner": "app de digitalização (CamScanner)",
+    # Bibliotecas que um script (ou uma IA escrevendo codigo) usa para montar um PDF do
+    # zero. Sistemas emissores costumam usar iText/Jasper, que ficam de fora.
+    "reportlab": "biblioteca de programação (ReportLab)",
+    "fpdf": "biblioteca de programação (FPDF)",
+    "pdfkit": "biblioteca de programação (PDFKit)",
+    "jspdf": "biblioteca de programação (jsPDF)",
+    "pdf-lib": "biblioteca de programação (pdf-lib)",
+    "weasyprint": "biblioteca de programação (WeasyPrint)",
+    "wkhtmltopdf": "biblioteca de programação (wkhtmltopdf)",
 }
 _BYTE_RANGE = re.compile(rb"/ByteRange\s*\[\s*(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s*\]")
 _OBJETO = re.compile(rb"\d+\s+\d+\s+obj\b")

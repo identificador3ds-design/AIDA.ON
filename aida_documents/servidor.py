@@ -8,6 +8,9 @@ rotas de documento entram no Flask do video:
 
 A analise leva menos de um segundo, entao a resposta e sincrona. O PDF fica so em
 memoria: nao e gravado em disco nem guardado depois da resposta.
+
+As rotas /documento/texto/* (texto gerado por IA, por tarefa) estao em
+`aida_documents/texto/servidor.py` e sao registradas daqui.
 """
 
 from __future__ import annotations
@@ -21,6 +24,10 @@ EXTENSOES = {".pdf"}
 
 
 def registrar(app):
+    from .texto.servidor import registrar as registrar_texto
+
+    registrar_texto(app)
+
     def erro(mensagem, status):
         return jsonify({"erro": mensagem}), status
 

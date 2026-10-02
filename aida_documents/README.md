@@ -13,6 +13,9 @@ python -m pytest testes/test_aida_documents.py
 
 Dependências: `pypdf` e `numpy` (já estão no projeto). `reportlab` só nos testes.
 
+A detecção de **texto gerado por IA** (PDF, DOCX, TXT) é um submódulo à parte:
+[`aida_documents/texto`](texto/README.md).
+
 ## Camadas
 
 | Camada | Arquivo | O que procura | Peso |

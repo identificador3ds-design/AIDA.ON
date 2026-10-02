@@ -16,6 +16,7 @@ da nova nomenclatura da plataforma seria custo sem ganho.
 | `/forensics` | `pages/index-forensics.html`  | Investigação de uma análise existente             |
 | `/video`     | `pages/index-video.html`      | Página do produto — em desenvolvimento            |
 | `/api`       | `pages/index-api.html`        | Página do produto — em desenvolvimento            |
+| `/texto`     | `pages/index-texto.html`      | AIDA Documents: texto gerado por IA (PDF/DOCX/TXT) |
 
 Os cards das soluções **não** ficam na página de apresentação. A Home apresenta
 o projeto e leva a `/solucoes` por um botão na seção "Experimente o AIDA agora";

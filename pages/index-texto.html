@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#10403b">
+    <meta name="description"
+        content="AIDA Documents: envie um trabalho, artigo ou relatório em PDF, DOCX ou TXT e veja a estimativa de texto gerado por IA, com os trechos destacados.">
+
+    <link rel="manifest" href="../manifest.webmanifest">
+    <link rel="apple-touch-icon" href="../assets/images/pwa-icon-180.png">
+    <link id="favicon" rel="icon" type="image/x-icon" href="../assets/images/AIDABranco.ico">
+
+    <title>AIDA Documents — Texto gerado por IA</title>
+    <!-- SEO e compartilhamento -->
+    <link rel="canonical" href="https://aida-on.com.br/texto">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="AIDA.ON">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:title" content="AIDA Documents — Texto gerado por IA">
+    <meta property="og:description" content="Envie um documento e veja a estimativa de texto gerado por IA, com os trechos destacados.">
+    <meta property="og:url" content="https://aida-on.com.br/texto">
+    <meta property="og:image" content="https://aida-on.com.br/assets/images/pwa-icon-512.png">
+    <meta property="og:image:alt" content="Logotipo do AIDA.ON">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="AIDA Documents — Texto gerado por IA">
+    <meta name="twitter:description" content="Envie um documento e veja a estimativa de texto gerado por IA, com os trechos destacados.">
+    <meta name="twitter:image" content="https://aida-on.com.br/assets/images/pwa-icon-512.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Afacad:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../styles/style-shared-theme.css">
+    <link rel="stylesheet" href="../styles/aida-design-system.css">
+    <link rel="stylesheet" href="../styles/style-ferramenta.css">
+    <link rel="stylesheet" href="../styles/style-video.css?v=20260929-v1">
+    <link rel="stylesheet" href="../styles/style-documentos.css?v=20260929-v1">
+    <link rel="stylesheet" href="../styles/style-texto.css?v=20261002-v1">
+</head>
+
+<!-- Mesma estrutura das telas do AIDA Video e do AIDA Documents (estilos vid-*).
+     Servidor: o mesmo (Space aidaon/aida-video), nas rotas /documento/texto/*. -->
+<body class="aida-shell selecao-page video-page documentos-page texto-page">
+    <a class="aida-skip-link" href="#conteudo">Pular para o conteúdo</a>
+    <header class="page-header">
+        <a href="./index-apresentacao.html" aria-label="Página inicial do AIDA">
+            <img src="../assets/images/LogoBranca.png" alt="Logo AIDA.ON" class="brand-logo">
+        </a>
+
+        <div class="selecao-header-actions">
+            <a href="./index-documentos.html" class="top-link">Conferir nota ou recibo</a>
+            <a href="./index-seleciona.html" class="top-link">Analisar imagem</a>
+            <a href="./index-solucoes.html" class="top-link">Soluções</a>
+        </div>
+    </header>
+
+    <main id="conteudo" class="page-frame selecao-main video-main">
+        <!-- ================= Envio ================= -->
+        <section class="selecao-panel glass-panel" id="txtPainelEnvio" aria-labelledby="txtTitulo">
+            <div class="selecao-intro">
+                <span class="page-kicker">AIDA Documents · texto · versão inicial</span>
+                <h1 class="page-title" id="txtTitulo">Este texto foi escrito por IA?</h1>
+                <p class="page-copy">
+                    Envie um trabalho, artigo, relatório ou redação. A AIDA lê só o texto corrido, mede o quanto ele
+                    é previsível e uniforme e mostra, trecho a trecho, onde o padrão se parece com o de um texto
+                    gerado por IA.
+                </p>
+            </div>
+
+            <ol class="selecao-steps selecao-steps--tres" aria-label="Passos da análise">
+                <li class="selecao-step"><span aria-hidden="true">1</span><strong>Escolha o documento</strong></li>
+                <li class="selecao-step"><span aria-hidden="true">2</span><strong>A AIDA mede o texto</strong></li>
+                <li class="selecao-step"><span aria-hidden="true">3</span><strong>Veja os trechos</strong></li>
+            </ol>
+
+            <div class="aida-state aida-state--carregando vid-servidor" id="txtServidor" role="status">
+                <span class="aida-state__icon" aria-hidden="true"></span>
+                <div>
+                    <p class="aida-state__title" id="txtServidorTitulo">Conectando ao servidor…</p>
+                    <p class="aida-state__text" id="txtServidorTexto"></p>
+                </div>
+            </div>
+
+            <form id="txtForm" class="vid-form" novalidate>
+                <label class="selecao-upload glass-card vid-drop" id="txtDrop" for="txtArquivo">
+                    <span class="selecao-upload-icon" aria-hidden="true">
+                        <svg viewBox="0 0 640 640" role="presentation" focusable="false">
+                            <path fill="currentColor"
+                                  d="M192 64C156.7 64 128 92.7 128 128L128 512C128 547.3 156.7 576 192 576L448 576C483.3 576 512 547.3 512 512L512 234.5C512 217.5 505.3 201.2 493.3 189.2L386.7 82.7C374.7 70.7 358.5 64 341.5 64L192 64zM453.5 240L360 240C346.7 240 336 229.3 336 216L336 122.5L453.5 240zM232 320L408 320C421.3 320 432 330.7 432 344C432 357.3 421.3 368 408 368L232 368C218.7 368 208 357.3 208 344C208 330.7 218.7 320 232 320zM232 416L408 416C421.3 416 432 426.7 432 440C432 453.3 421.3 464 408 464L232 464C218.7 464 208 453.3 208 440C208 426.7 218.7 416 232 416z" />
+                        </svg>
+                    </span>
+
+                    <span class="selecao-upload-copy">
+                        <span class="section-tag">Upload</span>
+                        <span class="vid-drop__titulo" id="txtDropTitulo">Arraste o documento ou selecione</span>
+                        <span class="vid-drop__texto" id="txtDropTexto">
+                            Funciona melhor com pelo menos uma página de texto corrido, em português ou inglês.
+                        </span>
+                    </span>
+
+                    <input type="file" id="txtArquivo" name="documento" aria-label="Selecionar documento do dispositivo"
+                           accept=".pdf,.docx,.txt,.md,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain">
+
+                    <span class="aida-button vid-drop__botao" aria-hidden="true">Selecionar documento</span>
+
+                    <span class="selecao-formats" id="txtFormatos">Formatos aceitos: PDF, DOCX e TXT, até 20 MB.</span>
+                </label>
+
+                <details class="vid-ajustes">
+                    <summary class="vid-ajustes__resumo">
+                        <span>Uso técnico</span>
+                        <small>endereço do servidor</small>
+                    </summary>
+                    <div class="aida-field">
+                        <label class="aida-field__label" for="txtApi">URL do servidor AIDA</label>
+                        <input class="aida-input" id="txtApi" type="url" spellcheck="false">
+                    </div>
+                </details>
+
+                <button type="submit" class="aida-btn vid-enviar" id="txtEnviar" disabled>
+                    Analisar texto
+                    <span class="aida-btn__arrow" aria-hidden="true">&rarr;</span>
+                </button>
+            </form>
+
+            <div id="txtProgresso" class="vid-progresso" hidden>
+                <div class="aida-state aida-state--analisando" role="status" aria-live="polite">
+                    <span class="aida-state__icon" aria-hidden="true"></span>
+                    <div>
+                        <p class="aida-state__title" id="txtProgressoTitulo">Enviando o documento…</p>
+                        <p class="aida-state__text" id="txtProgressoTexto"></p>
+                    </div>
+                </div>
+                <div class="vid-barra" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+                     aria-labelledby="txtProgressoTitulo" id="txtBarra">
+                    <span id="txtBarraPreenchida"></span>
+                </div>
+            </div>
+
+            <!-- ============ Como funciona ============ -->
+            <details class="metodos-detalhes vid-como" id="txtComoFunciona">
+                <summary class="metodos-summary">
+                    <span class="metodos-summary-texto">
+                        <span class="section-tag">Como funciona</span>
+                        <strong>Veja como a AIDA analisa um texto</strong>
+                    </span>
+                </summary>
+
+                <div class="metodos-corpo">
+                    <p class="metodos-intro">
+                        Um modelo de linguagem escreve escolhendo, a cada palavra, uma continuação provável. O
+                        resultado é um texto correto, mas previsível e regular demais. É isso que a AIDA mede. Em
+                        cada item, a primeira frase é a ideia; o texto menor traz o detalhe técnico.
+                    </p>
+
+                    <ol class="vid-etapas">
+                        <li class="vid-etapa">
+                            <span class="vid-etapa__num" aria-hidden="true">1</span>
+                            <div>
+                                <strong>Leitura e limpeza</strong>
+                                <p>A AIDA tira do documento tudo o que não é texto do autor: cabeçalho, rodapé, número de página, títulos, sumário, tabelas e a lista de referências.</p>
+                                <small>Linhas que se repetem nas bordas de pelo menos 40% das páginas saem como
+                                    cabeçalho ou rodapé; palavras partidas por hífen no fim da linha são reunidas. O
+                                    relatório mostra quanto foi removido.</small>
+                            </div>
+                        </li>
+                        <li class="vid-etapa">
+                            <span class="vid-etapa__num" aria-hidden="true">2</span>
+                            <div>
+                                <strong>Previsibilidade</strong>
+                                <p>Um modelo de linguagem pequeno tenta adivinhar cada palavra do texto. Quanto mais ele acerta, mais previsível é o texto, e texto de IA costuma ser muito previsível.</p>
+                                <small>Perplexidade: exponencial da surpresa média por token, medida com um GPT-2
+                                    pequeno do idioma (português ou inglês). Também conta o quanto a surpresa varia de
+                                    uma frase para outra.</small>
+                            </div>
+                        </li>
+                        <li class="vid-etapa">
+                            <span class="vid-etapa__num" aria-hidden="true">3</span>
+                            <div>
+                                <strong>Ritmo e fórmulas</strong>
+                                <p>Gente alterna frase curta e frase longa. Texto de IA tende a manter frases de tamanho parecido e a repetir conectivos como “além disso” e “vale destacar”.</p>
+                                <small>Variação do comprimento das frases (desvio dividido pela média) e frequência
+                                    de marcadores por mil palavras. São sinais fracos: entram na conta, mas nunca
+                                    decidem sozinhos.</small>
+                            </div>
+                        </li>
+                        <li class="vid-etapa">
+                            <span class="vid-etapa__num" aria-hidden="true">4</span>
+                            <div>
+                                <strong>Conclusão</strong>
+                                <p>O texto é dividido em trechos de cerca de 120 palavras e cada um recebe uma estimativa. O documento só é apontado como IA quando o sinal passa de um limite escolhido para quase nunca acusar texto de gente.</p>
+                                <small>Regressão logística sobre as medidas, calibrada com textos rotulados; o
+                                    limite é o menor em que no máximo 1% dos textos humanos da validação seriam
+                                    acusados. Sem calibração no idioma, o resultado é sempre inconclusivo.</small>
+                            </div>
+                        </li>
+                    </ol>
+
+                    <p class="metodos-aviso">
+                        Nenhum detector de texto é confiável a ponto de servir de prova. Textos formais, técnicos,
+                        jurídicos, traduzidos ou passados por corretor automático parecem “previsíveis” mesmo quando
+                        foram escritos por uma pessoa, e um texto de IA reescrito à mão pode passar. Use o resultado
+                        como ponto de partida para uma conversa, nunca como veredito.
+                    </p>
+                </div>
+            </details>
+
+            <p class="selecao-note">
+                O documento é lido na memória do servidor. Os trechos do texto voltam só para esta tela, para o
+                destaque, e são apagados do servidor em até 15 minutos; nada é gravado em disco. Veja o
+                <a href="./index-privacidade.html">Aviso de Privacidade</a>.
+            </p>
+        </section>
+
+        <!-- ================= Resultado ================= -->
+        <section id="txtResultado" class="vid-resultado glass-panel" aria-labelledby="txtResultadoTitulo" hidden>
+            <div class="vid-resultado__topo">
+                <span class="page-kicker">Resultado da análise</span>
+                <h2 class="vid-resultado__titulo" id="txtResultadoTitulo">Resultado do texto</h2>
+            </div>
+
+            <div class="aida-state" id="txtVeredito" role="status">
+                <span class="aida-state__icon" aria-hidden="true"></span>
+                <div>
+                    <p class="aida-state__title" id="txtVereditoTitulo"></p>
+                    <p class="vid-significado" id="txtSignificado"></p>
+                    <ul class="vid-motivos" id="txtMotivos"></ul>
+                </div>
+            </div>
+
+            <dl class="vid-numeros" id="txtNumeros"></dl>
+
+            <div class="vid-bloco" id="txtTrechosBloco">
+                <h3 class="aida-title-3">Texto, trecho a trecho</h3>
+                <p class="vid-bloco__ajuda" id="txtTrechosAjuda"></p>
+                <div class="txt-mapa" id="txtMapa" aria-label="Mapa do documento: um bloco por trecho, na ordem do texto"></div>
+                <ul class="vid-legenda" aria-hidden="true">
+                    <li><span class="vid-cor txt-cor--alto"></span>Sinal forte de IA</li>
+                    <li><span class="vid-cor txt-cor--medio"></span>Sinal moderado</li>
+                    <li><span class="vid-cor txt-cor--baixo"></span>Sem sinal</li>
+                </ul>
+                <div class="txt-filtro">
+                    <label class="txt-filtro__opcao">
+                        <input type="checkbox" id="txtSoSuspeitos">
+                        Mostrar só os trechos com sinal
+                    </label>
+                </div>
+                <ol class="txt-trechos" id="txtTrechos"></ol>
+            </div>
+
+            <div class="vid-bloco" id="txtLimpezaBloco">
+                <h3 class="aida-title-3">O que ficou fora da análise</h3>
+                <ul class="vid-motivos" id="txtLimpeza"></ul>
+            </div>
+
+            <div class="vid-bloco" id="txtLimitesBloco">
+                <h3 class="aida-title-3">Limites desta análise</h3>
+                <ul class="vid-motivos" id="txtLimites"></ul>
+            </div>
+
+            <p class="aida-text--sm vid-ressalva" id="txtRessalva"></p>
+
+            <div class="vid-acoes">
+                <button type="button" class="aida-btn aida-btn--sm" id="txtNovo">Analisar outro documento</button>
+                <button type="button" class="aida-btn aida-btn--ghost aida-btn--sm" id="txtBaixar">
+                    Baixar relatório (JSON)
+                </button>
+                <a href="#txtComoFunciona" class="aida-btn aida-btn--quiet aida-btn--sm" id="txtVerComo">
+                    Como a análise funciona
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <script src="../scripts/script-cookie-consent.js"></script>
+    <script src="../scripts/script-texto.js?v=20261002-v1"></script>
+</body>
+
+</html>

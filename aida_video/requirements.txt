@@ -14,3 +14,7 @@ joblib>=1.3
 pytest>=8
 # AIDA Documents (leitura de PDF).
 pypdf>=5.1
+# AIDA Documents · texto (perplexidade). Opcionais: sem eles a analise de texto
+# responde INCONCLUSIVO. No CPU: pip install torch --index-url https://download.pytorch.org/whl/cpu
+# torch>=2.2
+# transformers>=4.40

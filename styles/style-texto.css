@@ -1,0 +1,164 @@
+/* AIDA Documents · texto (pages/index-texto.html).
+   A página reaproveita os estilos vid-* e doc-*; aqui ficam só o mapa do
+   documento e a lista de trechos destacados. */
+
+.txt-cor--alto { --_cor: var(--aida-danger); }
+.txt-cor--medio { --_cor: var(--aida-warning); }
+.txt-cor--baixo { --_cor: var(--aida-neutral); }
+
+/* ---------------------------------------------------------------- mapa */
+
+/* Um bloco por trecho, na ordem do texto e com largura proporcional às palavras:
+   mostra de relance se o sinal está no documento todo ou concentrado numa parte. */
+.txt-mapa {
+  display: flex;
+  gap: 2px;
+  height: 28px;
+  margin-bottom: var(--aida-space-3);
+  border-radius: var(--aida-radius-sm);
+  overflow: hidden;
+}
+
+.txt-mapa:empty {
+  display: none;
+}
+
+.txt-mapa__bloco {
+  flex: var(--_peso, 1) 1 0;
+  min-width: 3px;
+  padding: 0;
+  border: 0;
+  background: var(--_cor);
+  opacity: 0.85;
+  cursor: pointer;
+}
+
+.txt-mapa__bloco.txt-cor--baixo {
+  opacity: 0.3;
+}
+
+.txt-mapa__bloco:hover,
+.txt-mapa__bloco:focus-visible {
+  opacity: 1;
+  outline: 2px solid var(--aida-text);
+  outline-offset: -2px;
+}
+
+/* ---------------------------------------------------------------- filtro */
+
+.txt-filtro {
+  margin: var(--aida-space-3) 0;
+}
+
+.txt-filtro__opcao {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--aida-space-2);
+  color: var(--aida-text-2);
+  font-size: var(--aida-fs-caption);
+  cursor: pointer;
+}
+
+.txt-filtro__opcao input {
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--aida-green-400);
+}
+
+/* ---------------------------------------------------------------- trechos */
+
+.txt-trechos {
+  display: grid;
+  gap: var(--aida-space-2);
+  max-height: 34rem;
+  margin: 0;
+  padding: 0 var(--aida-space-2) 0 0;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.txt-trecho {
+  display: grid;
+  grid-template-columns: 5.5rem minmax(0, 1fr);
+  gap: var(--aida-space-3);
+  padding: var(--aida-space-3);
+  border-left: 3px solid var(--_cor);
+  border-radius: var(--aida-radius-sm);
+  background: var(--aida-surface-1);
+  scroll-margin-top: var(--aida-space-4);
+}
+
+.txt-trecho.txt-cor--alto { background: var(--aida-danger-bg); }
+.txt-trecho.txt-cor--medio { background: var(--aida-warning-bg); }
+
+.txt-trecho--foco {
+  outline: 2px solid var(--_cor);
+  outline-offset: 2px;
+}
+
+.txt-trechos--so-suspeitos .txt-trecho.txt-cor--baixo {
+  display: none;
+}
+
+.txt-trecho__lado {
+  display: grid;
+  align-content: start;
+  gap: 2px;
+}
+
+.txt-trecho__valor {
+  color: var(--_cor);
+  font-size: var(--aida-fs-body-lg);
+  font-weight: var(--aida-fw-semibold);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+.txt-trecho.txt-cor--baixo .txt-trecho__valor {
+  color: var(--aida-text-3);
+}
+
+.txt-trecho__rotulo,
+.txt-trecho__pagina {
+  color: var(--aida-text-3);
+  font-size: var(--aida-fs-micro);
+}
+
+.txt-trecho__texto {
+  margin: 0;
+  color: var(--aida-text-2);
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.txt-trecho__medidas {
+  grid-column: 2;
+  margin: 0;
+  color: var(--aida-text-3);
+  font-size: var(--aida-fs-micro);
+  font-variant-numeric: tabular-nums;
+}
+
+.txt-trechos__vazio {
+  padding: var(--aida-space-3);
+  color: var(--aida-text-3);
+  font-size: var(--aida-fs-caption);
+}
+
+@media (max-width: 640px) {
+  .txt-trecho {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--aida-space-2);
+  }
+
+  .txt-trecho__lado {
+    grid-auto-flow: column;
+    justify-content: start;
+    align-items: baseline;
+    gap: var(--aida-space-3);
+  }
+
+  .txt-trecho__medidas {
+    grid-column: 1;
+  }
+}

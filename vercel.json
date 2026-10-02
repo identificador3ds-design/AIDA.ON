@@ -73,6 +73,10 @@
       "destination": "/pages/index-documentos"
     },
     {
+      "source": "/texto",
+      "destination": "/pages/index-texto"
+    },
+    {
       "source": "/api",
       "destination": "/pages/index-api"
     },

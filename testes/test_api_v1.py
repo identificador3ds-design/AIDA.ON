@@ -92,10 +92,21 @@ def enviar(cliente, conteudo=PNG, nome="foto.png", chave=CHAVE, **campos):
 # --------------------------------------------------------------------------- #
 # Contrato
 # --------------------------------------------------------------------------- #
-def test_os_tres_estados_sobrevivem_a_traducao():
-    for estado in ("REAL", "IA/MANIPULADA", "INCONCLUSIVO"):
+def test_os_quatro_estados_sobrevivem_a_traducao():
+    for estado in ("REAL", "REAL_EDITADA", "IA/MANIPULADA", "INCONCLUSIVO"):
         corpo = mapear_analise({**RESPOSTA_CORE, "resultado": estado})
         assert corpo["result"] == estado
+
+
+def test_editores_do_core_chegam_ao_integrador():
+    corpo = mapear_analise({**RESPOSTA_CORE, "resultado": "REAL_EDITADA",
+                            "editada": True, "editores": ["Adobe Lightroom"]})
+    assert corpo["edited"] is True
+    assert corpo["editors"] == ["Adobe Lightroom"]
+
+    sem_edicao = mapear_analise({**RESPOSTA_CORE, "resultado": "REAL"})
+    assert sem_edicao["edited"] is False
+    assert sem_edicao["editors"] == []
 
 
 def test_resultado_desconhecido_vira_inconclusivo_e_nao_um_dos_lados():

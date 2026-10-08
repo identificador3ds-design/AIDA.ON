@@ -151,6 +151,12 @@
   --_fo-line: rgba(143, 216, 183, 0.34);
 }
 
+.fo-veredito__rotulo[data-estado="REAL_EDITADA"] {
+  --_fo-fg: var(--aida-info);
+  --_fo-bg: var(--aida-info-bg);
+  --_fo-line: rgba(159, 216, 255, 0.34);
+}
+
 .fo-veredito__rotulo[data-estado="IA/MANIPULADA"] {
   --_fo-fg: var(--aida-danger);
   --_fo-bg: var(--aida-danger-bg);

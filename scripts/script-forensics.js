@@ -252,6 +252,15 @@
      Renderização
      --------------------------------------------------------------------- */
 
+  // Texto do selo do veredito. A API devolve os valores crus; a tela mostra
+  // "Gerada por IA" no lugar de "IA/MANIPULADA" (decisão do grupo, 02/10).
+  var ROTULOS_VEREDITO = {
+    "REAL": "Real",
+    "REAL_EDITADA": "Real editada",
+    "IA/MANIPULADA": "Gerada por IA",
+    "INCONCLUSIVO": "Inconclusivo",
+  };
+
   function renderizarIdentificacao(dossie, alvo) {
     el("foId").textContent = texto(dossie.id_analise);
     var doVideo = alvo && alvo.origem === "video" && alvo.nome;
@@ -267,7 +276,7 @@
     veredito.dataset.estado = estado;
     veredito.textContent = r.fora_de_dominio
       ? "Fora do escopo da análise"
-      : texto(r.resultado);
+      : (ROTULOS_VEREDITO[r.resultado] || texto(r.resultado));
 
     el("foConfianca").textContent = texto(r.confianca).toUpperCase();
     el("foExplicacao").textContent = texto(r.explicacao, "");
@@ -376,11 +385,21 @@
         "O AIDA foi feito para fotos, então não deu uma probabilidade.");
     } else if (r.resultado === "IA/MANIPULADA") {
       itens.push("O AIDA encontrou sinais" + (confianca === "alta" ? " fortes" : "") +
-        " de que esta imagem foi gerada ou alterada por inteligência artificial.");
+        " de que esta imagem foi gerada por inteligência artificial.");
     } else if (r.resultado === "REAL") {
       itens.push("O AIDA não encontrou sinais relevantes de geração por IA: a imagem se comporta como uma foto de câmera.");
+    } else if (r.resultado === "REAL_EDITADA") {
+      itens.push("O AIDA não encontrou sinais relevantes de geração por IA: é uma foto de câmera, " +
+        "mas o arquivo registra que ela passou por um editor de imagem depois de tirada.");
     } else {
       itens.push("Os sinais ficaram no meio do caminho. Em vez de arriscar, o AIDA marcou o resultado como inconclusivo.");
+    }
+
+    // A edição vem dos metadados do arquivo; uma foto reenviada por aplicativo
+    // de mensagens perde esse registro, então a ausência aqui não prova nada.
+    var editores = (r.editores || []).filter(Boolean);
+    if (!r.fora_de_dominio && editores.length) {
+      itens.push("Editada em: " + editores.join(", ") + ".");
     }
 
     if (!r.fora_de_dominio && isFinite(Number(r.probabilidade_ia_exibicao))) {

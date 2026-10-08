@@ -272,11 +272,14 @@
             <div class="produto-grid">
                 <article class="produto-item">
                     <span class="produto-item__marca">Estados</span>
-                    <h3>Trate os três resultados</h3>
+                    <h3>Trate os quatro resultados</h3>
                     <p>
-                        <code>result</code> vale <strong>REAL</strong>, <strong>IA/MANIPULADA</strong> ou
-                        <strong>INCONCLUSIVO</strong>. Um <code>if/else</code> binário rotularia como IA justamente
-                        o que o sistema declarou indeterminado.
+                        <code>result</code> vale <strong>REAL</strong>, <strong>REAL_EDITADA</strong>,
+                        <strong>IA/MANIPULADA</strong> ou <strong>INCONCLUSIVO</strong>. Um <code>if/else</code>
+                        binário rotularia como IA justamente o que o sistema declarou indeterminado, ou uma foto
+                        real que só passou por um editor. <strong>REAL_EDITADA</strong> vem dos metadados do
+                        arquivo (os editores ficam em <code>editors</code>): uma foto reenviada por aplicativo de
+                        mensagem perde esse registro e sai como <strong>REAL</strong>.
                     </p>
                 </article>
 

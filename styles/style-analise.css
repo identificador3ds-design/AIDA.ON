@@ -1007,6 +1007,17 @@
   white-space: pre-line;
 }
 
+/* "Editada em: Adobe Lightroom" — a cor vem do estado, pelo script. */
+.method-copy p.editores-info {
+  margin-top: 6px;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.method-copy p.editores-info[hidden] {
+  display: none;
+}
+
 .bloco-exemplos {
   display: flex;
   flex-direction: column;

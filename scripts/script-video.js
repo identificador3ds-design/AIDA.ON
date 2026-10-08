@@ -64,7 +64,10 @@
 
   const ROTULOS = {
     "REAL": { texto: "Real", classe: "real" },
-    "IA/MANIPULADA": { texto: "IA/manipulada", classe: "ia" },
+    // Quadros de vídeo não trazem metadados de edição; o Core só devolve este
+    // estado para uma imagem enviada direto. Fica aqui como proteção.
+    "REAL_EDITADA": { texto: "Real editada", classe: "real" },
+    "IA/MANIPULADA": { texto: "Gerada por IA", classe: "ia" },
     "INCONCLUSIVO": { texto: "Inconclusivo", classe: "inconclusivo" },
   };
 
@@ -519,7 +522,7 @@
         ? `A AIDA encontrou sinais de geração por IA ${juntar(fontes)}. Isso indica que o vídeo, ou parte dele, pode ter sido criado ou alterado por inteligência artificial.`
         : "A AIDA encontrou sinais de geração por IA neste vídeo.";
     }
-    if (relatorio.resultado === "REAL") {
+    if (relatorio.resultado === "REAL" || relatorio.resultado === "REAL_EDITADA") {
       return "Nenhuma das leituras encontrou sinais relevantes de IA: os quadros, o movimento" +
         (a.resultado ? " e o áudio" : "") + " se comportam como os de uma gravação de câmera.";
     }
@@ -531,7 +534,7 @@
     el.resultado.hidden = false;
     el.baixar.hidden = false;
 
-    const tipo = { "REAL": "sucesso", "IA/MANIPULADA": "erro", "INCONCLUSIVO": "baixa-confianca" }[relatorio.resultado];
+    const tipo = { "REAL": "sucesso", "REAL_EDITADA": "sucesso", "IA/MANIPULADA": "erro", "INCONCLUSIVO": "baixa-confianca" }[relatorio.resultado];
     definirEstado(el.veredito, tipo || "baixa-confianca");
     el.vereditoTitulo.textContent = `Resultado do vídeo: ${(ROTULOS[relatorio.resultado] || ROTULOS.INCONCLUSIVO).texto}`;
     if (el.significado) el.significado.textContent = explicarResultado(relatorio);

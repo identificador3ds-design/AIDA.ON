@@ -24,6 +24,7 @@ import numpy as np
 
 IA = "IA/MANIPULADA"
 REAL = "REAL"
+REAL_EDITADA = "REAL_EDITADA"
 INCONCLUSIVO = "INCONCLUSIVO"
 
 REGRAS_PADRAO = {
@@ -77,6 +78,10 @@ def agregar(frames, regras=None):
     """`frames`: lista na ordem do tempo com tempo_s, resultado, probabilidade_ia,
     fora_de_dominio e, quando falhou, `erro`."""
     regras = {**REGRAS_PADRAO, **(regras or {})}
+    # Foto real editada continua sendo foto real: no video ela vota como REAL.
+    # Quadros extraidos nao trazem metadados de edicao, entao isto e so protecao
+    # para nao cair em INCONCLUSIVO se o Core um dia devolver o estado.
+    frames = [{**f, "resultado": REAL} if f.get("resultado") == REAL_EDITADA else f for f in frames]
     com_erro = [f for f in frames if f.get("erro")]
     fora = [f for f in frames if not f.get("erro") and f.get("fora_de_dominio")]
     validos = [f for f in frames if not f.get("erro") and not f.get("fora_de_dominio")]

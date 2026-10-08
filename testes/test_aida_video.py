@@ -158,6 +158,14 @@ def test_agrega_real():
     assert "isolado" in r["motivos"][0]
 
 
+def test_agrega_real_editada_vota_como_real():
+    # Sem esta regra, quadros REAL_EDITADA caiam na contagem de INCONCLUSIVO.
+    editado = {**FRAME_REAL, "resultado": "REAL_EDITADA"}
+    r = agregar(_frames(*[editado] * 9, FRAME_IA))
+    assert r["resultado"] == REAL
+    assert r["contagem"] == {REAL: 9, IA: 1, INCONCLUSIVO: 0}
+
+
 def test_agrega_ia_por_maioria():
     r = agregar(_frames(FRAME_IA, FRAME_REAL, FRAME_IA, FRAME_IA, FRAME_REAL, FRAME_IA))
     assert r["resultado"] == IA

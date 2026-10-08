@@ -760,28 +760,40 @@ function setCarregando(ativo) {
   if (btnTrocar) btnTrocar.disabled = ativo;
 }
 
-// A API tem TRES estados, mais o caso "fora do escopo". A versao anterior desta
+// A API tem QUATRO estados, mais o caso "fora do escopo". A versao anterior desta
 // funcao testava apenas `resultado === "IA/MANIPULADA"` e caia no ramo
 // "provavelmente real" para todo o resto — ou seja, quando o sistema respondia
 // INCONCLUSIVO, a tela afirmava que a imagem era real.
+// REAL_EDITADA: foto real cujo arquivo registra passagem por editor de imagem
+// (Lightroom, Photoshop...). Depende dos metadados; sem eles a foto sai REAL.
 const ESTADOS = {
   "IA/MANIPULADA": {
-    titulo: "Indícios de imagem gerada ou manipulada por IA",
+    titulo: "Indícios de imagem gerada por IA",
+    rotulo: "Gerada por IA",
     cor: "#c62828",
     mostrarProbabilidades: true,
   },
   REAL: {
     titulo: "Indícios de fotografia real",
+    rotulo: "Real",
     cor: "#2e7d32",
+    mostrarProbabilidades: true,
+  },
+  REAL_EDITADA: {
+    titulo: "Indícios de fotografia real editada",
+    rotulo: "Real editada",
+    cor: "#00838f",
     mostrarProbabilidades: true,
   },
   INCONCLUSIVO: {
     titulo: "",
+    rotulo: "Inconclusivo",
     cor: "#e08a1e",
     mostrarProbabilidades: true,
   },
   FORA_DE_DOMINIO: {
     titulo: "Fora do escopo da ferramenta",
+    rotulo: "Fora de escopo",
     cor: "#6b7280",
     // Quando a imagem nao e fotografica, a probabilidade nao tem significado:
     // exibi-la convida o usuario a interpretar um numero sem sentido.
@@ -841,6 +853,16 @@ function exibirResultado(dados, baseApi) {
     tituloMetodo.textContent = texto;
     tituloMetodo.style.color = estado.cor;
     tituloMetodo.hidden = !texto;
+  }
+
+  // Editores lidos dos metadados do arquivo. Aparecem em qualquer veredito:
+  // numa imagem de IA ou inconclusiva, a edicao e informacao, nao absolvicao.
+  const editoresInfo = document.getElementById("editoresInfo");
+  if (editoresInfo) {
+    const editores = Array.isArray(dados.editores) ? dados.editores.filter(Boolean) : [];
+    editoresInfo.textContent = editores.length ? `Editada em: ${editores.join(", ")}` : "";
+    editoresInfo.style.color = estado.cor;
+    editoresInfo.hidden = !editores.length || Boolean(dados.fora_de_dominio);
   }
 
   const statsContainer = document.getElementById("statsContainer");
@@ -1370,9 +1392,8 @@ async function salvarHistoricoSupabase(arquivo, dadosAnalisados, baseApi) {
     dadosAnalisados.probabilidade_real_exibicao ?? dadosAnalisados.probabilidade_real ?? 1 - probIA
   );
 
-  const veredito = dadosAnalisados.fora_de_dominio
-    ? "FORA DE ESCOPO"
-    : dadosAnalisados.resultado || "INCONCLUSIVO";
+  // Texto legivel, nao o valor cru da API ("REAL_EDITADA", "IA/MANIPULADA").
+  const veredito = estado.rotulo;
   const probabilidadeFormatada = estado.mostrarProbabilidades
     ? `${veredito} — IA: ${(probIA * 100).toFixed(1)}% | Real: ${(probReal * 100).toFixed(1)}%`
     : `${veredito} — probabilidades não se aplicam`;

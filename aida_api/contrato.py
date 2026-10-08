@@ -10,8 +10,8 @@ Duas responsabilidades, e nenhuma delas e decidir:
    nao existir uma segunda verdade que envelhece sozinha.
 
 Os NOMES dos campos sao em ingles porque a pagina /api mostra o exemplo assim.
-Os VALORES continuam como o Core produz ("REAL", "IA/MANIPULADA",
-"INCONCLUSIVO", "baixa"/"media"/"alta"): traduzi-los criaria um segundo
+Os VALORES continuam como o Core produz ("REAL", "REAL_EDITADA",
+"IA/MANIPULADA", "INCONCLUSIVO", "baixa"/"media"/"alta"): traduzi-los criaria um segundo
 vocabulario para a mesma decisao, e integrador nenhum ganha com isso.
 """
 
@@ -19,7 +19,7 @@ from __future__ import annotations
 
 VERSAO_CONTRATO = "v1"
 
-RESULTADOS = ("REAL", "IA/MANIPULADA", "INCONCLUSIVO")
+RESULTADOS = ("REAL", "REAL_EDITADA", "IA/MANIPULADA", "INCONCLUSIVO")
 
 RESSALVA_PADRAO = (
     "Resultado tecnico de apoio: indicio, nao prova. Nao use isoladamente para "
@@ -83,6 +83,10 @@ def mapear_analise(bruto, analysis_id=None, prefixo_evidencia="/v1/evidence", du
         "result": resultado,
         "inconclusive": bool(bruto.get("inconclusivo", resultado == "INCONCLUSIVO")),
         "out_of_domain": bool(bruto.get("fora_de_dominio", False)),
+        # Edicao registrada nos metadados do arquivo (Lightroom, Photoshop...).
+        # Vale em qualquer veredito; so REAL com editor vira REAL_EDITADA.
+        "edited": bool(bruto.get("editada", False)),
+        "editors": _lista(bruto.get("editores")),
         "confidence": bruto.get("confianca"),
         # Escala de exibicao: corte em 0,50 por construcao. E a que se mostra
         # ao usuario final e a unica que casa com o veredito.
@@ -185,9 +189,11 @@ CONTRATO = {
     },
     "analysis_object": {
         "analysis_id": "str — use em GET /v1/analysis/{id}",
-        "result": "'REAL' | 'IA/MANIPULADA' | 'INCONCLUSIVO' — TRES estados",
+        "result": "'REAL' | 'REAL_EDITADA' | 'IA/MANIPULADA' | 'INCONCLUSIVO' — QUATRO estados. REAL_EDITADA = foto real cujo arquivo registra edicao; depende dos metadados (foto reenviada por app de mensagem perde o registro e sai REAL)",
         "inconclusive": "bool — atalho para result == 'INCONCLUSIVO'",
         "out_of_domain": "bool — a imagem nao e fotografica. Quando true, as probabilidades nao tem significado; mostre `title`",
+        "edited": "bool — o arquivo registra edicao em editor de imagem (vale tambem para IA e INCONCLUSIVO)",
+        "editors": "list[str] — editores encontrados, ex.: ['Adobe Lightroom']",
         "confidence": "'baixa' | 'media' | 'alta'",
         "ai_probability": "float 0..1 — escala de EXIBICAO, corte em 0,50. E esta que se mostra",
         "real_probability": "float 0..1 (= 1 - ai_probability)",

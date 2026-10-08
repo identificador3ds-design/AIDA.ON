@@ -87,6 +87,8 @@ O que quebra os atalhos é ter **o mesmo programa nas duas classes**:
 | `reais/` | provas e listas de exercício reais de professores (Word, Google Docs) | o mesmo assunto das provas de IA |
 | `reais/` | documentos reais de 2025–2026 | tirar a data como atalho |
 
+Planilha de coleta (passo a passo, metas, variedade e prompts): [`AIDA_Documents_Coleta.xlsx`](AIDA_Documents_Coleta.xlsx).
+
 Meta mínima: 30 por classe, com pelo menos 3 programas diferentes em cada uma. Organizar como
 `<pasta>/reais/*.pdf` e `<pasta>/ia/*.pdf` (ou `manipulados/`) e rodar:
 

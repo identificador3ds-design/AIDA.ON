@@ -89,7 +89,19 @@ O que quebra os atalhos é ter **o mesmo programa nas duas classes**:
 
 Planilha de coleta (passo a passo, metas, variedade e prompts): [`AIDA_Documents_Coleta.xlsx`](AIDA_Documents_Coleta.xlsx).
 
-Meta mínima: 30 por classe, com pelo menos 3 programas diferentes em cada uma. Organizar como
+**Meta: ferramenta confiável no site.** O falso positivo publicado vem só do conjunto de
+teste (~30 % do total), e com zero erros em N reais de teste ele fica abaixo de 3/N:
+
+| Fase | Caso 1 (real / IA / manipulado) | Caso 2 (real / IA) | Total | O que o site pode dizer |
+|---|---|---|---|---|
+| TCC | 150 / 100 / 50 | 50 / 50 | 400 | nada no site; números vão para o TCC |
+| Site beta | 500 / 250 / 250 | 200 / 200 | 1.400 | "em validação", falso positivo < 2 % (Caso 1) |
+| Site confiável | 1.000 / 350 / 350 | 500 / 500 | 2.700 | falso positivo < 1 % (300 reais de teste no Caso 1, zero erros) |
+
+O Caso 2 (texto colado) nunca decide sozinho no site: no máximo vira suspeita, com resultado
+INCONCLUSIVO.
+
+Primeiro passo de estudo: 30 por classe, com pelo menos 3 programas diferentes em cada uma. Organizar como
 `<pasta>/reais/*.pdf` e `<pasta>/ia/*.pdf` (ou `manipulados/`) e rodar:
 
 ```bash

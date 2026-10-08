@@ -146,6 +146,27 @@ def test_pdf_so_imagem_pede_ocr():
     assert any(i["indicio"] == "sem_camada_texto_total" for i in r["indicios"])
 
 
+def test_word_calibri_truetype_e_type0_nao_e_edicao():
+    """O Word embute a Calibri como TrueType e de novo como Type0 (Identity-H): os 3 artigos
+    reais de 08/10 eram acusados de "texto acrescentado por outro programa"."""
+    from aida_documents.estrutura import _subconjuntos_duplicados
+
+    word = [("/BCDEEE+Calibri", "/TrueType"), ("/BCDHEE+Calibri", "/Type0"), ("/BCDFEE+Calibri-Bold", "/TrueType")]
+    assert _subconjuntos_duplicados(word) == []
+    editado = [("/ABCDEF+Arial", "/TrueType"), ("/GHIJKL+Arial", "/TrueType")]
+    assert _subconjuntos_duplicados(editado) == ["Arial"]
+
+
+def test_produtores_pdfsam_e_pypdf():
+    from aida_documents.estrutura import _ferramentas
+
+    # PDFsam grava "SAMBox (www.sejda.org)": nao e o editor online Sejda.
+    assert _ferramentas("sambox 1.1.41 (www.sejda.org) pdfsam basic v3.3.7") == ["organizador de páginas (PDFsam)"]
+    assert _ferramentas("sejda") == ["editor online (Sejda)"]
+    r = analisar_bytes(pdf_texto(["Prova de literatura " * 3], produtor="pypdf"))
+    assert {i["indicio"] for i in r["indicios"]} == {"gerador_programatico"}
+
+
 def test_imagem_e_arquivo_invalido():
     assert analisar_bytes(b"\x89PNG...", "nota.png")["resultado"] == "INCONCLUSIVO"
     with pytest.raises(ValueError):

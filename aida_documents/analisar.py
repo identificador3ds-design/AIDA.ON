@@ -44,7 +44,7 @@ PESOS = {
     "benford_nao_conforme": 0.25,
     "benford_nao_conforme_forte": 0.35,
 }
-_ESCRITORIO = ("processador de texto", "impressão de navegador", "impressora virtual")
+_ESCRITORIO = ("processador de texto", "impressão de navegador", "impressora virtual", "organizador de páginas")
 _PROGRAMACAO = "biblioteca de programação"
 
 

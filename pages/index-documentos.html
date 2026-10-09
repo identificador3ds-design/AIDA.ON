@@ -6,26 +6,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#10403b">
     <meta name="description"
-        content="AIDA Documents: envie um PDF (nota fiscal, recibo, comprovante) e veja os indícios técnicos de edição ou montagem, explicados em linguagem simples.">
+        content="AIDA Documents: envie um PDF, Word ou TXT (nota fiscal, recibo, comprovante, texto) e veja os indícios técnicos de edição ou montagem, explicados em linguagem simples.">
 
     <link rel="manifest" href="../manifest.webmanifest">
     <link rel="apple-touch-icon" href="../assets/images/pwa-icon-180.png">
     <link id="favicon" rel="icon" type="image/x-icon" href="../assets/images/AIDABranco.ico">
 
-    <title>AIDA Documents — Enviar PDF para análise</title>
+    <title>AIDA Documents — Enviar documento para análise</title>
     <!-- SEO e compartilhamento -->
     <link rel="canonical" href="https://aida-on.com.br/documentos">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="AIDA.ON">
     <meta property="og:locale" content="pt_BR">
-    <meta property="og:title" content="AIDA Documents — Enviar PDF para análise">
-    <meta property="og:description" content="Envie uma nota fiscal, recibo ou comprovante em PDF e veja os indícios técnicos de edição ou montagem.">
+    <meta property="og:title" content="AIDA Documents — Enviar documento para análise">
+    <meta property="og:description" content="Envie uma nota fiscal, recibo, comprovante ou texto em PDF, Word ou TXT e veja os indícios técnicos de edição, montagem ou IA.">
     <meta property="og:url" content="https://aida-on.com.br/documentos">
     <meta property="og:image" content="https://aida-on.com.br/assets/images/pwa-icon-512.png">
     <meta property="og:image:alt" content="Logotipo do AIDA.ON">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="AIDA Documents — Enviar PDF para análise">
-    <meta name="twitter:description" content="Envie uma nota fiscal, recibo ou comprovante em PDF e veja os indícios técnicos de edição ou montagem.">
+    <meta name="twitter:title" content="AIDA Documents — Enviar documento para análise">
+    <meta name="twitter:description" content="Envie uma nota fiscal, recibo, comprovante ou texto em PDF, Word ou TXT e veja os indícios técnicos de edição, montagem ou IA.">
     <meta name="twitter:image" content="https://aida-on.com.br/assets/images/pwa-icon-512.png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -61,18 +61,19 @@
         <section class="selecao-panel glass-panel" id="docPainelEnvio" aria-labelledby="docTitulo">
             <div class="selecao-intro">
                 <span class="page-kicker">AIDA Documents · versão inicial</span>
-                <h1 class="page-title" id="docTitulo">Escolha o PDF para analisar</h1>
+                <h1 class="page-title" id="docTitulo">Escolha o documento para analisar</h1>
                 <p class="page-copy">
-                    Envie uma nota fiscal, recibo, comprovante ou boleto em PDF. A AIDA confere os números de
-                    cadastro, a estrutura do arquivo e os valores, e explica em linguagem simples os indícios de
-                    que ele pode ter sido editado, montado ou gerado.
+                    Envie uma nota fiscal, recibo, comprovante, boleto ou texto em PDF, Word (DOCX/DOC) ou TXT.
+                    A AIDA confere os números de cadastro, a estrutura e o histórico do arquivo, a credencial de
+                    IA (C2PA) e os valores, e explica em linguagem simples os indícios de que ele pode ter sido
+                    editado, montado ou gerado por IA.
                 </p>
             </div>
 
             <ol class="selecao-steps selecao-steps--tres" aria-label="Passos da análise">
                 <li class="selecao-step">
                     <span aria-hidden="true">1</span>
-                    <strong>Escolha o PDF</strong>
+                    <strong>Escolha o documento</strong>
                 </li>
                 <li class="selecao-step">
                     <span aria-hidden="true">2</span>
@@ -103,18 +104,18 @@
 
                     <span class="selecao-upload-copy">
                         <span class="section-tag">Upload</span>
-                        <span class="vid-drop__titulo" id="docDropTitulo">Selecione o PDF</span>
+                        <span class="vid-drop__titulo" id="docDropTitulo">Selecione o documento</span>
                         <span class="vid-drop__texto" id="docDropTexto">
-                            Escolha o arquivo original, do jeito que você recebeu. Evite prints ou PDFs refeitos.
+                            Escolha o arquivo original, do jeito que você recebeu. Evite prints ou arquivos refeitos.
                         </span>
                     </span>
 
-                    <input type="file" id="docArquivo" name="documento" aria-label="Selecionar PDF do dispositivo"
-                           accept="application/pdf,.pdf">
+                    <input type="file" id="docArquivo" name="documento" aria-label="Selecionar documento do dispositivo"
+                           accept=".pdf,.docx,.doc,.txt,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/msword,text/plain">
 
-                    <span class="aida-button vid-drop__botao" aria-hidden="true">Selecionar PDF</span>
+                    <span class="aida-button vid-drop__botao" aria-hidden="true">Selecionar arquivo</span>
 
-                    <span class="selecao-formats">Formato aceito: PDF, até 20 MB.</span>
+                    <span class="selecao-formats">Formatos aceitos: PDF, DOCX, DOC e TXT, até 20 MB.</span>
                 </label>
 
                 <details class="vid-ajustes">
@@ -178,7 +179,10 @@
                                 <p>Um PDF guarda rastros de como foi feito: se foi salvo por cima depois de pronto, se foi alterado depois de assinado, se é só uma foto dentro do PDF e qual programa o gerou.</p>
                                 <small>Revisões incrementais (seções %%EOF com objetos novos), bytes além do /ByteRange da
                                     assinatura, páginas sem camada de texto, produtor (editor online, editor de imagem), fonte
-                                    embutida em dois subconjuntos e datas de criação e modificação.</small>
+                                    embutida em dois subconjuntos e datas de criação e modificação. No Word (DOCX): minutos de
+                                    edição, sessões de escrita e marcas de geração por programa (python-docx). No DOC, só os
+                                    metadados; no TXT, só o texto e os caracteres invisíveis. Em todos: a credencial C2PA que
+                                    geradores como o ChatGPT gravam no arquivo.</small>
                             </div>
                         </li>
                         <li class="vid-etapa">
@@ -212,7 +216,7 @@
             </details>
 
             <p class="selecao-note">
-                O PDF é lido na memória do servidor e descartado ao fim da análise; o texto do documento não é
+                O arquivo é lido na memória do servidor e descartado ao fim da análise; o texto do documento não é
                 guardado nem devolvido. Veja o <a href="./index-privacidade.html">Aviso de Privacidade</a>.
             </p>
         </section>

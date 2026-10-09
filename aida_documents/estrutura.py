@@ -12,6 +12,9 @@ Nada aqui olha o conteudo visual. Os sinais sao:
   montagem, e nao um PDF saido direto do sistema emissor;
 - fontes: a mesma fonte embutida em dois subconjuntos diferentes (ABCDEF+Arial e
   GHIJKL+Arial) costuma aparecer quando um editor acrescenta texto a um PDF pronto.
+  So conta com o mesmo tipo de fonte: o Word grava a Calibri como TrueType (WinAnsi)
+  e de novo como Type0 (Identity-H) para os caracteres fora do WinAnsi, e isso nao e
+  edicao (os 3 artigos reais do Word de 08/10 caiam nesse falso positivo).
 """
 
 from __future__ import annotations
@@ -21,6 +24,8 @@ import re
 from datetime import datetime
 
 from pypdf import PdfReader
+
+from .proveniencia import ler_c2pa
 
 # Produtores que nao sao sistemas emissores. A lista e deliberadamente curta; cada
 # entrada e um indicio fraco, nunca prova.
@@ -41,6 +46,9 @@ PRODUTORES_EDICAO = {
     "libreoffice": "processador de texto (LibreOffice)",
     "google docs": "processador de texto (Google Docs)",
     "skia/pdf": "impressão de navegador (Chrome/Skia)",
+    # PDFsam grava "SAMBox (www.sejda.org)" no Producer: por isso vem antes de "sejda"
+    # e a busca para no primeiro casamento dessa familia (ver _ferramentas).
+    "pdfsam": "organizador de páginas (PDFsam)",
     "camscanner": "app de digitalização (CamScanner)",
     # Bibliotecas que um script (ou uma IA escrevendo codigo) usa para montar um PDF do
     # zero. Sistemas emissores costumam usar iText/Jasper, que ficam de fora.
@@ -51,7 +59,13 @@ PRODUTORES_EDICAO = {
     "pdf-lib": "biblioteca de programação (pdf-lib)",
     "weasyprint": "biblioteca de programação (WeasyPrint)",
     "wkhtmltopdf": "biblioteca de programação (wkhtmltopdf)",
+    # pypdf/pikepdf regravam o arquivo e apagam o Producer original (Documento-IA.pdf
+    # de 08/10: feito no ReportLab e salvo de novo pelo pypdf).
+    "pypdf": "biblioteca de programação (pypdf)",
+    "pikepdf": "biblioteca de programação (pikepdf)",
 }
+# Chaves que descrevem o mesmo programa: so a primeira que casar entra.
+_MESMO_PROGRAMA = (("pdfsam", "sejda"),)
 _BYTE_RANGE = re.compile(rb"/ByteRange\s*\[\s*(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s*\]")
 _OBJETO = re.compile(rb"\d+\s+\d+\s+obj\b")
 _SUBSET = re.compile(r"^/?([A-Z]{6})\+(.+)$")
@@ -97,10 +111,29 @@ def _fontes_da_pagina(pagina):
     nomes = []
     for ref in fontes.values():
         try:
-            nomes.append(str(ref.get_object().get("/BaseFont", "")))
+            obj = ref.get_object()
+            nomes.append((str(obj.get("/BaseFont", "")), str(obj.get("/Subtype", ""))))
         except Exception:
             continue
-    return [n for n in nomes if n]
+    return [(n, t) for n, t in nomes if n]
+
+
+def _subconjuntos_duplicados(fontes):
+    """Nomes de fonte com dois prefixos de subconjunto no MESMO tipo (TrueType, Type0...)."""
+    grupos = {}
+    for nome, tipo in set(fontes):
+        m = _SUBSET.match(nome)
+        if m:
+            grupos.setdefault((m.group(2), tipo), set()).add(m.group(1))
+    return sorted({nome for (nome, _), prefixos in grupos.items() if len(prefixos) > 1})
+
+
+def _ferramentas(identificacao):
+    achadas = [chave for chave in PRODUTORES_EDICAO if chave in identificacao]
+    for familia in _MESMO_PROGRAMA:
+        presentes = [c for c in familia if c in achadas]
+        achadas = [c for c in achadas if c not in presentes[1:]]
+    return sorted({PRODUTORES_EDICAO[c] for c in achadas})
 
 
 def _tem_imagem(pagina):
@@ -141,15 +174,8 @@ def inspecionar_pdf(dados: bytes, max_paginas=30):
             sem_texto += 1
         fontes.extend(_fontes_da_pagina(pagina))
 
-    subconjuntos = {}
-    for f in set(fontes):
-        m = _SUBSET.match(f)
-        if m:
-            subconjuntos.setdefault(m.group(2), set()).add(m.group(1))
-    fontes_repetidas = sorted(nome for nome, prefixos in subconjuntos.items() if len(prefixos) > 1)
-
-    identificacao = f"{produtor} {criador}".lower()
-    ferramentas = sorted({desc for chave, desc in PRODUTORES_EDICAO.items() if chave in identificacao})
+    fontes_repetidas = _subconjuntos_duplicados(fontes)
+    ferramentas = _ferramentas(f"{produtor} {criador}".lower())
 
     return {
         "paginas": len(paginas),
@@ -169,8 +195,9 @@ def inspecionar_pdf(dados: bytes, max_paginas=30):
             round(abs((modificado.replace(tzinfo=None) - criado.replace(tzinfo=None)).total_seconds()) / 86400, 2)
             if criado and modificado else None
         ),
-        "fontes_distintas": len(set(fontes)),
+        "fontes_distintas": len({nome for nome, _ in fontes}),
         "fontes_subconjunto_duplicado": fontes_repetidas,
         "elementos_ativos": sorted(nome for marca, nome in MARCADORES_ATIVOS.items() if marca in dados),
         "criptografado": reader.is_encrypted,
+        "c2pa": ler_c2pa(reader, dados),
     }

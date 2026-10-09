@@ -146,6 +146,63 @@ def test_pdf_so_imagem_pede_ocr():
     assert any(i["indicio"] == "sem_camada_texto_total" for i in r["indicios"])
 
 
+def test_word_calibri_truetype_e_type0_nao_e_edicao():
+    """O Word embute a Calibri como TrueType e de novo como Type0 (Identity-H): os 3 artigos
+    reais de 08/10 eram acusados de "texto acrescentado por outro programa"."""
+    from aida_documents.estrutura import _subconjuntos_duplicados
+
+    word = [("/BCDEEE+Calibri", "/TrueType"), ("/BCDHEE+Calibri", "/Type0"), ("/BCDFEE+Calibri-Bold", "/TrueType")]
+    assert _subconjuntos_duplicados(word) == []
+    editado = [("/ABCDEF+Arial", "/TrueType"), ("/GHIJKL+Arial", "/TrueType")]
+    assert _subconjuntos_duplicados(editado) == ["Arial"]
+
+
+def test_produtores_pdfsam_e_pypdf():
+    from aida_documents.estrutura import _ferramentas
+
+    # PDFsam grava "SAMBox (www.sejda.org)": nao e o editor online Sejda.
+    assert _ferramentas("sambox 1.1.41 (www.sejda.org) pdfsam basic v3.3.7") == ["organizador de páginas (PDFsam)"]
+    assert _ferramentas("sejda") == ["editor online (Sejda)"]
+    r = analisar_bytes(pdf_texto(["Prova de literatura " * 3], produtor="pypdf"))
+    assert {i["indicio"] for i in r["indicios"]} == {"gerador_programatico"}
+
+
+def _com_c2pa(pdf, fonte="trainedAlgorithmicMedia"):
+    """Anexa um manifesto C2PA minimo (mesmos rotulos CBOR do ChatGPT) como revisao incremental."""
+    from pypdf import PdfWriter
+
+    manifesto = (
+        b"\x00\x00\x00\x1ejumbjumdc2pa\x00c2pa.actions.v2cbor\xa1gactions\x81\xa3factionlc2pa.created"
+        b"qdigitalSourceTypexFhttp://cv.iptc.org/newscodes/digitalsourcetype/" + fonte.encode()
+        + b"msoftwareAgent\xa1dnameggpt-5-6c2pa.claim.v2tclaim_generator_info\xa1dnamegChatGPT"
+    )
+    writer = PdfWriter(io.BytesIO(pdf), incremental=True)
+    writer.add_attachment("Content Credentials", manifesto)
+    saida = io.BytesIO()
+    writer.write(saida)
+    return saida.getvalue()
+
+
+def test_credencial_c2pa_do_chatgpt_vira_ia():
+    """0015 da coleta de 09/10: prova do ChatGPT com C2PA da OpenAI estava entre os reais."""
+    r = analisar_bytes(_com_c2pa(pdf_texto(["Prova de literatura " * 3], produtor="Emissor X")))
+    c2pa = r["estrutura"]["c2pa"]
+    assert c2pa["presente"] and c2pa["declara_ia"]
+    assert (c2pa["gerador"], c2pa["modelo"]) == ("ChatGPT", "gpt-5-6")
+    nomes = {i["indicio"] for i in r["indicios"]}
+    assert "credencial_c2pa_ia" in nomes
+    assert "revisoes_incrementais" not in nomes  # a revisao que so traz o manifesto nao e edicao
+    assert r["resultado"] == "IA/MANIPULADA"
+    assert any("C2PA" in lim for lim in r["limitacoes"])
+
+
+def test_c2pa_sem_ia_e_pdf_sem_c2pa():
+    r = analisar_bytes(_com_c2pa(pdf_texto(["Recibo " * 5], produtor="Emissor X"), fonte="digitalCapture"))
+    assert r["estrutura"]["c2pa"]["presente"] and not r["estrutura"]["c2pa"]["declara_ia"]
+    assert "credencial_c2pa_ia" not in {i["indicio"] for i in r["indicios"]}
+    assert analisar_bytes(nota())["estrutura"]["c2pa"] == {"presente": False}
+
+
 def test_imagem_e_arquivo_invalido():
     assert analisar_bytes(b"\x89PNG...", "nota.png")["resultado"] == "INCONCLUSIVO"
     with pytest.raises(ValueError):

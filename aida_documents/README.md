@@ -19,6 +19,7 @@ Dependências: `pypdf` e `numpy` (já estão no projeto). `reportlab` só nos te
 
 | Camada | Arquivo | O que procura | Peso |
 |---|---|---|---|
+| Credencial C2PA | `proveniencia.py` | manifesto C2PA embutido que declara origem por IA (`trainedAlgorithmicMedia`), com gerador e modelo; a assinatura não é verificada | 0,80 |
 | Identificadores | `numeros.py` | DV de CNPJ (inclusive o alfanumérico), CPF e chave de acesso NF-e/NFC-e; UF, mês e modelo da chave; CNPJ do emitente da chave presente no documento | 0,60 |
 | Assinatura | `estrutura.py` | bytes acrescentados depois do trecho coberto pelo `/ByteRange` | 0,50 |
 | Sem camada de texto | `estrutura.py` | páginas só com imagem (print, foto, montagem) | 0,35 / 0,20 |
@@ -47,6 +48,11 @@ Ainda não há modelo em produção: a decisão continua sendo a dos pesos acima
 
 ## O que já aprendemos
 
+- **O ChatGPT assina o PDF que gera.** O 0015 da coleta de 09/10, uma prova feita pelo
+  ChatGPT com ReportLab, estava entre os reais e trazia um manifesto C2PA da OpenAI
+  ("ChatGPT", `gpt-5-6`, `trainedAlgorithmicMedia`). A v0 dava só 0,405 (biblioteca de
+  programação + revisão incremental). Agora o manifesto é lido e o documento sai
+  `IA/MANIPULADA`; a revisão que só acrescenta o manifesto não conta como edição.
 - **O Word embute a mesma fonte duas vezes** (Calibri TrueType/WinAnsi e Calibri
   Type0/Identity-H). A regra de subconjunto duplicado acusava os 3 artigos reais do Word;
   agora só conta subconjuntos do mesmo tipo.

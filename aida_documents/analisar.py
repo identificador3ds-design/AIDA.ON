@@ -31,6 +31,8 @@ EXTENSOES_IMAGEM = {".jpg", ".jpeg", ".png", ".webp", ".heic", ".bmp", ".tif", "
 RESSALVA = "Indício técnico, não prova. O AIDA Documents é uma triagem em validação; confirme na fonte (SEFAZ, banco, emissor)."
 
 PESOS = {
+    # Manifesto C2PA que se declara IA (ex.: ChatGPT). Sozinho passa do limiar de 0,60.
+    "credencial_c2pa_ia": 0.80,
     "dv_invalido": 0.60,
     "alterado_apos_assinatura": 0.50,
     "revisoes_incrementais": 0.30,
@@ -88,7 +90,12 @@ def analisar_bytes(dados: bytes, nome="documento.pdf"):
         indicio("dv_invalido", alerta)
     if est["bytes_apos_assinatura"] > 0:
         indicio("alterado_apos_assinatura", f"{est['bytes_apos_assinatura']} bytes acrescentados depois da assinatura digital")
-    edicoes = est["revisoes"] - 1 - est["assinaturas"]
+    c2pa = est["c2pa"]
+    if c2pa["presente"] and c2pa["declara_ia"]:
+        quem = " / ".join(x for x in (c2pa["gerador"], c2pa["modelo"]) if x) or "gerador não identificado"
+        indicio("credencial_c2pa_ia", f"credencial de conteúdo (C2PA) declara: {c2pa['origem_declarada']} ({quem})")
+    # O manifesto C2PA entra no PDF como revisao incremental: essa nao e edicao.
+    edicoes = est["revisoes"] - 1 - est["assinaturas"] - int(c2pa["presente"])
     if edicoes > 0:
         indicio("revisoes_incrementais", f"{est['revisoes']} revisões salvas no arquivo (edição após a criação)")
     for ferramenta in est["ferramentas_edicao"]:
@@ -116,6 +123,8 @@ def analisar_bytes(dados: bytes, nome="documento.pdf"):
         alertas_seguranca.append("PDF contém " + ", ".join(est["elementos_ativos"]) + ": não abra fora de um visualizador seguro")
     if est["assinaturas"]:
         limitacoes.append("a validade criptográfica da assinatura não é verificada (use o Verificador ITI/Adobe)")
+    if c2pa["presente"]:
+        limitacoes.append("a assinatura da credencial C2PA não é verificada (confira em contentcredentials.org/verify)")
 
     suspeita = _combinar(i["peso"] for i in indicios)
     # REAL exige algo que comprove a ORIGEM, nao so a ausencia de edicao: CNPJ e CPF com

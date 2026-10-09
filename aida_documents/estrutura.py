@@ -25,6 +25,8 @@ from datetime import datetime
 
 from pypdf import PdfReader
 
+from .proveniencia import ler_c2pa
+
 # Produtores que nao sao sistemas emissores. A lista e deliberadamente curta; cada
 # entrada e um indicio fraco, nunca prova.
 PRODUTORES_EDICAO = {
@@ -197,4 +199,5 @@ def inspecionar_pdf(dados: bytes, max_paginas=30):
         "fontes_subconjunto_duplicado": fontes_repetidas,
         "elementos_ativos": sorted(nome for marca, nome in MARCADORES_ATIVOS.items() if marca in dados),
         "criptografado": reader.is_encrypted,
+        "c2pa": ler_c2pa(reader, dados),
     }

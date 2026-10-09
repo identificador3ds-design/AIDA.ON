@@ -167,6 +167,42 @@ def test_produtores_pdfsam_e_pypdf():
     assert {i["indicio"] for i in r["indicios"]} == {"gerador_programatico"}
 
 
+def _com_c2pa(pdf, fonte="trainedAlgorithmicMedia"):
+    """Anexa um manifesto C2PA minimo (mesmos rotulos CBOR do ChatGPT) como revisao incremental."""
+    from pypdf import PdfWriter
+
+    manifesto = (
+        b"\x00\x00\x00\x1ejumbjumdc2pa\x00c2pa.actions.v2cbor\xa1gactions\x81\xa3factionlc2pa.created"
+        b"qdigitalSourceTypexFhttp://cv.iptc.org/newscodes/digitalsourcetype/" + fonte.encode()
+        + b"msoftwareAgent\xa1dnameggpt-5-6c2pa.claim.v2tclaim_generator_info\xa1dnamegChatGPT"
+    )
+    writer = PdfWriter(io.BytesIO(pdf), incremental=True)
+    writer.add_attachment("Content Credentials", manifesto)
+    saida = io.BytesIO()
+    writer.write(saida)
+    return saida.getvalue()
+
+
+def test_credencial_c2pa_do_chatgpt_vira_ia():
+    """0015 da coleta de 09/10: prova do ChatGPT com C2PA da OpenAI estava entre os reais."""
+    r = analisar_bytes(_com_c2pa(pdf_texto(["Prova de literatura " * 3], produtor="Emissor X")))
+    c2pa = r["estrutura"]["c2pa"]
+    assert c2pa["presente"] and c2pa["declara_ia"]
+    assert (c2pa["gerador"], c2pa["modelo"]) == ("ChatGPT", "gpt-5-6")
+    nomes = {i["indicio"] for i in r["indicios"]}
+    assert "credencial_c2pa_ia" in nomes
+    assert "revisoes_incrementais" not in nomes  # a revisao que so traz o manifesto nao e edicao
+    assert r["resultado"] == "IA/MANIPULADA"
+    assert any("C2PA" in lim for lim in r["limitacoes"])
+
+
+def test_c2pa_sem_ia_e_pdf_sem_c2pa():
+    r = analisar_bytes(_com_c2pa(pdf_texto(["Recibo " * 5], produtor="Emissor X"), fonte="digitalCapture"))
+    assert r["estrutura"]["c2pa"]["presente"] and not r["estrutura"]["c2pa"]["declara_ia"]
+    assert "credencial_c2pa_ia" not in {i["indicio"] for i in r["indicios"]}
+    assert analisar_bytes(nota())["estrutura"]["c2pa"] == {"presente": False}
+
+
 def test_imagem_e_arquivo_invalido():
     assert analisar_bytes(b"\x89PNG...", "nota.png")["resultado"] == "INCONCLUSIVO"
     with pytest.raises(ValueError):

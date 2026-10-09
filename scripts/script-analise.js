@@ -1363,9 +1363,16 @@ async function salvarHistoricoSupabase(arquivo, dadosAnalisados, baseApi) {
   if (!user) throw new Error("Usuário não está logado no Supabase.");
 
   // 1. Upload da imagem para o bucket "evidencias"
-  const fileName = `${Date.now()}_${arquivo.name}`;
+  // O nome vai saneado: acento, espaço ou "#" no nome original geravam caminho
+  // que a exclusão do histórico não reconstruía, e o arquivo ficava órfão.
+  const nomeSeguro = String(arquivo.name || "imagem")
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/[^\w.-]+/g, "_")
+    .slice(-80);
+  const fileName = `${Date.now()}_${nomeSeguro}`;
   const filePath = `${user.id}/${fileName}`;
-  
+
   const { error: uploadError } = await _supabase.storage
     .from("evidencias")
     .upload(filePath, arquivo);
@@ -1374,12 +1381,10 @@ async function salvarHistoricoSupabase(arquivo, dadosAnalisados, baseApi) {
     throw new Error(`Erro ao subir imagem: ${uploadError.message}`);
   }
 
-  // Obter URL pública
-  const { data: publicUrlData } = _supabase.storage
-    .from("evidencias")
-    .getPublicUrl(filePath);
-
-  const imagem_original = publicUrlData.publicUrl;
+  // Guarda o CAMINHO no bucket, não uma URL pública: o bucket é privado
+  // (docs/migracao-rls-historico-evidencias.sql) e o histórico gera URL
+  // assinada temporária na hora de exibir.
+  const imagem_original = filePath;
 
   // O historico guardava so o par de probabilidades, sem o veredito. Uma analise
   // INCONCLUSIVA ficava indistinguivel de uma decidida, e a tela do historico

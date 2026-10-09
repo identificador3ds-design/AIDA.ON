@@ -1,0 +1,23 @@
+# O que a Vercel publica: SOMENTE o site estático.
+#
+# Sem este arquivo a Vercel servia o repositório inteiro como estático. Em
+# 08/10/2026 respondiam 200 em produção, por exemplo:
+#   /aida_api/app.py, /aida_api/chaves_api.py      (código do backend da API v1)
+#   /docs/supabase-admin-setup.sql                  (esquema e políticas do banco)
+#   /aida_modelo/site_api/uploads/imagem-aida.jpg   (imagens enviadas em testes)
+#   /aida_modelo/modelos/melhor_modelo.pkl          (modelo serializado)
+#   /testes/conftest.py, /RELATORIO-MELHORIAS-AIDA.md
+#
+# Lista de permissão: ignora tudo na raiz e libera só o que as páginas usam.
+# Pasta ou arquivo novo que o site precise servir tem de entrar aqui; o teste
+# `test_vercelignore_publica_tudo_que_as_paginas_usam` acusa o esquecimento.
+
+/*
+!/index.html
+!/manifest.webmanifest
+!/service-worker.js
+!/vercel.json
+!/pages
+!/scripts
+!/styles
+!/assets

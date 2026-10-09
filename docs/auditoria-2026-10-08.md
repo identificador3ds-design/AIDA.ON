@@ -156,7 +156,7 @@ PYTHONPATH=<core> python sensibilidade_formato.py <pasta> REAL|IA saida.csv
 | Defeitos P0 abertos | 2 | 0 no código (P0-1 depende de aplicar o SQL) |
 | Defeitos P1 abertos | 5 | 1 (P1-3) |
 | Entradas inválidas que davam 500 / eram aceitas | 2 de 9 | 0 de 9 (local) |
-| Arquivos internos servidos pela Vercel | ≥ 300 | 0 após deploy |
+| Arquivos internos servidos pela Vercel | 348 | 0 após deploy |
 
 ## 8. O que precisa da sua autorização / ação
 

@@ -1,4 +1,4 @@
-/* AIDA Documents — análise de PDF na página index-documentos.html.
+/* AIDA Documents — análise de documento (PDF, DOCX, DOC, TXT) na página index-documentos.html.
  *
  * Fala com o mesmo servidor do AIDA Video (Space aidaon/aida-video, ou o
  * servidor local na porta 7870), nas rotas /documento/saude e
@@ -145,12 +145,12 @@
     return Boolean(arquivo && arquivo.size > limiteMb * 1024 * 1024);
   }
 
-  function ehPdf(arquivo) {
-    return /\.pdf$/i.test(arquivo.name) || arquivo.type === "application/pdf";
+  function ehDocumento(arquivo) {
+    return /\.(pdf|docx|doc|txt)$/i.test(arquivo.name);
   }
 
   function atualizarBotao() {
-    el.enviar.disabled = !(servidorOk && arquivoAtual && !enviando && ehPdf(arquivoAtual) && !grandeDemais(arquivoAtual));
+    el.enviar.disabled = !(servidorOk && arquivoAtual && !enviando && ehDocumento(arquivoAtual) && !grandeDemais(arquivoAtual));
   }
 
   // ------------------------------------------------------------------ arquivo
@@ -160,7 +160,7 @@
     arquivoAtual = arquivo;
     el.dropTitulo.textContent = arquivo.name;
     let problema = "";
-    if (!ehPdf(arquivo)) problema = "não é um PDF. Para fotos de documento, use a análise de imagem.";
+    if (!ehDocumento(arquivo)) problema = "formato não aceito (use PDF, DOCX, DOC ou TXT). Para fotos de documento, use a análise de imagem.";
     else if (grandeDemais(arquivo)) problema = `passa do limite de ${limiteMb} MB.`;
     el.dropTexto.textContent = `${formatarTamanho(arquivo.size)} · ${problema || "clique para trocar"}`;
     el.drop.classList.add("vid-drop--cheio");
@@ -229,7 +229,7 @@
   function explicarResultado(r) {
     const n = (r.indicios || []).length;
     if (r.resultado === "IA/MANIPULADA") {
-      return `A AIDA encontrou ${n} indício${n > 1 ? "s" : ""} de que este PDF foi editado, montado ou gerado fora de um sistema emissor. Confira o documento na fonte antes de aceitá-lo.`;
+      return `A AIDA encontrou ${n} indício${n > 1 ? "s" : ""} de que este documento foi editado, montado ou gerado por IA ou fora de um sistema emissor. Confira o documento na fonte antes de aceitá-lo.`;
     }
     if (r.resultado === "REAL") {
       return "O arquivo não mostra sinais de edição e traz uma prova de origem (assinatura digital intacta ou chave de acesso de nota fiscal). Ainda assim, confira na fonte quando o valor for importante.";
@@ -259,11 +259,14 @@
     const ids = r.identificadores || {};
     el.numeros.replaceChildren(
       numero("Suspeita combinada", porcentagem(r.suspeita)),
+      numero("Formato", (r.formato || e.formato || "pdf").toUpperCase()),
       numero("Páginas", `${e.paginas ?? "—"}${e.paginas_sem_texto ? ` (${e.paginas_sem_texto} só imagem)` : ""}`),
       numero("Programa", e.produtor || e.criador || "não informado"),
       numero("Criado / modificado", `${data(e.criado_em)} / ${data(e.modificado_em)}`),
       numero("Revisões salvas", String(e.revisoes ?? "—")),
       numero("Assinaturas digitais", String(e.assinaturas ?? 0)),
+      ...(e.tempo_edicao_min != null ? [numero("Tempo de edição", `${e.tempo_edicao_min} min`)] : []),
+      ...(e.c2pa && e.c2pa.presente ? [numero("Credencial C2PA", [e.c2pa.gerador, e.c2pa.modelo].filter(Boolean).join(" / ") || "presente")] : []),
       numero("CNPJ / CPF / chaves", `${ids.cnpjs ?? 0} / ${ids.cpfs ?? 0} / ${ids.chaves_acesso ?? 0}`),
     );
 

@@ -228,9 +228,13 @@ def test_rota_documento_analisa_pdf(cliente):
     assert "texto" not in corpo["estrutura"]  # o texto do documento nunca volta
 
 
-def test_rota_documento_recusa_nao_pdf(cliente):
-    assert cliente.get("/documento/saude").get_json()["servico"] == "AIDA Documents"
+def test_rota_documento_formatos(cliente):
+    saude = cliente.get("/documento/saude").get_json()
+    assert saude["servico"] == "AIDA Documents" and ".docx" in saude["extensoes"]
     r = cliente.post("/documento/analisar", data={"documento": (io.BytesIO(b"oi"), "nota.txt")},
+                     content_type="multipart/form-data")
+    assert r.status_code == 200 and r.get_json()["formato"] == "txt"
+    r = cliente.post("/documento/analisar", data={"documento": (io.BytesIO(b"oi"), "planilha.xlsx")},
                      content_type="multipart/form-data")
     assert r.status_code == 400
     r = cliente.post("/documento/analisar", data={"documento": (io.BytesIO(b"oi"), "nota.pdf")},

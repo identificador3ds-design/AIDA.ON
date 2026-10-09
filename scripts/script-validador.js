@@ -35,7 +35,7 @@ function lotValue(letter) {
   return letter.toUpperCase().charCodeAt(0) - 64;
 }
 
-// Nova lÃ³gica: um Ãºnico tipo de acesso, entÃ£o o TAC depende sÃ³ de lote, fase e ID.
+// Nova lógica: um único tipo de acesso, então o TAC depende só de lote, fase e ID.
 function calculateVerifier(lot, phase, accessId) {
   const phaseValue = phaseMap[phase];
   const idValue = Number(accessId);
@@ -86,7 +86,7 @@ function validateTac() {
 
   if (!phaseMap[phase] || !/^\d{3}$/.test(accessId) || !/^[A-Z]$/.test(lot) || !/^\d{2}$/.test(receivedVerifier)) {
     resultBox.innerHTML = `
-      <div class="status error">Os dados informados nÃ£o seguem a estrutura esperada pelo sistema.</div>
+      <div class="status error">Os dados informados não seguem a estrutura esperada pelo sistema.</div>
     `;
     return;
   }
@@ -98,14 +98,14 @@ function validateTac() {
 
   if (existing && receivedVerifier === expectedVerifier) {
     resultBox.innerHTML = `
-      <div class="status success">TAC vÃ¡lido. Acesso liberado com sucesso.</div>
+      <div class="status success">TAC válido. Acesso liberado com sucesso.</div>
       <div class="details">
         <div class="detail-box"><small>Ticket Code</small><strong>${existing.ticketCode}</strong></div>
         <div class="detail-box"><small>Fase</small><strong>${existing.phase}</strong></div>
         <div class="detail-box"><small>ID de acesso</small><strong>${existing.accessId}</strong></div>
         <div class="detail-box"><small>Status</small><strong>Liberado</strong></div>
       </div>
-      <p class="foot">Redirecionando para a Ã¡rea do projeto...</p>
+      <p class="foot">Redirecionando para a área do projeto...</p>
     `;
     openProtectedArea(existing);
     return;
@@ -113,21 +113,21 @@ function validateTac() {
 
   if (sameBaseExists && receivedVerifier !== expectedVerifier) {
     resultBox.innerHTML = `
-      <div class="status error">TAC invÃ¡lido. O verificador final nÃ£o confere.</div>
+      <div class="status error">TAC inválido. O verificador final não confere.</div>
       <div class="details">
         <div class="detail-box"><small>TAC informado</small><strong class="mono">${raw}</strong></div>
         <div class="detail-box"><small>TAC correto</small><strong class="mono">${fullTac}</strong></div>
       </div>
-      <p class="foot">Esse cÃ³digo parece ter sido alterado manualmente.</p>
+      <p class="foot">Esse código parece ter sido alterado manualmente.</p>
     `;
     return;
   }
 
   if (!sameBaseExists && receivedVerifier === expectedVerifier) {
     resultBox.innerHTML = `
-      <div class="status warning">O TAC Ã© coerente pela fÃ³rmula, mas nÃ£o existe na base autorizada.</div>
+      <div class="status warning">O TAC é coerente pela fórmula, mas não existe na base autorizada.</div>
       <div class="details">
-        <div class="detail-box"><small>Status</small><strong>NÃ£o autorizado</strong></div>
+        <div class="detail-box"><small>Status</small><strong>Não autorizado</strong></div>
         <div class="detail-box"><small>TAC calculado</small><strong class="mono">${fullTac}</strong></div>
       </div>
       <p class="foot">Somente TACs cadastrados pela equipe liberam acesso.</p>
@@ -136,12 +136,12 @@ function validateTac() {
   }
 
   resultBox.innerHTML = `
-    <div class="status error">TAC invÃ¡lido e nÃ£o autorizado.</div>
+    <div class="status error">TAC inválido e não autorizado.</div>
     <div class="details">
       <div class="detail-box"><small>TAC informado</small><strong class="mono">${raw}</strong></div>
       <div class="detail-box"><small>Verificador esperado</small><strong>${expectedVerifier}</strong></div>
     </div>
-    <p class="foot">O cÃ³digo nÃ£o corresponde a um convite real de acesso antecipado.</p>
+    <p class="foot">O código não corresponde a um convite real de acesso antecipado.</p>
   `;
 }
 
@@ -162,7 +162,7 @@ if (event.key === 'Enter') validateTac();
 
 checkBtn.addEventListener('click', validateTac);
 
-// Dificulta atalhos comuns de inspeÃ§Ã£o, mas nÃ£o substitui backend.
+// Dificulta atalhos comuns de inspeção, mas não substitui backend.
 document.addEventListener('contextmenu', (event) => event.preventDefault());
 document.addEventListener('keydown', (event) => {
   const key = event.key.toUpperCase();

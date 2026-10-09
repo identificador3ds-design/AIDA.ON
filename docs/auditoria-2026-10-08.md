@@ -173,3 +173,34 @@ PYTHONPATH=<core> python sensibilidade_formato.py <pasta> REAL|IA saida.csv
 3. Reavaliar a robustez a JPEG em conjunto independente antes de qualquer retreino.
 4. P2-3: excluir conta também apaga o cache forense; prazo de retenção formal (LGPD).
 5. Fixar versões (`pip-compile`) nos dois Spaces.
+
+## 10. Ciclo 1b (09/10/2026): reduzir "IA dita REAL"
+
+**Diagnóstico.** Nos erros, o CLIP dá ~0,01 ("real") e o forense 0,78–0,96 ("IA"); a fusão segue o CLIP.
+A regra "forense alto + CLIP baixo → não-REAL" foi medida na validação r6pol e descartada (custa
+3–10 pontos de reais inconclusivas para tirar ~1 ponto de erro).
+
+**Mudança (branch `auditoria/piso-banda-inconclusiva` do Space, não publicada):** piso da faixa
+inconclusiva 0,6126 → 0,30 em `modelos/b4_politica.json`. Escolhido na validação; limiar e teto
+inalterados. Por construção só REAL pode virar INCONCLUSIVO: REAL→IA e IA detectada não mudam.
+
+| Conjunto | IA dita REAL antes → depois | Reais inconclusivas antes → depois |
+|---|---|---|
+| Validação r6pol (3.008) | 9,3% → 4,9% | 4,2% → 8,3% |
+| Teste r6pol (3.010) | 12,4% → 9,0% | 5,1% → 9,3% |
+| Teste externo (1.110) | 10,1% → 7,4% | 3,0% → 5,5% |
+| **OpenFake core/test (405), original** | **12,7% → 8,2%** | **8,1% → 16,2%** |
+| OpenFake core/test, JPEG q85 | 19,6% → 13,1% | 6,9% → 13,8% |
+| 27 IA do teste de formato (PNG / JPEG85) | 4% → 0% / 15% → 11% | — |
+| 73 fotos reais `FOTOS TCC REAL` | — | 1 foto passou a inconclusiva; 0 acusadas de IA |
+| 14 vídeos reais de produção (simulação) | — | nenhum veredito muda |
+
+O "antes" do OpenFake reconstruído localmente bate exatamente com a medição oficial
+(`space_local_r6fp6.csv`: 72,5% / 12,7% / 14,8% e 87,5% / 4,4% / 8,1%).
+
+**Limites.** O custo no OpenFake (DOCCI: 20% das reais inconclusivas) foi maior que o previsto na
+validação. Os erros restantes têm probabilidade 0,02–0,12, igual à das fotos reais: nenhuma política
+os separa; exigem retreino (CLIP sem cobertura de alguns geradores; forense perde o sinal com JPEG).
+Piso 0,40 é o meio-termo: OpenFake 12,7% → 9,4% de IA→REAL com 8,1% → 10,6% de reais inconclusivas.
+
+Scripts: `avaliacao/regras_resgate.py`, `openfake_local.py`, `resumir_openfake.py`, `simular_video.py`.

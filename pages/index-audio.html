@@ -159,16 +159,16 @@
                             <span class="vid-etapa__num" aria-hidden="true">3</span>
                             <div>
                                 <strong>Assinatura acústica</strong>
-                                <p>Sintetizadores deixam marcas no espectro: altas frequências lisas demais, respiração e ruído de fundo ausentes, transições regulares.</p>
-                                <small>Coeficientes cepstrais em escala mel e linear, deltas, planura e queda espectral, e estatísticas de energia.</small>
+                                <p>Um modelo de fala treinado em 128 línguas transforma trechos de 6 segundos em uma "impressão" do som. Sintetizadores deixam marcas nela que o ouvido não percebe: respiração, ruído de fundo e transições regulares demais.</p>
+                                <small>XLS-R-300m (wav2vec 2.0), média e desvio das camadas 5 a 12, em até 4 trechos espalhados pelo áudio.</small>
                             </div>
                         </li>
                         <li class="vid-etapa">
                             <span class="vid-etapa__num" aria-hidden="true">4</span>
                             <div>
                                 <strong>Decisão</strong>
-                                <p>Um classificador treinado com vozes reais e de 16 sintetizadores em português dá a probabilidade; perto do limiar, a resposta é inconclusiva.</p>
-                                <small>Treino com MLS (português, real) e MLAAD (português, 16 sistemas de síntese), sem repetir locutor ou sistema entre treino e teste.</small>
+                                <p>Um classificador treinado com vozes reais (audiolivros, celular, YouTube) e com 22 sintetizadores — inclusive comerciais — dá a probabilidade de cada trecho; a resposta é a média.</p>
+                                <small>Treino: MLS e FLEURS (pt-BR, reais), MLAAD (pt, 16 sistemas), áudio de vídeos de celular e um conjunto público de TTS comerciais. Em teste com sistemas nunca vistos (ElevenLabs, Hume, Speechify): 96,8% detectados, com 1,2% de falso positivo em áudio de celular.</small>
                             </div>
                         </li>
                     </ol>

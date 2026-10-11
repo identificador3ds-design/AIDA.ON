@@ -172,3 +172,19 @@ def test_miniatura_de_frame_4k_e_pequena(tmp_path):
     miniatura = cv2.imdecode(np.frombuffer(r.data, np.uint8), cv2.IMREAD_COLOR)
     assert max(miniatura.shape[:2]) == 480
     assert len(r.data) < 400_000
+
+
+def test_origem_estranha_recebe_403_e_o_site_passa(monkeypatch):
+    # P2-1: o proxy do hf.space reflete qualquer origem; a recusa e feita no servidor.
+    monkeypatch.setenv("AIDA_VIDEO_CORS", "https://www.aida-on.com.br,https://aida-on.com.br")
+    app = criar_app(lambda: AnalisadorFixo([FRAME_REAL]), executar_em_thread=False)
+    c = app.test_client()
+    assert c.get("/video/saude", headers={"Origin": "https://evil.example"}).status_code == 403
+    assert c.post("/video/analisar", headers={"Origin": "https://evil.example"}).status_code == 403
+    assert c.get("/video/saude", headers={"Origin": "https://www.aida-on.com.br"}).status_code == 200
+    assert c.get("/video/saude").status_code == 200
+
+
+def test_sem_variavel_de_origem_nao_recusa(cliente, monkeypatch):
+    monkeypatch.delenv("AIDA_VIDEO_CORS", raising=False)
+    assert cliente.get("/video/saude", headers={"Origin": "https://evil.example"}).status_code == 200

@@ -888,6 +888,7 @@ function exibirResultado(dados, baseApi) {
   renderizarDetalhes(dados, estado);
   renderizarEvidencias(dados, baseApi);
   renderizarProveniencia(dados);
+  renderizarPedidoEvidencia(dados);
   prepararPassagemForense(dados, baseApi);
 
   if (areaResultado) {
@@ -910,6 +911,141 @@ function exibirResultado(dados, baseApi) {
     }
   }
 }
+
+// --- Mais evidências -------------------------------------------------------
+//
+// INCONCLUSIVO não encerra a análise: o painel pede o arquivo original ou outra
+// foto da mesma cena, analisa cada uma na mesma API e combina as respostas
+// (regras em scripts/aida-evidencia-combinada.js). A primeira evidência é a
+// análise principal; as extras não vão para o histórico.
+const ROTULOS_EVIDENCIA = {
+  REAL: { texto: "Real", cor: "#2e7d32" },
+  REAL_EDITADA: { texto: "Real editada", cor: "#00838f" },
+  "IA/MANIPULADA": { texto: "Gerada por IA", cor: "#c62828" },
+  INCONCLUSIVO: { texto: "Inconclusivo", cor: "#e08a1e" },
+};
+let evidenciasDaCena = [];
+
+// Os motivos da API são técnicos ("probabilidade dentro da faixa de abstenção
+// [0.61; 0.77]"); aqui viram uma frase que o usuário entende.
+function motivoLegivel(motivos) {
+  const frases = [];
+  for (const m of Array.isArray(motivos) ? motivos : []) {
+    const t = String(m).toLowerCase();
+    if (t.includes("faixa")) frases.push("os indicadores ficaram muito perto do ponto de decisão");
+    else if (t.includes("desacordo")) frases.push("os módulos de análise discordaram entre si");
+    else if (t.includes("qualidade")) frases.push("a qualidade do arquivo (compressão, print, redução de tamanho) atrapalha a leitura");
+  }
+  const unicas = [...new Set(frases)];
+  return unicas.length
+    ? `A análise não chegou a uma resposta segura porque ${unicas.join(" e ")}.`
+    : "A análise não chegou a uma resposta segura com esta imagem.";
+}
+
+function renderizarPedidoEvidencia(dados) {
+  const bloco = document.getElementById("blocoEvidenciaExtra");
+  if (!bloco) return;
+  evidenciasDaCena = [{ ...dados, nome_evidencia: imagemAtual?.name || "imagem analisada" }];
+  const inconclusivo = !dados.fora_de_dominio && estadoDe(dados) === ESTADOS.INCONCLUSIVO;
+  bloco.hidden = !inconclusivo || !window.AIDAEvidencia;
+  if (bloco.hidden) return;
+  const motivo = document.getElementById("evidenciaMotivo");
+  if (motivo) motivo.textContent = motivoLegivel(dados.motivos);
+  atualizarPainelEvidencia(false);
+}
+
+function atualizarPainelEvidencia(concluir) {
+  const c = window.AIDAEvidencia.combinar(evidenciasDaCena, concluir);
+  const lista = document.getElementById("evidenciaLista");
+  if (lista) {
+    lista.innerHTML = evidenciasDaCena.map((e, i) => {
+      const r = e.fora_de_dominio
+        ? { texto: "fora do escopo (não conta)", cor: "#6b7280" }
+        : ROTULOS_EVIDENCIA[e.resultado] || ROTULOS_EVIDENCIA.INCONCLUSIVO;
+      const p = Number(e.probabilidade_ia_exibicao ?? e.probabilidade_ia);
+      const pct = Number.isFinite(p) && !e.fora_de_dominio ? ` — ${(p * 100).toFixed(1)}% de chance de IA` : "";
+      return `<li>Evidência ${i + 1} (${escapar(e.nome_evidencia)}): ` +
+        `<span data-resultado style="color:${r.cor}">${escapar(r.texto)}</span>${escapar(pct)}</li>`;
+    }).join("");
+  }
+
+  const titulo = document.getElementById("evidenciaTitulo");
+  const veredito = document.getElementById("evidenciaVeredito");
+  const btnEnviar = document.getElementById("btnEvidenciaExtra");
+  const btnConcluir = document.getElementById("btnConcluirEvidencias");
+  const pedidos = document.getElementById("evidenciaPedidos");
+  const decidido = c.estado === "DECIDIDO";
+
+  if (titulo) {
+    titulo.textContent = decidido
+      ? "Resultado com mais evidências"
+      : c.n <= 1
+        ? "Precisamos de mais uma evidência"
+        : `Ainda não deu para decidir (${c.n} de ${c.max} evidências)`;
+  }
+  if (veredito) {
+    veredito.hidden = !decidido;
+    if (decidido) {
+      const r = ROTULOS_EVIDENCIA[c.resultado];
+      const conf = { alta: "alta", media: "média", baixa: "baixa" }[c.confianca] || c.confianca;
+      veredito.style.borderColor = r.cor;
+      veredito.innerHTML =
+        `<strong style="color:${r.cor}">${escapar(r.texto)}</strong>` +
+        `<span>Confiança ${escapar(conf)} — ${escapar(c.motivo)}.</span>` +
+        (c.confianca === "baixa"
+          ? "<span>Com evidências que continuam ambíguas, trate esta resposta como indício fraco e, se o caso for importante, procure a fonte original da imagem.</span>"
+          : "");
+    }
+  }
+  if (pedidos) pedidos.hidden = decidido;
+  if (btnEnviar) btnEnviar.hidden = decidido || c.n >= c.max;
+  if (btnConcluir) btnConcluir.hidden = decidido || c.n < 2;
+  const status = document.getElementById("evidenciaStatus");
+  if (status && !decidido && c.n > 1) status.textContent = `Motivo: ${c.motivo}.`;
+  else if (status) status.textContent = "";
+}
+
+async function analisarEvidenciaExtra(arquivo) {
+  if (!arquivo || !window.AIDAEvidencia) return;
+  const status = document.getElementById("evidenciaStatus");
+  const botoes = ["btnEvidenciaExtra", "btnConcluirEvidencias"].map((id) => document.getElementById(id));
+  botoes.forEach((b) => b && (b.disabled = true));
+  if (status) status.textContent = `Analisando a evidência ${evidenciasDaCena.length + 1}...`;
+  try {
+    const formData = new FormData();
+    formData.append("imagem", arquivo);
+    formData.append("historico_habilitado", "false");
+    const { resposta } = await enviarParaApi(formData);
+    const dados = await resposta.json().catch(() => ({}));
+    if (!resposta.ok || dados.erro) throw new Error(dados.erro || `Falha no servidor (${resposta.status})`);
+    // O mesmo arquivo reenviado não é evidência nova: daria a mesma resposta.
+    if (dados.hash_sha256 && evidenciasDaCena.some((e) => e.hash_sha256 === dados.hash_sha256)) {
+      if (status) status.textContent = "Este arquivo já foi analisado. Envie outro: o original ou outra foto da cena.";
+      return;
+    }
+    evidenciasDaCena.push({ ...dados, nome_evidencia: arquivo.name || "evidência" });
+    atualizarPainelEvidencia(false);
+  } catch (erro) {
+    if (status) status.textContent = erro.message || "Não foi possível analisar a evidência.";
+  } finally {
+    botoes.forEach((b) => b && (b.disabled = false));
+  }
+}
+
+(function ligarPainelEvidencia() {
+  const btnEnviar = document.getElementById("btnEvidenciaExtra");
+  const input = document.getElementById("inputEvidenciaExtra");
+  const btnConcluir = document.getElementById("btnConcluirEvidencias");
+  if (btnEnviar && input) {
+    btnEnviar.addEventListener("click", () => input.click());
+    input.addEventListener("change", () => {
+      const arquivo = input.files && input.files[0];
+      input.value = "";
+      analisarEvidenciaExtra(arquivo);
+    });
+  }
+  if (btnConcluir) btnConcluir.addEventListener("click", () => atualizarPainelEvidencia(true));
+})();
 
 // Chave lida pelo AIDA Forensics (scripts/script-forensics.js). Guarda apenas o
 // necessario para reabrir a analise: o id, a base que a atendeu e o nome do

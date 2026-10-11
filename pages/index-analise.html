@@ -34,7 +34,7 @@
     <!-- A versao no fim do caminho e o que invalida o cache do navegador. O CSS
          estava sem ela: quem ja visitou continuaria com a folha antiga e a
          mensagem de "previa indisponivel" apareceria sem estilo. -->
-    <link rel="stylesheet" href="../styles/style-analise.css?v=20261008-real-editada">
+    <link rel="stylesheet" href="../styles/style-analise.css?v=20261011-evidencia">
     <script src="../scripts/aida-dev-sw-reset.js"></script>
 </head>
 
@@ -229,6 +229,30 @@
                     </div>
                 </section>
 
+                <!-- Pedido de mais evidências. Aparece só quando a análise dá
+                     INCONCLUSIVO: em vez de encerrar sem resposta, o AIDA pede o
+                     arquivo original ou outra foto da mesma cena e combina as
+                     respostas (scripts/aida-evidencia-combinada.js). -->
+                <section id="blocoEvidenciaExtra" class="container-evidencia-extra glass-card" hidden>
+                    <span class="section-tag">Mais evidências</span>
+                    <h3 id="evidenciaTitulo" class="evidencia-titulo">Precisamos de mais uma evidência</h3>
+                    <p id="evidenciaMotivo" class="result-copy"></p>
+                    <ul id="evidenciaPedidos" class="evidencia-pedidos">
+                        <li><strong>O arquivo original</strong>, direto da câmera ou da galeria do celular — não um print, nem a versão reenviada pelo WhatsApp ou redes sociais.</li>
+                        <li><strong>Outra foto da mesma cena</strong>, tirada no mesmo momento ou de outro ângulo.</li>
+                        <li>Uma versão em <strong>resolução maior</strong> ou com menos compressão, se existir.</li>
+                    </ul>
+                    <ol id="evidenciaLista" class="evidencia-lista"></ol>
+                    <div id="evidenciaVeredito" class="evidencia-veredito" hidden></div>
+                    <div class="evidencia-acoes">
+                        <button id="btnEvidenciaExtra" type="button" class="aida-button">Enviar outra evidência</button>
+                        <button id="btnConcluirEvidencias" type="button" class="aida-button secondary" hidden>Concluir com as evidências enviadas</button>
+                        <input type="file" aria-label="Enviar outra evidência da mesma cena" id="inputEvidenciaExtra"
+                               accept="image/*,.heic,.heif,.avif,.jpg,.jpeg,.png,.webp,.bmp" hidden>
+                    </div>
+                    <p id="evidenciaStatus" class="evidencia-status" role="status" aria-live="polite"></p>
+                </section>
+
                 <!-- Proveniência digital. Ocupa a linha inteira porque compara
                      duas leituras independentes (arquivo e conteúdo) e precisa
                      de largura para a comparação não virar duas colunas
@@ -360,6 +384,7 @@
          funciona sem ela (as animacoes caem para CSS); GSAP so suaviza. -->
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/gsap.min.js" integrity="sha384-UoFnwgbUNlK0Rwou15cSoyrXQvKrOUxV8AkCoGKSSd0sxVeJ95ARU8uGMkMZhzpB" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="../scripts/aida-config-remota.js?v=20261011-status"></script>
-    <script src="../scripts/script-analise.js?v=20261009-p0-seguranca"></script>
+    <script src="../scripts/aida-evidencia-combinada.js?v=20261011-evidencia"></script>
+    <script src="../scripts/script-analise.js?v=20261011-evidencia"></script>
 </body>
 </html>

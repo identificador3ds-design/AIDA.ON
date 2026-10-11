@@ -8,6 +8,7 @@ _ONDE = {
     "analisar_documento": "analisar",
     "analisar_bytes": "analisar",
     "analisar_benford": "benford",
+    "caracteristicas_bytes": "caracteristicas",
     "inspecionar_pdf": "estrutura",
     "extrair_numeros": "numeros",
     "verificar_identificadores": "numeros",

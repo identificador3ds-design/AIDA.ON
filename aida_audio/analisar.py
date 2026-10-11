@@ -19,7 +19,7 @@ import numpy as np
 
 from .caracteristicas import extrair_caracteristicas
 from .carregar import carregar_audio
-from .modelo import ARQUIVO_MODELO, carregar_modelo
+from .modelo import ARQUIVO_MODELO, ARQUIVO_MODELO_SSL, carregar_modelo
 
 DURACAO_MINIMA_S = 1.0
 FRACAO_SILENCIO_MAXIMA = 0.9
@@ -38,6 +38,17 @@ def _confianca(distancia):
     return "alta"
 
 
+_CACHE_MODELOS = {}
+
+
+def _modelo_em_cache(caminho):
+    """O pacote do v2 traz um pipeline grande; ler o .joblib a cada requisicao custaria tempo."""
+    chave = str(caminho)
+    if chave not in _CACHE_MODELOS:
+        _CACHE_MODELOS[chave] = carregar_modelo(caminho)
+    return _CACHE_MODELOS[chave]
+
+
 def analisar_amostras(amostras, taxa, pacote_modelo=None, caminho_modelo=ARQUIVO_MODELO):
     """Analisa um array ja decodificado. pacote_modelo=None carrega do disco."""
     caracteristicas, qualidade = extrair_caracteristicas(amostras, taxa)
@@ -50,7 +61,9 @@ def analisar_amostras(amostras, taxa, pacote_modelo=None, caminho_modelo=ARQUIVO
     if qualidade["fracao_saturada"] > FRACAO_SATURADA_ALERTA:
         limitacoes.append("áudio saturado (clipping): distorce as altas frequências")
 
-    pacote = pacote_modelo if pacote_modelo is not None else carregar_modelo(caminho_modelo)
+    if pacote_modelo is None and caminho_modelo == ARQUIVO_MODELO and ARQUIVO_MODELO_SSL.is_file():
+        caminho_modelo = ARQUIVO_MODELO_SSL                 # v2 tem preferencia sobre o v1
+    pacote = pacote_modelo if pacote_modelo is not None else _modelo_em_cache(caminho_modelo)
     resposta = {
         "resultado": "INCONCLUSIVO",
         "inconclusivo": True,
@@ -71,14 +84,19 @@ def analisar_amostras(amostras, taxa, pacote_modelo=None, caminho_modelo=ARQUIVO
     if motivos:
         return resposta
 
-    faltando = [c for c in pacote["colunas"] if c not in caracteristicas]
-    if faltando:
-        raise ValueError(
-            f"O modelo foi treinado com {len(faltando)} caracteristicas que este extrator nao gera "
-            f"(ex.: {faltando[0]}). Treine o modelo de novo."
-        )
-    x = np.array([[caracteristicas[c] for c in pacote["colunas"]]], dtype=np.float64)
-    prob_ia = float(pacote["modelo"].predict_proba(x)[0, 1])
+    if pacote.get("tipo") == "ssl":
+        from .ssl import probabilidade_ia
+        prob_ia, n_janelas = probabilidade_ia(amostras, taxa, pacote)
+        resposta["janelas_analisadas"] = n_janelas
+    else:
+        faltando = [c for c in pacote["colunas"] if c not in caracteristicas]
+        if faltando:
+            raise ValueError(
+                f"O modelo foi treinado com {len(faltando)} caracteristicas que este extrator nao gera "
+                f"(ex.: {faltando[0]}). Treine o modelo de novo."
+            )
+        x = np.array([[caracteristicas[c] for c in pacote["colunas"]]], dtype=np.float64)
+        prob_ia = float(pacote["modelo"].predict_proba(x)[0, 1])
     limiar = float(pacote.get("limiar", 0.5))
     distancia = abs(prob_ia - limiar)
     # Modelos calibrados nos videos trazem a propria faixa: [baixo, limiar) e

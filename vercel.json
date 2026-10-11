@@ -73,6 +73,14 @@
       "destination": "/pages/index-documentos"
     },
     {
+      "source": "/audio",
+      "destination": "/pages/index-audio"
+    },
+    {
+      "source": "/enviar",
+      "destination": "/pages/index-enviar"
+    },
+    {
       "source": "/api",
       "destination": "/pages/index-api"
     },

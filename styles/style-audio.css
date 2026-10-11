@@ -1,0 +1,81 @@
+/* AIDA Audio (index-audio.html). Reaproveita os estilos vid-* do AIDA Video. */
+
+/* Ícone do upload: barras de forma de onda que "respiram". */
+.aud-onda {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.aud-onda span {
+  width: 4px;
+  height: 14px;
+  border-radius: 999px;
+  background: currentColor;
+  animation: aud-onda 1.4s ease-in-out infinite;
+}
+
+.aud-onda span:nth-child(2) { animation-delay: 0.1s; }
+.aud-onda span:nth-child(3) { animation-delay: 0.2s; }
+.aud-onda span:nth-child(4) { animation-delay: 0.3s; }
+.aud-onda span:nth-child(5) { animation-delay: 0.4s; }
+.aud-onda span:nth-child(6) { animation-delay: 0.5s; }
+.aud-onda span:nth-child(7) { animation-delay: 0.6s; }
+
+@keyframes aud-onda {
+  0%, 100% { transform: scaleY(0.5); opacity: 0.6; }
+  50% { transform: scaleY(1.9); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aud-onda span { animation: none; }
+}
+
+.aud-player {
+  width: 100%;
+  margin-top: 4px;
+}
+
+/* Medidor: ponteiro na escala voz real → voz sintética; a faixa clara marca a zona
+   em que a resposta é inconclusiva. */
+.aud-medidor {
+  display: grid;
+  gap: 6px;
+  margin: 4px 0 8px;
+}
+
+.aud-medidor__trilho {
+  position: relative;
+  height: 12px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #2e7d32 0%, #e08a1e 50%, #c62828 100%);
+}
+
+.aud-medidor__faixa {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  border-radius: 6px;
+  border: 1px dashed rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.aud-medidor__ponteiro {
+  position: absolute;
+  top: 50%;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid #0e2f2b;
+  transform: translate(-50%, -50%);
+  transition: left 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.aud-medidor__rotulos {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  opacity: 0.8;
+}

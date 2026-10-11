@@ -218,6 +218,8 @@
   }
 
   el.arquivo.addEventListener("change", () => escolherArquivo(el.arquivo.files[0]));
+  // Veio do envio unificado (index-enviar.html): o arquivo já chega escolhido.
+  if (window.AIDAEncaminhar) window.AIDAEncaminhar.entregarEm(el.arquivo, "video");
 
   ["dragenter", "dragover"].forEach((evento) =>
     el.drop.addEventListener(evento, (e) => {

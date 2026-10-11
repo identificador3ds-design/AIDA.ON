@@ -286,7 +286,17 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       if (!pareceImagem(arquivo)) {
-        mostrarErro("Esse arquivo não é uma imagem. Escolha um JPG, PNG, WEBP, BMP, HEIC ou AVIF.");
+        // Envio unificado: vídeo, áudio e PDF vão para a página do detector certo.
+        const encaminhar = window.AIDAEncaminhar;
+        const tipo = encaminhar ? encaminhar.tipoDe(arquivo) : null;
+        if (tipo && tipo !== "imagem") {
+          limparErro();
+          encaminhar.encaminhar(arquivo, tipo).catch(() => {
+            mostrarErro("Não foi possível abrir o detector deste arquivo. Use o menu para abrir a página dele.");
+          });
+          return;
+        }
+        mostrarErro("Formato não reconhecido. Envie uma imagem, um vídeo, um áudio ou um PDF.");
         return;
       }
 
@@ -334,6 +344,8 @@ document.addEventListener("DOMContentLoaded", () => {
     inputFileBotao.addEventListener("change", () => {
       processarArquivo(inputFileBotao.files[0]);
     });
+    // Veio do envio unificado (index-enviar.html): a imagem já escolhida segue direto.
+    if (window.AIDAEncaminhar) window.AIDAEncaminhar.entregarEm(inputFileBotao, "imagem");
 
     if (areaSoltar) {
       // Fora do cartao, um arquivo solto faria o navegador abri-lo e descartar a

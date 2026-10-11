@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#10403b">
+    <meta name="description"
+        content="AIDA Audio: envie um áudio (mensagem de voz, gravação, trecho de podcast) e veja os indícios técnicos de voz sintética, explicados em linguagem simples.">
+
+    <link rel="manifest" href="../manifest.webmanifest">
+    <link rel="apple-touch-icon" href="../assets/images/pwa-icon-180.png">
+    <link id="favicon" rel="icon" type="image/x-icon" href="../assets/images/AIDABranco.ico">
+
+    <title>AIDA Audio — Enviar áudio para análise</title>
+    <link rel="canonical" href="https://aida-on.com.br/audio">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="AIDA.ON">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:title" content="AIDA Audio — Enviar áudio para análise">
+    <meta property="og:description" content="Envie uma mensagem de voz ou gravação e veja os indícios técnicos de voz gerada por IA.">
+    <meta property="og:url" content="https://aida-on.com.br/audio">
+    <meta property="og:image" content="https://aida-on.com.br/assets/images/pwa-icon-512.png">
+    <meta property="og:image:alt" content="Logotipo do AIDA.ON">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Afacad:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../styles/style-shared-theme.css">
+    <link rel="stylesheet" href="../styles/aida-design-system.css">
+    <link rel="stylesheet" href="../styles/style-ferramenta.css">
+    <link rel="stylesheet" href="../styles/style-video.css?v=20260929-v1">
+    <link rel="stylesheet" href="../styles/style-audio.css?v=20261011-v1">
+</head>
+
+<!-- Mesma estrutura das telas de vídeo e documentos (estilos vid-*). O servidor é o
+     do AIDA Video (Space aidaon/aida-video), nas rotas /audio/*. -->
+<body class="aida-shell selecao-page video-page audio-page">
+    <a class="aida-skip-link" href="#conteudo">Pular para o conteúdo</a>
+    <header class="page-header">
+        <a href="./index-apresentacao.html" aria-label="Página inicial do AIDA">
+            <img src="../assets/images/LogoBranca.png" alt="Logo AIDA.ON" class="brand-logo">
+        </a>
+
+        <div class="selecao-header-actions">
+            <a href="./index-enviar.html" class="top-link">Analisar qualquer arquivo</a>
+            <a href="./index-video.html" class="top-link">Analisar vídeo</a>
+            <a href="./index-solucoes.html" class="top-link">Soluções</a>
+        </div>
+    </header>
+
+    <main id="conteudo" class="page-frame selecao-main video-main">
+        <section class="selecao-panel glass-panel" id="audPainelEnvio" aria-labelledby="audTitulo">
+            <div class="selecao-intro">
+                <span class="page-kicker">AIDA Audio · em validação</span>
+                <h1 class="page-title" id="audTitulo">Escolha o áudio para analisar</h1>
+                <p class="page-copy">
+                    Envie uma mensagem de voz, uma gravação ou um trecho de podcast. A AIDA ouve o sinal da voz
+                    e explica, em linguagem simples, os indícios de que ela pode ter sido gerada ou clonada por IA.
+                </p>
+            </div>
+
+            <ol class="selecao-steps selecao-steps--tres" aria-label="Passos da análise">
+                <li class="selecao-step"><span aria-hidden="true">1</span><strong>Escolha o áudio</strong></li>
+                <li class="selecao-step"><span aria-hidden="true">2</span><strong>A AIDA ouve o sinal</strong></li>
+                <li class="selecao-step"><span aria-hidden="true">3</span><strong>Veja o resultado</strong></li>
+            </ol>
+
+            <div class="aida-state aida-state--carregando vid-servidor" id="audServidor" role="status">
+                <span class="aida-state__icon" aria-hidden="true"></span>
+                <div>
+                    <p class="aida-state__title" id="audServidorTitulo">Conectando ao servidor…</p>
+                    <p class="aida-state__text" id="audServidorTexto"></p>
+                </div>
+            </div>
+
+            <form id="audForm" class="vid-form" novalidate>
+                <label class="selecao-upload glass-card vid-drop aud-drop" id="audDrop" for="audArquivo">
+                    <span class="selecao-upload-icon aud-onda" aria-hidden="true">
+                        <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+                    </span>
+
+                    <span class="selecao-upload-copy">
+                        <span class="section-tag">Upload</span>
+                        <span class="vid-drop__titulo" id="audDropTitulo">Selecione o áudio</span>
+                        <span class="vid-drop__texto" id="audDropTexto">
+                            Prefira o arquivo original: o áudio do WhatsApp baixado direto, sem regravar pelo alto-falante.
+                        </span>
+                    </span>
+
+                    <input type="file" id="audArquivo" name="audio" aria-label="Selecionar áudio do dispositivo"
+                           accept="audio/*,.wav,.mp3,.m4a,.aac,.ogg,.opus,.flac,.webm,.amr,.3gp">
+
+                    <span class="aida-button vid-drop__botao" aria-hidden="true">Selecionar áudio</span>
+
+                    <span class="selecao-formats">WAV, MP3, M4A, OGG/Opus (WhatsApp), FLAC, AMR — até 30 MB; os 2 primeiros minutos são analisados.</span>
+                </label>
+
+                <audio id="audPlayer" class="aud-player" controls hidden></audio>
+
+                <details class="vid-ajustes">
+                    <summary class="vid-ajustes__resumo">
+                        <span>Uso técnico</span>
+                        <small>endereço do servidor</small>
+                    </summary>
+                    <div class="aida-field">
+                        <label class="aida-field__label" for="audApi">URL do servidor AIDA</label>
+                        <input class="aida-input" id="audApi" type="url" spellcheck="false">
+                    </div>
+                </details>
+
+                <button type="submit" class="aida-btn vid-enviar" id="audEnviar" disabled>
+                    Analisar áudio
+                    <span class="aida-btn__arrow" aria-hidden="true">&rarr;</span>
+                </button>
+            </form>
+
+            <div id="audProgresso" class="vid-progresso" hidden>
+                <div class="aida-state aida-state--analisando" role="status" aria-live="polite">
+                    <span class="aida-state__icon" aria-hidden="true"></span>
+                    <div>
+                        <p class="aida-state__title">Ouvindo o áudio…</p>
+                        <p class="aida-state__text">Leva alguns segundos.</p>
+                    </div>
+                </div>
+            </div>
+
+            <details class="metodos-detalhes vid-como" id="audComoFunciona">
+                <summary class="metodos-summary">
+                    <span class="metodos-summary-texto">
+                        <span class="section-tag">Como funciona</span>
+                        <strong>Veja como a AIDA analisa um áudio</strong>
+                    </span>
+                </summary>
+                <div class="metodos-corpo">
+                    <p class="metodos-intro">
+                        Vozes sintéticas soam naturais ao ouvido, mas o sinal guarda marcas do processo que as gerou.
+                        A AIDA não transcreve nem entende o que é dito: só mede o som.
+                    </p>
+                    <ol class="vid-etapas">
+                        <li class="vid-etapa">
+                            <span class="vid-etapa__num" aria-hidden="true">1</span>
+                            <div>
+                                <strong>Padronização</strong>
+                                <p>O áudio vira mono, 16 kHz. Assim o formato do arquivo não vira pista falsa.</p>
+                                <small>Decodificação pelo FFmpeg (PyAV); trilhas de vídeo também servem.</small>
+                            </div>
+                        </li>
+                        <li class="vid-etapa">
+                            <span class="vid-etapa__num" aria-hidden="true">2</span>
+                            <div>
+                                <strong>Qualidade</strong>
+                                <p>Áudio curto demais, quase todo silêncio ou saturado não permite concluir — e a AIDA diz isso.</p>
+                                <small>Duração mínima de 1 s, fração de silêncio, fração de amostras saturadas.</small>
+                            </div>
+                        </li>
+                        <li class="vid-etapa">
+                            <span class="vid-etapa__num" aria-hidden="true">3</span>
+                            <div>
+                                <strong>Assinatura acústica</strong>
+                                <p>Sintetizadores deixam marcas no espectro: altas frequências lisas demais, respiração e ruído de fundo ausentes, transições regulares.</p>
+                                <small>Coeficientes cepstrais em escala mel e linear, deltas, planura e queda espectral, e estatísticas de energia.</small>
+                            </div>
+                        </li>
+                        <li class="vid-etapa">
+                            <span class="vid-etapa__num" aria-hidden="true">4</span>
+                            <div>
+                                <strong>Decisão</strong>
+                                <p>Um classificador treinado com vozes reais e de 16 sintetizadores em português dá a probabilidade; perto do limiar, a resposta é inconclusiva.</p>
+                                <small>Treino com MLS (português, real) e MLAAD (português, 16 sistemas de síntese), sem repetir locutor ou sistema entre treino e teste.</small>
+                            </div>
+                        </li>
+                    </ol>
+                    <p class="metodos-aviso">
+                        Detector em validação: o áudio de redes sociais e de ligações é muito comprimido e difícil.
+                        Trate o resultado como indício, não como prova.
+                    </p>
+                </div>
+            </details>
+
+            <p class="selecao-note">
+                O áudio é lido numa pasta temporária do servidor e apagado ao fim da análise; nada é guardado nem
+                transcrito. Veja o <a href="./index-privacidade.html">Aviso de Privacidade</a>.
+            </p>
+        </section>
+
+        <section id="audResultado" class="vid-resultado glass-panel" aria-labelledby="audResultadoTitulo" hidden>
+            <div class="vid-resultado__topo">
+                <span class="page-kicker">Resultado da análise</span>
+                <h2 class="vid-resultado__titulo" id="audResultadoTitulo">Resultado do áudio</h2>
+            </div>
+
+            <div class="aida-state" id="audVeredito" role="status">
+                <span class="aida-state__icon" aria-hidden="true"></span>
+                <div>
+                    <p class="aida-state__title" id="audVereditoTitulo"></p>
+                    <p class="vid-significado" id="audSignificado"></p>
+                    <ul class="vid-motivos" id="audMotivos"></ul>
+                </div>
+            </div>
+
+            <div class="aud-medidor" id="audMedidor" hidden>
+                <div class="aud-medidor__trilho">
+                    <span class="aud-medidor__faixa" id="audMedidorFaixa"></span>
+                    <span class="aud-medidor__ponteiro" id="audMedidorPonteiro"></span>
+                </div>
+                <div class="aud-medidor__rotulos"><span>voz real</span><span>voz sintética</span></div>
+            </div>
+
+            <dl class="vid-numeros" id="audNumeros"></dl>
+
+            <div class="vid-bloco" id="audLimitesBloco" hidden>
+                <h3 class="aida-title-3">Limites desta análise</h3>
+                <ul class="vid-motivos" id="audLimites"></ul>
+            </div>
+
+            <p class="aida-text--sm vid-ressalva" id="audRessalva"></p>
+
+            <div class="vid-acoes">
+                <button type="button" class="aida-btn aida-btn--sm" id="audNovo">Analisar outro áudio</button>
+                <button type="button" class="aida-btn aida-btn--ghost aida-btn--sm" id="audBaixar">Baixar relatório (JSON)</button>
+            </div>
+        </section>
+    </main>
+
+    <script src="../scripts/script-cookie-consent.js"></script>
+    <script src="../scripts/aida-encaminhar.js?v=20261011-envio"></script>
+    <script src="../scripts/script-audio.js?v=20261011-v1"></script>
+</body>
+
+</html>

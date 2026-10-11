@@ -34,7 +34,7 @@
 
     <link rel="stylesheet" href="../styles/style-shared-theme.css">
     <link rel="stylesheet" href="../styles/aida-design-system.css">
-    <link rel="stylesheet" href="../styles/aida-solucoes.css?v=20260929-v1">
+    <link rel="stylesheet" href="../styles/aida-solucoes.css?v=20261011-audio">
 </head>
 
 <body class="aida-shell">
@@ -46,7 +46,7 @@
 
         <nav class="aida-row" aria-label="Navegação da plataforma">
             <a href="./index-apresentacao.html" class="top-link">Voltar à página inicial</a>
-            <a href="./index-seleciona.html" class="top-link">Analisar imagem</a>
+            <a href="./index-enviar.html" class="top-link">Analisar arquivo</a>
         </nav>
     </header>
 
@@ -70,10 +70,11 @@
             <div class="solucoes__head">
                 <div>
                     <span class="aida-eyebrow">Soluções AIDA</span>
-                    <h1 class="aida-title-2">Quatro frentes, uma mesma análise.</h1>
+                    <h1 class="aida-title-2">Um detector para cada tipo de arquivo.</h1>
                     <p class="aida-text solucoes__sub">
-                        O mesmo núcleo de detecção atende fotos, vídeos, investigações detalhadas e outros
-                        sistemas. Escolha pelo que você tem em mãos.
+                        Fotos, vídeos, áudios e documentos, mais a investigação detalhada e a integração com
+                        outros sistemas. Escolha pelo que você tem em mãos — ou
+                        <a href="./index-enviar.html">envie o arquivo e deixe a AIDA escolher</a>.
                     </p>
                 </div>
             </div>
@@ -88,6 +89,9 @@
                 </a>
                 <a class="sol-guia__item" href="#sol-video" data-alvo="video">
                     <strong>Tenho um vídeo</strong><span>AIDA Video</span>
+                </a>
+                <a class="sol-guia__item" href="#sol-audio" data-alvo="audio">
+                    <strong>Tenho um áudio</strong><span>AIDA Audio</span>
                 </a>
                 <a class="sol-guia__item" href="#sol-documents" data-alvo="documents">
                     <strong>Tenho uma nota ou recibo</strong><span>AIDA Documents</span>
@@ -349,6 +353,48 @@
                         </ul>
                         <a href="./index-documentos.html" class="aida-btn aida-btn--ghost aida-btn--sm sol-card__cta">
                             Analisar um documento
+                            <span class="aida-btn__arrow" aria-hidden="true">&rarr;</span>
+                        </a>
+                    </div>
+                </article>
+
+                <article class="sol-card sol-card--audio" data-sol="audio" id="sol-audio">
+                    <div class="sol-card__stage">
+                        <span class="sol-card__note">demonstração</span>
+
+                        <div class="sol-fx fx-aud">
+                            <div class="sol-fx__quadro fx-aud__quadro">
+                                <div class="fx-aud__onda" aria-hidden="true">
+                                    <span></span><span></span><span></span><span></span><span></span><span></span>
+                                    <span></span><span></span><span></span><span></span><span></span><span></span>
+                                    <span></span><span></span><span></span><span></span><span></span><span></span>
+                                </div>
+                                <span class="sol-fx__grade" aria-hidden="true"></span>
+                            </div>
+
+                            <div class="sol-fx__barra" aria-hidden="true">
+                                <span>áudio</span>
+                                <span class="sol-fx__marca">espectro · respiração · ruído</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sol-card__body">
+                        <div class="sol-card__head">
+                            <h2 class="sol-card__title">AIDA <span>Audio</span></h2>
+                            <span class="aida-status aida-status--disponivel">Versão inicial</span>
+                        </div>
+                        <p class="sol-card__text">
+                            Envie uma mensagem de voz ou gravação. A AIDA mede o sinal da voz e aponta marcas de
+                            síntese ou clonagem por IA — útil contra golpes com voz falsa.
+                        </p>
+                        <ul class="sol-card__pontos">
+                            <li>WhatsApp (OGG/Opus), MP3, M4A, WAV e outros</li>
+                            <li>Treinado com vozes reais e 16 sintetizadores em português</li>
+                            <li>Nada é transcrito nem guardado</li>
+                        </ul>
+                        <a href="./index-audio.html" class="aida-btn aida-btn--ghost aida-btn--sm sol-card__cta">
+                            Analisar um áudio
                             <span class="aida-btn__arrow" aria-hidden="true">&rarr;</span>
                         </a>
                     </div>

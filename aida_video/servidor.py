@@ -144,6 +144,10 @@ def criar_app(fabrica_analisador=None, executar_em_thread=True, tamanho_max_mb=T
     from aida_documents.servidor import registrar as registrar_documentos
 
     registrar_documentos(app)
+    # AIDA Audio com rota propria (antes so como trilha de video).
+    from aida_audio.servidor import registrar as registrar_audio
+
+    registrar_audio(app)
     tarefas = Tarefas()
     app.config["TAREFAS"] = tarefas
     fabrica_analisador = fabrica_analisador or (lambda: AnalisadorCore())

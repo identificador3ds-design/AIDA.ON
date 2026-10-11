@@ -1,0 +1,124 @@
+/* Envio unificado (index-enviar.html). */
+
+.env-painel {
+  max-width: 880px;
+}
+
+.env-drop {
+  cursor: pointer;
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.env-drop:focus-visible {
+  outline: 3px solid rgba(159, 214, 166, 0.8);
+  outline-offset: 4px;
+}
+
+.env-drop--sobre {
+  transform: scale(1.015);
+  border-color: rgba(159, 214, 166, 0.7);
+  box-shadow: 0 0 0 6px rgba(159, 214, 166, 0.12);
+}
+
+.env-drop__icones {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  font-size: 2rem;
+}
+
+.env-icone {
+  display: inline-grid;
+  place-items: center;
+  width: 58px;
+  height: 58px;
+  border-radius: 16px;
+  background: rgba(229, 231, 235, 0.06);
+  border: 1px solid rgba(229, 231, 235, 0.12);
+  animation: env-flutua 3.2s ease-in-out infinite;
+  transition: transform 0.35s ease, opacity 0.35s ease, background 0.35s ease;
+}
+
+.env-icone:nth-child(2) { animation-delay: 0.4s; }
+.env-icone:nth-child(3) { animation-delay: 0.8s; }
+.env-icone:nth-child(4) { animation-delay: 1.2s; }
+
+@keyframes env-flutua {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* Depois de detectar: o ícone do tipo cresce, os outros somem. */
+.env-drop--detectado .env-icone {
+  animation: none;
+  opacity: 0.25;
+}
+
+.env-drop--detectado .env-icone.ativo {
+  opacity: 1;
+  transform: scale(1.25);
+  background: rgba(159, 214, 166, 0.18);
+  border-color: rgba(159, 214, 166, 0.6);
+}
+
+.env-destino {
+  margin: 0;
+  text-align: center;
+  font-weight: 600;
+  color: #9fd6a6;
+}
+
+.env-detectores {
+  width: min(1100px, 100%);
+  margin: 28px auto 0;
+  display: grid;
+  gap: 14px;
+}
+
+.env-detectores__titulo {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  opacity: 0.85;
+  text-align: center;
+}
+
+.env-grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.env-cartao {
+  display: grid;
+  gap: 6px;
+  padding: 18px;
+  color: inherit;
+  text-decoration: none;
+  transition: transform 0.25s ease, border-color 0.25s ease;
+}
+
+.env-cartao:hover,
+.env-cartao:focus-visible,
+.env-cartao.ativo {
+  transform: translateY(-3px);
+  border-color: rgba(159, 214, 166, 0.6);
+}
+
+.env-cartao__icone {
+  font-size: 1.6rem;
+}
+
+.env-cartao span:last-child {
+  font-size: 0.92rem;
+  opacity: 0.8;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .env-icone,
+  .env-drop,
+  .env-cartao {
+    animation: none;
+    transition: none;
+  }
+}

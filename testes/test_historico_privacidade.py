@@ -114,3 +114,18 @@ def test_migracao_nao_cria_politica_aberta():
     """Nenhuma política ativa (fora dos comentários) pode ser `using (true)`."""
     ativo = "\n".join(l for l in MIGRACAO.splitlines() if not l.strip().startswith("--"))
     assert not re.search(r"using\s*\(\s*true\s*\)", ativo, re.IGNORECASE)
+
+
+PERFIL = (RAIZ / "scripts" / "script-perfil.js").read_text(encoding="utf-8")
+
+
+def test_excluir_conta_apaga_dossies_forenses_antes_da_conta():
+    """Sem isto o dossiê ficava acessível por link direto até o cache expirar (7 dias)."""
+    corpo = PERFIL[PERFIL.index("async function excluirContaEDados"):]
+    assert corpo.index("removerDossiesForenses(user.id)") < corpo.index('rpc("excluir_minha_conta")')
+    assert 'method: "DELETE"' in PERFIL
+
+
+def test_excluir_conta_pagina_as_evidencias():
+    trecho = PERFIL[PERFIL.index("async function removerEvidenciasUsuario"):PERFIL.index("async function removerDossiesForenses")]
+    assert "offset" in trecho and "pagina.length < 1000" in trecho

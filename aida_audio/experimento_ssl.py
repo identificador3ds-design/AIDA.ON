@@ -23,7 +23,7 @@ Protocolos (nada do teste aparece no treino):
     python -m aida_audio.experimento_ssl <pasta_dados> <saida.json> [--por-sistema 80]
 
 <pasta_dados>: mlaad_pt/**/<sistema>/*.wav, mls_pt/<locutor>/*, gary/data/*.parquet;
-videos reais em G:/Meu Drive/TCC/videos_teste/reais.
+videos reais em G:/Meu Drive/VÍDEOS GATO.
 """
 
 from __future__ import annotations
@@ -48,7 +48,10 @@ BACKBONES = {
     "wavlm": ("microsoft/wavlm-base-plus", range(3, 10)),
     "xlsr": ("facebook/wav2vec2-xls-r-300m", range(5, 13)),
 }
-VIDEOS_REAIS = Path("G:/Meu Drive/TCC/videos_teste/reais")
+# 11/10/2026: videos_teste/reais era cópia de VÍDEOS GATO e foi apagada. VÍDEOS GATO tem
+# 60 vídeos a mais que nunca passaram pela barreira contra os 14 vídeos de regressão:
+# antes de coletar de novo, conferir a barreira.
+VIDEOS_REAIS = Path("G:/Meu Drive/VÍDEOS GATO")
 
 
 def _recorte(sinal):

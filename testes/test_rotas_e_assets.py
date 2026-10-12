@@ -579,11 +579,17 @@ def test_pagina_do_video_oferece_envio_ligado_ao_script():
     assert "innerHTML" not in js
 
 
-def test_sistema_leva_a_analise_de_video():
-    """Quem entra no sistema cai na seleção de imagem; sem link, o vídeo some."""
-    for nome in ("index-seleciona.html", "index-analise.html", "index-forensics.html"):
+def test_sistema_leva_ao_envio_unico():
+    """Desde 11/10/2026 há uma porta só para analisar: o envio único escolhe o detector.
+
+    Nenhum menu oferece "Analisar imagem" ou "Analisar vídeo" soltos; as páginas de cada
+    detector continuam existindo, mas como destino do envio.
+    """
+    for nome in ("index-seleciona.html", "index-analise.html", "index-forensics.html",
+                 "index-video.html", "index-audio.html", "index-documentos.html"):
         html = (RAIZ / "pages" / nome).read_text(encoding="utf-8")
-        assert 'href="./index-video.html"' in html, f"{nome} não leva ao vídeo"
+        assert 'href="./index-enviar.html"' in html, f"{nome} não leva ao envio único"
+        assert not re.search(r'href="\./index-(seleciona|video)\.html" class="top-link"', html), nome
 
 
 # --------------------------------------------------------------------------- #

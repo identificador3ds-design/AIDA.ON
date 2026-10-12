@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#10403b">
+    <meta name="description" content="Diz se uma foto tem indícios de ter sido gerada ou alterada por inteligência artificial.">
+    <link rel="manifest" href="../manifest.webmanifest">
+    <link rel="apple-touch-icon" href="../assets/images/pwa-icon-180.png">
+    <link id="favicon" rel="icon" type="image/x-icon" href="../assets/images/AIDABranco.ico">
+    <title>AIDA Image — como funciona</title>
+    <link rel="canonical" href="https://aida-on.com.br/solucoes/image">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="AIDA.ON">
+    <meta property="og:title" content="AIDA Image — como funciona">
+    <meta property="og:description" content="Diz se uma foto tem indícios de ter sido gerada ou alterada por inteligência artificial.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Afacad:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles/style-shared-theme.css">
+    <link rel="stylesheet" href="../styles/aida-design-system.css">
+    <link rel="stylesheet" href="../styles/style-solucao.css?v=20261011-v1">
+</head>
+
+<!-- Gerado por docs/gerar_paginas_solucoes.py: edite lá, não aqui. -->
+<body class="aida-shell solucao-page solucao--image">
+    <a class="aida-skip-link" href="#conteudo">Pular para o conteúdo</a>
+    <header class="page-header">
+        <a href="./index-apresentacao.html" aria-label="Página inicial do AIDA">
+            <img src="../assets/images/LogoBranca.png" alt="Logo AIDA.ON" class="brand-logo">
+        </a>
+        <nav class="aida-row" aria-label="Navegação da plataforma">
+            <a href="./index-solucoes.html" class="top-link">Todas as soluções</a>
+            <a href="./index-enviar.html" class="top-link">Analisar arquivo</a>
+        </nav>
+    </header>
+
+    <main id="conteudo" class="page-frame sol-pagina">
+        <section class="sol-pagina__topo">
+            <span class="aida-eyebrow">Foto</span>
+            <h1 class="aida-title-2">AIDA <span>Image</span></h1>
+            <p class="sol-pagina__resumo">Diz se uma foto tem indícios de ter sido gerada ou alterada por inteligência artificial.</p>
+        </section>
+
+        <section class="sol-pagina__bloco" aria-labelledby="tituloSimples">
+            <h2 class="sol-pagina__titulo" id="tituloSimples">Em poucas palavras</h2>
+            <div class="sol-pagina__grade">
+                <article class="sol-pagina__cartao glass-card"><h3>O que faz</h3><p>Você envia uma foto e a AIDA responde se ela parece uma fotografia real, uma foto real editada ou uma imagem gerada por IA — e explica o porquê em linguagem simples.</p></article>
+                <article class="sol-pagina__cartao glass-card"><h3>Como usar</h3><p>Envie o arquivo original, do jeito que você recebeu ou tirou. Prints de tela e imagens reenviadas várias vezes perdem informação.</p></article>
+                <article class="sol-pagina__cartao glass-card"><h3>O que a resposta significa</h3><p>REAL: nenhum indício de IA. REAL EDITADA: foto real que passou por um editor (ex.: Lightroom). IA: indícios de geração ou manipulação. Se a AIDA não tiver segurança, ela pede mais uma evidência (o original ou outra foto da mesma cena) antes de responder.</p></article>
+                <article class="sol-pagina__cartao glass-card"><h3>Quando desconfiar</h3><p>Nenhum detector acerta sempre. A resposta é um indício técnico, não uma prova: em casos importantes, confira também a fonte da imagem.</p></article>
+            </div>
+        </section>
+
+        <section class="sol-pagina__bloco sol-pagina__tecnico" aria-labelledby="tituloTecnico">
+            <h2 class="sol-pagina__titulo" id="tituloTecnico">Transparência técnica</h2>
+            <p class="sol-pagina__nota">Para quem quer saber exatamente o que acontece com o arquivo — e o quanto
+                confiar no resultado.</p>
+
+            <h3 class="sol-pagina__sub">Como funciona, passo a passo</h3>
+            <ol class="sol-pagina__etapas">
+                <li><strong>Três leituras independentes</strong><p>Cada imagem é lida por três módulos que olham coisas diferentes.</p><small>CLIP ViT-B/32 (OpenAI) com cabeça treinada pela equipe sobre os embeddings; módulo forense com 846 características (espectro de Fourier, ruído residual, blocos JPEG, estatística de cor) em gradient boosting; RIGID (estabilidade da representação sob pequenas perturbações).</small></li>
+                <li><strong>Fusão calibrada</strong><p>As três notas viram uma única probabilidade, calibrada para significar o que diz.</p><small>Gradient boosting monotônico sobre as notas dos módulos e a qualidade do arquivo; calibração na validação.</small></li>
+                <li><strong>Decisão com margem de segurança</strong><p>Perto do ponto de decisão, ou quando os módulos discordam muito, a AIDA não chuta.</p><small>Limiar 0,686 (escolhido para no máximo 3% de fotos reais acusadas na validação); faixa de abstenção 0,606–0,766; corte de desacordo entre módulos 0,716.</small></li>
+                <li><strong>Proveniência e edição</strong><p>A AIDA também lê o que o próprio arquivo declara.</p><small>Leitura de credenciais C2PA (ex.: imagens do ChatGPT assinadas) e de metadados de editores (Lightroom, Photoshop...) para o estado REAL EDITADA.</small></li>
+            </ol>
+
+            <h3 class="sol-pagina__sub">Com que dados foi feito</h3>
+            <p class="sol-pagina__texto">Cerca de 55 mil imagens derivadas (treino, validação e teste separados por origem, sem repetir a mesma cena entre conjuntos): fotos reais públicas (MS COCO, OpenFake reais, Pexels), fotos e vídeos da equipe, e imagens de mais de 100 geradores (GPT-Image, Midjourney, Flux, Seedream, Ideogram, Nano Banana Pro, Z-Image...). Cada imagem também entra comprimida (JPEG, WebP, WhatsApp, print de tela) para o modelo não depender do formato.</p>
+
+            <h3 class="sol-pagina__sub">Números medidos</h3>
+            <dl class="sol-pagina__numeros">
+                <div><dt>OpenFake (conjunto público independente, 405 imagens)</dt><dd>IA detectada 70%; IA dita real 8,6%; foto real acusada 1,9%; inconclusivas: 21% das IA, 8% das reais</dd></div>
+                <div><dt>Vídeos reais de celular (14 vídeos de regressão)</dt><dd>nenhum quadro acusado de IA</dd></div>
+                <div><dt>Versão anterior (até 11/10/2026), mesmo teste OpenFake</dt><dd>IA dita real 12,7%; foto real acusada 4,4%</dd></div>
+            </dl>
+            <p class="sol-pagina__nota">Medidos em dados que não foram usados no treino. Relatórios completos no
+                repositório do projeto.</p>
+
+            <h3 class="sol-pagina__sub">Limites conhecidos</h3>
+            <ul class="sol-pagina__lista">
+                <li>Geradores lançados depois do treino podem passar despercebidos até a próxima rodada de treino.</li>
+                <li>Imagens muito pequenas, muito comprimidas ou que não são fotografias (desenhos, telas) têm leitura pior; fora do escopo, a AIDA avisa.</li>
+                <li>Panorâmicas de celular e fotos com filtros pesados ainda geram respostas inconclusivas com mais frequência.</li>
+            </ul>
+
+            <h3 class="sol-pagina__sub">Privacidade</h3>
+            <p class="sol-pagina__texto">A imagem é analisada no servidor e o resultado fica em cache por até 7 dias para reabrir a análise no AIDA Forensics. No histórico, só quem enviou vê a própria imagem (armazenamento privado, link temporário). Veja o <a href="./index-privacidade.html">Aviso de Privacidade</a>.</p>
+        </section>
+
+        <p class="sol-pagina__rodape">
+            <a href="./index-solucoes.html" class="aida-btn aida-btn--ghost aida-btn--sm">&larr; Todas as soluções</a>
+        </p>
+    </main>
+
+    <script src="../scripts/script-cookie-consent.js"></script>
+</body>
+
+</html>

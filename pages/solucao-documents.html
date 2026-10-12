@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#10403b">
+    <meta name="description" content="Aponta indícios de que um PDF (nota, recibo, comprovante) foi editado, montado ou inventado.">
+    <link rel="manifest" href="../manifest.webmanifest">
+    <link rel="apple-touch-icon" href="../assets/images/pwa-icon-180.png">
+    <link id="favicon" rel="icon" type="image/x-icon" href="../assets/images/AIDABranco.ico">
+    <title>AIDA Documents — como funciona</title>
+    <link rel="canonical" href="https://aida-on.com.br/solucoes/documents">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="AIDA.ON">
+    <meta property="og:title" content="AIDA Documents — como funciona">
+    <meta property="og:description" content="Aponta indícios de que um PDF (nota, recibo, comprovante) foi editado, montado ou inventado.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Afacad:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles/style-shared-theme.css">
+    <link rel="stylesheet" href="../styles/aida-design-system.css">
+    <link rel="stylesheet" href="../styles/style-solucao.css?v=20261011-v1">
+</head>
+
+<!-- Gerado por docs/gerar_paginas_solucoes.py: edite lá, não aqui. -->
+<body class="aida-shell solucao-page solucao--documents">
+    <a class="aida-skip-link" href="#conteudo">Pular para o conteúdo</a>
+    <header class="page-header">
+        <a href="./index-apresentacao.html" aria-label="Página inicial do AIDA">
+            <img src="../assets/images/LogoBranca.png" alt="Logo AIDA.ON" class="brand-logo">
+        </a>
+        <nav class="aida-row" aria-label="Navegação da plataforma">
+            <a href="./index-solucoes.html" class="top-link">Todas as soluções</a>
+            <a href="./index-enviar.html" class="top-link">Analisar arquivo</a>
+        </nav>
+    </header>
+
+    <main id="conteudo" class="page-frame sol-pagina">
+        <section class="sol-pagina__topo">
+            <span class="aida-eyebrow">PDF</span>
+            <h1 class="aida-title-2">AIDA <span>Documents</span></h1>
+            <p class="sol-pagina__resumo">Aponta indícios de que um PDF (nota, recibo, comprovante) foi editado, montado ou inventado.</p>
+        </section>
+
+        <section class="sol-pagina__bloco" aria-labelledby="tituloSimples">
+            <h2 class="sol-pagina__titulo" id="tituloSimples">Em poucas palavras</h2>
+            <div class="sol-pagina__grade">
+                <article class="sol-pagina__cartao glass-card"><h3>O que faz</h3><p>Confere os números do documento, a estrutura do arquivo e os valores, e explica cada indício encontrado.</p></article>
+                <article class="sol-pagina__cartao glass-card"><h3>Como usar</h3><p>Envie o PDF original, do jeito que você recebeu. Prints e PDFs refeitos perdem os rastros.</p></article>
+                <article class="sol-pagina__cartao glass-card"><h3>O que a resposta significa</h3><p>IA/MANIPULADA quando há indícios fortes; REAL só quando, além de não haver sinais de edição, há prova de origem (assinatura digital ou chave de nota fiscal); senão, inconclusivo.</p></article>
+                <article class="sol-pagina__cartao glass-card"><h3>Quando desconfiar</h3><p>Um documento inventado do zero pode não ter sinais de edição. Em valores importantes, confira no portal da nota, no banco ou com o emissor.</p></article>
+            </div>
+        </section>
+
+        <section class="sol-pagina__bloco sol-pagina__tecnico" aria-labelledby="tituloTecnico">
+            <h2 class="sol-pagina__titulo" id="tituloTecnico">Transparência técnica</h2>
+            <p class="sol-pagina__nota">Para quem quer saber exatamente o que acontece com o arquivo — e o quanto
+                confiar no resultado.</p>
+
+            <h3 class="sol-pagina__sub">Como funciona, passo a passo</h3>
+            <ol class="sol-pagina__etapas">
+                <li><strong>Números de cadastro</strong><p>CNPJ, CPF e chave de acesso têm dígitos de controle que sistemas nunca erram.</p><small>Módulo 11 para CNPJ (inclusive alfanumérico), CPF e chave de 44 dígitos da NF-e/NFC-e; UF, mês e modelo da chave; CNPJ do emitente embutido na chave.</small></li>
+                <li><strong>Estrutura do arquivo</strong><p>Um PDF guarda rastros de como foi feito.</p><small>Revisões incrementais, bytes além do /ByteRange da assinatura, páginas só com imagem, produtor do PDF, fontes duplicadas, datas de criação e modificação.</small></li>
+                <li><strong>Valores</strong><p>Listas grandes de valores reais seguem um padrão no primeiro dígito.</p><small>Lei de Benford com MAD de Nigrini e qui-quadrado; só entra na decisão com pelo menos 50 valores.</small></li>
+                <li><strong>Conclusão</strong><p>Cada indício tem um peso.</p><small>Suspeita = 1 − ∏(1 − peso). A partir de 60%: IA/manipulada. Real só abaixo de 25% e com prova de origem.</small></li>
+            </ol>
+
+            <h3 class="sol-pagina__sub">Com que dados foi feito</h3>
+            <p class="sol-pagina__texto">Regras explícitas — não é um modelo treinado. O aprendizado de máquina com PDFs reais e adulterados está em andamento.</p>
+
+            <h3 class="sol-pagina__sub">Números medidos</h3>
+            <dl class="sol-pagina__numeros">
+                <div><dt>Situação</dt><dd>versão inicial, ainda sem calibração com um conjunto grande de documentos</dd></div>
+            </dl>
+            <p class="sol-pagina__nota">Medidos em dados que não foram usados no treino. Relatórios completos no
+                repositório do projeto.</p>
+
+            <h3 class="sol-pagina__sub">Limites conhecidos</h3>
+            <ul class="sol-pagina__lista">
+                <li>Não consulta a SEFAZ nem valida a assinatura digital.</li>
+                <li>PDFs que são só uma foto do documento devem ir pela análise de imagem.</li>
+            </ul>
+
+            <h3 class="sol-pagina__sub">Privacidade</h3>
+            <p class="sol-pagina__texto">O PDF é lido na memória do servidor e descartado ao fim da análise; o texto não é guardado. Veja o <a href="./index-privacidade.html">Aviso de Privacidade</a>.</p>
+        </section>
+
+        <p class="sol-pagina__rodape">
+            <a href="./index-solucoes.html" class="aida-btn aida-btn--ghost aida-btn--sm">&larr; Todas as soluções</a>
+        </p>
+    </main>
+
+    <script src="../scripts/script-cookie-consent.js"></script>
+</body>
+
+</html>

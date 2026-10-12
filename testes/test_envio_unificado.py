@@ -57,9 +57,11 @@ def test_cada_detector_tem_pagina_e_recebe_o_arquivo_encaminhado():
         assert f"entregarEm(" in codigo and tipo in codigo, script
 
 
-def test_pagina_de_envio_aponta_para_os_quatro_detectores():
+def test_pagina_de_envio_explica_os_quatro_detectores():
+    """Os cartões explicam (páginas solucao-*), não abrem um analisador avulso."""
     html = (PAGINAS / "index-enviar.html").read_text(encoding="utf-8")
-    for destino in ("index-seleciona.html", "index-video.html", "index-audio.html", "index-documentos.html"):
+    for destino in ("solucao-image.html", "solucao-video.html", "solucao-audio.html", "solucao-documents.html"):
         assert f'href="./{destino}"' in html
+        assert (PAGINAS / destino).is_file()
     inicio = (PAGINAS / "index-apresentacao.html").read_text(encoding="utf-8")
     assert 'href="./index-enviar.html"' in inicio

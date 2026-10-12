@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#10403b">
+    <meta name="description" content="Diz se um vídeo tem indícios de ter sido gerado por IA, olhando imagem, movimento e áudio.">
+    <link rel="manifest" href="../manifest.webmanifest">
+    <link rel="apple-touch-icon" href="../assets/images/pwa-icon-180.png">
+    <link id="favicon" rel="icon" type="image/x-icon" href="../assets/images/AIDABranco.ico">
+    <title>AIDA Video — como funciona</title>
+    <link rel="canonical" href="https://aida-on.com.br/solucoes/video">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="AIDA.ON">
+    <meta property="og:title" content="AIDA Video — como funciona">
+    <meta property="og:description" content="Diz se um vídeo tem indícios de ter sido gerado por IA, olhando imagem, movimento e áudio.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Afacad:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles/style-shared-theme.css">
+    <link rel="stylesheet" href="../styles/aida-design-system.css">
+    <link rel="stylesheet" href="../styles/style-solucao.css?v=20261011-v1">
+</head>
+
+<!-- Gerado por docs/gerar_paginas_solucoes.py: edite lá, não aqui. -->
+<body class="aida-shell solucao-page solucao--video">
+    <a class="aida-skip-link" href="#conteudo">Pular para o conteúdo</a>
+    <header class="page-header">
+        <a href="./index-apresentacao.html" aria-label="Página inicial do AIDA">
+            <img src="../assets/images/LogoBranca.png" alt="Logo AIDA.ON" class="brand-logo">
+        </a>
+        <nav class="aida-row" aria-label="Navegação da plataforma">
+            <a href="./index-solucoes.html" class="top-link">Todas as soluções</a>
+            <a href="./index-enviar.html" class="top-link">Analisar arquivo</a>
+        </nav>
+    </header>
+
+    <main id="conteudo" class="page-frame sol-pagina">
+        <section class="sol-pagina__topo">
+            <span class="aida-eyebrow">Vídeo</span>
+            <h1 class="aida-title-2">AIDA <span>Video</span></h1>
+            <p class="sol-pagina__resumo">Diz se um vídeo tem indícios de ter sido gerado por IA, olhando imagem, movimento e áudio.</p>
+        </section>
+
+        <section class="sol-pagina__bloco" aria-labelledby="tituloSimples">
+            <h2 class="sol-pagina__titulo" id="tituloSimples">Em poucas palavras</h2>
+            <div class="sol-pagina__grade">
+                <article class="sol-pagina__cartao glass-card"><h3>O que faz</h3><p>Separa quadros do vídeo, analisa cada um como uma foto, observa como a cena se move e escuta a trilha de áudio. Junta tudo numa resposta só.</p></article>
+                <article class="sol-pagina__cartao glass-card"><h3>Como usar</h3><p>Envie o vídeo original (até 300 MB). Gravações de tela e vídeos reenviados muitas vezes perdem detalhe.</p></article>
+                <article class="sol-pagina__cartao glass-card"><h3>O que a resposta significa</h3><p>REAL, IA ou INCONCLUSIVO, com os motivos: em quantos quadros houve indício, se o movimento é natural e o que o áudio indicou.</p></article>
+                <article class="sol-pagina__cartao glass-card"><h3>Quando desconfiar</h3><p>Vídeos curtos, escuros ou muito comprimidos têm leitura pior. É um indício técnico, não uma prova.</p></article>
+            </div>
+        </section>
+
+        <section class="sol-pagina__bloco sol-pagina__tecnico" aria-labelledby="tituloTecnico">
+            <h2 class="sol-pagina__titulo" id="tituloTecnico">Transparência técnica</h2>
+            <p class="sol-pagina__nota">Para quem quer saber exatamente o que acontece com o arquivo — e o quanto
+                confiar no resultado.</p>
+
+            <h3 class="sol-pagina__sub">Como funciona, passo a passo</h3>
+            <ol class="sol-pagina__etapas">
+                <li><strong>Quadros</strong><p>Um quadro por segundo vai para o mesmo detector de fotos.</p><small>Intervalo de 1 s, até 40 quadros (máximo 120); cada quadro passa pelo AIDA Image.</small></li>
+                <li><strong>Movimento</strong><p>Vídeos gerados por IA costumam ter trajetórias de cena pouco naturais.</p><small>Embeddings DINOv2 (ViT-S/14) ao longo do tempo; um classificador de trajetória entra na fusão.</small></li>
+                <li><strong>Áudio</strong><p>A voz também é analisada, com o AIDA Audio.</p><small>Imagem com indício de IA decide IA; imagem inconclusiva deixa o áudio decidir; imagem real com áudio fortemente sintético vira IA (voz clonada sobre imagem real); áudio fraco que discorda vira inconclusivo.</small></li>
+            </ol>
+
+            <h3 class="sol-pagina__sub">Com que dados foi feito</h3>
+            <p class="sol-pagina__texto">Os mesmos dados do AIDA Image e do AIDA Audio, mais vídeos reais de celular da equipe e vídeos gerados por Sora, Veo, Wan, LTX e outros para o classificador de trajetória.</p>
+
+            <h3 class="sol-pagina__sub">Números medidos</h3>
+            <dl class="sol-pagina__numeros">
+                <div><dt>Vídeos reais de celular (14 vídeos de regressão)</dt><dd>nenhum acusado de IA; nenhum quadro acusado</dd></div>
+                <div><dt>Quadros de vídeos reais (teste com 121 vídeos)</dt><dd>0% dos quadros acusados de IA</dd></div>
+            </dl>
+            <p class="sol-pagina__nota">Medidos em dados que não foram usados no treino. Relatórios completos no
+                repositório do projeto.</p>
+
+            <h3 class="sol-pagina__sub">Limites conhecidos</h3>
+            <ul class="sol-pagina__lista">
+                <li>Só os primeiros quadros (até 40 por padrão) são analisados em vídeos longos.</li>
+                <li>Vídeos de IA que copiam movimento real (ex.: animação a partir de foto real) são mais difíceis.</li>
+            </ul>
+
+            <h3 class="sol-pagina__sub">Privacidade</h3>
+            <p class="sol-pagina__texto">O vídeo é apagado do servidor ao fim da análise; os quadros ficam só até o resultado ser consultado. Veja o <a href="./index-privacidade.html">Aviso de Privacidade</a>.</p>
+        </section>
+
+        <p class="sol-pagina__rodape">
+            <a href="./index-solucoes.html" class="aida-btn aida-btn--ghost aida-btn--sm">&larr; Todas as soluções</a>
+        </p>
+    </main>
+
+    <script src="../scripts/script-cookie-consent.js"></script>
+</body>
+
+</html>

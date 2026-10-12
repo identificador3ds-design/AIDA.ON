@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#10403b">
+    <meta name="description" content="Diz se uma voz tem indícios de ter sido gerada ou clonada por IA.">
+    <link rel="manifest" href="../manifest.webmanifest">
+    <link rel="apple-touch-icon" href="../assets/images/pwa-icon-180.png">
+    <link id="favicon" rel="icon" type="image/x-icon" href="../assets/images/AIDABranco.ico">
+    <title>AIDA Audio — como funciona</title>
+    <link rel="canonical" href="https://aida-on.com.br/solucoes/audio">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="AIDA.ON">
+    <meta property="og:title" content="AIDA Audio — como funciona">
+    <meta property="og:description" content="Diz se uma voz tem indícios de ter sido gerada ou clonada por IA.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Afacad:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles/style-shared-theme.css">
+    <link rel="stylesheet" href="../styles/aida-design-system.css">
+    <link rel="stylesheet" href="../styles/style-solucao.css?v=20261011-v1">
+</head>
+
+<!-- Gerado por docs/gerar_paginas_solucoes.py: edite lá, não aqui. -->
+<body class="aida-shell solucao-page solucao--audio">
+    <a class="aida-skip-link" href="#conteudo">Pular para o conteúdo</a>
+    <header class="page-header">
+        <a href="./index-apresentacao.html" aria-label="Página inicial do AIDA">
+            <img src="../assets/images/LogoBranca.png" alt="Logo AIDA.ON" class="brand-logo">
+        </a>
+        <nav class="aida-row" aria-label="Navegação da plataforma">
+            <a href="./index-solucoes.html" class="top-link">Todas as soluções</a>
+            <a href="./index-enviar.html" class="top-link">Analisar arquivo</a>
+        </nav>
+    </header>
+
+    <main id="conteudo" class="page-frame sol-pagina">
+        <section class="sol-pagina__topo">
+            <span class="aida-eyebrow">Áudio</span>
+            <h1 class="aida-title-2">AIDA <span>Audio</span></h1>
+            <p class="sol-pagina__resumo">Diz se uma voz tem indícios de ter sido gerada ou clonada por IA.</p>
+        </section>
+
+        <section class="sol-pagina__bloco" aria-labelledby="tituloSimples">
+            <h2 class="sol-pagina__titulo" id="tituloSimples">Em poucas palavras</h2>
+            <div class="sol-pagina__grade">
+                <article class="sol-pagina__cartao glass-card"><h3>O que faz</h3><p>Você envia uma mensagem de voz ou gravação e a AIDA mede o som da voz — sem transcrever o que é dito — para encontrar marcas de síntese.</p></article>
+                <article class="sol-pagina__cartao glass-card"><h3>Como usar</h3><p>Envie o arquivo original (o áudio do WhatsApp baixado direto funciona). Evite regravar pelo alto-falante. Até 30 MB; os 2 primeiros minutos são analisados.</p></article>
+                <article class="sol-pagina__cartao glass-card"><h3>O que a resposta significa</h3><p>REAL ou IA, com a chance estimada. Em golpes com voz clonada, confirme sempre por outro canal antes de agir.</p></article>
+                <article class="sol-pagina__cartao glass-card"><h3>Quando desconfiar</h3><p>Áudio de ligação telefônica e áudio muito curto (menos de 1 s) ou quase todo em silêncio são difíceis — a AIDA avisa quando não dá para concluir.</p></article>
+            </div>
+        </section>
+
+        <section class="sol-pagina__bloco sol-pagina__tecnico" aria-labelledby="tituloTecnico">
+            <h2 class="sol-pagina__titulo" id="tituloTecnico">Transparência técnica</h2>
+            <p class="sol-pagina__nota">Para quem quer saber exatamente o que acontece com o arquivo — e o quanto
+                confiar no resultado.</p>
+
+            <h3 class="sol-pagina__sub">Como funciona, passo a passo</h3>
+            <ol class="sol-pagina__etapas">
+                <li><strong>Padronização</strong><p>O áudio vira mono, 16 kHz.</p><small>Decodificação pelo FFmpeg (PyAV); trilhas de vídeo também são aceitas.</small></li>
+                <li><strong>Impressão da voz</strong><p>Um modelo de fala treinado em 128 línguas transforma trechos de 6 s numa representação do som.</p><small>XLS-R-300m (wav2vec 2.0, Meta); média e desvio das camadas 5 a 12 (2.048 números) em até 4 trechos espalhados pelo áudio.</small></li>
+                <li><strong>Decisão</strong><p>Um classificador dá a probabilidade de cada trecho; a resposta é a média.</p><small>Regressão logística; limiar escolhido por validação cruzada para no máximo 3% de vozes reais acusadas.</small></li>
+            </ol>
+
+            <h3 class="sol-pagina__sub">Com que dados foi feito</h3>
+            <p class="sol-pagina__texto">Vozes reais: Multilingual LibriSpeech (português), FLEURS (português do Brasil), áudio dos vídeos de celular da equipe e gravações do YouTube. Vozes de IA: MLAAD (16 sintetizadores em português, como XTTS, Bark e OpenAI TTS) e um conjunto público de vozes comerciais (Polly, Kokoro, Luvvoice, ElevenLabs, Hume, Speechify).</p>
+
+            <h3 class="sol-pagina__sub">Números medidos</h3>
+            <dl class="sol-pagina__numeros">
+                <div><dt>Vozes comerciais NUNCA vistas no treino (ElevenLabs, Hume, Speechify)</dt><dd>96,8% detectadas; 3,2% ditas reais</dd></div>
+                <div><dt>Áudio real de celular (vídeos fora do treino)</dt><dd>98,8% corretos; 1,2% acusados</dd></div>
+                <div><dt>FLEURS português (falantes fora do treino)</dt><dd>100% corretos</dd></div>
+                <div><dt>Versão anterior (até 11/10/2026)</dt><dd>56% das vozes comerciais detectadas; 41% do áudio de celular acusado</dd></div>
+            </dl>
+            <p class="sol-pagina__nota">Medidos em dados que não foram usados no treino. Relatórios completos no
+                repositório do projeto.</p>
+
+            <h3 class="sol-pagina__sub">Limites conhecidos</h3>
+            <ul class="sol-pagina__lista">
+                <li>Ainda não medido em áudio de vídeos gerados por IA (Sora, Veo) nem em ligações telefônicas (8 kHz).</li>
+                <li>Clonagens de voz de sistemas muito novos podem escapar até o próximo treino.</li>
+            </ul>
+
+            <h3 class="sol-pagina__sub">Privacidade</h3>
+            <p class="sol-pagina__texto">O áudio vai para uma pasta temporária do servidor e é apagado ao fim da análise; nada é transcrito nem guardado. Veja o <a href="./index-privacidade.html">Aviso de Privacidade</a>.</p>
+        </section>
+
+        <p class="sol-pagina__rodape">
+            <a href="./index-solucoes.html" class="aida-btn aida-btn--ghost aida-btn--sm">&larr; Todas as soluções</a>
+        </p>
+    </main>
+
+    <script src="../scripts/script-cookie-consent.js"></script>
+</body>
+
+</html>

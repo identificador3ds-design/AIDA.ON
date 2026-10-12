@@ -12,12 +12,12 @@
     <link rel="apple-touch-icon" href="../assets/images/pwa-icon-180.png">
     <link id="favicon" rel="icon" type="image/x-icon" href="../assets/images/AIDABranco.ico">
 
-    <title>AIDA Audio — Enviar áudio para análise</title>
+    <title>AIDA Audio — Enviar áudio</title>
     <link rel="canonical" href="https://aida-on.com.br/audio">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="AIDA.ON">
     <meta property="og:locale" content="pt_BR">
-    <meta property="og:title" content="AIDA Audio — Enviar áudio para análise">
+    <meta property="og:title" content="AIDA Audio — Enviar áudio">
     <meta property="og:description" content="Envie uma mensagem de voz ou gravação e veja os indícios técnicos de voz gerada por IA.">
     <meta property="og:url" content="https://aida-on.com.br/audio">
     <meta property="og:image" content="https://aida-on.com.br/assets/images/pwa-icon-512.png">
@@ -27,9 +27,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Afacad:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="../styles/style-shared-theme.css">
+    <link rel="stylesheet" href="../styles/style-shared-theme.css?v=20261011-nav">
     <link rel="stylesheet" href="../styles/aida-design-system.css">
-    <link rel="stylesheet" href="../styles/style-ferramenta.css">
+    <link rel="stylesheet" href="../styles/style-ferramenta.css?v=20261011-v2">
     <link rel="stylesheet" href="../styles/style-video.css?v=20260929-v1">
     <link rel="stylesheet" href="../styles/style-audio.css?v=20261011-v1">
 </head>
@@ -42,17 +42,18 @@
         <a href="./index-apresentacao.html" aria-label="Página inicial do AIDA">
             <img src="../assets/images/LogoBranca.png" alt="Logo AIDA.ON" class="brand-logo">
         </a>
-
-        <div class="selecao-header-actions">
-            <a href="./index-enviar.html" class="top-link">Analisar arquivo</a>
-            <a href="./index-solucoes.html" class="top-link">Soluções</a>
-        </div>
+        <nav class="aida-topnav" aria-label="Navegação principal">
+            <a href="./index-enviar.html" class="top-link top-link--destaque" data-nav="enviar">Analisar arquivo</a>
+            <a href="./index-solucoes.html" class="top-link" data-nav="solucoes">Soluções</a>
+            <a href="./index-historico.html" class="top-link" data-nav="historico">Histórico</a>
+            <a href="./index-perfil.html" class="top-link" data-nav="conta">Minha conta</a>
+        </nav>
     </header>
 
     <main id="conteudo" class="page-frame selecao-main video-main">
         <section class="selecao-panel glass-panel" id="audPainelEnvio" aria-labelledby="audTitulo">
             <div class="selecao-intro">
-                <span class="page-kicker">AIDA Audio · versão inicial</span>
+                <span class="page-kicker">AIDA Audio</span>
                 <h1 class="page-title" id="audTitulo">Escolha o áudio para analisar</h1>
                 <p class="page-copy">
                     Envie uma mensagem de voz, uma gravação ou um trecho de podcast. A AIDA ouve o sinal da voz
@@ -81,7 +82,6 @@
                     </span>
 
                     <span class="selecao-upload-copy">
-                        <span class="section-tag">Upload</span>
                         <span class="vid-drop__titulo" id="audDropTitulo">Selecione o áudio</span>
                         <span class="vid-drop__texto" id="audDropTexto">
                             Prefira o arquivo original: o áudio do WhatsApp baixado direto, sem regravar pelo alto-falante.
@@ -226,6 +226,7 @@
     <script src="../scripts/script-cookie-consent.js"></script>
     <script src="../scripts/aida-encaminhar.js?v=20261011-envio"></script>
     <script src="../scripts/script-audio.js?v=20261011-v1"></script>
+    <script src="../scripts/aida-topnav.js?v=20261011-v1"></script>
 </body>
 
 </html>

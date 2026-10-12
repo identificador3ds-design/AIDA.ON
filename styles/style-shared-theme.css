@@ -417,3 +417,43 @@ body.aida-shell ::-webkit-scrollbar-thumb {
   margin-bottom: 24px;
   color: var(--neutral);
 }
+
+/* Menu do topo (um só componente em todas as páginas; aida-topnav.js ajusta o login).
+   Páginas de uso: Analisar arquivo · Soluções · Histórico · Minha conta.
+   Páginas informativas: Início · Soluções · Analisar arquivo. */
+.aida-topnav {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.aida-topnav .top-link {
+  padding: 10px 16px;
+  white-space: nowrap;
+}
+
+.aida-topnav .top-link--destaque {
+  background: linear-gradient(180deg, rgba(159, 214, 166, 0.28), rgba(95, 191, 143, 0.14));
+  border-color: rgba(159, 214, 166, 0.45);
+}
+
+.aida-topnav .top-link[hidden] {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .page-header .aida-topnav {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 8px;
+  }
+
+  .aida-topnav .top-link {
+    flex: 1 1 auto;
+    justify-content: center;
+    padding: 9px 12px;
+    font-size: 0.95rem;
+  }
+}

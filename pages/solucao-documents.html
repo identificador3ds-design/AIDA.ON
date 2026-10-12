@@ -9,16 +9,16 @@
     <link rel="manifest" href="../manifest.webmanifest">
     <link rel="apple-touch-icon" href="../assets/images/pwa-icon-180.png">
     <link id="favicon" rel="icon" type="image/x-icon" href="../assets/images/AIDABranco.ico">
-    <title>AIDA Documents — como funciona</title>
+    <title>AIDA Documents — Como funciona</title>
     <link rel="canonical" href="https://aida-on.com.br/solucoes/documents">
     <meta property="og:type" content="article">
     <meta property="og:site_name" content="AIDA.ON">
-    <meta property="og:title" content="AIDA Documents — como funciona">
+    <meta property="og:title" content="AIDA Documents — Como funciona">
     <meta property="og:description" content="Aponta indícios de que um PDF (nota, recibo, comprovante) foi editado, montado ou inventado.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Afacad:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../styles/style-shared-theme.css">
+    <link rel="stylesheet" href="../styles/style-shared-theme.css?v=20261011-nav">
     <link rel="stylesheet" href="../styles/aida-design-system.css">
     <link rel="stylesheet" href="../styles/style-solucao.css?v=20261011-v1">
 </head>
@@ -30,9 +30,10 @@
         <a href="./index-apresentacao.html" aria-label="Página inicial do AIDA">
             <img src="../assets/images/LogoBranca.png" alt="Logo AIDA.ON" class="brand-logo">
         </a>
-        <nav class="aida-row" aria-label="Navegação da plataforma">
-            <a href="./index-solucoes.html" class="top-link">Todas as soluções</a>
-            <a href="./index-enviar.html" class="top-link">Analisar arquivo</a>
+        <nav class="aida-topnav" aria-label="Navegação principal">
+            <a href="./index-apresentacao.html" class="top-link" data-nav="inicio">Início</a>
+            <a href="./index-solucoes.html" class="top-link" data-nav="solucoes">Soluções</a>
+            <a href="./index-enviar.html" class="top-link top-link--destaque" data-nav="enviar">Analisar arquivo</a>
         </nav>
     </header>
 
@@ -92,6 +93,7 @@
     </main>
 
     <script src="../scripts/script-cookie-consent.js"></script>
+    <script src="../scripts/aida-topnav.js?v=20261011-v1"></script>
 </body>
 
 </html>

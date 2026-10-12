@@ -12,19 +12,19 @@
     <link rel="apple-touch-icon" href="../assets/images/pwa-icon-180.png">
     <link id="favicon" rel="icon" type="image/x-icon" href="../assets/images/AIDABranco.ico">
 
-    <title>AIDA Documents — Enviar PDF para análise</title>
+    <title>AIDA Documents — Enviar PDF</title>
     <!-- SEO e compartilhamento -->
     <link rel="canonical" href="https://aida-on.com.br/documentos">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="AIDA.ON">
     <meta property="og:locale" content="pt_BR">
-    <meta property="og:title" content="AIDA Documents — Enviar PDF para análise">
+    <meta property="og:title" content="AIDA Documents — Enviar PDF">
     <meta property="og:description" content="Envie uma nota fiscal, recibo ou comprovante em PDF e veja os indícios técnicos de edição ou montagem.">
     <meta property="og:url" content="https://aida-on.com.br/documentos">
     <meta property="og:image" content="https://aida-on.com.br/assets/images/pwa-icon-512.png">
     <meta property="og:image:alt" content="Logotipo do AIDA.ON">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="AIDA Documents — Enviar PDF para análise">
+    <meta name="twitter:title" content="AIDA Documents — Enviar PDF">
     <meta name="twitter:description" content="Envie uma nota fiscal, recibo ou comprovante em PDF e veja os indícios técnicos de edição ou montagem.">
     <meta name="twitter:image" content="https://aida-on.com.br/assets/images/pwa-icon-512.png">
 
@@ -32,9 +32,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Afacad:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="../styles/style-shared-theme.css">
+    <link rel="stylesheet" href="../styles/style-shared-theme.css?v=20261011-nav">
     <link rel="stylesheet" href="../styles/aida-design-system.css">
-    <link rel="stylesheet" href="../styles/style-ferramenta.css">
+    <link rel="stylesheet" href="../styles/style-ferramenta.css?v=20261011-v2">
     <link rel="stylesheet" href="../styles/style-video.css?v=20260929-v1">
     <link rel="stylesheet" href="../styles/style-documentos.css?v=20260929-v1">
 </head>
@@ -48,18 +48,19 @@
         <a href="./index-apresentacao.html" aria-label="Página inicial do AIDA">
             <img src="../assets/images/LogoBranca.png" alt="Logo AIDA.ON" class="brand-logo">
         </a>
-
-        <div class="selecao-header-actions">
-            <a href="./index-enviar.html" class="top-link">Analisar arquivo</a>
-            <a href="./index-solucoes.html" class="top-link">Soluções</a>
-        </div>
+        <nav class="aida-topnav" aria-label="Navegação principal">
+            <a href="./index-enviar.html" class="top-link top-link--destaque" data-nav="enviar">Analisar arquivo</a>
+            <a href="./index-solucoes.html" class="top-link" data-nav="solucoes">Soluções</a>
+            <a href="./index-historico.html" class="top-link" data-nav="historico">Histórico</a>
+            <a href="./index-perfil.html" class="top-link" data-nav="conta">Minha conta</a>
+        </nav>
     </header>
 
     <main id="conteudo" class="page-frame selecao-main video-main">
         <!-- ================= Envio ================= -->
         <section class="selecao-panel glass-panel" id="docPainelEnvio" aria-labelledby="docTitulo">
             <div class="selecao-intro">
-                <span class="page-kicker">AIDA Documents · versão inicial</span>
+                <span class="page-kicker">AIDA Documents</span>
                 <h1 class="page-title" id="docTitulo">Escolha o PDF para analisar</h1>
                 <p class="page-copy">
                     Envie uma nota fiscal, recibo, comprovante ou boleto em PDF. A AIDA confere os números de
@@ -101,7 +102,6 @@
                     </span>
 
                     <span class="selecao-upload-copy">
-                        <span class="section-tag">Upload</span>
                         <span class="vid-drop__titulo" id="docDropTitulo">Selecione o PDF</span>
                         <span class="vid-drop__texto" id="docDropTexto">
                             Escolha o arquivo original, do jeito que você recebeu. Evite prints ou PDFs refeitos.
@@ -274,6 +274,7 @@
     <script src="../scripts/script-cookie-consent.js"></script>
     <script src="../scripts/aida-encaminhar.js?v=20261011-envio"></script>
     <script src="../scripts/script-documentos.js?v=20261011-envio"></script>
+    <script src="../scripts/aida-topnav.js?v=20261011-v1"></script>
 </body>
 
 </html>

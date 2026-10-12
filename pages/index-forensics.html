@@ -12,7 +12,7 @@
     <link rel="apple-touch-icon" href="../assets/images/pwa-icon-180.png">
     <link id="favicon" rel="icon" type="image/x-icon" href="../assets/images/AIDABranco.ico">
 
-    <title>AIDA Forensics | Investigação da análise</title>
+    <title>AIDA Forensics — Investigação da análise</title>
     <!-- SEO e compartilhamento -->
     <link rel="canonical" href="https://aida-on.com.br/forensics">
     <meta property="og:type" content="website">
@@ -32,7 +32,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Afacad:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="../styles/style-shared-theme.css">
+    <link rel="stylesheet" href="../styles/style-shared-theme.css?v=20261011-nav">
     <link rel="stylesheet" href="../styles/aida-design-system.css">
     <link rel="stylesheet" href="../styles/style-forensics.css?v=20261008-real-editada">
 </head>
@@ -43,9 +43,11 @@
         <a href="./index-apresentacao.html" aria-label="Página inicial do AIDA">
             <img src="../assets/images/LogoBranca.png" alt="Logo AIDA.ON" class="brand-logo">
         </a>
-
-        <nav class="aida-row" aria-label="Navegação da plataforma">
-            <a href="./index-historico.html" class="top-link">Histórico</a>
+        <nav class="aida-topnav" aria-label="Navegação principal">
+            <a href="./index-enviar.html" class="top-link top-link--destaque" data-nav="enviar">Analisar arquivo</a>
+            <a href="./index-solucoes.html" class="top-link" data-nav="solucoes">Soluções</a>
+            <a href="./index-historico.html" class="top-link" data-nav="historico">Histórico</a>
+            <a href="./index-perfil.html" class="top-link" data-nav="conta">Minha conta</a>
         </nav>
     </header>
 
@@ -306,6 +308,7 @@
 
     <script src="../scripts/script-cookie-consent.js"></script>
     <script src="../scripts/script-forensics.js?v=20261008-real-editada"></script>
+    <script src="../scripts/aida-topnav.js?v=20261011-v1"></script>
 </body>
 
 </html>

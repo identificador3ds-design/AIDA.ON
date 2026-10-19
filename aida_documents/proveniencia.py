@@ -1,8 +1,10 @@
-"""Credenciais de conteudo (C2PA) embutidas no PDF.
+"""Credenciais de conteudo (C2PA) embutidas no documento.
 
 ChatGPT, Adobe Firefly e outros geradores gravam um manifesto C2PA no arquivo que
 declaram "criado por IA" (digitalSourceType trainedAlgorithmicMedia). No PDF ele vai
-como anexo /AF com Subtype application/c2pa, numa revisao incremental. O 0015 da
+como anexo /AF com Subtype application/c2pa, numa revisao incremental; no .docx (ZIP)
+em META-INF/content_credential.c2pa; em texto puro, codificado em seletores de
+variacao Unicode invisiveis (ver texto_puro.py). O 0015 da
 coleta de 09/10 (prova "A Cartomante" do ChatGPT, ReportLab) trazia um, assinado pela
 OpenAI, e a v0 so via "biblioteca de programacao" e "revisao incremental".
 
@@ -64,7 +66,7 @@ def _manifestos(reader, dados):
     achados = []
     try:
         for anexos in reader.attachments.values():
-            achados += [a for a in anexos if b"jumb" in a and b"c2pa" in a]
+            achados += [a for a in anexos if eh_manifesto(a)]
     except Exception:  # anexos malformados nao podem derrubar a analise
         pass
     if not achados and b"c2pa.claim" in dados:  # manifesto sem compressao fora de /EmbeddedFiles
@@ -75,9 +77,15 @@ def _manifestos(reader, dados):
 def ler_c2pa(reader, dados: bytes):
     """Resumo do primeiro manifesto C2PA do PDF, ou presente=False."""
     manifestos = _manifestos(reader, dados)
-    if not manifestos:
-        return {"presente": False}
-    m = manifestos[0]
+    return resumir_manifesto(manifestos[0]) if manifestos else {"presente": False}
+
+
+def eh_manifesto(dados: bytes):
+    return b"jumb" in dados and b"c2pa" in dados
+
+
+def resumir_manifesto(m: bytes):
+    """Gerador, modelo e origem declarados num manifesto C2PA (JUMBF/CBOR) ja extraido."""
     fontes = [nome for nome in FONTES_IA if f"digitalsourcetype/{nome}".encode() in m]
     return {
         "presente": True,

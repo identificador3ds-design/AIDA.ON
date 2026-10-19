@@ -1,6 +1,7 @@
 # AIDA Documents
 
-Triagem de PDFs enviados como prova (nota fiscal, recibo, comprovante, boleto, laudo).
+Triagem de documentos enviados como prova (nota fiscal, recibo, comprovante, boleto, laudo,
+trabalho escolar) em **PDF, DOCX, DOC ou TXT**.
 Devolve os mesmos três estados do AIDA Core: `REAL`, `IA/MANIPULADA` e `INCONCLUSIVO`.
 Não usa rede neural: cada indício é explicável e tem um peso. A pesquisa que embasa o
 módulo e os próximos passos está em [`docs/pesquisa-aida-documents.md`](../docs/pesquisa-aida-documents.md).
@@ -19,6 +20,7 @@ Dependências: `pypdf` e `numpy` (já estão no projeto). `reportlab` só nos te
 
 | Camada | Arquivo | O que procura | Peso |
 |---|---|---|---|
+| Formatos | `office.py`, `texto_puro.py` | ver a tabela "Outros formatos" abaixo | — |
 | Credencial C2PA | `proveniencia.py` | manifesto C2PA embutido que declara origem por IA (`trainedAlgorithmicMedia`), com gerador e modelo; a assinatura não é verificada | 0,80 |
 | Identificadores | `numeros.py` | DV de CNPJ (inclusive o alfanumérico), CPF e chave de acesso NF-e/NFC-e; UF, mês e modelo da chave; CNPJ do emitente da chave presente no documento | 0,60 |
 | Assinatura | `estrutura.py` | bytes acrescentados depois do trecho coberto pelo `/ByteRange` | 0,50 |
@@ -36,6 +38,39 @@ válida) e texto nativo em todas as páginas. O resto é `INCONCLUSIVO`, com o m
 DV certo não é prova de nada: geradores de CNPJ/CPF acertam o dígito. Só o DV errado é
 indício. Um orçamento fictício gerado com ReportLab (29/09) saiu `REAL` na primeira versão
 por causa disso; agora sai `INCONCLUSIVO`, com o indício fraco "biblioteca de programação".
+
+## Outros formatos (DOCX, DOC, TXT)
+
+O formato é reconhecido pelo conteúdo (`%PDF`, ZIP, OLE), não pela extensão. Nenhum deles
+chega a `REAL`: um arquivo editável qualquer pessoa escreve, com a chave de NF-e que quiser.
+
+| Formato | O que é lido | Indícios próprios | Peso |
+|---|---|---|---|
+| DOCX | core.xml, app.xml (minutos de edição, contagem de palavras), sessões `w:rsidR`, texto, macros, `META-INF/*.c2pa` | contagem de palavras zerada com texto; python-docx (autor, descrição, criação em 23/12/2013). O tempo de edição só informa (ver abaixo) | 0,15 / 0,15 |
+| DOC | só metadados, com `olefile` (programa, datas, tempo de edição, macros) | — | — |
+| TXT | texto (UTF-8, UTF-16 ou Latin-1) | caracteres invisíveis (largura zero, tags); manifesto C2PA em seletores de variação (experimental) | 0,15 / 0,80 |
+
+Em DOCX, DOC e TXT o DV errado pesa 0,30 (`dv_invalido_digitado`), e não 0,60: num
+arquivo digitado pode ser erro de digitação. O ML (`caracteristicas.py`, `treinar.py`)
+continua só para PDF.
+
+## Reais de bancos públicos (19/10)
+
+`python -m aida_documents.baixar_amostras napierone --tamanho tiny` baixa ~100 arquivos
+reais por formato do NapierOne (S3 público); `... essaybr --quantidade 200` grava redações
+da Essay-BR como `.txt`. Cada arquivo ganha uma linha em `origem.csv` (fonte e licença).
+PNCP, Querido Diário, Digital Corpora e INLABS também têm APIs, mas não foram testados
+daqui (rede da sessão bloqueada).
+
+Primeiro teste com 400 reais do NapierOne (100 de cada formato):
+
+- **5 falsos positivos em 100 PDFs**, todos por indícios contados em dobro: 4 PDFs do
+  Photoshop (editor de imagem + página só imagem, mesma causa) e 1 do InDesign (cada fonte
+  duplicada somava 0,30). Agora cada causa conta uma vez: 0 falsos positivos. Esse 0 foi
+  ajustado nesses mesmos arquivos; o número honesto sai do conjunto "small", ainda não usado.
+- **"Texto colado" saiu da conta.** 67 de 100 .docx reais tinham até 2 min de edição com
+  mais de 1.500 caracteres: o TotalTime do Word não é confiável ("Salvar como", modelos).
+- DOCX, DOC e TXT reais: nenhum falso positivo.
 
 ## Aprendizado de máquina (início em 08/10)
 

@@ -66,10 +66,10 @@ def test_docx_do_word_digitado_aos_poucos():
     assert any(".docx pode ser escrito" in m for m in r["motivos"])
 
 
-def test_docx_com_texto_colado_de_uma_vez():
+def test_tempo_de_edicao_curto_nao_e_indicio():
+    """67 de 100 .docx reais do NapierOne tinham ate 2 min de edicao: o tempo so informa."""
     r = analisar_bytes(docx(minutos=1), "trabalho.docx")
-    assert "texto_colado" in nomes(r)
-    assert r["resultado"] == "INCONCLUSIVO"  # indicio fraco: nao decide sozinho
+    assert nomes(r) == set() and r["estrutura"]["tempo_edicao_min"] == 1
 
 
 def test_docx_do_python_docx():
@@ -84,7 +84,6 @@ def test_docx_do_python_docx():
     d.save(buf)
     r = analisar_bytes(buf.getvalue(), "trabalho.docx")
     assert {"gerador_programatico", "metadados_inconsistentes"} <= nomes(r)
-    assert "texto_colado" not in nomes(r)  # mesma causa: nao conta duas vezes
 
 
 def test_docx_com_credencial_c2pa_vira_ia():
@@ -159,3 +158,25 @@ def test_rota_aceita_os_novos_formatos():
     from aida_documents.servidor import EXTENSOES
 
     assert {".pdf", ".docx", ".doc", ".txt"} <= EXTENSOES
+
+
+# ---------------------------------------------------------------- baixar_amostras (sem rede)
+
+
+def test_baixar_amostras_ignora_ficha_e_registra_origem(tmp_path, monkeypatch):
+    from aida_documents import baixar_amostras as b
+
+    pacote = io.BytesIO()
+    with zipfile.ZipFile(pacote, "w") as z:
+        z.writestr("DOC/0001-doc.doc", b"\xd0\xcf\x11\xe0")
+        z.writestr("DOC/DOC.pdf", b"%PDF ficha do pacote")
+    redacoes = "prompt,title,essay,score\n7,Titulo,\"['Primeiro paragrafo.', 'Segundo.']\",880\n"
+    respostas = {"zip": pacote.getvalue(), "csv": redacoes.encode("utf-8")}
+    monkeypatch.setattr(b, "_baixar", lambda url: respostas["zip" if url.endswith(".zip") else "csv"])
+
+    b.napierone(["DOC"], "tiny", tmp_path, avisar=lambda *_: None)
+    b.essaybr(5, tmp_path, avisar=lambda *_: None)
+    assert sorted(p.name for p in (tmp_path / "reais").iterdir()) == ["essaybr-0001.txt", "napierone-0001-doc.doc"]
+    assert (tmp_path / "reais" / "essaybr-0001.txt").read_text(encoding="utf-8") == "Titulo\n\nPrimeiro paragrafo.\n\nSegundo.\n"
+    origem = (tmp_path / "origem.csv").read_text(encoding="utf-8")
+    assert "NapierOne DOC-tiny.zip" in origem and "nota 880" in origem

@@ -46,13 +46,31 @@ chega a `REAL`: um arquivo editável qualquer pessoa escreve, com a chave de NF-
 
 | Formato | O que é lido | Indícios próprios | Peso |
 |---|---|---|---|
-| DOCX | core.xml, app.xml (minutos de edição, contagem de palavras), sessões `w:rsidR`, texto, macros, `META-INF/*.c2pa` | texto colado (≥ 1.500 caracteres com ≤ 2 min de edição no Word); contagem de palavras zerada com texto; python-docx (autor, descrição, criação em 23/12/2013) | 0,20 / 0,15 / 0,15 |
+| DOCX | core.xml, app.xml (minutos de edição, contagem de palavras), sessões `w:rsidR`, texto, macros, `META-INF/*.c2pa` | contagem de palavras zerada com texto; python-docx (autor, descrição, criação em 23/12/2013). O tempo de edição só informa (ver abaixo) | 0,15 / 0,15 |
 | DOC | só metadados, com `olefile` (programa, datas, tempo de edição, macros) | — | — |
 | TXT | texto (UTF-8, UTF-16 ou Latin-1) | caracteres invisíveis (largura zero, tags); manifesto C2PA em seletores de variação (experimental) | 0,15 / 0,80 |
 
 Em DOCX, DOC e TXT o DV errado pesa 0,30 (`dv_invalido_digitado`), e não 0,60: num
 arquivo digitado pode ser erro de digitação. O ML (`caracteristicas.py`, `treinar.py`)
 continua só para PDF.
+
+## Reais de bancos públicos (19/10)
+
+`python -m aida_documents.baixar_amostras napierone --tamanho tiny` baixa ~100 arquivos
+reais por formato do NapierOne (S3 público); `... essaybr --quantidade 200` grava redações
+da Essay-BR como `.txt`. Cada arquivo ganha uma linha em `origem.csv` (fonte e licença).
+PNCP, Querido Diário, Digital Corpora e INLABS também têm APIs, mas não foram testados
+daqui (rede da sessão bloqueada).
+
+Primeiro teste com 400 reais do NapierOne (100 de cada formato):
+
+- **5 falsos positivos em 100 PDFs**, todos por indícios contados em dobro: 4 PDFs do
+  Photoshop (editor de imagem + página só imagem, mesma causa) e 1 do InDesign (cada fonte
+  duplicada somava 0,30). Agora cada causa conta uma vez: 0 falsos positivos. Esse 0 foi
+  ajustado nesses mesmos arquivos; o número honesto sai do conjunto "small", ainda não usado.
+- **"Texto colado" saiu da conta.** 67 de 100 .docx reais tinham até 2 min de edição com
+  mais de 1.500 caracteres: o TotalTime do Word não é confiável ("Salvar como", modelos).
+- DOCX, DOC e TXT reais: nenhum falso positivo.
 
 ## Aprendizado de máquina (início em 08/10)
 

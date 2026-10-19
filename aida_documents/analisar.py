@@ -50,12 +50,9 @@ PESOS = {
     "benford_nao_conforme": 0.25,
     "benford_nao_conforme_forte": 0.35,
     # .docx e .txt
-    "texto_colado": 0.20,
     "metadados_inconsistentes": 0.15,
     "caracteres_invisiveis": 0.15,
 }
-MINUTOS_COLAGEM = 2
-CARACTERES_COLAGEM = 1500
 LIMITES_FORMATO = {
     "docx": ["um .docx é editável: a análise olha o histórico que o Word grava, não prova quem escreveu o texto"],
     "doc": ["do .doc (formato antigo) só os metadados são lidos; para analisar o texto, envie em .docx ou PDF"],
@@ -144,7 +141,7 @@ def analisar_bytes(dados: bytes, nome="documento.pdf"):
     if formato == "pdf":
         _indicios_pdf(est, indicio)
     elif formato == "docx":
-        _indicios_docx(est, len(texto), len(texto.split()), indicio)
+        _indicios_docx(est, len(texto.split()), indicio)
     if benford["suficiente"] and benford["mad"] > MAD_NAO_CONFORME and benford["p_valor"] < P_VALOR_BENFORD:
         chave = "benford_nao_conforme_forte" if benford["n"] >= N_RECOMENDADO else "benford_nao_conforme"
         indicio(chave, f"valores fogem da Lei de Benford (MAD {benford['mad']:.4f}, N={benford['n']})")
@@ -217,23 +214,25 @@ def _indicios_pdf(est, indicio):
     edicoes = est["revisoes"] - 1 - est["assinaturas"] - int(est["c2pa"]["presente"])
     if edicoes > 0:
         indicio("revisoes_incrementais", f"{est['revisoes']} revisões salvas no arquivo (edição após a criação)")
-    if est["paginas_analisadas"] and est["paginas_sem_texto"] == est["paginas_analisadas"]:
+    # Editor de imagem e pagina so imagem tem a mesma causa (o PDF e uma imagem salva
+    # pelo Photoshop): conta uma vez so. Visto em 4 PDFs reais do NapierOne (19/10).
+    editor_de_imagem = any(f.startswith("editor de imagem") for f in est["ferramentas_edicao"])
+    if not editor_de_imagem and est["paginas_analisadas"] and est["paginas_sem_texto"] == est["paginas_analisadas"]:
         indicio("sem_camada_texto_total", "nenhuma página tem texto selecionável: é imagem (print, foto ou montagem)")
-    elif est["paginas_sem_texto"]:
+    elif not editor_de_imagem and est["paginas_sem_texto"]:
         indicio("sem_camada_texto_parcial", f"{est['paginas_sem_texto']} página(s) só com imagem")
-    for fonte in est["fontes_subconjunto_duplicado"]:
-        indicio("fonte_subconjunto_duplicado", f"fonte {fonte} embutida duas vezes (texto acrescentado por outro programa)")
+    if est["fontes_subconjunto_duplicado"]:  # um indicio, quantas fontes forem
+        fontes = ", ".join(est["fontes_subconjunto_duplicado"])
+        indicio("fonte_subconjunto_duplicado", f"fonte(s) {fontes} embutida(s) duas vezes (texto acrescentado por outro programa)")
     dias = est["dias_entre_criacao_e_modificacao"]
     if dias is not None and dias > DIAS_MODIFICACAO_ALERTA:
         indicio("modificado_depois", f"modificado {dias:g} dias depois de criado")
 
 
-def _indicios_docx(est, caracteres, palavras, indicio):
-    tempo = est["tempo_edicao_min"]
-    # Ninguem digita 1.500 caracteres em 2 minutos: o texto chegou pronto (colado ou importado).
-    if est["eh_word"] and tempo is not None and tempo <= MINUTOS_COLAGEM and caracteres >= CARACTERES_COLAGEM:
-        indicio("texto_colado", f"{caracteres} caracteres com {tempo} min de edição registrados no Word "
-                                f"({est['sessoes_edicao']} sessão(ões)): o texto chegou pronto, colado ou importado")
+def _indicios_docx(est, palavras, indicio):
+    # O tempo de edicao (TotalTime) NAO vira indicio: 67 de 100 .docx reais do NapierOne
+    # (19/10) tinham ate 2 min com mais de 1.500 caracteres ("Salvar como", modelos e
+    # edicao fora do Word nao somam tempo). Fica so no relatorio, como informacao.
     # O Word atualiza a contagem de palavras a cada gravacao; zerada com texto, o arquivo nao foi salvo pelo Word.
     if est["palavras_registradas"] == 0 and palavras >= 50:
         indicio("metadados_inconsistentes", f"o arquivo diz ter 0 palavras, mas tem {palavras}: não foi salvo pelo programa que declara")

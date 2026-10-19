@@ -211,7 +211,9 @@ def _indicios_pdf(est, indicio):
     if est["bytes_apos_assinatura"] > 0:
         indicio("alterado_apos_assinatura", f"{est['bytes_apos_assinatura']} bytes acrescentados depois da assinatura digital")
     # O manifesto C2PA entra no PDF como revisao incremental: essa nao e edicao.
-    edicoes = est["revisoes"] - 1 - est["assinaturas"] - int(est["c2pa"]["presente"])
+    # O DSS da PAdES-LTV tambem entra como revisao depois da assinatura: nao e edicao.
+    edicoes = (est["revisoes"] - 1 - est["assinaturas"] - int(est["c2pa"]["presente"])
+               - int(est.get("validacao_ltv_apos_assinatura", False)))
     if edicoes > 0:
         indicio("revisoes_incrementais", f"{est['revisoes']} revisões salvas no arquivo (edição após a criação)")
     # Editor de imagem e pagina so imagem tem a mesma causa (o PDF e uma imagem salva

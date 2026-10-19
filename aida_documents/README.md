@@ -59,8 +59,9 @@ continua só para PDF.
 `python -m aida_documents.baixar_amostras napierone --tamanho tiny` baixa ~100 arquivos
 reais por formato do NapierOne (S3 público); `... essaybr --quantidade 200` grava redações
 da Essay-BR como `.txt`. Cada arquivo ganha uma linha em `origem.csv` (fonte e licença).
-PNCP, Querido Diário, Digital Corpora e INLABS também têm APIs, mas não foram testados
-daqui (rede da sessão bloqueada).
+`... pncp --inicio AAAAMMDD --fim AAAAMMDD` baixa editais e contratos do PNCP (um por órgão)
+e `... safedocs --dominio br` baixa PDFs de sites .br de 2021, lendo os ZIPs de 1,3 GB por
+faixas (só o índice e os PDFs escolhidos).
 
 Primeiro teste com 400 reais do NapierOne (100 de cada formato):
 
@@ -71,6 +72,18 @@ Primeiro teste com 400 reais do NapierOne (100 de cada formato):
 - **"Texto colado" saiu da conta.** 67 de 100 .docx reais tinham até 2 min de edição com
   mais de 1.500 caracteres: o TotalTime do Word não é confiável ("Salvar como", modelos).
 - DOCX, DOC e TXT reais: nenhum falso positivo.
+
+Segundo teste, com reais **brasileiros** que nunca tinham passado pelo AIDA: 40 do PNCP
+(`pncp`, um por órgão) e 59 do SAFEDOCS (`safedocs --dominio br`, um por site, de 2021):
+
+- **2 falsos positivos em 99 (2 %)**, os dois editais com assinatura ICP-Brasil (Lacuna e
+  BRy). Depois da assinatura esses programas acrescentam o DSS da **PAdES-LTV**
+  (certificados, CRLs, OCSPs e VRI), que mantém a assinatura verificável: não é edição.
+  `estrutura._so_validacao_ltv` reconhece essa atualização (DSS presente, nenhuma página,
+  anotação, imagem, fonte ou formulário novo, e todo stream sem tipo referenciado pelo DSS)
+  e ela deixa de contar como alteração e como revisão. Os dois passaram a sair `REAL`
+  (assinatura intacta). Edição de verdade depois da assinatura continua sendo pega (testes).
+- Os 2 % são o número honesto antes da correção; depois dela, 0 nesses mesmos 99.
 
 ## Aprendizado de máquina (início em 08/10)
 

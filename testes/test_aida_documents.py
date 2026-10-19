@@ -240,3 +240,34 @@ def test_rota_documento_formatos(cliente):
     r = cliente.post("/documento/analisar", data={"documento": (io.BytesIO(b"oi"), "nota.pdf")},
                      content_type="multipart/form-data")
     assert r.status_code == 400
+
+
+# ---------------------------------------------------------------- PAdES-LTV depois da assinatura
+
+_DSS = (b"\n1059 0 obj\n<</Length 4/Filter/FlateDecode>>stream\nxxxx\nendstream\nendobj\n"
+        b"1069 0 obj\n[1059 0 R]\nendobj\n"
+        b"1067 0 obj\n<</Type/VRI/CRL 1069 0 R>>\nendobj\n"
+        b"1068 0 obj\n<</ABC123 1067 0 R>>\nendobj\n"
+        b"1071 0 obj\n<</Type/DSS/CRLs 1069 0 R/VRI 1068 0 R>>\nendobj\n"
+        b"2 0 obj\n<</Type/Pages/Kids[3 0 R]/Count 1>>\nendobj\n"
+        b"1 0 obj\n<</Type/Catalog/Pages 2 0 R/DSS 1071 0 R/AcroForm<</DR<</Font<</Helv 9 0 R>>>>>>>>\nendobj\n"
+        b"xref\n0 0\ntrailer\n<<>>\n%%EOF\n")
+
+
+def test_dss_da_pades_ltv_nao_e_alteracao():
+    """2 editais assinados do PNCP (Lacuna, BRy) eram acusados pelo DSS acrescentado."""
+    from aida_documents.estrutura import _so_validacao_ltv
+
+    assert _so_validacao_ltv(_DSS)
+
+
+@pytest.mark.parametrize("extra", [
+    b"5 0 obj\n<</Type/Page/Parent 2 0 R/Contents 6 0 R>>\nendobj\n",                  # pagina nova
+    b"7 0 obj\n<</Type/Annot/Subtype/FreeText/Contents(R$ 9.999,00)>>\nendobj\n",      # anotacao por cima
+    b"6 0 obj\n<</Length 20>>stream\nBT (R$ 9.999,00) Tj ET\nendstream\nendobj\n",      # stream fora do DSS
+])
+def test_conteudo_depois_da_assinatura_continua_sendo_alteracao(extra):
+    from aida_documents.estrutura import _so_validacao_ltv
+
+    assert not _so_validacao_ltv(_DSS.replace(b"xref", extra + b"xref"))
+    assert not _so_validacao_ltv(extra)  # sem DSS nunca e validacao

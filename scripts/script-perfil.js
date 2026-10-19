@@ -48,17 +48,21 @@ function limparDadosLocaisUsuario() {
 }
 
 async function removerEvidenciasUsuario(userId) {
-  const { data, error } = await _supabase.storage.from("evidencias").list(userId, {
-    limit: 1000,
-  });
-
-  if (error) {
-    throw error;
+  // Paginado: com `limit: 1000` sozinho, quem tinha mais de mil evidências ficava
+  // com o restante no bucket depois de "excluir a conta".
+  const caminhos = [];
+  for (let offset = 0; ; offset += 1000) {
+    const { data, error } = await _supabase.storage.from("evidencias").list(userId, {
+      limit: 1000,
+      offset,
+    });
+    if (error) {
+      throw error;
+    }
+    const pagina = (data || []).filter((item) => item?.name && item.name !== ".emptyFolderPlaceholder");
+    caminhos.push(...pagina.map((item) => `${userId}/${item.name}`));
+    if (pagina.length < 1000) break;
   }
-
-  const caminhos = (data || [])
-    .filter((item) => item?.name && item.name !== ".emptyFolderPlaceholder")
-    .map((item) => `${userId}/${item.name}`);
 
   if (!caminhos.length) {
     return;
@@ -69,6 +73,29 @@ async function removerEvidenciasUsuario(userId) {
   if (removeError) {
     throw removeError;
   }
+}
+
+// Melhor esforço: o servidor de análise fora do ar não pode impedir a exclusão da
+// conta; no pior caso o cache expira sozinho (TTL de 7 dias).
+async function removerDossiesForenses(userId) {
+  const { data, error } = await _supabase
+    .from("historico_analises")
+    .select("analysis_id,api_base")
+    .eq("user_id", userId);
+  if (error || !data) return;          // coluna ausente (migração não aplicada) ou sem histórico
+
+  await Promise.all(
+    data
+      .filter((item) => item.analysis_id && item.api_base)
+      .map(async (item) => {
+        const base = String(item.api_base).replace(/\/+$/, "");
+        try {
+          await fetch(`${base}/forense/${encodeURIComponent(item.analysis_id)}`, { method: "DELETE" });
+        } catch (erro) {
+          console.warn("[AIDA.ON] Não foi possível remover um dossiê forense:", erro);
+        }
+      })
+  );
 }
 
 async function excluirContaEDados() {
@@ -82,6 +109,9 @@ async function excluirContaEDados() {
   }
 
   await removerEvidenciasUsuario(user.id);
+  // O dossiê de cada análise fica em cache no servidor de análise por até 7 dias e
+  // abre por link direto. Excluir a conta precisa levá-los junto (LGPD, eliminação).
+  await removerDossiesForenses(user.id);
 
   const { error } = await _supabase.rpc("excluir_minha_conta");
 

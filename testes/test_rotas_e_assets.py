@@ -151,8 +151,8 @@ def test_pagina_de_solucoes_declara_os_quatro_cards():
 def test_estados_dos_produtos_refletem_a_realidade():
     """O selo é declaração de estado, não enfeite.
 
-    Desde set/2026 as cinco soluções têm implementação: Image está disponível
-    e Forensics, Video, Documents e API estão em versão inicial (selo verde com o texto
+    Desde set/2026 as soluções têm implementação: Image está disponível
+    e Forensics, Video, Documents, Audio (out/2026) e API estão em versão inicial (selo verde com o texto
     "Versão inicial"). Nenhum card pode voltar a dizer beta ou em
     desenvolvimento sem que isso seja verdade.
     """
@@ -166,9 +166,10 @@ def test_estados_dos_produtos_refletem_a_realidade():
         estados[produto] = marca.group(1) if marca else None
 
     assert estados == {"image": "disponivel", "forensics": "disponivel",
-                       "video": "disponivel", "documents": "disponivel", "api": "disponivel"}
+                       "video": "disponivel", "documents": "disponivel", "audio": "disponivel",
+                       "api": "disponivel"}
 
-    for produto in ("forensics", "video", "documents", "api"):
+    for produto in ("forensics", "video", "documents", "audio", "api"):
         bloco = html.split(f'data-sol="{produto}"')[1].split("</article>")[0]
         assert "Versão inicial" in bloco, f"card {produto} deveria dizer versão inicial"
     assert not re.search(r"aida-status--(beta|desenvolvimento)", html)
@@ -578,8 +579,69 @@ def test_pagina_do_video_oferece_envio_ligado_ao_script():
     assert "innerHTML" not in js
 
 
-def test_sistema_leva_a_analise_de_video():
-    """Quem entra no sistema cai na seleção de imagem; sem link, o vídeo some."""
-    for nome in ("index-seleciona.html", "index-analise.html", "index-forensics.html"):
+def test_sistema_leva_ao_envio_unico():
+    """Desde 11/10/2026 há uma porta só para analisar: o envio único escolhe o detector.
+
+    Nenhum menu oferece "Analisar imagem" ou "Analisar vídeo" soltos; as páginas de cada
+    detector continuam existindo, mas como destino do envio.
+    """
+    for nome in ("index-seleciona.html", "index-analise.html", "index-forensics.html",
+                 "index-video.html", "index-audio.html", "index-documentos.html"):
         html = (RAIZ / "pages" / nome).read_text(encoding="utf-8")
-        assert 'href="./index-video.html"' in html, f"{nome} não leva ao vídeo"
+        assert 'href="./index-enviar.html"' in html, f"{nome} não leva ao envio único"
+        assert not re.search(r'href="\./index-(seleciona|video)\.html" class="top-link"', html), nome
+
+
+# --------------------------------------------------------------------------- #
+# .vercelignore — o que vai para produção
+# --------------------------------------------------------------------------- #
+
+
+def _publicados_na_raiz():
+    """Entradas da raiz liberadas pelo `.vercelignore` (formato `!/nome`)."""
+    linhas = (RAIZ / ".vercelignore").read_text(encoding="utf-8").splitlines()
+    assert "/*" in linhas, "o .vercelignore deixou de ser lista de permissão"
+    return {l[2:].rstrip("/") for l in linhas if l.startswith("!/")}
+
+
+def test_vercelignore_nao_publica_backend_nem_dados():
+    """Código de servidor, SQL, testes e uploads não podem virar arquivo público."""
+    publicados = _publicados_na_raiz()
+    proibidos = {"aida_api", "aida_modelo", "aida_video", "aida_audio", "aida_documents",
+                 "docs", "testes", "RELATORIO-MELHORIAS-AIDA.md", "RESUMO_CONVERSA_AIDA.md",
+                 "AIDA_API_Postman_Collection.json", "requirements.txt", "pytest.ini",
+                 ".github", ".claude"}
+
+    assert not publicados & proibidos, f"publicados por engano: {publicados & proibidos}"
+
+
+PADRAO_QUALQUER_RECURSO = re.compile(r'(?:href|src)\s*=\s*"(?P<caminho>[^"#?:]+)(?:[#?][^"]*)?"')
+
+
+def test_vercelignore_publica_tudo_que_as_paginas_usam():
+    """Recurso local referenciado por página precisa estar numa pasta publicada."""
+    publicados = _publicados_na_raiz()
+    faltando = set()
+
+    for pagina in [RAIZ / "index.html", *PAGINAS]:
+        html = pagina.read_text(encoding="utf-8", errors="ignore")
+        for achado in PADRAO_QUALQUER_RECURSO.finditer(html):
+            alvo = (pagina.parent / achado.group("caminho")).resolve()
+            try:
+                topo = alvo.relative_to(RAIZ).parts[0]
+            except ValueError:
+                continue
+            if topo not in publicados:
+                faltando.add(f"{pagina.name} -> {achado.group('caminho')}")
+
+    assert not faltando, f"referências fora do que a Vercel publica: {sorted(faltando)}"
+
+
+def test_service_worker_so_precarrega_o_que_e_publicado():
+    """Um item do precache que dá 404 faz o `install` do service worker falhar."""
+    publicados = _publicados_na_raiz()
+    sw = (RAIZ / "service-worker.js").read_text(encoding="utf-8")
+    caminhos = re.findall(r'["\'](\.?/[\w./-]+\.\w+)["\']', sw)
+    fora = {c for c in caminhos if c.lstrip("./").split("/")[0] not in publicados}
+
+    assert not fora, f"service worker referencia arquivos não publicados: {sorted(fora)}"

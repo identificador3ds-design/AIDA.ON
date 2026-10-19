@@ -96,6 +96,7 @@
 .sol-card--video     { --sol-accent: var(--aida-video); }
 .sol-card--api       { --sol-accent: var(--aida-api); }
 .sol-card--documents { --sol-accent: var(--aida-documents); }
+.sol-card--audio     { --sol-accent: #e08a1e; }
 
 /* Borda que responde ao cursor. Máscara de anel para colorir só a linha — o
    interior viraria glow. */
@@ -1052,4 +1053,49 @@
 
 @media (prefers-reduced-motion: reduce) {
   .fx-doc__marca { animation: none; }
+}
+
+/* ---------------------------------------------------------------- AIDA Audio
+   Forma de onda: barras que oscilam; a faixa da direita "esfria" (lisa demais),
+   como as altas frequências de uma voz sintética. */
+.fx-aud__quadro {
+  display: grid;
+  place-items: center;
+}
+
+.fx-aud__onda {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  height: 58%;
+}
+
+.fx-aud__onda span {
+  width: 6px;
+  height: 30%;
+  border-radius: 999px;
+  background: var(--aida-green-500, #5fbf8f);
+  animation: fx-aud-onda 1.6s ease-in-out infinite;
+}
+
+.fx-aud__onda span:nth-child(3n) { animation-delay: 0.2s; }
+.fx-aud__onda span:nth-child(3n + 1) { animation-delay: 0.45s; }
+.fx-aud__onda span:nth-child(4n) { animation-duration: 1.2s; }
+.fx-aud__onda span:nth-child(n + 13) {
+  background: #e08a1e;
+  animation-name: fx-aud-onda-lisa;
+}
+
+@keyframes fx-aud-onda {
+  0%, 100% { height: 18%; }
+  50% { height: 92%; }
+}
+
+@keyframes fx-aud-onda-lisa {
+  0%, 100% { height: 40%; }
+  50% { height: 55%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fx-aud__onda span { animation: none; height: 50%; }
 }

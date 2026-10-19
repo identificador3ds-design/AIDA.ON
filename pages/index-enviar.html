@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#10403b">
+    <meta name="description"
+        content="Envie uma imagem, um vídeo, um áudio ou um PDF: a AIDA identifica o tipo do arquivo e escolhe o detector certo.">
+
+    <link rel="manifest" href="../manifest.webmanifest">
+    <link rel="apple-touch-icon" href="../assets/images/pwa-icon-180.png">
+    <link id="favicon" rel="icon" type="image/x-icon" href="../assets/images/AIDABranco.ico">
+
+    <title>AIDA — Analisar arquivo</title>
+    <link rel="canonical" href="https://aida-on.com.br/enviar">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="AIDA.ON">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:title" content="AIDA — Analisar arquivo">
+    <meta property="og:description" content="Imagem, vídeo, áudio ou PDF: a AIDA escolhe o detector certo.">
+    <meta property="og:url" content="https://aida-on.com.br/enviar">
+    <meta property="og:image" content="https://aida-on.com.br/assets/images/pwa-icon-512.png">
+    <meta property="og:image:alt" content="Logotipo do AIDA.ON">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Afacad:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../styles/style-shared-theme.css?v=20261011-nav">
+    <link rel="stylesheet" href="../styles/aida-design-system.css">
+    <link rel="stylesheet" href="../styles/style-ferramenta.css?v=20261011-v2">
+    <link rel="stylesheet" href="../styles/style-enviar.css?v=20261011-v2">
+</head>
+
+<body class="aida-shell selecao-page enviar-page">
+    <a class="aida-skip-link" href="#conteudo">Pular para o conteúdo</a>
+    <header class="page-header">
+        <a href="./index-apresentacao.html" aria-label="Página inicial do AIDA">
+            <img src="../assets/images/LogoBranca.png" alt="Logo AIDA.ON" class="brand-logo">
+        </a>
+        <nav class="aida-topnav" aria-label="Navegação principal">
+            <a href="./index-solucoes.html" class="top-link" data-nav="solucoes">Soluções</a>
+            <a href="./index-historico.html" class="top-link" data-nav="historico">Histórico</a>
+            <a href="./index-perfil.html" class="top-link" data-nav="conta">Minha conta</a>
+        </nav>
+    </header>
+
+    <main id="conteudo" class="page-frame selecao-main">
+        <section class="selecao-panel glass-panel env-painel" aria-labelledby="envTitulo">
+            <div class="selecao-intro">
+                <span class="page-kicker">Nova análise</span>
+                <h1 class="page-title" id="envTitulo">Envie o arquivo. A AIDA escolhe o detector.</h1>
+                <p class="page-copy">
+                    Foto, vídeo, áudio ou PDF: identificamos o tipo do arquivo e levamos você direto para a análise
+                    certa. Nada é enviado antes de você confirmar na próxima tela.
+                </p>
+            </div>
+
+            <div class="selecao-upload glass-card env-drop" id="envDrop" tabindex="0" role="button"
+                 aria-describedby="envDropTexto">
+                <div class="env-drop__icones" aria-hidden="true">
+                    <span class="env-icone" data-tipo="imagem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="9" cy="10" r="1.8"/><path d="m21 16-5-5-8 9"/></svg></span>
+                    <span class="env-icone" data-tipo="video"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5.5" width="14" height="13" rx="2.5"/><path d="m16.5 10.5 5-3v9l-5-3"/></svg></span>
+                    <span class="env-icone" data-tipo="audio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></svg></span>
+                    <span class="env-icone" data-tipo="documento"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg></span>
+                </div>
+                <div class="selecao-upload-copy">
+                    <h2 id="envDropTitulo">Arraste o arquivo para cá</h2>
+                    <p id="envDropTexto">ou clique para escolher no celular ou no computador.</p>
+                </div>
+                <input type="file" id="envArquivo" aria-label="Escolher arquivo para analisar" hidden
+                       accept="image/*,video/*,audio/*,application/pdf,.heic,.heif,.avif,.opus,.amr,.pdf">
+                <button type="button" class="aida-button" id="envEscolher">Escolher arquivo</button>
+                <p class="selecao-formats">Imagens (JPG, PNG, WEBP, HEIC, AVIF) · Vídeos (MP4, MOV, WEBM) ·
+                    Áudios (MP3, M4A, OGG/WhatsApp, WAV) · PDF</p>
+                <p id="envErro" class="selecao-erro" role="alert" hidden></p>
+            </div>
+
+            <p class="env-destino" id="envDestino" role="status" aria-live="polite" hidden></p>
+        </section>
+
+        <section class="env-detectores" aria-labelledby="envDetectoresTitulo">
+            <h2 class="env-detectores__titulo" id="envDetectoresTitulo">Como funciona cada detector</h2>
+            <div class="env-grade">
+                <a class="env-cartao glass-card" data-tipo="imagem" href="./solucao-image.html">
+                    <span class="env-cartao__icone" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="9" cy="10" r="1.8"/><path d="m21 16-5-5-8 9"/></svg></span>
+                    <strong>AIDA Image</strong>
+                    <span>Foto</span>
+                </a>
+                <a class="env-cartao glass-card" data-tipo="video" href="./solucao-video.html">
+                    <span class="env-cartao__icone" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5.5" width="14" height="13" rx="2.5"/><path d="m16.5 10.5 5-3v9l-5-3"/></svg></span>
+                    <strong>AIDA Video</strong>
+                    <span>Vídeo</span>
+                </a>
+                <a class="env-cartao glass-card" data-tipo="audio" href="./solucao-audio.html">
+                    <span class="env-cartao__icone" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></svg></span>
+                    <strong>AIDA Audio</strong>
+                    <span>Áudio</span>
+                </a>
+                <a class="env-cartao glass-card" data-tipo="documento" href="./solucao-documents.html">
+                    <span class="env-cartao__icone" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg></span>
+                    <strong>AIDA Documents</strong>
+                    <span>PDF</span>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <script src="../scripts/script-cookie-consent.js"></script>
+    <script src="../scripts/aida-encaminhar.js?v=20261011-envio"></script>
+    <script src="../scripts/script-enviar.js?v=20261011-v1"></script>
+    <script src="../scripts/aida-topnav.js?v=20261011-v1"></script>
+</body>
+
+</html>

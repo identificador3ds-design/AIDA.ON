@@ -4,35 +4,39 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#10403b">
-  <title>Perfil AIDA.ON</title>
+  <title>AIDA — Minha conta</title>
   <!-- SEO e compartilhamento -->
   <meta name="description" content="Dados da sua conta AIDA.ON, preferências de retenção e controle sobre os seus dados.">
   <meta name="robots" content="noindex, nofollow">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="AIDA.ON">
   <meta property="og:locale" content="pt_BR">
-  <meta property="og:title" content="Perfil — AIDA.ON">
+  <meta property="og:title" content="AIDA — Minha conta">
   <meta property="og:description" content="Dados da sua conta AIDA.ON, preferências de retenção e controle sobre os seus dados.">
   <meta property="og:url" content="https://aida-on.com.br/perfil">
   <meta property="og:image" content="https://aida-on.com.br/assets/images/pwa-icon-512.png">
   <meta property="og:image:alt" content="Logotipo do AIDA.ON">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Perfil — AIDA.ON">
+  <meta name="twitter:title" content="AIDA — Minha conta">
   <meta name="twitter:description" content="Dados da sua conta AIDA.ON, preferências de retenção e controle sobre os seus dados.">
   <meta name="twitter:image" content="https://aida-on.com.br/assets/images/pwa-icon-512.png">
   <link rel="icon" id="favicon" type="image/x-icon" href="../assets/images/AIDABranco.ico">
-  <link rel="stylesheet" href="../styles/style-shared-theme.css">
+  <link rel="stylesheet" href="../styles/style-shared-theme.css?v=20261011-nav">
   <link rel="stylesheet" href="../styles/aida-design-system.css">
   <link rel="stylesheet" href="../styles/style-perfil.css">
 </head>
 <body class="aida-shell profile-page">
   <a class="aida-skip-link" href="#conteudo">Pular para o conteúdo</a>
   <header class="page-header">
-    <a href="../index.html" aria-label="Página inicial">
-      <img src="../assets/images/LogoBranca.png" alt="Logo AIDA.ON" class="brand-logo">
-    </a>
-    <a href="./index-apresentacao.html" class="top-link">Voltar</a>
-  </header>
+        <a href="./index-apresentacao.html" aria-label="Página inicial do AIDA">
+            <img src="../assets/images/LogoBranca.png" alt="Logo AIDA.ON" class="brand-logo">
+        </a>
+        <nav class="aida-topnav" aria-label="Navegação principal">
+            <a href="./index-enviar.html" class="top-link top-link--destaque" data-nav="enviar">Analisar arquivo</a>
+            <a href="./index-solucoes.html" class="top-link" data-nav="solucoes">Soluções</a>
+            <a href="./index-historico.html" class="top-link" data-nav="historico">Histórico</a>
+        </nav>
+    </header>
 
 <main id="conteudo" class="page-frame profile-main">
     <div class="profile-container">
@@ -98,7 +102,7 @@
               </div>
               <svg class="chevron" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"></path></svg>
             </a>
-            <a href="./index-seleciona.html" class="action-item">
+            <a href="./index-enviar.html" class="action-item">
               <div class="action-item-icon">
                 <svg viewBox="0 0 24 24"><path d="M12 5V19"></path><path d="M5 12H19"></path></svg>
               </div>
@@ -216,7 +220,8 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.3/dist/umd/supabase.js" integrity="sha384-qafw21c/iciq0VXsi9FzkfoQv5I/V0iqE4lSNcKXPnW9/UTJLnv5CcN4FHxVLnKg" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="../scripts/script-cookie-consent.js"></script>
-  <script src="../scripts/aida-config-remota.js"></script>
-  <script src="../scripts/script-perfil.js"></script>
+  <script src="../scripts/aida-config-remota.js?v=20261011-status"></script>
+  <script src="../scripts/script-perfil.js?v=20261010-exclusao"></script>
+    <script src="../scripts/aida-topnav.js?v=20261011-v1"></script>
 </body>
 </html>

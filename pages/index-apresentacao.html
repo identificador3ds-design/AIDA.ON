@@ -4,20 +4,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AIDA - Apresentação</title>
+    <title>AIDA — AI Detector &amp; Analyzer</title>
     <!-- SEO e compartilhamento -->
     <meta name="description" content="Plataforma que combina forense digital, análise estatística e espectral para apontar indícios de geração ou manipulação de imagens por inteligência artificial.">
     <link rel="canonical" href="https://aida-on.com.br/apresentacao">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="AIDA.ON">
     <meta property="og:locale" content="pt_BR">
-    <meta property="og:title" content="AIDA.ON — AI Detector & Analyzer">
+    <meta property="og:title" content="AIDA — AI Detector &amp; Analyzer">
     <meta property="og:description" content="Plataforma que combina forense digital, análise estatística e espectral para apontar indícios de geração ou manipulação de imagens por inteligência artificial.">
     <meta property="og:url" content="https://aida-on.com.br/apresentacao">
     <meta property="og:image" content="https://aida-on.com.br/assets/images/pwa-icon-512.png">
     <meta property="og:image:alt" content="Logotipo do AIDA.ON">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="AIDA.ON — AI Detector & Analyzer">
+    <meta name="twitter:title" content="AIDA — AI Detector &amp; Analyzer">
     <meta name="twitter:description" content="Plataforma que combina forense digital, análise estatística e espectral para apontar indícios de geração ou manipulação de imagens por inteligência artificial.">
     <meta name="twitter:image" content="https://aida-on.com.br/assets/images/pwa-icon-512.png">
     <link rel="icon" id="favicon" type="image/x-icon" href="../assets/images/AIDABranco.ico">
@@ -29,7 +29,7 @@
          ela, quem já visitou continuaria com a folha antiga — no caso desta
          mudança, com as regras de parallax que deixaram de existir. -->
     <link rel="stylesheet" href="../styles/aida-design-system.css">
-    <link rel="stylesheet" href="../styles/style-apresentacao.css?v=20260928-perf">
+    <link rel="stylesheet" href="../styles/style-apresentacao.css?v=20261011-v2">
 </head>
 
 <body>
@@ -46,7 +46,7 @@
                 <a href="./index-solucoes.html" class="ancoranav">Soluções</a>
                 <a href="#tecnologias" class="ancoranav">Tecnologias</a>
                 <a href="#equipe" class="ancoranav">Equipe</a>
-                <a href="#ferramentaaida" class="ancoranav mobile-only-link">Experimentar</a>
+                <a href="./index-enviar.html" class="ancoranav mobile-only-link">Analisar arquivo</a>
 
                 <div class="dropdown mobile-only">
                     <button class="dropbtn" id="nome-usuario" type="button">Minha conta</button>
@@ -86,14 +86,15 @@
         <section class="hero secao-recortada">
             <div class="hero-inner">
                 <div class="hero-copy">
-                    <span class="hero-badge">Análise forense de imagens</span>
-                    <h1 class="hero-title">Seja bem-vindo a verdade digital.</h1>
+                    <span class="hero-badge">Análise forense de mídia</span>
+                    <h1 class="hero-title">Seja bem-vindo à verdade digital.</h1>
                     <p class="hero-text">
                         AIDA identifica sinais de manipulação e geração por inteligência
-                        artificial em imagens com uma leitura técnica, rápida e objetiva.
+                        artificial em imagens, vídeos, áudios e documentos, com uma leitura
+                        técnica, rápida e objetiva.
                     </p>
                     <div class="hero-actions">
-                        <a href="#ferramentaaida" class="btn-main">Começar agora</a>
+                        <a href="./index-enviar.html" class="btn-main">Analisar um arquivo</a>
                         <a href="#funcionamento" class="btn-watch">Ver funcionamento</a>
                     </div>
                 </div>
@@ -113,10 +114,10 @@
 
                 <div class="sobre-copy">
                     <span class="section-label">Sobre o AIDA</span>
-                    <h2 class="section-title">Uma ferramenta criada para validar a autenticidade visual.</h2>
+                    <h2 class="section-title">Uma ferramenta criada para validar a autenticidade do que você vê e ouve.</h2>
                     <p class="section-text">
-                        A plataforma combina técnicas de forense digital, estatística e análise espectral para a
-                        identificação de conteúdos sintéticos e manipulados.
+                        A plataforma combina forense digital, modelos de visão e de fala e análise estatística para
+                        identificar conteúdos sintéticos e manipulados em fotos, vídeos, áudios e documentos.
                     </p>
 
 
@@ -196,7 +197,7 @@
 
                 <div class="func-footer">
 
-                    <a href="#ferramentaaida" class="func-cta">Iniciar análise</a>
+                    <a href="./index-enviar.html" class="func-cta">Iniciar análise</a>
                 </div>
             </div>
         </section>
@@ -213,15 +214,16 @@
                         <article class="card-content">
                             <img loading="lazy" decoding="async" src="../assets/images/code-solid-full.svg" alt="" class="imgtech">
                             <h3>Tecnologias usadas</h3>
-                            <p>HTML, CSS, JavaScript, React, Python, GSAP, Git e banco de dados sustentam a experiência
-                                e o processamento.</p>
+                            <p>Python (Flask, scikit-learn, PyTorch), HTML, CSS e JavaScript, GSAP, Supabase e
+                                Hugging Face Spaces sustentam a experiência e o processamento.</p>
                         </article>
 
                         <article class="card-content">
                             <img loading="lazy" decoding="async" src="../assets/images/file-code-solid-full.svg" alt="" class="imgtech">
                             <h3>Métodos adotados</h3>
-                            <p>FFT, PSEM e análise estatística apoiam a interpretação dos sinais presentes em cada
-                                imagem enviada.</p>
+                            <p>Imagem: fusão de CLIP, forense de frequência (FFT, ruído, JPEG) e RIGID, calibrada para
+                                poucos falsos positivos. Vídeo: quadros e trajetória. Áudio: assinatura acústica da voz.
+                                Documentos: dígitos verificadores, estrutura do PDF e Lei de Benford.</p>
                         </article>
                     </div>
 
@@ -294,8 +296,8 @@
                 <div class="contentferr">
                     <h2 class="titleferr">Experimente o AIDA agora.</h2>
                     <p class="subtitleferr">
-                        Faça o upload de qualquer imagem e descubra em segundos se há indícios de geração por
-                        inteligência artificial.
+                        Envie uma foto, um vídeo, um áudio ou um PDF: a AIDA escolhe o detector certo e
+                        mostra, em linguagem simples, os indícios de geração ou manipulação por IA.
                     </p>
                 </div>
 
@@ -310,9 +312,9 @@
                         <i class="fa-solid fa-layer-group"></i>
                         Conhecer as soluções
                     </a>
-                    <a href="./index-seleciona.html" class="btn-main">
+                    <a href="./index-enviar.html" class="btn-main">
                         <i class="fa-solid fa-play"></i>
-                        Começar agora
+                        Analisar um arquivo
                     </a>
                 </div>
             </div>
@@ -364,7 +366,7 @@
     <!-- Mesma versão da folha de estilo: sem ela, quem já visitou continuaria
          rodando o script antigo, com o parallax e a animação que apagava os
          logos de tecnologia. -->
-    <script src="../scripts/aida-config-remota.js"></script>
+    <script src="../scripts/aida-config-remota.js?v=20261011-status"></script>
     <script src="../scripts/script-apresentacao.js?v=20260928-perf"></script>
 </body>
 

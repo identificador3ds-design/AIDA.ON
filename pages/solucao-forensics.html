@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#10403b">
+    <meta name="description" content="Mostra o material que sustentou o resultado de uma análise de imagem.">
+    <link rel="manifest" href="../manifest.webmanifest">
+    <link rel="apple-touch-icon" href="../assets/images/pwa-icon-180.png">
+    <link id="favicon" rel="icon" type="image/x-icon" href="../assets/images/AIDABranco.ico">
+    <title>AIDA Forensics — Como funciona</title>
+    <link rel="canonical" href="https://aida-on.com.br/solucoes/forensics">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="AIDA.ON">
+    <meta property="og:title" content="AIDA Forensics — Como funciona">
+    <meta property="og:description" content="Mostra o material que sustentou o resultado de uma análise de imagem.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Afacad:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles/style-shared-theme.css?v=20261011-nav">
+    <link rel="stylesheet" href="../styles/aida-design-system.css">
+    <link rel="stylesheet" href="../styles/style-solucao.css?v=20261011-v1">
+</head>
+
+<!-- Gerado por docs/gerar_paginas_solucoes.py: edite lá, não aqui. -->
+<body class="aida-shell solucao-page solucao--forensics">
+    <a class="aida-skip-link" href="#conteudo">Pular para o conteúdo</a>
+    <header class="page-header">
+        <a href="./index-apresentacao.html" aria-label="Página inicial do AIDA">
+            <img src="../assets/images/LogoBranca.png" alt="Logo AIDA.ON" class="brand-logo">
+        </a>
+        <nav class="aida-topnav" aria-label="Navegação principal">
+            <a href="./index-apresentacao.html" class="top-link" data-nav="inicio">Início</a>
+            <a href="./index-solucoes.html" class="top-link" data-nav="solucoes">Soluções</a>
+            <a href="./index-enviar.html" class="top-link top-link--destaque" data-nav="enviar">Analisar arquivo</a>
+        </nav>
+    </header>
+
+    <main id="conteudo" class="page-frame sol-pagina">
+        <section class="sol-pagina__topo">
+            <span class="aida-eyebrow">Investigação</span>
+            <h1 class="aida-title-2">AIDA <span>Forensics</span></h1>
+            <p class="sol-pagina__resumo">Mostra o material que sustentou o resultado de uma análise de imagem.</p>
+        </section>
+
+        <section class="sol-pagina__bloco" aria-labelledby="tituloSimples">
+            <h2 class="sol-pagina__titulo" id="tituloSimples">Em poucas palavras</h2>
+            <div class="sol-pagina__grade">
+                <article class="sol-pagina__cartao glass-card"><h3>O que faz</h3><p>Abre uma análise já feita e mostra, passo a passo, o que cada módulo encontrou: mapas da imagem, notas de cada método e o que o arquivo declara sobre a própria origem.</p></article>
+                <article class="sol-pagina__cartao glass-card"><h3>Para quem é</h3><p>Para quem precisa justificar uma conclusão — jornalistas, professores, peritos — ou simplesmente quer entender por que a AIDA respondeu o que respondeu.</p></article>
+                <article class="sol-pagina__cartao glass-card"><h3>O que você vê</h3><p>Mapas visuais (onde a imagem varia, ruído, espectro, atenção do modelo), a nota de cada módulo e a decisão final com os motivos.</p></article>
+                <article class="sol-pagina__cartao glass-card"><h3>Quando desconfiar</h3><p>Os mapas ajudam a interpretar, mas não são prova por si só: uma região destacada não é necessariamente a região manipulada.</p></article>
+            </div>
+        </section>
+
+        <section class="sol-pagina__bloco sol-pagina__tecnico" aria-labelledby="tituloTecnico">
+            <h2 class="sol-pagina__titulo" id="tituloTecnico">Transparência técnica</h2>
+            <p class="sol-pagina__nota">Para quem quer saber exatamente o que acontece com o arquivo — e o quanto
+                confiar no resultado.</p>
+
+            <h3 class="sol-pagina__sub">Como funciona, passo a passo</h3>
+            <ol class="sol-pagina__etapas">
+                <li><strong>Mapas de evidência</strong><p>Imagens auxiliares geradas durante a análise.</p><small>Gradiente, bordas, ruído residual, espectro de Fourier (magnitude e fase) e atenção do CLIP por região.</small></li>
+                <li><strong>Notas por módulo</strong><p>Cada módulo mostra a própria probabilidade.</p><small>CLIP, forense e RIGID, com o desacordo entre eles e a qualidade estimada do arquivo.</small></li>
+                <li><strong>Proveniência</strong><p>O que o arquivo diz sobre si mesmo.</p><small>C2PA (credencial de conteúdo), software de edição nos metadados, atribuição provável do gerador.</small></li>
+            </ol>
+
+            <h3 class="sol-pagina__sub">Com que dados foi feito</h3>
+            <p class="sol-pagina__texto">Usa a mesma análise do AIDA Image — não há modelo separado.</p>
+
+            <h3 class="sol-pagina__sub">Números medidos</h3>
+            <dl class="sol-pagina__numeros">
+                <div><dt>Reabertura</dt><dd>análises ficam disponíveis por até 7 dias no servidor</dd></div>
+            </dl>
+            <p class="sol-pagina__nota">Medidos em dados que não foram usados no treino. Relatórios completos no
+                repositório do projeto.</p>
+
+            <h3 class="sol-pagina__sub">Limites conhecidos</h3>
+            <ul class="sol-pagina__lista">
+                <li>Depois de 7 dias a análise expira e é preciso analisar a imagem de novo.</li>
+                <li>Mapas de atenção mostram onde o modelo olhou, não onde está a manipulação.</li>
+            </ul>
+
+            <h3 class="sol-pagina__sub">Privacidade</h3>
+            <p class="sol-pagina__texto">Só abre análises pelo identificador gerado na sua sessão; nada é público. Veja o <a href="./index-privacidade.html">Aviso de Privacidade</a>.</p>
+        </section>
+
+        <p class="sol-pagina__rodape">
+            <a href="./index-solucoes.html" class="aida-btn aida-btn--ghost aida-btn--sm">&larr; Todas as soluções</a>
+        </p>
+    </main>
+
+    <script src="../scripts/script-cookie-consent.js"></script>
+    <script src="../scripts/aida-topnav.js?v=20261011-v1"></script>
+</body>
+
+</html>

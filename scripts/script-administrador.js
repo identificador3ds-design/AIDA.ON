@@ -227,9 +227,13 @@ function salvarAdminConfig(configuracao) {
 
   // Publica para todos os navegadores (tabela admin_config; ver
   // docs/migracao-admin-painel.sql). Best-effort: o local já está salvo.
+  // `accountStates` NÃO vai junto: admin_config é de leitura pública e o mapa tem os
+  // e-mails das contas. O estado de cada conta vive em `usuarios.status`
+  // (docs/migracao-status-conta.sql), que só o admin altera.
+  const { accountStates: _privado, ...configPublica } = configNormalizado;
   _supabase
     .from("admin_config")
-    .upsert({ id: 1, config: configNormalizado, atualizado_em: new Date().toISOString() })
+    .upsert({ id: 1, config: configPublica, atualizado_em: new Date().toISOString() })
     .then(({ error }) => {
       if (error) console.warn("Configuração não publicada no Supabase:", error.message);
     });
@@ -875,6 +879,16 @@ function renderizarTabelaUsuarios(configuracao) {
   }
 }
 
+function publicarStatusConta(email, status) {
+  _supabase
+    .from("usuarios")
+    .update({ status })
+    .eq("email", email)
+    .then(({ error }) => {
+      if (error) console.warn("Status da conta não gravado no Supabase:", error.message);
+    });
+}
+
 function aplicarAlteracaoConta(email, dados) {
   const config = obterAdminConfig();
   const estadoAnterior = config.accountStates[email] || {};
@@ -893,6 +907,9 @@ function aplicarAlteracaoConta(email, dados) {
       delete config.accountStates[email];
     }
   }
+
+  // O bloqueio vale no servidor: o RLS do histórico recusa conta que não está 'active'.
+  publicarStatusConta(email, config.accountStates[email]?.status || "active");
 
   const salvo = salvarAdminConfig(config);
   preencherFormulario(salvo);
@@ -953,18 +970,9 @@ async function apagarUsuario(email) {
     return;
   }
 
-  let mensagem = `A conta ${email} foi marcada como removida e bloqueada no fluxo do site.`;
-
-  try {
-    const { error } = await _supabase.from("usuarios").delete().eq("email", email);
-
-    if (error) {
-      throw error;
-    }
-  } catch (erro) {
-    console.warn("Nao foi possivel apagar o registro no Supabase:", erro);
-    mensagem += " O registro remoto nao foi removido, mas o bloqueio local foi aplicado.";
-  }
+  // A linha fica, com status 'deleted' (gravado por aplicarAlteracaoConta): apagá-la
+  // apagava também o único lugar onde o bloqueio vale no servidor.
+  const mensagem = `A conta ${email} foi marcada como removida e bloqueada no fluxo do site.`;
 
   aplicarAlteracaoConta(email, {
     name: usuario.name,
@@ -1078,14 +1086,34 @@ async function carregarUsuarios() {
   }
 
   try {
-    const { data, error, count } = await _supabase
+    let { data, error, count } = await _supabase
       .from("usuarios")
-      .select("nome,email", { count: "exact" })
+      .select("nome,email,status", { count: "exact" })
       .order("nome", { ascending: true });
+
+    // Antes de docs/migracao-status-conta.sql a coluna não existe: cai para a consulta
+    // antiga em vez de deixar o painel sem a lista de usuários.
+    if (error && /status|column|PGRST/i.test(error.message || "")) {
+      ({ data, error, count } = await _supabase
+        .from("usuarios")
+        .select("nome,email", { count: "exact" })
+        .order("nome", { ascending: true }));
+    }
 
     if (error) {
       throw error;
     }
+
+    // O estado das contas vem do banco (usuarios.status), não mais de admin_config.
+    (data || []).forEach((registro) => {
+      const email = String(registro.email || "").trim().toLowerCase();
+      if (email && registro.status && registro.status !== "active") {
+        configuracao.accountStates[email] = {
+          ...(configuracao.accountStates[email] || {}),
+          status: registro.status,
+        };
+      }
+    });
 
     cacheUsuarios = construirUsuariosRenderizaveis(data || [], configuracao);
     renderizarTabelaUsuarios(configuracao);
@@ -1210,6 +1238,7 @@ function desbloquearTodasAsContas() {
   Object.keys(config.accountStates).forEach((email) => {
     if (config.accountStates[email].status === "blocked") {
       config.accountStates[email].status = "active";
+      publicarStatusConta(email, "active");
     }
   });
 

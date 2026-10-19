@@ -3,24 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AIDA.ON - Histórico de Análises</title>
+    <title>AIDA — Histórico de análises</title>
     <!-- SEO e compartilhamento -->
     <meta name="description" content="Suas análises salvas, com data, resultado e acesso à investigação forense de cada uma.">
     <meta name="robots" content="noindex, nofollow">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="AIDA.ON">
     <meta property="og:locale" content="pt_BR">
-    <meta property="og:title" content="Histórico de análises — AIDA.ON">
+    <meta property="og:title" content="AIDA — Histórico de análises">
     <meta property="og:description" content="Suas análises salvas, com data, resultado e acesso à investigação forense de cada uma.">
     <meta property="og:url" content="https://aida-on.com.br/historico">
     <meta property="og:image" content="https://aida-on.com.br/assets/images/pwa-icon-512.png">
     <meta property="og:image:alt" content="Logotipo do AIDA.ON">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Histórico de análises — AIDA.ON">
+    <meta name="twitter:title" content="AIDA — Histórico de análises">
     <meta name="twitter:description" content="Suas análises salvas, com data, resultado e acesso à investigação forense de cada uma.">
     <meta name="twitter:image" content="https://aida-on.com.br/assets/images/pwa-icon-512.png">
     <link id="favicon" rel="icon" type="image/x-icon" href="../assets/images/AIDABranco.ico">
-    <link rel="stylesheet" href="../styles/style-shared-theme.css">
+    <link rel="stylesheet" href="../styles/style-shared-theme.css?v=20261011-nav">
     <link rel="stylesheet" href="../styles/aida-design-system.css">
     <link rel="stylesheet" href="../styles/style-analise.css">
     <link rel="stylesheet" href="../styles/style-perfil.css">
@@ -29,12 +29,14 @@
 <body class="aida-shell analysis-page">
     <a class="aida-skip-link" href="#conteudo">Pular para o conteúdo</a>
     <header class="page-header">
-        <a href="../index.html" aria-label="Página inicial">
+        <a href="./index-apresentacao.html" aria-label="Página inicial do AIDA">
             <img src="../assets/images/LogoBranca.png" alt="Logo AIDA.ON" class="brand-logo">
         </a>
-        <div class="history-header-actions">
-            <a href="./index-perfil.html" data-voltar class="top-link">Voltar</a>
-        </div>
+        <nav class="aida-topnav" aria-label="Navegação principal">
+            <a href="./index-enviar.html" class="top-link top-link--destaque" data-nav="enviar">Analisar arquivo</a>
+            <a href="./index-solucoes.html" class="top-link" data-nav="solucoes">Soluções</a>
+            <a href="./index-perfil.html" class="top-link" data-nav="conta">Minha conta</a>
+        </nav>
     </header>
 
     <main id="conteudo" class="page-frame profile-main">
@@ -65,7 +67,8 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.3/dist/umd/supabase.js" integrity="sha384-qafw21c/iciq0VXsi9FzkfoQv5I/V0iqE4lSNcKXPnW9/UTJLnv5CcN4FHxVLnKg" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="../scripts/script-cookie-consent.js"></script>
-    <script src="../scripts/aida-config-remota.js"></script>
-    <script src="../scripts/script-historico.js"></script>
+    <script src="../scripts/aida-config-remota.js?v=20261011-status"></script>
+    <script src="../scripts/script-historico.js?v=20261009-p0-seguranca"></script>
+    <script src="../scripts/aida-topnav.js?v=20261011-v1"></script>
 </body>
 </html>

@@ -264,8 +264,8 @@ class _SessaoFalsa:
         self.respostas = list(respostas)
         self.enviados = []
 
-    def post(self, url, files=None, data=None, timeout=None):
-        self.enviados.append({"url": url, "files": files, "data": data})
+    def post(self, url, files=None, data=None, timeout=None, headers=None):
+        self.enviados.append({"url": url, "files": files, "data": data, "headers": headers or {}})
         resposta = self.respostas.pop(0)
         if isinstance(resposta, Exception):
             raise resposta
@@ -279,6 +279,17 @@ def png(tmp_path):
     caminho = tmp_path / "f.png"
     caminho.write_bytes(cv2.imencode(".png", np.zeros((8, 8, 3), np.uint8))[1].tobytes())
     return caminho
+
+
+def test_core_envia_chave_interna_so_quando_configurada(png, monkeypatch):
+    """O Core limita análises por cliente; o Video se isenta com o segredo compartilhado."""
+    monkeypatch.delenv("AIDA_CHAVE_INTERNA", raising=False)
+    sessao = _SessaoFalsa([_Resposta(200, FRAME_REAL), _Resposta(200, FRAME_REAL)])
+    AnalisadorCore("http://core/", sessao=sessao).analisar(png)
+    monkeypatch.setenv("AIDA_CHAVE_INTERNA", "s3gredo")
+    AnalisadorCore("http://core/", sessao=sessao).analisar(png)
+    assert "X-AIDA-Chave-Interna" not in sessao.enviados[0]["headers"]
+    assert sessao.enviados[1]["headers"]["X-AIDA-Chave-Interna"] == "s3gredo"
 
 
 def test_core_sucesso_envia_contrato(png):

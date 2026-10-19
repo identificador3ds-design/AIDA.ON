@@ -10,6 +10,7 @@ AIDA_CORE_URL. Nenhuma outra parte da borda sabe onde ele esta.
 
 from __future__ import annotations
 
+import os
 import time
 
 import requests
@@ -56,6 +57,9 @@ def analisar(conteudo, nome_arquivo, evidencias=True, timeout=None):
                 # uma copia de dado do usuario que ninguem pediu.
                 "historico_habilitado": "false",
             },
+            # Isenta a borda do limite por cliente do Core (site_api/limite.py).
+            headers=({"X-AIDA-Chave-Interna": os.environ["AIDA_CHAVE_INTERNA"]}
+                     if os.environ.get("AIDA_CHAVE_INTERNA") else {}),
             timeout=timeout or config.CORE_TIMEOUT_S,
         )
     except requests.RequestException as exc:

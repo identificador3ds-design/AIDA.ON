@@ -13,47 +13,47 @@
     <link rel="manifest" href="../manifest.webmanifest">
     <link rel="apple-touch-icon" href="../assets/images/pwa-icon-180.png">
 
-    <title>AIDA.ON - Selecionar Imagem</title>
+    <title>AIDA Image — Enviar foto</title>
     <!-- SEO e compartilhamento -->
     <meta name="description" content="Envie uma foto e receba uma leitura técnica dos indícios de geração ou manipulação por IA, explicada em linguagem simples.">
     <link rel="canonical" href="https://aida-on.com.br/image">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="AIDA.ON">
     <meta property="og:locale" content="pt_BR">
-    <meta property="og:title" content="AIDA Image — Enviar imagem para análise">
+    <meta property="og:title" content="AIDA Image — Enviar foto">
     <meta property="og:description" content="Envie uma foto e receba uma leitura técnica dos indícios de geração ou manipulação por IA, explicada em linguagem simples.">
     <meta property="og:url" content="https://aida-on.com.br/image">
     <meta property="og:image" content="https://aida-on.com.br/assets/images/pwa-icon-512.png">
     <meta property="og:image:alt" content="Logotipo do AIDA.ON">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="AIDA Image — Enviar imagem para análise">
+    <meta name="twitter:title" content="AIDA Image — Enviar foto">
     <meta name="twitter:description" content="Envie uma foto e receba uma leitura técnica dos indícios de geração ou manipulação por IA, explicada em linguagem simples.">
     <meta name="twitter:image" content="https://aida-on.com.br/assets/images/pwa-icon-512.png">
     <link rel="icon" id="favicon" type="image/x-icon" href="../assets/images/AIDABranco.ico">
-    <link rel="stylesheet" href="../styles/style-shared-theme.css">
+    <link rel="stylesheet" href="../styles/style-shared-theme.css?v=20261011-nav">
     <link rel="stylesheet" href="../styles/aida-design-system.css">
-    <link rel="stylesheet" href="../styles/style-ferramenta.css">
+    <link rel="stylesheet" href="../styles/style-ferramenta.css?v=20261011-v2">
     <script src="../scripts/aida-dev-sw-reset.js"></script>
 </head>
 
 <body class="aida-shell selecao-page">
     <a class="aida-skip-link" href="#conteudo">Pular para o conteúdo</a>
     <header class="page-header">
-        <a href="../index.html" aria-label="Página inicial">
+        <a href="./index-apresentacao.html" aria-label="Página inicial do AIDA">
             <img src="../assets/images/LogoBranca.png" alt="Logo AIDA.ON" class="brand-logo">
         </a>
-
-        <div class="selecao-header-actions">
-            <a href="./index-video.html" class="top-link">Analisar vídeo</a>
-            <a href="./index-historico.html" class="top-link">Histórico</a>
-            <a href="./index-perfil.html" class="top-link">Minha conta</a>
-        </div>
+        <nav class="aida-topnav" aria-label="Navegação principal">
+            <a href="./index-enviar.html" class="top-link top-link--destaque" data-nav="enviar">Analisar arquivo</a>
+            <a href="./index-solucoes.html" class="top-link" data-nav="solucoes">Soluções</a>
+            <a href="./index-historico.html" class="top-link" data-nav="historico">Histórico</a>
+            <a href="./index-perfil.html" class="top-link" data-nav="conta">Minha conta</a>
+        </nav>
     </header>
 
     <main id="conteudo" class="page-frame selecao-main">
         <section class="selecao-panel glass-panel">
             <div class="selecao-intro">
-                <span class="page-kicker">Nova análise</span>
+                <span class="page-kicker">AIDA Image</span>
                 <h1 class="page-title">Escolha a imagem para analisar</h1>
                 <p class="page-copy">
                     Selecione uma foto do seu dispositivo. A AIDA processa a imagem e explica, em
@@ -61,13 +61,17 @@
                 </p>
             </div>
 
-            <ol class="selecao-steps" aria-label="Passos da análise">
+            <ol class="selecao-steps selecao-steps--tres" aria-label="Passos da análise">
                 <li class="selecao-step">
                     <span aria-hidden="true">1</span>
                     <strong>Escolha a imagem</strong>
                 </li>
                 <li class="selecao-step">
                     <span aria-hidden="true">2</span>
+                    <strong>A AIDA analisa a imagem</strong>
+                </li>
+                <li class="selecao-step">
+                    <span aria-hidden="true">3</span>
                     <strong>Veja o resultado</strong>
                 </li>
             </ol>
@@ -81,7 +85,6 @@
                 </div>
 
                 <div class="selecao-upload-copy">
-                    <span class="section-tag">Upload</span>
                     <h2>Selecione sua imagem</h2>
                     <p id="textoUpload">
                         Escolha um arquivo do seu celular ou arraste a imagem para cá, se estiver no computador.
@@ -221,8 +224,10 @@
     </main>
 
     <script src="../scripts/script-cookie-consent.js"></script>
-    <script src="../scripts/aida-config-remota.js"></script>
-    <script src="../scripts/script-ferramenta.js?v=20260813-metodos"></script>
+    <script src="../scripts/aida-config-remota.js?v=20261011-status"></script>
+    <script src="../scripts/aida-encaminhar.js?v=20261011-envio"></script>
+    <script src="../scripts/script-ferramenta.js?v=20261011-envio"></script>
+    <script src="../scripts/aida-topnav.js?v=20261011-v1"></script>
 </body>
 
 </html>

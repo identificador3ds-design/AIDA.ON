@@ -12,19 +12,19 @@
     <link rel="apple-touch-icon" href="../assets/images/pwa-icon-180.png">
     <link id="favicon" rel="icon" type="image/x-icon" href="../assets/images/AIDABranco.ico">
 
-    <title>Soluções AIDA</title>
+    <title>AIDA — Soluções</title>
     <!-- SEO e compartilhamento -->
     <link rel="canonical" href="https://aida-on.com.br/solucoes">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="AIDA.ON">
     <meta property="og:locale" content="pt_BR">
-    <meta property="og:title" content="Soluções AIDA — Image, Forensics, Video e API">
+    <meta property="og:title" content="AIDA — Soluções">
     <meta property="og:description" content="O ecossistema AIDA em quatro frentes: análise de imagem, investigação forense, leitura de vídeo e integração por API.">
     <meta property="og:url" content="https://aida-on.com.br/solucoes">
     <meta property="og:image" content="https://aida-on.com.br/assets/images/pwa-icon-512.png">
     <meta property="og:image:alt" content="Logotipo do AIDA.ON">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Soluções AIDA — Image, Forensics, Video e API">
+    <meta name="twitter:title" content="AIDA — Soluções">
     <meta name="twitter:description" content="O ecossistema AIDA em quatro frentes: análise de imagem, investigação forense, leitura de vídeo e integração por API.">
     <meta name="twitter:image" content="https://aida-on.com.br/assets/images/pwa-icon-512.png">
 
@@ -32,9 +32,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Afacad:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="../styles/style-shared-theme.css">
+    <link rel="stylesheet" href="../styles/style-shared-theme.css?v=20261011-nav">
     <link rel="stylesheet" href="../styles/aida-design-system.css">
-    <link rel="stylesheet" href="../styles/aida-solucoes.css?v=20260929-v1">
+    <link rel="stylesheet" href="../styles/aida-solucoes.css?v=20261011-audio">
 </head>
 
 <body class="aida-shell">
@@ -43,10 +43,9 @@
         <a href="./index-apresentacao.html" aria-label="Página inicial do AIDA">
             <img src="../assets/images/LogoBranca.png" alt="Logo AIDA.ON" class="brand-logo">
         </a>
-
-        <nav class="aida-row" aria-label="Navegação da plataforma">
-            <a href="./index-apresentacao.html" class="top-link">Voltar à página inicial</a>
-            <a href="./index-seleciona.html" class="top-link">Analisar imagem</a>
+        <nav class="aida-topnav" aria-label="Navegação principal">
+            <a href="./index-apresentacao.html" class="top-link" data-nav="inicio">Início</a>
+            <a href="./index-enviar.html" class="top-link top-link--destaque" data-nav="enviar">Analisar arquivo</a>
         </nav>
     </header>
 
@@ -70,10 +69,11 @@
             <div class="solucoes__head">
                 <div>
                     <span class="aida-eyebrow">Soluções AIDA</span>
-                    <h1 class="aida-title-2">Quatro frentes, uma mesma análise.</h1>
+                    <h1 class="aida-title-2">Um detector para cada tipo de arquivo.</h1>
                     <p class="aida-text solucoes__sub">
-                        O mesmo núcleo de detecção atende fotos, vídeos, investigações detalhadas e outros
-                        sistemas. Escolha pelo que você tem em mãos.
+                        Fotos, vídeos, áudios e documentos, mais a investigação detalhada e a integração com
+                        outros sistemas. Escolha pelo que você tem em mãos — ou
+                        <a href="./index-enviar.html">envie o arquivo e deixe a AIDA escolher</a>.
                     </p>
                 </div>
             </div>
@@ -88,6 +88,9 @@
                 </a>
                 <a class="sol-guia__item" href="#sol-video" data-alvo="video">
                     <strong>Tenho um vídeo</strong><span>AIDA Video</span>
+                </a>
+                <a class="sol-guia__item" href="#sol-audio" data-alvo="audio">
+                    <strong>Tenho um áudio</strong><span>AIDA Audio</span>
                 </a>
                 <a class="sol-guia__item" href="#sol-documents" data-alvo="documents">
                     <strong>Tenho uma nota ou recibo</strong><span>AIDA Documents</span>
@@ -151,8 +154,8 @@
                             <li>Probabilidade e nível de confiança</li>
                             <li>Mapas visuais e leitura da proveniência do arquivo</li>
                         </ul>
-                        <a href="./index-seleciona.html" class="aida-btn aida-btn--ghost aida-btn--sm sol-card__cta">
-                            Analisar uma imagem
+                        <a href="./solucao-image.html" class="aida-btn aida-btn--ghost aida-btn--sm sol-card__cta">
+                            Como funciona
                             <span class="aida-btn__arrow" aria-hidden="true">&rarr;</span>
                         </a>
                     </div>
@@ -214,8 +217,8 @@
                             <li>Nota de cada método e régua de decisão</li>
                             <li>Glossário dos termos técnicos</li>
                         </ul>
-                        <a href="./index-forensics.html" class="aida-btn aida-btn--ghost aida-btn--sm sol-card__cta">
-                            Abrir o Forensics
+                        <a href="./solucao-forensics.html" class="aida-btn aida-btn--ghost aida-btn--sm sol-card__cta">
+                            Como funciona
                             <span class="aida-btn__arrow" aria-hidden="true">&rarr;</span>
                         </a>
                     </div>
@@ -299,8 +302,8 @@
                             <li>Leitura do movimento e da trilha de áudio</li>
                             <li>Relatório completo para baixar</li>
                         </ul>
-                        <a href="./index-video.html" class="aida-btn aida-btn--ghost aida-btn--sm sol-card__cta">
-                            Analisar um vídeo
+                        <a href="./solucao-video.html" class="aida-btn aida-btn--ghost aida-btn--sm sol-card__cta">
+                            Como funciona
                             <span class="aida-btn__arrow" aria-hidden="true">&rarr;</span>
                         </a>
                     </div>
@@ -347,8 +350,50 @@
                             <li>Edições, assinatura e programa que gerou o PDF</li>
                             <li>Lei de Benford nos valores, com gráfico</li>
                         </ul>
-                        <a href="./index-documentos.html" class="aida-btn aida-btn--ghost aida-btn--sm sol-card__cta">
-                            Analisar um documento
+                        <a href="./solucao-documents.html" class="aida-btn aida-btn--ghost aida-btn--sm sol-card__cta">
+                            Como funciona
+                            <span class="aida-btn__arrow" aria-hidden="true">&rarr;</span>
+                        </a>
+                    </div>
+                </article>
+
+                <article class="sol-card sol-card--audio" data-sol="audio" id="sol-audio">
+                    <div class="sol-card__stage">
+                        <span class="sol-card__note">demonstração</span>
+
+                        <div class="sol-fx fx-aud">
+                            <div class="sol-fx__quadro fx-aud__quadro">
+                                <div class="fx-aud__onda" aria-hidden="true">
+                                    <span></span><span></span><span></span><span></span><span></span><span></span>
+                                    <span></span><span></span><span></span><span></span><span></span><span></span>
+                                    <span></span><span></span><span></span><span></span><span></span><span></span>
+                                </div>
+                                <span class="sol-fx__grade" aria-hidden="true"></span>
+                            </div>
+
+                            <div class="sol-fx__barra" aria-hidden="true">
+                                <span>áudio</span>
+                                <span class="sol-fx__marca">espectro · respiração · ruído</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sol-card__body">
+                        <div class="sol-card__head">
+                            <h2 class="sol-card__title">AIDA <span>Audio</span></h2>
+                            <span class="aida-status aida-status--disponivel">Versão inicial</span>
+                        </div>
+                        <p class="sol-card__text">
+                            Envie uma mensagem de voz ou gravação. A AIDA mede o sinal da voz e aponta marcas de
+                            síntese ou clonagem por IA — útil contra golpes com voz falsa.
+                        </p>
+                        <ul class="sol-card__pontos">
+                            <li>WhatsApp (OGG/Opus), MP3, M4A, WAV e outros</li>
+                            <li>Testado com vozes comerciais nunca vistas (ElevenLabs, Hume)</li>
+                            <li>Nada é transcrito nem guardado</li>
+                        </ul>
+                        <a href="./solucao-audio.html" class="aida-btn aida-btn--ghost aida-btn--sm sol-card__cta">
+                            Como funciona
                             <span class="aida-btn__arrow" aria-hidden="true">&rarr;</span>
                         </a>
                     </div>
@@ -427,7 +472,7 @@
 
             <section class="sol-conexao" aria-labelledby="solConexaoTitulo">
                 <span class="aida-eyebrow">Como se conectam</span>
-                <h2 class="aida-title-3" id="solConexaoTitulo">Um só núcleo, quatro portas de entrada.</h2>
+                <h2 class="aida-title-3" id="solConexaoTitulo">Um só núcleo, várias portas de entrada.</h2>
                 <ol class="sol-conexao__lista">
                     <li>
                         <span class="sol-conexao__num">1</span>
@@ -435,7 +480,7 @@
                     </li>
                     <li>
                         <span class="sol-conexao__num">2</span>
-                        <div><strong>Image e Video</strong><p>Usam o Core para fotos e, quadro a quadro, para vídeos, somando movimento e áudio.</p></div>
+                        <div><strong>Image, Video, Audio e Documents</strong><p>Image e Video usam o Core para fotos e, quadro a quadro, para vídeos; Audio mede a voz e Documents confere o PDF, no mesmo servidor do Video.</p></div>
                     </li>
                     <li>
                         <span class="sol-conexao__num">3</span>
@@ -463,6 +508,7 @@
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/gsap.min.js" integrity="sha384-UoFnwgbUNlK0Rwou15cSoyrXQvKrOUxV8AkCoGKSSd0sxVeJ95ARU8uGMkMZhzpB" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="../scripts/script-cookie-consent.js"></script>
     <script src="../scripts/aida-solucoes.js?v=20260816-demos"></script>
+    <script src="../scripts/aida-topnav.js?v=20261011-v1"></script>
 </body>
 
 </html>

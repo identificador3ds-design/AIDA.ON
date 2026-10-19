@@ -1069,13 +1069,18 @@ section {
     gap: 18px;
     background: rgba(16, 64, 59, 0.98);
     transform: translateX(100%);
-    transition: transform 0.25s ease;
-    box-shadow: -24px 0 60px rgba(0, 0, 0, 0.3);
+    visibility: hidden;
+    /* A sombra fica só no menu aberto: fechado, ela vazava 60 px para dentro da tela
+       e desenhava uma faixa escura na borda direita do celular. */
+    transition: transform 0.25s ease, visibility 0s linear 0.25s;
     z-index: 950;
   }
 
   .navbar.active {
     transform: translateX(0);
+    visibility: visible;
+    box-shadow: -24px 0 60px rgba(0, 0, 0, 0.3);
+    transition: transform 0.25s ease, visibility 0s;
   }
 
   .dropdown-content {
@@ -1331,4 +1336,10 @@ body.locked-scroll {
    "pulo" do layout); sem isto o atributo height esticaria a ilustração. */
 .sobre-visual img {
   height: auto;
+}
+
+/* A grade de tecnologias entra deslizando 34 px da direita (script-apresentacao.js):
+   até ser revelada, ela ficava fora da página e criava rolagem horizontal em ~1024 px. */
+.icons-section {
+  overflow-x: clip;
 }

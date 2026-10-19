@@ -142,6 +142,40 @@ async function removerCacheForense(item) {
   }
 }
 
+/* `imagem_original` guarda o caminho no bucket (`<user_id>/<arquivo>`).
+   Linhas antigas guardam a URL pública inteira; delas se extrai o caminho. */
+function caminhoEvidencia(valor) {
+  const texto = String(valor || "");
+  const marcador = "/evidencias/";
+  const posicao = texto.indexOf(marcador);
+  if (posicao === -1) {
+    return /^https?:/i.test(texto) ? "" : texto;
+  }
+  const caminho = texto.slice(posicao + marcador.length).split("?")[0];
+  try {
+    return decodeURIComponent(caminho);
+  } catch (erro) {
+    return caminho;
+  }
+}
+
+/* O bucket é privado: a imagem só abre por URL assinada, que expira. Uma
+   chamada para a página inteira, não uma por item. */
+async function assinarEvidencias(itens) {
+  const caminhos = [...new Set(itens.map((item) => caminhoEvidencia(item.imagem_original)).filter(Boolean))];
+  if (!caminhos.length) return new Map();
+
+  const { data, error } = await _supabase.storage
+    .from("evidencias")
+    .createSignedUrls(caminhos, 60 * 60);
+
+  if (error) {
+    console.warn("Nao foi possivel assinar as evidencias:", error.message);
+    return new Map();
+  }
+  return new Map((data || []).filter((d) => d.signedUrl).map((d) => [d.path, d.signedUrl]));
+}
+
 async function removerEvidenciasUsuario(userId) {
   if (!userId) {
     return;
@@ -258,6 +292,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         </a>`;
     }
 
+    const urlsAssinadas = await assinarEvidencias(historicoNuvem);
+    historicoNuvem.forEach((item) => {
+      item.urlExibicao = urlsAssinadas.get(caminhoEvidencia(item.imagem_original)) || "";
+    });
+
     historicoNuvem.forEach((item, index) => {
       const dataFormatada = new Date(item.data_analise).toLocaleString("pt-BR");
       const card = document.createElement("div");
@@ -265,7 +304,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       card.innerHTML = `
         <a href="javascript:void(0)" class="btn-detalhes" data-index="${index}" style="display: flex; align-items: center; gap: 16px; flex: 1; text-decoration: none;">
           <div class="action-item-icon history-thumb">
-            <img src="${escaparHtml(item.imagem_original)}" alt="Evidência">
+            <img src="${escaparHtml(item.urlExibicao)}" alt="Evidência">
           </div>
           <div class="action-item-text">
             <span class="action-title">${escaparHtml(item.metodo)} <span style="font-size: 0.8rem; opacity: 0.8; margin-left: 6px;">${escaparHtml(item.probabilidade)}</span></span>
@@ -273,7 +312,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           </div>
         </a>
         ${linkForense(item)}
-        <button class="btn-apagar-item" data-id="${item.id}" data-url="${item.imagem_original}" title="Apagar análise" style="background: none; border: none; color: #ff6b6b; cursor: pointer; padding: 8px; transition: opacity 0.2s;">
+        <button class="btn-apagar-item" data-id="${escaparHtml(item.id)}" title="Apagar análise" style="background: none; border: none; color: #ff6b6b; cursor: pointer; padding: 8px; transition: opacity 0.2s;">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
              <polyline points="3 6 5 6 21 6"></polyline>
              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -286,7 +325,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     lista.querySelectorAll(".btn-detalhes").forEach((button) => {
       button.addEventListener("click", () => {
         const item = historicoNuvem[Number(button.dataset.index)];
-        document.getElementById("modalImgProcessada").src = item.resultado_img || item.imagem_original;
+        document.getElementById("modalImgProcessada").src = item.resultado_img || item.urlExibicao;
         document.getElementById("modalTitulo").textContent = `Método: ${item.metodo}`;
         modal.style.display = "flex";
       });
@@ -296,7 +335,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       button.addEventListener("click", async (e) => {
         e.stopPropagation();
         const id = button.dataset.id;
-        const url = button.dataset.url;
         const item = historicoNuvem.find((linha) => String(linha.id) === String(id));
 
         const confirmed = window.confirm("Deseja realmente apagar esta análise?");
@@ -305,9 +343,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         button.style.opacity = "0.5";
         button.disabled = true;
 
-        if (url && url.includes("/evidencias/")) {
-          const path = url.split("/evidencias/")[1];
-          await _supabase.storage.from("evidencias").remove([path]);
+        const path = caminhoEvidencia(item && item.imagem_original);
+        if (path) {
+          const { error: erroArquivo } = await _supabase.storage.from("evidencias").remove([path]);
+          if (erroArquivo) console.warn("Nao foi possivel remover a evidencia:", erroArquivo.message);
         }
 
         await removerCacheForense(item);

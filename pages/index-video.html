@@ -12,19 +12,19 @@
     <link rel="apple-touch-icon" href="../assets/images/pwa-icon-180.png">
     <link id="favicon" rel="icon" type="image/x-icon" href="../assets/images/AIDABranco.ico">
 
-    <title>AIDA Video — Enviar vídeo para análise</title>
+    <title>AIDA Video — Enviar vídeo</title>
     <!-- SEO e compartilhamento -->
     <link rel="canonical" href="https://aida-on.com.br/video">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="AIDA.ON">
     <meta property="og:locale" content="pt_BR">
-    <meta property="og:title" content="AIDA Video — Enviar vídeo para análise">
+    <meta property="og:title" content="AIDA Video — Enviar vídeo">
     <meta property="og:description" content="Envie um vídeo e veja, frame a frame, os indícios de geração por IA na imagem, no movimento e no áudio.">
     <meta property="og:url" content="https://aida-on.com.br/video">
     <meta property="og:image" content="https://aida-on.com.br/assets/images/pwa-icon-512.png">
     <meta property="og:image:alt" content="Logotipo do AIDA.ON">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="AIDA Video — Enviar vídeo para análise">
+    <meta name="twitter:title" content="AIDA Video — Enviar vídeo">
     <meta name="twitter:description" content="Envie um vídeo e veja, frame a frame, os indícios de geração por IA na imagem, no movimento e no áudio.">
     <meta name="twitter:image" content="https://aida-on.com.br/assets/images/pwa-icon-512.png">
 
@@ -32,9 +32,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Afacad:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="../styles/style-shared-theme.css">
+    <link rel="stylesheet" href="../styles/style-shared-theme.css?v=20261011-nav">
     <link rel="stylesheet" href="../styles/aida-design-system.css">
-    <link rel="stylesheet" href="../styles/style-ferramenta.css">
+    <link rel="stylesheet" href="../styles/style-ferramenta.css?v=20261011-v2">
     <link rel="stylesheet" href="../styles/style-video.css?v=20260929-v2">
 </head>
 
@@ -48,19 +48,19 @@
         <a href="./index-apresentacao.html" aria-label="Página inicial do AIDA">
             <img src="../assets/images/LogoBranca.png" alt="Logo AIDA.ON" class="brand-logo">
         </a>
-
-        <div class="selecao-header-actions">
-            <a href="./index-seleciona.html" class="top-link">Analisar imagem</a>
-            <a href="./index-solucoes.html" class="top-link">Soluções</a>
-            <a href="./index-historico.html" class="top-link">Histórico</a>
-        </div>
+        <nav class="aida-topnav" aria-label="Navegação principal">
+            <a href="./index-enviar.html" class="top-link top-link--destaque" data-nav="enviar">Analisar arquivo</a>
+            <a href="./index-solucoes.html" class="top-link" data-nav="solucoes">Soluções</a>
+            <a href="./index-historico.html" class="top-link" data-nav="historico">Histórico</a>
+            <a href="./index-perfil.html" class="top-link" data-nav="conta">Minha conta</a>
+        </nav>
     </header>
 
     <main id="conteudo" class="page-frame selecao-main video-main">
         <!-- ================= Envio ================= -->
         <section class="selecao-panel glass-panel" id="vidPainelEnvio" aria-labelledby="vidTitulo">
             <div class="selecao-intro">
-                <span class="page-kicker">AIDA Video · versão inicial</span>
+                <span class="page-kicker">AIDA Video</span>
                 <h1 class="page-title" id="vidTitulo">Escolha o vídeo para analisar</h1>
                 <p class="page-copy">
                     Envie um vídeo do seu dispositivo. A AIDA separa os quadros, examina a imagem, o
@@ -102,7 +102,6 @@
                     </span>
 
                     <span class="selecao-upload-copy">
-                        <span class="section-tag">Upload</span>
                         <span class="vid-drop__titulo" id="vidDropTitulo">Selecione seu vídeo</span>
                         <span class="vid-drop__texto" id="vidDropTexto">
                             Escolha um arquivo do seu celular ou arraste o vídeo para cá, se estiver no computador.
@@ -320,7 +319,9 @@
     </main>
 
     <script src="../scripts/script-cookie-consent.js"></script>
-    <script src="../scripts/script-video.js?v=20261008-real-editada"></script>
+    <script src="../scripts/aida-encaminhar.js?v=20261011-envio"></script>
+    <script src="../scripts/script-video.js?v=20261011-envio"></script>
+    <script src="../scripts/aida-topnav.js?v=20261011-v1"></script>
 </body>
 
 </html>

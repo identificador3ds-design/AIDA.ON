@@ -1,0 +1,89 @@
+# CI do AIDA.ON — roda em todo push e pull request.
+#
+# NÃO publica nada: o deploy continua sendo o da integração Vercel (preview
+# por branch, produção só no merge em main). Para que este CI bloqueie o merge,
+# marque os jobs abaixo como "required" em Settings > Branches > main.
+
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  testes:
+    name: Testes (pytest)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: |
+            aida_video/requirements.txt
+            aida_api/requirements.txt
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Dependências
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r aida_video/requirements.txt -r aida_api/requirements.txt \
+            pillow pillow-heif pandas "scikit-learn==1.9.0"
+          # trajetoria.py importa torch/timm sob demanda; roda de CPU.
+          pip install torch timm --index-url https://download.pytorch.org/whl/cpu \
+            --extra-index-url https://pypi.org/simple
+
+      - name: pytest
+        run: python -m pytest -o addopts="" -q -rs --junitxml=relatorio-testes.xml
+
+      - name: Relatório
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: relatorio-testes
+          path: relatorio-testes.xml
+
+  javascript:
+    name: Sintaxe JS
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: node --check
+        run: |
+          falhou=0
+          for f in scripts/*.js service-worker.js; do
+            node --check "$f" || falhou=1
+          done
+          exit $falhou
+
+  dependencias:
+    name: Vulnerabilidades em dependências
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pip-audit
+      - name: pip-audit
+        run: |
+          pip-audit -r aida_api/requirements.txt
+          pip-audit -r aida_video/requirements.txt

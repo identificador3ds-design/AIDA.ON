@@ -65,10 +65,69 @@
       if (!remoto || typeof remoto !== "object") {
         return;
       }
+      // admin_config deixou de publicar `accountStates` (tinha e-mails e era público).
+      // O estado vem de `usuarios.status`, só da própria conta (ver abaixo).
+      // Mantém só a entrada da própria conta: o mapa antigo, vindo da configuração
+      // pública, podia guardar e-mails de outras pessoas neste navegador.
+      var anteriores = lerConfigLocal().accountStates || {};
+      var proprio = emailDaSessao();
+      remoto.accountStates = {};
+      if (proprio && anteriores[proprio]) {
+        remoto.accountStates[proprio] = anteriores[proprio];
+      }
       localStorage.setItem(CHAVE_CONFIG, JSON.stringify(remoto));
       recalcularTrava(remoto);
+      return aplicarStatusDaPropriaConta();
     })
     .catch(function () {
       /* Sem rede ou sem a tabela: fica valendo o cache local. */
     });
+
+  /* Lê `usuarios.status` da conta logada e grava em accountStates[email], que é o que as
+     páginas consultam para bloquear. Sem filtro por e-mail na URL: o RLS só devolve a
+     própria linha (o admin recebe todas e escolhe a dele). O bloqueio de verdade é no
+     servidor — o RLS do histórico recusa conta que não está 'active'. */
+  function lerSessao() {
+    try {
+      return JSON.parse(localStorage.getItem("sb-nwzijdudhemuibsyzpub-auth-token") || "null");
+    } catch (erro) {
+      return null;
+    }
+  }
+
+  function emailDaSessao() {
+    var sessao = lerSessao();
+    return sessao && sessao.user ? String(sessao.user.email || "").trim().toLowerCase() : "";
+  }
+
+  function aplicarStatusDaPropriaConta() {
+    var sessao = lerSessao();
+    var token = sessao && sessao.access_token;
+    var email = emailDaSessao();
+    if (!token || !email) {
+      return;
+    }
+    return fetch(URL_SUPABASE + "/rest/v1/usuarios?select=email,status", {
+      headers: { apikey: CHAVE_ANON, Authorization: "Bearer " + token },
+    })
+      .then(function (resposta) {
+        return resposta.ok ? resposta.json() : null;
+      })
+      .then(function (linhas) {
+        if (!Array.isArray(linhas)) {
+          return;
+        }
+        var propria = linhas.filter(function (l) {
+          return String(l.email || "").trim().toLowerCase() === email;
+        })[0];
+        var config = lerConfigLocal();
+        config.accountStates = config.accountStates || {};
+        if (propria && propria.status && propria.status !== "active") {
+          config.accountStates[email] = { status: propria.status };
+        } else {
+          delete config.accountStates[email];
+        }
+        localStorage.setItem(CHAVE_CONFIG, JSON.stringify(config));
+      });
+  }
 })();

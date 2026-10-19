@@ -12,51 +12,44 @@
     <link rel="manifest" href="../manifest.webmanifest">
     <link rel="apple-touch-icon" href="../assets/images/pwa-icon-180.png">
 
-    <title>AIDA.ON - Análise da Imagem</title>
+    <title>AIDA Image — Resultado da análise</title>
     <!-- SEO e compartilhamento -->
     <meta name="description" content="Resultado da análise da imagem enviada, com score de autenticidade, mapas visuais por método e as ressalvas técnicas da leitura.">
     <meta name="robots" content="noindex, nofollow">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="AIDA.ON">
     <meta property="og:locale" content="pt_BR">
-    <meta property="og:title" content="Análise da imagem — AIDA.ON">
+    <meta property="og:title" content="AIDA Image — Resultado da análise">
     <meta property="og:description" content="Resultado da análise da imagem enviada, com score de autenticidade, mapas visuais por método e as ressalvas técnicas da leitura.">
     <meta property="og:url" content="https://aida-on.com.br/analise">
     <meta property="og:image" content="https://aida-on.com.br/assets/images/pwa-icon-512.png">
     <meta property="og:image:alt" content="Logotipo do AIDA.ON">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Análise da imagem — AIDA.ON">
+    <meta name="twitter:title" content="AIDA Image — Resultado da análise">
     <meta name="twitter:description" content="Resultado da análise da imagem enviada, com score de autenticidade, mapas visuais por método e as ressalvas técnicas da leitura.">
     <meta name="twitter:image" content="https://aida-on.com.br/assets/images/pwa-icon-512.png">
     <link rel="icon" id="favicon" type="image/x-icon" href="../assets/images/AIDABranco.ico">
-    <link rel="stylesheet" href="../styles/style-shared-theme.css">
+    <link rel="stylesheet" href="../styles/style-shared-theme.css?v=20261011-nav">
     <link rel="stylesheet" href="../styles/aida-design-system.css">
     <!-- A versao no fim do caminho e o que invalida o cache do navegador. O CSS
          estava sem ela: quem ja visitou continuaria com a folha antiga e a
          mensagem de "previa indisponivel" apareceria sem estilo. -->
-    <link rel="stylesheet" href="../styles/style-analise.css?v=20261008-real-editada">
+    <link rel="stylesheet" href="../styles/style-analise.css?v=20261011-evidencia">
     <script src="../scripts/aida-dev-sw-reset.js"></script>
 </head>
 
 <body class="aida-shell analysis-page">
     <a class="aida-skip-link" href="#conteudo">Pular para o conteúdo</a>
     <header class="page-header">
-        <a href="../index.html" aria-label="Página inicial">
+        <a href="./index-apresentacao.html" aria-label="Página inicial do AIDA">
             <img src="../assets/images/LogoBranca.png" alt="Logo AIDA.ON" class="brand-logo">
         </a>
-
-        <div class="analysis-header-actions">
-            <a href="./index-video.html" class="top-link">Analisar vídeo</a>
-            <a href="./index-historico.html" class="top-link">Histórico</a>
-
-            <div class="dropdown">
-                <button class="dropbtn" id="nome-usuario2" type="button">Minha conta</button>
-                <div class="dropdown-content">
-                    <a href="./index-perfil.html" class="dropa">Perfil</a>
-                    <a href="./index-login.html" class="dropa dropa-danger" id="btn-sair">Sair</a>
-                </div>
-            </div>
-        </div>
+        <nav class="aida-topnav" aria-label="Navegação principal">
+            <a href="./index-enviar.html" class="top-link top-link--destaque" data-nav="enviar">Analisar arquivo</a>
+            <a href="./index-solucoes.html" class="top-link" data-nav="solucoes">Soluções</a>
+            <a href="./index-historico.html" class="top-link" data-nav="historico">Histórico</a>
+            <a href="./index-perfil.html" class="top-link" data-nav="conta">Minha conta</a>
+        </nav>
     </header>
 
     <main id="conteudo" class="page-frame analysis-main">
@@ -109,7 +102,7 @@
                            accept="image/*,.heic,.heif,.avif,.jpg,.jpeg,.png,.webp,.bmp" hidden>
                 </div>
 
-                <a href="./index-seleciona.html" class="inline-link">Voltar para escolher outra imagem</a>
+                <a href="./index-enviar.html" class="inline-link">Analisar outro arquivo</a>
 
                 <div id="statusAnalise" class="analysis-runtime-status" aria-live="polite">
                     Carregando script da análise...
@@ -227,6 +220,30 @@
                             <div id="exemplosMetodo" class="exemplos-metodo"></div>
                         </details>
                     </div>
+                </section>
+
+                <!-- Pedido de mais evidências. Aparece só quando a análise dá
+                     INCONCLUSIVO: em vez de encerrar sem resposta, o AIDA pede o
+                     arquivo original ou outra foto da mesma cena e combina as
+                     respostas (scripts/aida-evidencia-combinada.js). -->
+                <section id="blocoEvidenciaExtra" class="container-evidencia-extra glass-card" hidden>
+                    <span class="section-tag">Mais evidências</span>
+                    <h3 id="evidenciaTitulo" class="evidencia-titulo">Precisamos de mais uma evidência</h3>
+                    <p id="evidenciaMotivo" class="result-copy"></p>
+                    <ul id="evidenciaPedidos" class="evidencia-pedidos">
+                        <li><strong>O arquivo original</strong>, direto da câmera ou da galeria do celular — não um print, nem a versão reenviada pelo WhatsApp ou redes sociais.</li>
+                        <li><strong>Outra foto da mesma cena</strong>, tirada no mesmo momento ou de outro ângulo.</li>
+                        <li>Uma versão em <strong>resolução maior</strong> ou com menos compressão, se existir.</li>
+                    </ul>
+                    <ol id="evidenciaLista" class="evidencia-lista"></ol>
+                    <div id="evidenciaVeredito" class="evidencia-veredito" hidden></div>
+                    <div class="evidencia-acoes">
+                        <button id="btnEvidenciaExtra" type="button" class="aida-button">Enviar outra evidência</button>
+                        <button id="btnConcluirEvidencias" type="button" class="aida-button secondary" hidden>Concluir com as evidências enviadas</button>
+                        <input type="file" aria-label="Enviar outra evidência da mesma cena" id="inputEvidenciaExtra"
+                               accept="image/*,.heic,.heif,.avif,.jpg,.jpeg,.png,.webp,.bmp" hidden>
+                    </div>
+                    <p id="evidenciaStatus" class="evidencia-status" role="status" aria-live="polite"></p>
                 </section>
 
                 <!-- Proveniência digital. Ocupa a linha inteira porque compara
@@ -359,7 +376,9 @@
     <!-- Mesma versao ja usada em index-solucoes/index-video/index-api. O loading
          funciona sem ela (as animacoes caem para CSS); GSAP so suaviza. -->
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/gsap.min.js" integrity="sha384-UoFnwgbUNlK0Rwou15cSoyrXQvKrOUxV8AkCoGKSSd0sxVeJ95ARU8uGMkMZhzpB" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="../scripts/aida-config-remota.js"></script>
-    <script src="../scripts/script-analise.js?v=20261008-real-editada"></script>
+    <script src="../scripts/aida-config-remota.js?v=20261011-status"></script>
+    <script src="../scripts/aida-evidencia-combinada.js?v=20261011-evidencia"></script>
+    <script src="../scripts/script-analise.js?v=20261011-evidencia"></script>
+    <script src="../scripts/aida-topnav.js?v=20261011-v1"></script>
 </body>
 </html>

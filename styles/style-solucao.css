@@ -1,0 +1,158 @@
+/* Páginas explicativas das soluções (pages/solucao-*.html). */
+
+.sol-pagina {
+  width: min(980px, 100%);
+  margin: 0 auto;
+  display: grid;
+  gap: 36px;
+  padding-bottom: 48px;
+}
+
+.sol-pagina__topo {
+  display: grid;
+  gap: 10px;
+  padding-top: 12px;
+}
+
+.sol-pagina__topo h1 span {
+  color: var(--sol-cor, #9fd6a6);
+}
+
+.sol-pagina__resumo {
+  margin: 0;
+  font-size: 1.25rem;
+  line-height: 1.5;
+  max-width: 46ch;
+  opacity: 0.92;
+}
+
+.solucao--image { --sol-cor: var(--aida-image, #9fd6a6); }
+.solucao--forensics { --sol-cor: var(--aida-forensics, #8fb8ff); }
+.solucao--video { --sol-cor: var(--aida-video, #c9a7ff); }
+.solucao--audio { --sol-cor: #e08a1e; }
+.solucao--documents { --sol-cor: var(--aida-documents, #f0c07a); }
+
+.sol-pagina__bloco {
+  display: grid;
+  gap: 16px;
+}
+
+.sol-pagina__titulo {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.sol-pagina__grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.sol-pagina__cartao {
+  padding: 18px;
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  border-top: 3px solid var(--sol-cor, #9fd6a6);
+}
+
+.sol-pagina__cartao h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.sol-pagina__cartao p {
+  margin: 0;
+  line-height: 1.55;
+  opacity: 0.88;
+}
+
+.sol-pagina__tecnico {
+  padding: 24px;
+  border-radius: 20px;
+  background: rgba(229, 231, 235, 0.04);
+  border: 1px solid rgba(229, 231, 235, 0.1);
+}
+
+.sol-pagina__sub {
+  margin: 10px 0 0;
+  font-size: 1.05rem;
+  color: var(--sol-cor, #9fd6a6);
+}
+
+.sol-pagina__texto,
+.sol-pagina__nota {
+  margin: 0;
+  line-height: 1.6;
+}
+
+.sol-pagina__nota {
+  font-size: 0.92rem;
+  opacity: 0.75;
+}
+
+.sol-pagina__etapas {
+  margin: 0;
+  padding-left: 22px;
+  display: grid;
+  gap: 12px;
+}
+
+.sol-pagina__etapas p {
+  margin: 2px 0;
+  line-height: 1.5;
+}
+
+.sol-pagina__etapas small {
+  display: block;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  opacity: 0.72;
+}
+
+.sol-pagina__numeros {
+  margin: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.sol-pagina__numeros div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 14px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: rgba(229, 231, 235, 0.05);
+}
+
+.sol-pagina__numeros dt {
+  opacity: 0.8;
+}
+
+.sol-pagina__numeros dd {
+  margin: 0;
+  font-weight: 600;
+}
+
+.sol-pagina__lista {
+  margin: 0;
+  padding-left: 20px;
+  display: grid;
+  gap: 6px;
+  line-height: 1.5;
+}
+
+.sol-pagina__rodape {
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .sol-pagina__numeros div {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .sol-pagina__tecnico {
+    padding: 16px;
+  }
+}

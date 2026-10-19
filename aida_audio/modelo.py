@@ -30,6 +30,8 @@ from .carregar import AudioAusente, carregar_audio
 
 PASTA_MODELOS = Path(__file__).resolve().parent / "modelos"
 ARQUIVO_MODELO = PASTA_MODELOS / "modelo_audio.joblib"
+# AIDA Audio v2 (XLS-R + regressao logistica, aida_audio/treinar_ssl.py). Quando existe, e o usado.
+ARQUIVO_MODELO_SSL = PASTA_MODELOS / "modelo_audio_ssl.joblib"
 EXTENSOES_MIDIA = {
     ".wav", ".mp3", ".m4a", ".aac", ".ogg", ".opus", ".flac", ".webm",
     ".mp4", ".mov", ".mkv", ".avi", ".3gp",

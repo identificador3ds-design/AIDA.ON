@@ -136,10 +136,18 @@ def criar_app(fabrica_analisador=None, executar_em_thread=True, tamanho_max_mb=T
     # AIDA_VIDEO_CORS: origens separadas por virgula (no Space, so o site publicado).
     origens = [o.strip() for o in os.environ.get("AIDA_VIDEO_CORS", "*").split(",") if o.strip()]
     CORS(app, origins=origens or "*")
+    # O proxy do *.hf.space reflete qualquer origem por cima do CORS: recusa (403) no servidor.
+    from aida_video.origem import instalar as instalar_checagem_origem
+
+    instalar_checagem_origem(app, "AIDA_VIDEO_CORS")
     # AIDA Documents (PDF) usa o mesmo servidor: o site so conhece este e o Core.
     from aida_documents.servidor import registrar as registrar_documentos
 
     registrar_documentos(app)
+    # AIDA Audio com rota propria (antes so como trilha de video).
+    from aida_audio.servidor import registrar as registrar_audio
+
+    registrar_audio(app)
     tarefas = Tarefas()
     app.config["TAREFAS"] = tarefas
     fabrica_analisador = fabrica_analisador or (lambda: AnalisadorCore())

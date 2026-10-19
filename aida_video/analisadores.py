@@ -30,6 +30,11 @@ CORE_URL_PADRAO = "https://aidaon-aida-api.hf.space"
 LADO_CORE = int(os.environ.get("AIDA_CORE_LADO", "1024"))
 
 
+
+def _cabecalho_interno():
+    chave = os.environ.get("AIDA_CHAVE_INTERNA", "")
+    return {"X-AIDA-Chave-Interna": chave} if chave else {}
+
 class CoreIndisponivel(RuntimeError):
     """Rede, DNS, timeout ou Space hibernando. Vale a pena tentar de novo."""
 
@@ -89,6 +94,9 @@ class AnalisadorCore:
                     # Sem mapas de evidencia (poupa tempo) e sem historico no Core:
                     # quem guarda o resultado do video e este pipeline.
                     data={"evidencias": "false", "historico_habilitado": "false"},
+                    # Serviço interno: isento do limite por cliente do Core
+                    # (site_api/limite.py), que senão barraria os quadros de um vídeo.
+                    headers=_cabecalho_interno(),
                     timeout=self.timeout_s,
                 )
             except self._requests.RequestException as exc:

@@ -277,7 +277,7 @@
    ----------------------------------------------------------------------- */
 
 .aida-btn {
-  --_btn-bg: linear-gradient(135deg, #e5e7eb 0%, #c8d7d4 48%, #97bfaf 100%);
+  --_btn-bg: linear-gradient(135deg, #007043 0%, #004127 48%, #002114 100%);
   --_btn-color: var(--aida-text-invert);
   --_btn-border: rgba(229, 231, 235, 0.18);
   --_btn-shadow: 0 14px 28px rgba(12, 49, 46, 0.18);

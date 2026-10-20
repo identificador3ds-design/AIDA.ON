@@ -198,7 +198,7 @@ body.aida-shell ::-webkit-scrollbar-thumb {
   border-radius: 999px;
   font-weight: 700;
   cursor: pointer;
-  color: #0f3833;
+  color: #ffffff;
   background: linear-gradient(180deg, rgba(229, 231, 235, 0.12), rgba(209, 213, 219, 0.05));
   box-shadow: 0 14px 28px rgba(12, 49, 46, 0.18);
   border: 1px solid rgba(229, 231, 235, 0.18);

@@ -65,7 +65,7 @@
 
 .admin-page .aida-button {
   color: #0f3833;
-  background: linear-gradient(135deg, #e5e7eb 0%, #c8d7d4 48%, #97bfaf 100%);
+  background: linear-gradient(180deg, rgba(229, 231, 235, 0.12), rgba(209, 213, 219, 0.05));
   border: 1px solid rgba(143, 216, 183, 0.34);
   box-shadow: 0 16px 28px rgba(22, 125, 117, 0.22);
 }

@@ -537,7 +537,18 @@ section {
   margin-top: 32px;
 }
 
-.sobre-card,
+.sobre-card{
+  padding: 28px;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(229, 231, 235, 0.12);
+  background:
+    linear-gradient(180deg, rgba(229, 231, 235, 0.12), rgba(209, 213, 219, 0.04)),
+    linear-gradient(135deg, rgba(12, 49, 46, 0.18), rgba(16, 64, 59, 0.08));
+  box-shadow: var(--shadow-md);
+  backdrop-filter: blur(12px);
+  transition: transform 0.32s ease, box-shadow 0.32s ease, border-color 0.32s ease;
+  will-change: transform, opacity;
+}
 .card-content {
   padding: 28px;
   border-radius: var(--radius-lg);
@@ -549,6 +560,22 @@ section {
   backdrop-filter: blur(12px);
   transition: transform 0.32s ease, box-shadow 0.32s ease, border-color 0.32s ease;
   will-change: transform, opacity;
+  width: 280px;
+  
+}
+.card-content2{
+  padding: 28px;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(229, 231, 235, 0.12);
+  background:
+    linear-gradient(180deg, rgba(229, 231, 235, 0.12), rgba(209, 213, 219, 0.04)),
+    linear-gradient(135deg, rgba(12, 49, 46, 0.18), rgba(16, 64, 59, 0.08));
+  box-shadow: var(--shadow-md);
+  backdrop-filter: blur(12px);
+  transition: transform 0.32s ease, box-shadow 0.32s ease, border-color 0.32s ease;
+  will-change: transform, opacity;
+  width: 280px;
+  margin-left: 55px;
 }
 
 .imgsobre,
@@ -1022,6 +1049,7 @@ section {
 
   .cards {
     grid-template-columns: 1fr 1fr;
+    
   }
 
   .team-icons {

@@ -521,14 +521,14 @@
 
     if (relatorio.resultado === "IA/MANIPULADA") {
       return fontes.length
-        ? `A AIDA encontrou sinais de geração por IA ${juntar(fontes)}. Isso indica que o vídeo, ou parte dele, pode ter sido criado ou alterado por inteligência artificial.`
-        : "A AIDA encontrou sinais de geração por IA neste vídeo.";
+        ? `O AIDA encontrou sinais de geração por IA ${juntar(fontes)}. Isso indica que o vídeo, ou parte dele, pode ter sido criado ou alterado por inteligência artificial.`
+        : "O AIDA encontrou sinais de geração por IA neste vídeo.";
     }
     if (relatorio.resultado === "REAL" || relatorio.resultado === "REAL_EDITADA") {
       return "Nenhuma das leituras encontrou sinais relevantes de IA: os quadros, o movimento" +
         (a.resultado ? " e o áudio" : "") + " se comportam como os de uma gravação de câmera.";
     }
-    return "Os sinais ficaram fracos ou divididos entre as leituras. Em vez de arriscar, a AIDA marcou o vídeo como inconclusivo; veja abaixo em que trechos cada leitura apontou.";
+    return "Os sinais ficaram fracos ou divididos entre as leituras. Em vez de arriscar, o AIDA marcou o vídeo como inconclusivo; veja abaixo em que trechos cada leitura apontou.";
   }
 
   function mostrarRelatorio(relatorio, id) {

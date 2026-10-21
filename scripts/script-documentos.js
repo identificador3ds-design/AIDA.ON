@@ -231,13 +231,13 @@
   function explicarResultado(r) {
     const n = (r.indicios || []).length;
     if (r.resultado === "IA/MANIPULADA") {
-      return `A AIDA encontrou ${n} indício${n > 1 ? "s" : ""} de que este documento foi editado, montado ou gerado por IA ou fora de um sistema emissor. Confira o documento na fonte antes de aceitá-lo.`;
+      return `O AIDA encontrou ${n} indício${n > 1 ? "s" : ""} de que este documento foi editado, montado ou gerado por IA ou fora de um sistema emissor. Confira o documento na fonte antes de aceitá-lo.`;
     }
     if (r.resultado === "REAL") {
       return "O arquivo não mostra sinais de edição e traz uma prova de origem (assinatura digital intacta ou chave de acesso de nota fiscal). Ainda assim, confira na fonte quando o valor for importante.";
     }
     return n
-      ? "A AIDA encontrou indícios fracos, que sozinhos não bastam para afirmar manipulação, e nada no arquivo comprova de onde ele veio. Veja abaixo o que chamou atenção."
+      ? "O AIDA encontrou indícios fracos, que sozinhos não bastam para afirmar manipulação, e nada no arquivo comprova de onde ele veio. Veja abaixo o que chamou atenção."
       : "Nenhum sinal de edição foi encontrado, mas nada no arquivo comprova de onde ele veio. Um documento inventado do zero também passa sem sinais de edição: confira com quem o emitiu.";
   }
 

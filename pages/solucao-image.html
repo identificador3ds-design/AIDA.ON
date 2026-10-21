@@ -47,9 +47,9 @@
         <section class="sol-pagina__bloco" aria-labelledby="tituloSimples">
             <h2 class="sol-pagina__titulo" id="tituloSimples">Em poucas palavras</h2>
             <div class="sol-pagina__grade">
-                <article class="sol-pagina__cartao glass-card"><h3>O que faz</h3><p>Você envia uma foto e a AIDA responde se ela parece uma fotografia real, uma foto real editada ou uma imagem gerada por IA — e explica o porquê em linguagem simples.</p></article>
+                <article class="sol-pagina__cartao glass-card"><h3>O que faz</h3><p>Você envia uma foto e o AIDA responde se ela parece uma fotografia real, uma foto real editada ou uma imagem gerada por IA — e explica o porquê em linguagem simples.</p></article>
                 <article class="sol-pagina__cartao glass-card"><h3>Como usar</h3><p>Envie o arquivo original, do jeito que você recebeu ou tirou. Prints de tela e imagens reenviadas várias vezes perdem informação.</p></article>
-                <article class="sol-pagina__cartao glass-card"><h3>O que a resposta significa</h3><p>REAL: nenhum indício de IA. REAL EDITADA: foto real que passou por um editor (ex.: Lightroom). IA: indícios de geração ou manipulação. Se a AIDA não tiver segurança, ela pede mais uma evidência (o original ou outra foto da mesma cena) antes de responder.</p></article>
+                <article class="sol-pagina__cartao glass-card"><h3>O que a resposta significa</h3><p>REAL: nenhum indício de IA. REAL EDITADA: foto real que passou por um editor (ex.: Lightroom). IA: indícios de geração ou manipulação. Se o AIDA não tiver segurança, ela pede mais uma evidência (o original ou outra foto da mesma cena) antes de responder.</p></article>
                 <article class="sol-pagina__cartao glass-card"><h3>Quando desconfiar</h3><p>Nenhum detector acerta sempre. A resposta é um indício técnico, não uma prova: em casos importantes, confira também a fonte da imagem.</p></article>
             </div>
         </section>
@@ -63,8 +63,8 @@
             <ol class="sol-pagina__etapas">
                 <li><strong>Três leituras independentes</strong><p>Cada imagem é lida por três módulos que olham coisas diferentes.</p><small>CLIP ViT-B/32 (OpenAI) com cabeça treinada pela equipe sobre os embeddings; módulo forense com 846 características (espectro de Fourier, ruído residual, blocos JPEG, estatística de cor) em gradient boosting; RIGID (estabilidade da representação sob pequenas perturbações).</small></li>
                 <li><strong>Fusão calibrada</strong><p>As três notas viram uma única probabilidade, calibrada para significar o que diz.</p><small>Gradient boosting monotônico sobre as notas dos módulos e a qualidade do arquivo; calibração na validação.</small></li>
-                <li><strong>Decisão com margem de segurança</strong><p>Perto do ponto de decisão, ou quando os módulos discordam muito, a AIDA não chuta.</p><small>Limiar 0,686 (escolhido para no máximo 3% de fotos reais acusadas na validação); faixa de abstenção 0,606–0,766; corte de desacordo entre módulos 0,716.</small></li>
-                <li><strong>Proveniência e edição</strong><p>A AIDA também lê o que o próprio arquivo declara.</p><small>Leitura de credenciais C2PA (ex.: imagens do ChatGPT assinadas) e de metadados de editores (Lightroom, Photoshop...) para o estado REAL EDITADA.</small></li>
+                <li><strong>Decisão com margem de segurança</strong><p>Perto do ponto de decisão, ou quando os módulos discordam muito, o AIDA não chuta.</p><small>Limiar 0,686 (escolhido para no máximo 3% de fotos reais acusadas na validação); faixa de abstenção 0,606–0,766; corte de desacordo entre módulos 0,716.</small></li>
+                <li><strong>Proveniência e edição</strong><p>O AIDA também lê o que o próprio arquivo declara.</p><small>Leitura de credenciais C2PA (ex.: imagens do ChatGPT assinadas) e de metadados de editores (Lightroom, Photoshop...) para o estado REAL EDITADA.</small></li>
             </ol>
 
             <h3 class="sol-pagina__sub">Com que dados foi feito</h3>
@@ -82,7 +82,7 @@
             <h3 class="sol-pagina__sub">Limites conhecidos</h3>
             <ul class="sol-pagina__lista">
                 <li>Geradores lançados depois do treino podem passar despercebidos até a próxima rodada de treino.</li>
-                <li>Imagens muito pequenas, muito comprimidas ou que não são fotografias (desenhos, telas) têm leitura pior; fora do escopo, a AIDA avisa.</li>
+                <li>Imagens muito pequenas, muito comprimidas ou que não são fotografias (desenhos, telas) têm leitura pior; fora do escopo, o AIDA avisa.</li>
                 <li>Panorâmicas de celular e fotos com filtros pesados ainda geram respostas inconclusivas com mais frequência.</li>
             </ul>
 

@@ -92,7 +92,7 @@ async function removerDossiesForenses(userId) {
         try {
           await fetch(`${base}/forense/${encodeURIComponent(item.analysis_id)}`, { method: "DELETE" });
         } catch (erro) {
-          console.warn("[AIDA.ON] Não foi possível remover um dossiê forense:", erro);
+          console.warn("[AIDA-ON] Não foi possível remover um dossiê forense:", erro);
         }
       })
   );
@@ -118,8 +118,8 @@ async function excluirContaEDados() {
   if (error) {
     throw new Error(
       error.message?.includes("excluir_minha_conta")
-        ? "A exclusao ainda nao esta configurada no servidor. Contate o suporte."
-        : error.message || "Nao foi possivel excluir sua conta agora."
+        ? "A exclusão ainda não está configurada no servidor. Contate o suporte."
+        : error.message || "Não foi possível excluir sua conta agora."
     );
   }
 
@@ -128,7 +128,7 @@ async function excluirContaEDados() {
   try {
     await _supabase.auth.signOut({ scope: "local" });
   } catch (erro) {
-    console.warn("A conta foi excluida, mas a sessao local ja estava encerrada:", erro);
+    console.warn("A conta foi excluida, mas a sessão local já estava encerrada:", erro);
   }
 }
 
@@ -138,7 +138,7 @@ async function sairParaLogin(destino = "./index-login.html") {
   try {
     await _supabase.auth.signOut();
   } catch (erro) {
-    console.warn("Nao foi possivel encerrar a sessao do Supabase:", erro);
+    console.warn("Não foi possivel encerrar a sessão do Supabase:", erro);
   }
 
   window.location.href = destino;
@@ -349,8 +349,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   const deleteAccountFeedback = document.getElementById("delete-account-feedback");
   const confirmDeleteAccount = document.getElementById("confirm-delete-account");
   const adminLink = document.createElement("a");
-  const rotuloPerfil = tipoSalvo === "admin" ? "Administrador" : "Usuario";
-  let nomeExibicao = tipoSalvo === "admin" ? "Admin" : nomeSalvo || "Usuario";
+  const rotuloPerfil = tipoSalvo === "admin" ? "Administrador" : "Usuário";
+  let nomeExibicao = tipoSalvo === "admin" ? "Admin" : nomeSalvo || "Usuário";
   let emailExibicao = emailSalvo || "usuarioaida@gmail.com";
 
   const aplicarDadosPerfil = () => {
@@ -456,7 +456,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       if (!resultado.ok) {
         editFeedback.hidden = false;
-        editFeedback.textContent = resultado.mensagem || "Nao foi possivel atualizar suas informacoes.";
+        editFeedback.textContent = resultado.mensagem || "Não foi possivel atualizar suas informacoes.";
         editFeedback.classList.add("error");
         return;
       }
@@ -545,7 +545,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       } catch (erro) {
         deleteAccountConfirmation.disabled = false;
         confirmDeleteAccount.disabled = false;
-        deleteAccountFeedback.textContent = erro.message || "Nao foi possivel excluir sua conta agora.";
+        deleteAccountFeedback.textContent = erro.message || "Não foi possivel excluir sua conta agora.";
         deleteAccountFeedback.classList.add("error");
       }
     });

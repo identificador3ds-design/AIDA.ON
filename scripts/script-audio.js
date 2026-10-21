@@ -155,7 +155,7 @@
       return "O sinal tem marcas típicas de voz sintética ou clonada. Antes de agir (transferência, cobrança, decisão), confirme por outro canal com a pessoa que supostamente falou.";
     }
     if (r.resultado === "REAL") {
-      return "O sinal não mostra as marcas de síntese que a AIDA conhece. Clonagens novas podem escapar: em pedidos sensíveis, confirme por outro canal.";
+      return "O sinal não mostra as marcas de síntese que o AIDA conhece. Clonagens novas podem escapar: em pedidos sensíveis, confirme por outro canal.";
     }
     if (r.probabilidade_ia === null || r.probabilidade_ia === undefined) {
       return "Não foi possível medir a voz neste arquivo. Envie um trecho mais longo, com fala clara, de preferência o arquivo original.";

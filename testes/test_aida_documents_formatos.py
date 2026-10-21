@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import io
+import json
 import sys
 import zipfile
 
@@ -180,3 +181,136 @@ def test_baixar_amostras_ignora_ficha_e_registra_origem(tmp_path, monkeypatch):
     assert (tmp_path / "reais" / "essaybr-0001.txt").read_text(encoding="utf-8") == "Titulo\n\nPrimeiro paragrafo.\n\nSegundo.\n"
     origem = (tmp_path / "origem.csv").read_text(encoding="utf-8")
     assert "NapierOne DOC-tiny.zip" in origem and "nota 880" in origem
+
+
+def test_baixar_pncp_um_documento_por_orgao_e_limite_por_formato(tmp_path, monkeypatch):
+    from aida_documents import baixar_amostras as b
+
+    compras = {"data": [
+        {"orgaoEntidade": {"cnpj": "1", "razaoSocial": "MUNICIPIO A"}, "anoCompra": 2026, "sequencialCompra": 1,
+         "numeroControlePNCP": "1-1-000001/2026", "unidadeOrgao": {"municipioNome": "Jales", "ufSigla": "SP"}},
+        {"orgaoEntidade": {"cnpj": "1", "razaoSocial": "MUNICIPIO A"}, "anoCompra": 2026, "sequencialCompra": 2,
+         "numeroControlePNCP": "1-1-000002/2026"},  # mesmo orgao: pulado
+        {"orgaoEntidade": {"cnpj": "2", "razaoSocial": "MUNICIPIO B"}, "anoCompra": 2026, "sequencialCompra": 7,
+         "numeroControlePNCP": "2-1-000007/2026"},
+    ]}
+    arquivos = [{"url": "u/zip", "sequencialDocumento": 1}, {"url": "u/pdf", "sequencialDocumento": 2},
+                {"url": "u/docx", "sequencialDocumento": 3}]
+    nomes = {"u/zip": ("anexos.zip", 10), "u/pdf": ("edital.pdf", 10), "u/docx": ("termo.docx", 10)}
+
+    def baixar(url):
+        if "contratacoes" in url:
+            return (json.dumps(compras) if "pagina=1&" in url and "Modalidade" in url and "=6&" in url else '{"data": []}').encode()
+        if url.endswith("/arquivos"):
+            return json.dumps(arquivos).encode()
+        return b"%PDF-1.7 conteudo"
+
+    monkeypatch.setattr(b, "_baixar", baixar)
+    monkeypatch.setattr(b, "_nome_anexo", lambda url: nomes[url])
+    b.pncp(5, "20261001", "20261002", tmp_path, max_por_formato=1, pausa=0, avisar=lambda *_: None)
+    gravados = sorted(p.name for p in (tmp_path / "reais").iterdir())
+    # orgao A: .zip ignorado, pega o PDF; orgao B: PDF ja no limite, pega o DOCX
+    assert gravados == ["pncp-1-1-000001-2026-2.pdf", "pncp-2-1-000007-2026-3.docx"]
+    assert "MUNICIPIO A (Jales/SP)" in (tmp_path / "origem.csv").read_text(encoding="utf-8")
+
+
+def test_baixar_safedocs_um_pdf_por_dominio(tmp_path, monkeypatch):
+    from aida_documents import baixar_amostras as b
+
+    pacote = io.BytesIO()
+    with zipfile.ZipFile(pacote, "w") as z:
+        for nome in ("0000027.pdf", "0000228.pdf", "0000307.pdf"):
+            z.writestr(nome, b"%PDF-1.4 " + nome.encode())
+    urls = []
+
+    def remoto(url):
+        urls.append(url)
+        return io.BytesIO(pacote.getvalue())
+
+    monkeypatch.setattr(b, "_ArquivoRemoto", remoto)
+    monkeypatch.setattr(b, "_hosts_safedocs", lambda dominio, cache, avisar: [
+        ("0000027.pdf", "uerj.br"), ("0000228.pdf", "uerj.br"), ("0000307.pdf", "belem.pa.gov.br")])
+    b.safedocs(5, tmp_path, avisar=lambda *_: None)
+    gravados = sorted(p.name for p in (tmp_path / "reais").iterdir())
+    assert len(gravados) == 2  # dois dominios: um PDF de cada
+    assert urls == [f"{b.SAFEDOCS}/zipfiles/0000-0999/0000.zip"]  # um zip so, aberto uma vez
+    assert "SAFEDOCS 2021" in (tmp_path / "origem.csv").read_text(encoding="utf-8")
+    assert b._zip_safedocs("1234567.pdf").endswith("/zipfiles/1000-1999/1234.zip")
+
+
+def test_arquivo_remoto_le_por_faixas(monkeypatch):
+    from aida_documents import baixar_amostras as b
+
+    conteudo = bytes(range(256)) * 10
+    pedidos = []
+
+    class Resposta(io.BytesIO):
+        headers = {"Content-Length": str(len(conteudo))}
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *a):
+            return False
+
+    def abrir(req, timeout):
+        faixa = req.headers.get("Range")
+        pedidos.append(faixa)
+        if not faixa:
+            return Resposta(b"")
+        ini, fim = map(int, faixa.split("=")[1].split("-"))
+        return Resposta(conteudo[ini:fim + 1])
+
+    monkeypatch.setattr(b.urllib.request, "urlopen", abrir)
+    arq = b._ArquivoRemoto("https://exemplo/x.zip")
+    arq.seek(-10, io.SEEK_END)
+    assert arq.read(10) == conteudo[-10:]
+    arq.seek(100)
+    assert arq.read(5) == conteudo[100:105]
+    assert pedidos[0] is None and pedidos[1:] == [f"bytes={len(conteudo) - 10}-{len(conteudo) - 1}", "bytes=100-104"]
+
+
+# ---------------------------------------------------------------- Gemini (21/10)
+
+
+def _est_pdf(**extra):
+    base = {"bytes_apos_assinatura": 0, "revisoes": 1, "assinaturas": 0, "c2pa": {"presente": False},
+            "paginas_analisadas": 2, "paginas_sem_texto": 0, "ferramentas_edicao": [], "fontes_subconjunto_duplicado": [],
+            "dias_entre_criacao_e_modificacao": 0.0}
+    return {**base, **extra}
+
+
+def _indicios(est):
+    from aida_documents.analisar import _indicios_pdf
+
+    achados = []
+    _indicios_pdf(est, lambda chave, descricao: achados.append(chave))
+    return achados
+
+
+def test_padrao_do_exportador_de_pdf_do_gemini():
+    """3 de 3 PDFs do Gemini: Creator "Chromium", Skia, so fontes Type3, sem marcacao."""
+    assert _indicios(_est_pdf(chromium_servidor=True, so_fontes_type3=True, pdf_marcado=False)) == ["padrao_exportador_gemini"]
+    # Chromium em servidor com fontes normais (sistema web): so indicio fraco
+    assert _indicios(_est_pdf(chromium_servidor=True, so_fontes_type3=False, pdf_marcado=True)) == ["gerador_programatico"]
+    # Chrome do usuario (Creator = user agent): nada
+    assert _indicios(_est_pdf(chromium_servidor=False, so_fontes_type3=False, pdf_marcado=True)) == []
+
+
+def test_creator_chromium_nao_conta_tambem_como_impressao_de_navegador():
+    from aida_documents.estrutura import inspecionar_pdf
+
+    canvas = pytest.importorskip("reportlab.pdfgen.canvas")
+    buf = io.BytesIO()
+    c = canvas.Canvas(buf)
+    c.setProducer("Skia/PDF m136")
+    c.setCreator("Chromium")
+    c.drawString(40, 800, "Recibo")
+    c.save()
+    est = inspecionar_pdf(buf.getvalue())
+    assert est["chromium_servidor"] and est["ferramentas_edicao"] == []
+
+
+def test_markdown_do_canvas_e_lido_como_texto():
+    r = analisar_bytes("# Trabalho\n\nMachado de Assis e o Realismo.".encode("utf-8"), "trabalho.md")
+    assert r["formato"] == "txt" and r["resultado"] == "INCONCLUSIVO"

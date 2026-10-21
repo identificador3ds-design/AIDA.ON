@@ -146,7 +146,7 @@
   }
 
   function ehDocumento(arquivo) {
-    return /\.(pdf|docx|doc|txt)$/i.test(arquivo.name);
+    return /\.(pdf|docx|doc|txt|md)$/i.test(arquivo.name);
   }
 
   function atualizarBotao() {
@@ -160,7 +160,7 @@
     arquivoAtual = arquivo;
     el.dropTitulo.textContent = arquivo.name;
     let problema = "";
-    if (!ehDocumento(arquivo)) problema = "formato não aceito (use PDF, DOCX, DOC ou TXT). Para fotos de documento, use a análise de imagem.";
+    if (!ehDocumento(arquivo)) problema = "formato não aceito (use PDF, DOCX, DOC, TXT ou MD). Para fotos de documento, use a análise de imagem.";
     else if (grandeDemais(arquivo)) problema = `passa do limite de ${limiteMb} MB.`;
     el.dropTexto.textContent = `${formatarTamanho(arquivo.size)} · ${problema || "clique para trocar"}`;
     el.drop.classList.add("vid-drop--cheio");

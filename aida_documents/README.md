@@ -1,7 +1,7 @@
 # AIDA Documents
 
 Triagem de documentos enviados como prova (nota fiscal, recibo, comprovante, boleto, laudo,
-trabalho escolar) em **PDF, DOCX, DOC ou TXT**.
+trabalho escolar) em **PDF, DOCX, DOC, TXT ou MD**.
 Devolve os mesmos três estados do AIDA Core: `REAL`, `IA/MANIPULADA` e `INCONCLUSIVO`.
 Não usa rede neural: cada indício é explicável e tem um peso. A pesquisa que embasa o
 módulo e os próximos passos está em [`docs/pesquisa-aida-documents.md`](../docs/pesquisa-aida-documents.md).
@@ -84,6 +84,23 @@ Segundo teste, com reais **brasileiros** que nunca tinham passado pelo AIDA: 40 
   e ela deixa de contar como alteração e como revisão. Os dois passaram a sair `REAL`
   (assinatura intacta). Edição de verdade depois da assinatura continua sendo pega (testes).
 - Os 2 % são o número honesto antes da correção; depois dela, 0 nesses mesmos 99.
+
+## Gemini (21/10)
+
+9 arquivos gerados no app do Gemini: 3 PDFs (botão Exportar da conversa e do Canvas),
+3 DOCX, 1 TXT e 2 MD (o Canvas só baixa .md). **Nenhum tem C2PA**, nem menção a Gemini,
+Google ou SynthID. A marca d'água SynthID do texto existe, mas a chave de detecção não é
+pública: o AIDA não consegue lê-la.
+
+- **PDF**: gerado por Chromium rodando em servidor (Creator `Chromium`, `Skia/PDF m136`),
+  com texto só em fontes Type3, sem marcação e página de 595,92 × 842,88. O Chrome do
+  usuário grava o user agent no Creator e embute fontes Type0. 0 de ~500 reais têm o padrão
+  → `padrao_exportador_gemini` (0,30): moderado, porque sistemas web também usam Chromium.
+- **DOCX da conversa**: python-docx, igual ao ChatGPT, e o AIDA já pega.
+- **DOCX convertido no Google Docs**: sem `docProps`; marca do Docs, não do Gemini.
+- **TXT/MD**: só o texto; nada a ler. `.md` passou a ser aceito como texto.
+- Dois PDFs do Gemini (recibo e atestado) trouxeram **CPF inventado com dígito errado**,
+  e o `dv_invalido` pegou: com o padrão do exportador, saíram `IA/MANIPULADA` (0,72).
 
 ## Aprendizado de máquina (início em 08/10)
 

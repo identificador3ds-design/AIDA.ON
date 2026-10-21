@@ -123,7 +123,7 @@ def _fontes_da_pagina(pagina):
             nomes.append((str(obj.get("/BaseFont", "")), str(obj.get("/Subtype", ""))))
         except Exception:
             continue
-    return [(n, t) for n, t in nomes if n]
+    return [(n, t) for n, t in nomes if n or t]  # Type3 nao tem /BaseFont, mas conta no tipo
 
 
 def _subconjuntos_duplicados(fontes):
@@ -226,6 +226,9 @@ def inspecionar_pdf(dados: bytes, max_paginas=30):
 
     fontes_repetidas = _subconjuntos_duplicados(fontes)
     ferramentas = _ferramentas(f"{produtor} {criador}".lower())
+    chromium_servidor = criador.strip().lower() == "chromium" and "skia/pdf" in produtor.lower()
+    if chromium_servidor:  # o Skia ja e o Chromium do servidor: nao conta tambem como impressao de navegador
+        ferramentas = [f for f in ferramentas if not f.startswith("impressão de navegador")]
 
     return {
         "paginas": len(paginas),
@@ -246,7 +249,12 @@ def inspecionar_pdf(dados: bytes, max_paginas=30):
             round(abs((modificado.replace(tzinfo=None) - criado.replace(tzinfo=None)).total_seconds()) / 86400, 2)
             if criado and modificado else None
         ),
-        "fontes_distintas": len({nome for nome, _ in fontes}),
+        "fontes_distintas": len({nome for nome, _ in fontes if nome}),
+        "so_fontes_type3": bool(fontes) and all(tipo == "/Type3" for _, tipo in fontes),
+        # Chrome do usuario grava o "user agent" (Mozilla/5.0 ... Chrome) no Creator;
+        # Chromium sem interface, rodando em servidor (Puppeteer, Playwright), grava "Chromium".
+        "chromium_servidor": chromium_servidor,
+        "pdf_marcado": b"/StructTreeRoot" in dados,
         "fontes_subconjunto_duplicado": fontes_repetidas,
         "elementos_ativos": sorted(nome for marca, nome in MARCADORES_ATIVOS.items() if marca in dados),
         "criptografado": reader.is_encrypted,

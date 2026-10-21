@@ -43,6 +43,10 @@ PESOS = {
     "ferramenta_edicao": 0.30,
     "ferramenta_escritorio": 0.10,
     "gerador_programatico": 0.15,
+    # PDF do exportador do Gemini (out/2026): Chromium em servidor, so fontes Type3, sem
+    # marcacao. 3 de 3 PDFs do Gemini; 0 de ~500 reais (Chrome do usuario grava o user
+    # agent e embute fontes Type0). Sistemas web tambem podem gerar assim: nao decide sozinho.
+    "padrao_exportador_gemini": 0.30,
     "sem_camada_texto_total": 0.35,
     "sem_camada_texto_parcial": 0.20,
     "fonte_subconjunto_duplicado": 0.30,
@@ -82,7 +86,7 @@ def _formato(dados: bytes, nome: str):
         return "docx"
     if dados[:8] == b"\xd0\xcf\x11\xe0\xa1\xb1\x1a\xe1":
         return "doc"
-    if Path(nome).suffix.lower() == ".txt":
+    if Path(nome).suffix.lower() in (".txt", ".md"):  # .md: o Canvas do Gemini so baixa assim
         return "txt"
     raise ValueError("formato não suportado: envie PDF, DOCX, DOC ou TXT")
 
@@ -208,6 +212,11 @@ def analisar_bytes(dados: bytes, nome="documento.pdf"):
 
 
 def _indicios_pdf(est, indicio):
+    if est.get("chromium_servidor") and est.get("so_fontes_type3") and not est.get("pdf_marcado"):
+        indicio("padrao_exportador_gemini", "mesmo padrão dos PDFs exportados pelo Gemini: Chromium rodando em servidor, "
+                                            "texto só em fontes Type3 e sem marcação (sistemas web também podem gerar assim)")
+    elif est.get("chromium_servidor"):
+        indicio("gerador_programatico", "montado por Chromium rodando em servidor (Puppeteer/Playwright): comum em sistema web ou IA")
     if est["bytes_apos_assinatura"] > 0:
         indicio("alterado_apos_assinatura", f"{est['bytes_apos_assinatura']} bytes acrescentados depois da assinatura digital")
     # O manifesto C2PA entra no PDF como revisao incremental: essa nao e edicao.

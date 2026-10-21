@@ -268,3 +268,49 @@ def test_arquivo_remoto_le_por_faixas(monkeypatch):
     arq.seek(100)
     assert arq.read(5) == conteudo[100:105]
     assert pedidos[0] is None and pedidos[1:] == [f"bytes={len(conteudo) - 10}-{len(conteudo) - 1}", "bytes=100-104"]
+
+
+# ---------------------------------------------------------------- Gemini (21/10)
+
+
+def _est_pdf(**extra):
+    base = {"bytes_apos_assinatura": 0, "revisoes": 1, "assinaturas": 0, "c2pa": {"presente": False},
+            "paginas_analisadas": 2, "paginas_sem_texto": 0, "ferramentas_edicao": [], "fontes_subconjunto_duplicado": [],
+            "dias_entre_criacao_e_modificacao": 0.0}
+    return {**base, **extra}
+
+
+def _indicios(est):
+    from aida_documents.analisar import _indicios_pdf
+
+    achados = []
+    _indicios_pdf(est, lambda chave, descricao: achados.append(chave))
+    return achados
+
+
+def test_padrao_do_exportador_de_pdf_do_gemini():
+    """3 de 3 PDFs do Gemini: Creator "Chromium", Skia, so fontes Type3, sem marcacao."""
+    assert _indicios(_est_pdf(chromium_servidor=True, so_fontes_type3=True, pdf_marcado=False)) == ["padrao_exportador_gemini"]
+    # Chromium em servidor com fontes normais (sistema web): so indicio fraco
+    assert _indicios(_est_pdf(chromium_servidor=True, so_fontes_type3=False, pdf_marcado=True)) == ["gerador_programatico"]
+    # Chrome do usuario (Creator = user agent): nada
+    assert _indicios(_est_pdf(chromium_servidor=False, so_fontes_type3=False, pdf_marcado=True)) == []
+
+
+def test_creator_chromium_nao_conta_tambem_como_impressao_de_navegador():
+    from aida_documents.estrutura import inspecionar_pdf
+
+    canvas = pytest.importorskip("reportlab.pdfgen.canvas")
+    buf = io.BytesIO()
+    c = canvas.Canvas(buf)
+    c.setProducer("Skia/PDF m136")
+    c.setCreator("Chromium")
+    c.drawString(40, 800, "Recibo")
+    c.save()
+    est = inspecionar_pdf(buf.getvalue())
+    assert est["chromium_servidor"] and est["ferramentas_edicao"] == []
+
+
+def test_markdown_do_canvas_e_lido_como_texto():
+    r = analisar_bytes("# Trabalho\n\nMachado de Assis e o Realismo.".encode("utf-8"), "trabalho.md")
+    assert r["formato"] == "txt" and r["resultado"] == "INCONCLUSIVO"

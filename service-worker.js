@@ -1,5 +1,5 @@
-const STATIC_CACHE = "aida-static-v25";
-const RUNTIME_CACHE = "aida-runtime-v25";
+const STATIC_CACHE = "aida-static-v26";
+const RUNTIME_CACHE = "aida-runtime-v26";
 
 const APP_SHELL = [
   "./",
@@ -87,10 +87,12 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(
       fetch(event.request)
         .then((response) => {
-          const responseClone = response.clone();
-          caches.open(RUNTIME_CACHE).then((cache) => {
-            cache.put(event.request, responseClone);
-          });
+          if (response.ok) {
+            const responseClone = response.clone();
+            caches.open(RUNTIME_CACHE).then((cache) => {
+              cache.put(event.request, responseClone);
+            });
+          }
           return response;
         })
         .catch(async () => {
@@ -118,10 +120,14 @@ self.addEventListener("fetch", (event) => {
 
       return fetch(event.request)
         .then((networkResponse) => {
-          const responseClone = networkResponse.clone();
-          caches.open(RUNTIME_CACHE).then((cache) => {
-            cache.put(event.request, responseClone);
-          });
+          // Só guarda respostas válidas: um 404 cacheado aqui ficava servido
+          // para sempre (cache-first), mesmo depois de o arquivo ser corrigido.
+          if (networkResponse.ok) {
+            const responseClone = networkResponse.clone();
+            caches.open(RUNTIME_CACHE).then((cache) => {
+              cache.put(event.request, responseClone);
+            });
+          }
           return networkResponse;
         })
         .catch(() => {

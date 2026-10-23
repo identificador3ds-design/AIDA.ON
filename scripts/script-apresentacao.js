@@ -687,11 +687,6 @@ function setupSiteScrollAnimations() {
   });
 }
 
-function setupTeamControls() {
-  document.querySelectorAll(".icon").forEach((icon, index) => {
-    icon.addEventListener("click", () => changeMember(index));
-  });
-}
 
 // O parallax de `.parallax-item` foi removido — e não só por gosto visual.
 //

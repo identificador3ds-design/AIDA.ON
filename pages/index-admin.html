@@ -4,27 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#10403b">
-  <link rel="manifest" href="../manifest.webmanifest">
-  <link id="favicon" rel="icon" type="image/x-icon" href="../assets/images/AIDABranco.ico">
-  <title>AIDA — Painel administrativo</title>
-  <!-- SEO e compartilhamento -->
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <meta name="referrer" content="no-referrer">
   <meta name="description" content="Área restrita de operação do AIDA.ON.">
-  <meta name="robots" content="noindex, nofollow">
-  <meta property="og:type" content="website">
-  <meta property="og:site_name" content="AIDA.ON">
-  <meta property="og:locale" content="pt_BR">
-  <meta property="og:title" content="AIDA — Painel administrativo">
-  <meta property="og:description" content="Área restrita de operação do AIDA.ON.">
-  <meta property="og:url" content="https://aida-on.com.br/admin">
-  <meta property="og:image" content="https://aida-on.com.br/assets/images/pwa-icon-512.png">
-  <meta property="og:image:alt" content="Logotipo do AIDA.ON">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="AIDA — Painel administrativo">
-  <meta name="twitter:description" content="Área restrita de operação do AIDA.ON.">
-  <meta name="twitter:image" content="https://aida-on.com.br/assets/images/pwa-icon-512.png">
+  <link id="favicon" rel="icon" type="image/x-icon" href="../assets/images/AIDABranco.ico">
+  <title>AIDA — Área restrita</title>
   <link rel="stylesheet" href="../styles/style-shared-theme.css?v=20261011-nav">
   <link rel="stylesheet" href="../styles/aida-design-system.css">
-  <link rel="stylesheet" href="../styles/style-administrador.css">
+  <link rel="stylesheet" href="../styles/style-administrador.css?v=20261023-seguro">
 </head>
 <body class="aida-shell admin-page">
   <a class="aida-skip-link" href="#conteudo">Pular para o conteúdo</a>
@@ -34,361 +21,464 @@
     </a>
 
     <div class="admin-header-actions">
-      <a href="./index-apresentacao.html" class="top-link">Voltar ao site</a>
-      <a href="./index-login.html" class="top-link">Sair</a>
+      <span id="adminSessionInfo" class="admin-session-info" hidden></span>
+      <a href="../index.html" class="top-link">Voltar ao site</a>
+      <button id="btnLogoutAdmin" type="button" class="top-link" hidden>Encerrar sessão</button>
     </div>
   </header>
 
   <main id="conteudo" class="page-frame admin-main">
-    <section class="glass-panel admin-hero">
-      <div class="admin-hero-copy">
-        <span class="page-kicker">Central operacional</span>
-        <h1 class="page-title">Painel administrativo AIDA.ON</h1>
-        <p class="page-copy">
-          Controle acessos, mensagens, modos de operação, métodos e contas em uma estrutura
-          separada por sessões. O foco aqui é facilitar leitura, decisão e manutenção do sistema.
+    <!-- ============================================================
+         Portão de acesso: senha + segundo fator (TOTP).
+         Nada aqui é segredo: a decisão de acesso é do banco (RLS +
+         e_admin() exigindo aal2). Ver docs/migracao-admin-seguro.sql.
+         ============================================================ -->
+    <section id="adminGate" class="glass-panel admin-gate" aria-labelledby="gateTitulo">
+      <span class="page-kicker">Área restrita</span>
+      <h1 id="gateTitulo" class="admin-gate-title">Acesso administrativo</h1>
+      <p class="admin-muted">Uso exclusivo da equipe AIDA. Acessos e tentativas são registrados.</p>
+
+      <p id="gateMsg" class="admin-gate-msg" role="alert" aria-live="assertive"></p>
+
+      <form id="gateLogin" class="admin-gate-form" autocomplete="on" novalidate>
+        <div class="admin-field">
+          <label for="gateEmail">E-mail</label>
+          <input id="gateEmail" name="username" type="email" class="field-input" autocomplete="username" required maxlength="160" spellcheck="false" autocapitalize="off">
+        </div>
+        <div class="admin-field">
+          <label for="gateSenha">Senha</label>
+          <input id="gateSenha" name="password" type="password" class="field-input" autocomplete="current-password" required maxlength="128">
+        </div>
+        <button id="gateEntrar" type="submit" class="aida-button">Continuar</button>
+      </form>
+
+      <div id="gateMfaCadastro" class="admin-gate-form" hidden>
+        <h2 class="admin-gate-sub">Cadastre o segundo fator</h2>
+        <p class="admin-muted">
+          O painel só abre com verificação em duas etapas. Escaneie o QR code com um aplicativo
+          autenticador (Google Authenticator, Microsoft Authenticator, Authy, 1Password) ou digite
+          a chave manualmente.
         </p>
-
-        <div class="hero-tags">
-          <span class="hero-tag">Operação</span>
-          <span class="hero-tag">Manutenção</span>
-          <span class="hero-tag">Usuários</span>
-          <span class="hero-tag">Métodos</span>
-        </div>
+        <img id="mfaQr" class="admin-mfa-qr" alt="QR code para o aplicativo autenticador" width="200" height="200">
+        <p class="admin-muted">Chave manual: <code id="mfaSegredo" class="admin-mfa-secret"></code></p>
+        <form id="gateMfaCadastroForm" novalidate>
+          <div class="admin-field">
+            <label for="mfaCodigoCadastro">Código de 6 dígitos do aplicativo</label>
+            <input id="mfaCodigoCadastro" type="text" class="field-input admin-otp" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" required>
+          </div>
+          <button type="submit" class="aida-button">Ativar e entrar</button>
+        </form>
       </div>
 
-      <aside class="admin-hero-side">
-        <article class="hero-side-card">
-          <span class="hero-side-label">Sessão ativa</span>
-          <strong>Admin</strong>
-          <p>Controle elevado liberado para este navegador.</p>
-        </article>
-
-        <article class="hero-side-card">
-          <span class="hero-side-label">Último acesso</span>
-          <strong id="adminLastAccess">Agora</strong>
-          <p>Histórico local do painel administrativo.</p>
-        </article>
-
-        <article class="hero-side-card">
-          <span class="hero-side-label">Contato visível</span>
-          <strong id="adminSupportPreview">admin@gmail.com</strong>
-          <p>Email usado nos avisos e na tela de manutenção.</p>
-        </article>
-      </aside>
-    </section>
-
-    <section class="admin-stats">
-      <article class="glass-card stat-card">
-        <span class="stat-label">Usuários</span>
-        <strong id="statUsers">--</strong>
-        <p>Contas conhecidas pelo painel.</p>
-      </article>
-
-      <article class="glass-card stat-card">
-        <span class="stat-label">Análises</span>
-        <strong id="statAnalyses">--</strong>
-        <p>Processamentos registrados na base.</p>
-      </article>
-
-      <article class="glass-card stat-card">
-        <span class="stat-label">Módulos</span>
-        <strong id="statTools">--</strong>
-        <p>Páginas e fluxos mapeados no sistema.</p>
-      </article>
-
-      <article class="glass-card stat-card">
-        <span class="stat-label">Controles ativos</span>
-        <strong id="statConfigs">--</strong>
-        <p>Preferências administrativas ligadas.</p>
-      </article>
-    </section>
-
-    <section class="glass-panel admin-section">
-      <div class="section-head">
-        <div>
-          <span class="page-kicker">Operação do site</span>
-          <h2>Configurações principais</h2>
-          <p class="admin-muted">
-            Ajuste comunicação, acessos públicos e comportamento da experiência sem precisar
-            navegar por blocos apertados.
-          </p>
+      <form id="gateMfa" class="admin-gate-form" hidden novalidate>
+        <h2 class="admin-gate-sub">Verificação em duas etapas</h2>
+        <div class="admin-field">
+          <label for="mfaCodigo">Código de 6 dígitos do aplicativo autenticador</label>
+          <input id="mfaCodigo" type="text" class="field-input admin-otp" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" required>
         </div>
-        <span id="configStatus" class="admin-status">Aguardando alteracoes</span>
-      </div>
-
-      <form id="adminConfigForm" class="admin-form">
-        <section class="admin-subsection">
-          <div class="subsection-head">
-            <span class="subsection-kicker">Comunicação</span>
-            <h3>Mensagem e identidade operacional</h3>
-          </div>
-
-          <div class="admin-field-grid">
-            <div class="admin-field">
-              <label for="configSupportEmail">Email de suporte para avisos do sistema</label>
-              <input id="configSupportEmail" type="email" class="field-input" placeholder="suporte@aida.on">
-            </div>
-
-            <div class="admin-field">
-              <label for="configAnalysisButtonLabel">Texto do botão principal da análise</label>
-              <input id="configAnalysisButtonLabel" type="text" class="field-input" placeholder="Analisar imagem">
-            </div>
-
-            <div class="admin-field admin-field-wide">
-              <label for="configAnnouncement">Mensagem institucional</label>
-              <textarea id="configAnnouncement" rows="4" class="field-textarea" placeholder="Escreva um aviso rápido para os usuários."></textarea>
-            </div>
-          </div>
-        </section>
-
-        <div class="admin-two-column">
-          <section class="admin-subsection">
-            <div class="subsection-head">
-              <span class="subsection-kicker">Fluxo público</span>
-              <h3>Regras de acesso e experiência</h3>
-            </div>
-
-            <div class="toggle-stack">
-              <label class="toggle-row">
-                <input id="configAllowRegistrations" type="checkbox">
-                <div>
-                  <strong>Permitir novos cadastros</strong>
-                  <span>Deixa o cadastro público aberto para novas contas entrarem no sistema.</span>
-                </div>
-              </label>
-
-              <label class="toggle-row">
-                <input id="configEnableInstallPrompt" type="checkbox">
-                <div>
-                  <strong>Exibir convite de instalação</strong>
-                  <span>Mostra o convite para instalar o app depois da análise ser concluída.</span>
-                </div>
-              </label>
-
-              <label class="toggle-row">
-                <input id="configMaintenanceMode" type="checkbox">
-                <div>
-                  <strong>Modo manutenção</strong>
-                  <span>Envia usuários da ferramenta para a tela de manutenção enquanto a área estiver em fase de desenvolvimento.</span>
-                </div>
-              </label>
-
-              <label class="toggle-row">
-                <input id="configAllowUploadPage" type="checkbox">
-                <div>
-                  <strong>Liberar página de upload</strong>
-                  <span>Abre ou fecha a etapa em que o usuário seleciona e troca a imagem.</span>
-                </div>
-              </label>
-
-              <label class="toggle-row">
-                <input id="configAllowHistoryPage" type="checkbox">
-                <div>
-                  <strong>Liberar histórico</strong>
-                  <span>Permite que cada usuário veja o próprio histórico de análises.</span>
-                </div>
-              </label>
-
-              <label class="toggle-row">
-                <input id="configAllowProfilePage" type="checkbox">
-                <div>
-                  <strong>Liberar perfil</strong>
-                  <span>Mostra a área de conta com dados pessoais e atalhos da sessão.</span>
-                </div>
-              </label>
-
-              <label class="toggle-row">
-                <input id="configLockAnalysisPage" type="checkbox">
-                <div>
-                  <strong>Travar análise</strong>
-                  <span>Desliga o processamento e deixa a tela de análise em pausa.</span>
-                </div>
-              </label>
-
-              <label class="toggle-row">
-                <input id="configDefaultWatermarkCheck" type="checkbox">
-                <div>
-                  <strong>Marca visual ligada por padrão</strong>
-                  <span>Define se a checagem de marca visual já inicia ativada na ferramenta.</span>
-                </div>
-              </label>
-
-              <label class="toggle-row">
-                <input id="configDefaultMetadataCheck" type="checkbox">
-                <div>
-                  <strong>Metadados ligados por padrão</strong>
-                  <span>Define se a leitura de metadados já entra ligada na análise.</span>
-                </div>
-              </label>
-            </div>
-          </section>
-
-          <section class="admin-subsection admin-subsection-highlight">
-            <div class="subsection-head">
-              <span class="subsection-kicker">Manutenção</span>
-              <h3>Experiência de acesso controlado</h3>
-            </div>
-
-            <p class="admin-muted">
-              Quando o modo manutenção estiver ativo, o usuário comum será levado para uma tela
-              dedicada informando que a ferramenta está temporariamente em fase de desenvolvimento.
-            </p>
-
-            <article class="maintenance-code-card">
-              <span>Status atual da tela</span>
-              <strong>Em fase de desenvolvimento</strong>
-              <p>Enquanto esse modo estiver ativo, o acesso comum a ferramenta fica temporariamente indisponível.</p>
-            </article>
-
-            <div class="preview-panel">
-              <span class="subsection-kicker">Resumo vivo</span>
-              <div id="configPreviewList" class="preview-list"></div>
-            </div>
-          </section>
-        </div>
-
-        <div class="admin-form-actions">
-          <button type="submit" class="aida-button">Salvar configurações</button>
-          <button id="btnResetConfig" type="button" class="aida-button secondary">Restaurar padrão</button>
-        </div>
+        <button type="submit" class="aida-button">Verificar</button>
+        <button id="gateCancelar" type="button" class="aida-button secondary">Cancelar</button>
       </form>
     </section>
 
-    <section class="admin-two-column admin-two-column-balanced">
-      <section class="glass-panel admin-section">
-        <div class="section-head">
-          <div>
-            <span class="page-kicker">Ação rápida</span>
-            <h2>Comandos operacionais</h2>
-          </div>
-        </div>
-
-        <div class="quick-actions">
-          <button id="btnPresetOpen" type="button" class="quick-action-row">
-            <strong>Modo aberto</strong>
-            <span>Liga o fluxo padrão para testes e apresentações.</span>
-          </button>
-
-          <button id="btnPresetRestrict" type="button" class="quick-action-row">
-            <strong>Modo restrito</strong>
-            <span>Ativa manutenção, fecha cadastros e deixa a operação sob controle.</span>
-          </button>
-
-          <button id="btnClearAnnouncement" type="button" class="quick-action-row">
-            <strong>Limpar aviso</strong>
-            <span>Remove a mensagem institucional atual sem mexer nas outras regras.</span>
-          </button>
-
-          <button id="btnUnlockUsers" type="button" class="quick-action-row">
-            <strong>Desbloquear contas</strong>
-            <span>Remove bloqueios locais e restaura o acesso dos usuários.</span>
-          </button>
-        </div>
-      </section>
-
-      <section class="glass-panel admin-section">
-        <div class="section-head">
-          <div>
-            <span class="page-kicker">Panorama</span>
-            <h2>Indicadores internos</h2>
-          </div>
-        </div>
-
-        <p class="admin-muted">
-          Um quadro rápido para acompanhar o volume de bloqueios e a disponibilidade técnica dos métodos.
-        </p>
-
-        <div class="admin-mini-board">
-          <article class="mini-card">
-            <span>Contas com restrição</span>
-            <strong id="blockedUsersCount">0</strong>
-          </article>
-
-          <article class="mini-card">
-            <span>Métodos ativos</span>
-            <strong id="activeMethodsCount">0</strong>
-          </article>
-        </div>
-      </section>
-    </section>
-
-    <section class="glass-panel admin-section">
-      <div class="section-head">
-        <div>
-          <span class="page-kicker">Mapa do sistema</span>
-          <h2>Páginas e módulos controlados</h2>
-          <p class="admin-muted">
-            Cada linha resume o estado operacional do módulo e facilita a abertura direta para inspeção.
+    <!-- ============================================================
+         Painel (só aparece depois que o banco confirma o admin)
+         ============================================================ -->
+    <div id="adminApp" class="admin-app" hidden>
+      <section class="glass-panel admin-hero">
+        <div class="admin-hero-copy">
+          <span class="page-kicker">Central operacional</span>
+          <h1 class="page-title">Painel AIDA.ON</h1>
+          <p class="page-copy">
+            API, empresas, usuários e operação do site em um só lugar. Toda alteração é validada
+            no servidor e entra na trilha de auditoria.
           </p>
         </div>
-      </div>
 
-      <div id="toolsGrid" class="tool-stack"></div>
-    </section>
+        <aside class="admin-hero-side">
+          <article class="hero-side-card">
+            <span class="hero-side-label">Sessão</span>
+            <strong id="adminSessaoEmail">—</strong>
+            <p>Verificada com senha + autenticador. Expira por inatividade.</p>
+          </article>
+          <article class="hero-side-card">
+            <span class="hero-side-label">Configuração</span>
+            <strong id="configStatus" class="admin-status">Aguardando</strong>
+            <p>Estado da última operação no painel.</p>
+          </article>
+        </aside>
+      </section>
 
-    <section class="glass-panel admin-section">
-      <div class="section-head">
-        <div>
-          <span class="page-kicker">Métodos</span>
-          <h2>Configuração da ferramenta de análise</h2>
-          <p class="admin-muted">
-            Renomeie, descreva e ajuste a disponibilidade operacional de cada método em blocos mais amplos.
-          </p>
+      <nav class="admin-tabs" role="tablist" aria-label="Seções do painel">
+        <button type="button" role="tab" class="admin-tab" id="tab-geral" aria-controls="painel-geral" aria-selected="true">Visão geral</button>
+        <button type="button" role="tab" class="admin-tab" id="tab-api" aria-controls="painel-api" aria-selected="false" tabindex="-1">API e empresas</button>
+        <button type="button" role="tab" class="admin-tab" id="tab-usuarios" aria-controls="painel-usuarios" aria-selected="false" tabindex="-1">Usuários</button>
+        <button type="button" role="tab" class="admin-tab" id="tab-site" aria-controls="painel-site" aria-selected="false" tabindex="-1">Site</button>
+        <button type="button" role="tab" class="admin-tab" id="tab-auditoria" aria-controls="painel-auditoria" aria-selected="false" tabindex="-1">Auditoria</button>
+      </nav>
+
+      <!-- Visão geral -->
+      <section id="painel-geral" role="tabpanel" aria-labelledby="tab-geral" class="admin-tabpanel">
+        <div class="admin-stats">
+          <article class="glass-card stat-card">
+            <span class="stat-label">Usuários</span>
+            <strong id="statUsuarios">--</strong>
+            <p id="statUsuariosBloqueados">contas cadastradas</p>
+          </article>
+          <article class="glass-card stat-card">
+            <span class="stat-label">Análises no site</span>
+            <strong id="statAnalises">--</strong>
+            <p>registradas no histórico</p>
+          </article>
+          <article class="glass-card stat-card">
+            <span class="stat-label">Chaves de API ativas</span>
+            <strong id="statChaves">--</strong>
+            <p id="statEmpresas">empresas</p>
+          </article>
+          <article class="glass-card stat-card">
+            <span class="stat-label">Chamadas da API (24h)</span>
+            <strong id="statChamadas24h">--</strong>
+            <p id="statChamadas30d">30 dias</p>
+          </article>
         </div>
-      </div>
 
-      <div id="methodsConfigGrid" class="methods-stack"></div>
-    </section>
-
-    <section class="glass-panel admin-section admin-users-section">
-      <div class="section-head">
-        <div>
-          <span class="page-kicker">Usuários</span>
-          <h2>Gestão de contas</h2>
+        <div class="admin-stats">
+          <article class="glass-card stat-card">
+            <span class="stat-label">Tokens usados</span>
+            <strong id="statTokensUsados">--</strong>
+            <p>análises atendidas pela API</p>
+          </article>
+          <article class="glass-card stat-card">
+            <span class="stat-label">Tokens contratados</span>
+            <strong id="statTokensContratados">--</strong>
+            <p>soma das cotas limitadas</p>
+          </article>
+          <article class="glass-card stat-card">
+            <span class="stat-label">Tokens disponíveis</span>
+            <strong id="statTokensDisponiveis">--</strong>
+            <p>saldo das chaves ativas</p>
+          </article>
+          <article class="glass-card stat-card">
+            <span class="stat-label">Erros da API (24h)</span>
+            <strong id="statErros24h">--</strong>
+            <p>respostas 4xx/5xx</p>
+          </article>
         </div>
-        <button id="btnRefreshData" type="button" class="aida-button secondary">Atualizar dados</button>
-      </div>
+        <p id="resumoStatus" class="admin-muted"></p>
+      </section>
 
-      <div class="users-toolbar">
-        <input aria-label="Buscar usuário por nome ou e-mail" id="userSearchInput" type="search" class="field-input user-search-input" placeholder="Buscar por nome ou email">
-        <p id="blockedUsersInfo" class="admin-muted">Nenhuma conta com restrição no momento.</p>
-      </div>
+      <!-- API e empresas -->
+      <section id="painel-api" role="tabpanel" aria-labelledby="tab-api" class="admin-tabpanel" hidden>
+        <section class="glass-panel admin-section">
+          <div class="section-head">
+            <div>
+              <span class="page-kicker">Emissão</span>
+              <h2>Nova chave de API</h2>
+              <p class="admin-muted">
+                A chave é gerada no servidor e aparece <strong>uma única vez</strong>. O banco guarda
+                só o hash: nem o painel consegue mostrá-la de novo.
+              </p>
+            </div>
+          </div>
 
-      <p id="usersStatus" class="admin-muted">Carregando usuários...</p>
-      <div class="table-shell">
-        <table class="admin-table">
-          <thead>
-            <tr>
-              <th>Nome</th>
-              <th>Email</th>
-              <th>Origem</th>
-              <th>Status</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody id="usersTableBody"></tbody>
-        </table>
-      </div>
-    </section>
+          <form id="formNovaChave" class="admin-form" novalidate>
+            <div class="admin-field-grid">
+              <div class="admin-field">
+                <label for="chaveEmpresa">Empresa *</label>
+                <input id="chaveEmpresa" type="text" class="field-input" maxlength="120" required list="listaEmpresas">
+                <datalist id="listaEmpresas"></datalist>
+              </div>
+              <div class="admin-field">
+                <label for="chaveContato">Contato (e-mail)</label>
+                <input id="chaveContato" type="email" class="field-input" maxlength="160">
+              </div>
+              <div class="admin-field">
+                <label for="chavePlano">Plano</label>
+                <select id="chavePlano" class="field-input">
+                  <option value="free">Free</option>
+                  <option value="basico">Básico</option>
+                  <option value="pro">Pro</option>
+                  <option value="enterprise">Enterprise</option>
+                  <option value="custom">Personalizado</option>
+                </select>
+              </div>
+              <div class="admin-field">
+                <label for="chaveTokens">Cota de tokens (0 = ilimitado)</label>
+                <input id="chaveTokens" type="number" class="field-input" min="0" max="100000000" step="1" value="1000" required>
+              </div>
+              <div class="admin-field">
+                <label for="chaveLimite">Limite de chamadas por hora</label>
+                <input id="chaveLimite" type="number" class="field-input" min="1" max="100000" step="1" value="60" required>
+              </div>
+              <div class="admin-field">
+                <label for="chaveDias">Validade em dias (vazio = sem expiração)</label>
+                <input id="chaveDias" type="number" class="field-input" min="1" max="3650" step="1" value="365">
+              </div>
+              <div class="admin-field admin-field-wide">
+                <label for="chaveDescricao">Descrição interna</label>
+                <input id="chaveDescricao" type="text" class="field-input" maxlength="200" placeholder="Ex.: integração do app de onboarding">
+              </div>
+            </div>
+            <div class="admin-form-actions">
+              <button type="submit" class="aida-button">Emitir chave</button>
+            </div>
+          </form>
+        </section>
 
-    <section class="glass-panel admin-section">
-      <div class="section-head">
-        <div>
-          <span class="page-kicker">Atividade</span>
-          <h2>Leitura de métodos usados</h2>
-        </div>
-      </div>
+        <section class="glass-panel admin-section">
+          <div class="section-head">
+            <div>
+              <span class="page-kicker">Empresas</span>
+              <h2>Consumo por empresa</h2>
+            </div>
+            <button id="btnAtualizarApi" type="button" class="aida-button secondary">Atualizar</button>
+          </div>
+          <div class="table-shell">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th scope="col">Empresa</th>
+                  <th scope="col">Chaves ativas</th>
+                  <th scope="col">Tokens usados</th>
+                  <th scope="col">Cota</th>
+                  <th scope="col">Disponível</th>
+                  <th scope="col">Uso</th>
+                  <th scope="col">Último uso</th>
+                </tr>
+              </thead>
+              <tbody id="empresasTabela"></tbody>
+            </table>
+          </div>
+        </section>
 
-      <p id="analysisStatus" class="admin-muted">Carregando estatísticas...</p>
-      <div id="methodsList" class="methods-list"></div>
-    </section>
+        <section class="glass-panel admin-section">
+          <div class="section-head">
+            <div>
+              <span class="page-kicker">Chaves</span>
+              <h2>Chaves emitidas</h2>
+            </div>
+            <label class="admin-inline-check">
+              <input id="chavesMostrarRevogadas" type="checkbox"> Mostrar revogadas
+            </label>
+          </div>
+          <p id="chavesStatus" class="admin-muted">Carregando chaves...</p>
+          <div class="table-shell">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th scope="col">Prefixo</th>
+                  <th scope="col">Empresa</th>
+                  <th scope="col">Plano</th>
+                  <th scope="col">Usados / cota</th>
+                  <th scope="col">Disponível</th>
+                  <th scope="col">Limite/h</th>
+                  <th scope="col">Estado</th>
+                  <th scope="col">Último uso</th>
+                  <th scope="col">Ações</th>
+                </tr>
+              </thead>
+              <tbody id="chavesTabela"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <!-- Usuários -->
+      <section id="painel-usuarios" role="tabpanel" aria-labelledby="tab-usuarios" class="admin-tabpanel" hidden>
+        <section class="glass-panel admin-section admin-users-section">
+          <div class="section-head">
+            <div>
+              <span class="page-kicker">Usuários</span>
+              <h2>Gestão de contas</h2>
+              <p class="admin-muted">O bloqueio vale no servidor: conta bloqueada não grava análises.</p>
+            </div>
+            <button id="btnRefreshData" type="button" class="aida-button secondary">Atualizar</button>
+          </div>
+
+          <div class="users-toolbar">
+            <input aria-label="Buscar usuário por nome ou e-mail" id="userSearchInput" type="search" class="field-input user-search-input" placeholder="Buscar por nome ou e-mail" maxlength="160">
+            <p id="blockedUsersInfo" class="admin-muted"></p>
+          </div>
+
+          <p id="usersStatus" class="admin-muted">Carregando usuários...</p>
+          <div class="table-shell">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th scope="col">Nome</th>
+                  <th scope="col">E-mail</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Ações</th>
+                </tr>
+              </thead>
+              <tbody id="usersTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <!-- Site -->
+      <section id="painel-site" role="tabpanel" aria-labelledby="tab-site" class="admin-tabpanel" hidden>
+        <section class="glass-panel admin-section">
+          <div class="section-head">
+            <div>
+              <span class="page-kicker">Operação do site</span>
+              <h2>Configurações principais</h2>
+              <p class="admin-muted">Publicadas para todos os visitantes ao salvar.</p>
+            </div>
+          </div>
+
+          <form id="adminConfigForm" class="admin-form" novalidate>
+            <section class="admin-subsection">
+              <div class="subsection-head">
+                <span class="subsection-kicker">Visitantes</span>
+                <h3>Análises antes de entrar na conta</h3>
+              </div>
+              <div class="admin-field-grid">
+                <div class="admin-field">
+                  <label for="configUnloggedLimit">Análises gratuitas sem login (0 = exigir login sempre)</label>
+                  <input id="configUnloggedLimit" type="number" class="field-input" min="0" max="50" step="1" required>
+                </div>
+              </div>
+            </section>
+
+            <section class="admin-subsection">
+              <div class="subsection-head">
+                <span class="subsection-kicker">Comunicação</span>
+                <h3>Mensagem e identidade operacional</h3>
+              </div>
+
+              <div class="admin-field-grid">
+                <div class="admin-field">
+                  <label for="configSupportEmail">E-mail de suporte exibido nos avisos</label>
+                  <input id="configSupportEmail" type="email" class="field-input" maxlength="160">
+                </div>
+                <div class="admin-field">
+                  <label for="configAnalysisButtonLabel">Texto do botão principal da análise</label>
+                  <input id="configAnalysisButtonLabel" type="text" class="field-input" maxlength="60">
+                </div>
+                <div class="admin-field admin-field-wide">
+                  <label for="configAnnouncement">Mensagem institucional</label>
+                  <textarea id="configAnnouncement" rows="3" class="field-textarea" maxlength="500" placeholder="Aviso rápido para os usuários."></textarea>
+                </div>
+              </div>
+            </section>
+
+            <section class="admin-subsection">
+              <div class="subsection-head">
+                <span class="subsection-kicker">Fluxo público</span>
+                <h3>Regras de acesso e experiência</h3>
+              </div>
+
+              <div class="toggle-stack">
+                <label class="toggle-row"><input id="configAllowRegistrations" type="checkbox"><div><strong>Permitir novos cadastros</strong><span>Mantém o cadastro público aberto.</span></div></label>
+                <label class="toggle-row"><input id="configMaintenanceMode" type="checkbox"><div><strong>Modo manutenção</strong><span>Envia os usuários da ferramenta para a tela de manutenção.</span></div></label>
+                <label class="toggle-row"><input id="configLockAnalysisPage" type="checkbox"><div><strong>Travar análise</strong><span>Desliga o processamento na tela de análise.</span></div></label>
+                <label class="toggle-row"><input id="configAllowUploadPage" type="checkbox"><div><strong>Liberar página de upload</strong><span>Abre ou fecha a etapa de seleção da imagem.</span></div></label>
+                <label class="toggle-row"><input id="configAllowHistoryPage" type="checkbox"><div><strong>Liberar histórico</strong><span>Cada usuário vê o próprio histórico.</span></div></label>
+                <label class="toggle-row"><input id="configAllowProfilePage" type="checkbox"><div><strong>Liberar perfil</strong><span>Mostra a área de conta.</span></div></label>
+                <label class="toggle-row"><input id="configEnableInstallPrompt" type="checkbox"><div><strong>Convite de instalação</strong><span>Sugere instalar o app depois da análise.</span></div></label>
+                <label class="toggle-row"><input id="configDefaultWatermarkCheck" type="checkbox"><div><strong>Marca visual ligada por padrão</strong><span>Checagem de marca visual já inicia ativada.</span></div></label>
+                <label class="toggle-row"><input id="configDefaultMetadataCheck" type="checkbox"><div><strong>Metadados ligados por padrão</strong><span>Leitura de metadados já inicia ativada.</span></div></label>
+              </div>
+            </section>
+
+            <section class="admin-subsection">
+              <div class="subsection-head">
+                <span class="subsection-kicker">Métodos</span>
+                <h3>Métodos da ferramenta de análise</h3>
+              </div>
+              <div id="methodsConfigGrid" class="methods-stack"></div>
+            </section>
+
+            <div class="admin-form-actions">
+              <button type="submit" class="aida-button">Salvar e publicar</button>
+              <button id="btnResetConfig" type="button" class="aida-button secondary">Restaurar padrão</button>
+            </div>
+          </form>
+        </section>
+      </section>
+
+      <!-- Auditoria -->
+      <section id="painel-auditoria" role="tabpanel" aria-labelledby="tab-auditoria" class="admin-tabpanel" hidden>
+        <section class="glass-panel admin-section">
+          <div class="section-head">
+            <div>
+              <span class="page-kicker">Auditoria</span>
+              <h2>Trilha de ações administrativas</h2>
+              <p class="admin-muted">
+                Somente acréscimo: nem o admin edita ou apaga estes registros. Tentativas de login
+                com senha errada ficam em Supabase &gt; Authentication &gt; Logs.
+              </p>
+            </div>
+            <button id="btnAtualizarAuditoria" type="button" class="aida-button secondary">Atualizar</button>
+          </div>
+          <p id="auditoriaStatus" class="admin-muted"></p>
+          <div class="table-shell">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th scope="col">Quando</th>
+                  <th scope="col">Quem</th>
+                  <th scope="col">Ação</th>
+                  <th scope="col">Alvo</th>
+                  <th scope="col">IP</th>
+                  <th scope="col">Detalhes</th>
+                </tr>
+              </thead>
+              <tbody id="auditoriaTabela"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+    </div>
   </main>
 
+  <!-- Chave recém-emitida: exibida uma vez -->
+  <dialog id="dialogChave" class="admin-dialog" aria-labelledby="dialogChaveTitulo">
+    <h2 id="dialogChaveTitulo">Chave emitida</h2>
+    <p class="admin-muted">
+      Copie agora e entregue por um canal seguro (gerenciador de senhas, nunca por e-mail aberto
+      ou chat). Ao fechar esta janela, ela não poderá ser exibida de novo.
+    </p>
+    <code id="dialogChaveValor" class="admin-key-value"></code>
+    <div class="admin-form-actions">
+      <button id="dialogChaveCopiar" type="button" class="aida-button">Copiar</button>
+      <button id="dialogChaveFechar" type="button" class="aida-button secondary">Já guardei, fechar</button>
+    </div>
+  </dialog>
+
+  <!-- Edição de chave -->
+  <dialog id="dialogEditar" class="admin-dialog" aria-labelledby="dialogEditarTitulo">
+    <form id="formEditarChave" method="dialog" novalidate>
+      <h2 id="dialogEditarTitulo">Editar chave <code id="editarPrefixo"></code></h2>
+      <div class="admin-field-grid">
+        <div class="admin-field"><label for="editarEmpresa">Empresa</label><input id="editarEmpresa" type="text" class="field-input" maxlength="120" required></div>
+        <div class="admin-field"><label for="editarContato">Contato</label><input id="editarContato" type="email" class="field-input" maxlength="160"></div>
+        <div class="admin-field">
+          <label for="editarPlano">Plano</label>
+          <select id="editarPlano" class="field-input">
+            <option value="free">Free</option>
+            <option value="basico">Básico</option>
+            <option value="pro">Pro</option>
+            <option value="enterprise">Enterprise</option>
+            <option value="custom">Personalizado</option>
+          </select>
+        </div>
+        <div class="admin-field"><label for="editarTokens">Cota de tokens (0 = ilimitado)</label><input id="editarTokens" type="number" class="field-input" min="0" max="100000000" step="1" required></div>
+        <div class="admin-field"><label for="editarLimite">Limite por hora (0 = suspensa)</label><input id="editarLimite" type="number" class="field-input" min="0" max="100000" step="1" required></div>
+        <div class="admin-field"><label for="editarExpira">Expira em (vazio = nunca)</label><input id="editarExpira" type="date" class="field-input"></div>
+        <div class="admin-field admin-field-wide"><label for="editarDescricao">Descrição</label><input id="editarDescricao" type="text" class="field-input" maxlength="200"></div>
+      </div>
+      <div class="admin-form-actions">
+        <button type="submit" value="salvar" class="aida-button">Salvar</button>
+        <button type="submit" value="cancelar" class="aida-button secondary" formnovalidate>Cancelar</button>
+      </div>
+    </form>
+  </dialog>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.3/dist/umd/supabase.js" integrity="sha384-qafw21c/iciq0VXsi9FzkfoQv5I/V0iqE4lSNcKXPnW9/UTJLnv5CcN4FHxVLnKg" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="../scripts/aida-admin-auth.js"></script>
-  <script src="../scripts/script-pwa-register.js"></script>
-  <script src="../scripts/script-cookie-consent.js"></script>
-  <script src="../scripts/script-administrador.js?v=20261011-status"></script>
+  <script src="../scripts/aida-admin-auth.js?v=20261023-seguro"></script>
+  <script src="../scripts/script-administrador.js?v=20261023-seguro"></script>
 </body>
 </html>

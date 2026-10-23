@@ -109,6 +109,10 @@ padrão do Python: o baixador se identifica como `AIDA-Documents/1.0`.
 - Depois: **2 em 100** nesses mesmos diários (ajustado neles, então otimista). Os dois
   somam indícios moderados de juntada (fonte duplicada, Benford, um DV errado). PNCP,
   SAFEDOCS e NapierOne continuam com 0.
+- **Teste honesto**: 100 diários novos de jul–ago/2026, sem nenhum ajuste depois: **2 falsos
+  positivos (2 %; limite superior de 95 % ≈ 7 %)**, 24 `REAL` e 74 `INCONCLUSIVO`. 52 dos
+  emissores não estavam no primeiro lote. Os dois de novo juntam fonte duplicada com Benford
+  ou um DV errado: o padrão de diário montado por juntada é o próximo ponto a estudar.
 
 ## Gemini (21/10)
 

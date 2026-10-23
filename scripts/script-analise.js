@@ -315,7 +315,7 @@ function mostrarImagem(dataUrl) {
       ? dataUrlParaArquivo(dataUrl, nomeOriginal)
       : dataUrlParaArquivo(dataUrl);
   } catch (erro) {
-    console.error("Nao foi possivel preparar a imagem para analise:", erro);
+    console.error("Nao foi possivel preparar a imagem para análise:", erro);
     imagemAtual = null;
     if (previewStatus) {
       previewStatus.textContent = "Imagem invalida. Troque a imagem.";
@@ -1392,7 +1392,7 @@ async function executarAnalise(event) {
   event?.stopImmediatePropagation?.();
 
   if (analiseEmAndamento) {
-    registrarStatus("Analise ja esta em andamento. Aguarde o resultado...");
+    registrarStatus("Análise ja esta em andamento. Aguarde o resultado...");
     return;
   }
 
@@ -1403,14 +1403,14 @@ async function executarAnalise(event) {
     if (previewStatus) {
       previewStatus.textContent = "Nenhuma imagem carregada";
     }
-    registrarStatus("Nenhuma imagem carregada para analise.", "erro");
+    registrarStatus("Nenhuma imagem carregada para análise.", "erro");
     alert("Nenhuma imagem carregada. Clique em Trocar imagem ou volte para selecionar uma imagem.");
     analiseEmAndamento = false;
     return;
   }
 
   if (previewStatus) {
-    previewStatus.textContent = "Enviando para analise...";
+    previewStatus.textContent = "Enviando para análise...";
   }
 
   abortController = new AbortController();
@@ -1434,9 +1434,9 @@ async function executarAnalise(event) {
     }
 
     exibirResultado(dados, base);
-    registrarStatus("Analise concluida com sucesso.", "sucesso");
+    registrarStatus("Análise concluida com sucesso.", "sucesso");
     if (previewStatus) {
-      previewStatus.textContent = "Analise concluida";
+      previewStatus.textContent = "Análise concluida";
     }
 
     if (salvarNoHistorico) {
@@ -1453,9 +1453,9 @@ async function executarAnalise(event) {
   } catch (erro) {
     if (erro.name !== "AbortError") {
       if (previewStatus) {
-        previewStatus.textContent = "Erro na analise";
+        previewStatus.textContent = "Erro na análise";
       }
-      registrarStatus(erro.message || "Erro na analise.", "erro");
+      registrarStatus(erro.message || "Erro na análise.", "erro");
       alert(
         erro.message ||
         "Nao foi possivel conectar com a API Python. Confirme se o servidor Flask esta rodando na porta 5000."

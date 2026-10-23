@@ -151,10 +151,10 @@ def test_pagina_de_solucoes_declara_os_quatro_cards():
 def test_estados_dos_produtos_refletem_a_realidade():
     """O selo é declaração de estado, não enfeite.
 
-    Desde set/2026 as soluções têm implementação: Image está disponível
-    e Forensics, Video, Documents, Audio (out/2026) e API estão em versão inicial (selo verde com o texto
-    "Versão inicial"). Nenhum card pode voltar a dizer beta ou em
-    desenvolvimento sem que isso seja verdade.
+    Desde out/2026 Image, Forensics, Video e Audio estão disponíveis,
+    Documents está em versão beta e API em versão inicial (todos com selo
+    verde). O texto de cada selo é conferido para que nenhum card mude de
+    estado sem que isso seja decidido.
     """
     html = (RAIZ / "pages" / "index-solucoes.html").read_text(encoding="utf-8")
     cards = html.split('data-sol="')
@@ -169,9 +169,11 @@ def test_estados_dos_produtos_refletem_a_realidade():
                        "video": "disponivel", "documents": "disponivel", "audio": "disponivel",
                        "api": "disponivel"}
 
-    for produto in ("forensics", "video", "documents", "audio", "api"):
+    textos = {"image": "Disponível", "forensics": "Disponível", "video": "Disponível",
+              "documents": "Versão Beta", "audio": "Disponível", "api": "Versão inicial"}
+    for produto, texto in textos.items():
         bloco = html.split(f'data-sol="{produto}"')[1].split("</article>")[0]
-        assert "Versão inicial" in bloco, f"card {produto} deveria dizer versão inicial"
+        assert f">{texto}</span>" in bloco, f"card {produto} deveria dizer {texto}"
     assert not re.search(r"aida-status--(beta|desenvolvimento)", html)
 
 

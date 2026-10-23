@@ -17,7 +17,7 @@ from flask import jsonify, request
 from .analisar import analisar_bytes
 
 TAMANHO_MAX_MB = 20
-EXTENSOES = {".pdf", ".docx", ".doc", ".txt"}
+EXTENSOES = {".pdf", ".docx", ".doc", ".txt", ".md"}
 
 
 def registrar(app):
@@ -35,7 +35,7 @@ def registrar(app):
         if arquivo is None or not arquivo.filename:
             return erro("Envie o arquivo no campo 'documento'.", 400)
         if not arquivo.filename.lower().endswith(tuple(EXTENSOES)):
-            return erro("Envie um arquivo PDF, DOCX, DOC ou TXT.", 400)
+            return erro("Envie um arquivo PDF, DOCX, DOC, TXT ou MD.", 400)
         dados = arquivo.read(TAMANHO_MAX_MB * 1024 * 1024 + 1)
         if len(dados) > TAMANHO_MAX_MB * 1024 * 1024:
             return erro(f"O arquivo passa de {TAMANHO_MAX_MB} MB.", 413)

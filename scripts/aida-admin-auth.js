@@ -3,26 +3,24 @@
    ==========================================================================
 
    Regra: o front-end NUNCA guarda senha e NUNCA decide sozinho quem e admin.
-   Quem decide e o Supabase, atraves do papel gravado no JWT da sessao:
+   Quem decide e o Supabase. O banco so responde como admin quando a sessao:
 
-     - `app_metadata.role === "admin"`  (gravado apenas com a service_role key)
-     - ou `app_metadata.claims_admin === true`
+     - traz `app_metadata.role === "admin"` no JWT (gravado so pela service role);
+     - passou pelo segundo fator TOTP (`aal2`);
+     - pertence a uma conta listada em `public.admin_contas`.
 
-   `app_metadata` nao pode ser alterado pelo proprio usuario nem pelo navegador,
-   e vem assinado dentro do token. Por isso e um sinal confiavel, ao contrario
-   do antigo `localStorage.usuarioTipo`, que qualquer visitante podia forjar
-   pelo console.
+   Ver `docs/migracao-admin-seguro.sql` (funcao `public.e_admin()`).
 
-   A checagem no navegador serve para esconder a interface. A protecao real dos
-   dados fica nas policies de Row Level Security do banco — ver
-   `docs/supabase-admin-setup.sql`.
+   As funcoes abaixo servem para escolher qual tela mostrar. Elas leem o JWT
+   no navegador, entao sao DICA de interface: a protecao real dos dados fica
+   nas policies de Row Level Security e nas funcoes do banco.
    ========================================================================== */
 
 (function () {
   "use strict";
 
-  /* E-mail institucional do administrador. E identificacao, nao credencial:
-     pode ficar publico, pois sozinho nao da acesso a nada. */
+  /* Contato de suporte exibido nas paginas publicas. Nao e a conta que entra
+     no painel: o e-mail administrativo nao e publicado no front-end. */
   const ADMIN_EMAIL_PADRAO = "admin@gmail.com";
 
   function papeisDaSessao(session) {
@@ -82,10 +80,27 @@
     }
   }
 
+  /* Nivel de garantia da sessao: "aal1" (so senha) ou "aal2" (senha + TOTP).
+     `proximo` e "aal2" quando a conta ja tem autenticador cadastrado. */
+  async function nivelGarantia(client) {
+    try {
+      const { data, error } = await client.auth.mfa.getAuthenticatorAssuranceLevel();
+
+      if (error) {
+        return { atual: null, proximo: null };
+      }
+
+      return { atual: data?.currentLevel || null, proximo: data?.nextLevel || null };
+    } catch (erro) {
+      return { atual: null, proximo: null };
+    }
+  }
+
   window.AidaAdminAuth = {
     ADMIN_EMAIL_PADRAO,
     papeisDaSessao,
     sessaoEhAdmin,
     verificarAdmin,
+    nivelGarantia,
   };
 })();

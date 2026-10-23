@@ -28,8 +28,8 @@ def test_admin_nao_publica_accountstates():
 def test_admin_grava_status_no_banco_e_nao_apaga_a_linha():
     assert 'from("usuarios").delete()' not in ADMIN
     assert ".update({ status })" in ADMIN
-    corpo = ADMIN[ADMIN.index("function aplicarAlteracaoConta"):]
-    assert "publicarStatusConta(email" in corpo[:corpo.index("salvarAdminConfig(config)")]
+    corpo = ADMIN[ADMIN.index("async function acaoDoUsuario"):]
+    assert "await publicarStatusConta(email, status)" in corpo[:corpo.index("renderizarTabelaUsuarios()")]
 
 
 def test_painel_funciona_antes_da_migracao():

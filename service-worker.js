@@ -1,5 +1,5 @@
-const STATIC_CACHE = "aida-static-v24";
-const RUNTIME_CACHE = "aida-runtime-v24";
+const STATIC_CACHE = "aida-static-v25";
+const RUNTIME_CACHE = "aida-runtime-v25";
 
 const APP_SHELL = [
   "./",
@@ -24,9 +24,6 @@ const APP_SHELL = [
   "pages/index-analise.html",
   "./styles/style-analise.css",
   "./scripts/script-analise.js",
-  "pages/index-admin.html",
-  "./styles/style-administrador.css",
-  "./scripts/script-administrador.js",
   "pages/index-apresentacao.html",
   "./styles/style-apresentacao.css",
   "./scripts/script-apresentacao.js",
@@ -74,6 +71,12 @@ self.addEventListener("fetch", (event) => {
   }
 
   const requestUrl = new URL(event.request.url);
+
+  // Área administrativa nunca passa pelo cache: dado sensível não fica no
+  // disco do aparelho e uma versão antiga do painel nunca é servida offline.
+  if (/\/(admin|pages\/index-admin)|script-administrador|aida-admin-auth/.test(requestUrl.pathname)) {
+    return;
+  }
   const usarRedePrimeiro =
     event.request.mode === "navigate" ||
     ["script", "style", "font"].includes(event.request.destination) ||

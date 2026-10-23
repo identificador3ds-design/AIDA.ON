@@ -214,6 +214,34 @@ def test_baixar_pncp_um_documento_por_orgao_e_limite_por_formato(tmp_path, monke
     assert "MUNICIPIO A (Jales/SP)" in (tmp_path / "origem.csv").read_text(encoding="utf-8")
 
 
+def test_baixar_querido_diario_um_diario_por_emissor(tmp_path, monkeypatch):
+    from aida_documents import baixar_amostras as b
+
+    base = "https://data.queridodiario.ok.org.br"
+    pagina = {"gazettes": [
+        {"url": f"{base}/2700000/2026-10-01/aaaaaaaaaaaaaaaa.pdf", "date": "2026-10-01",
+         "territory_name": "Arapiraca", "state_code": "AL", "edition": "2901"},
+        {"url": f"{base}/2700000/2026-10-02/bbbbbbbbbbbbbbbb.pdf", "date": "2026-10-02",
+         "territory_name": "Maceió", "state_code": "AL"},  # mesma associacao: pulado
+        {"url": f"{base}/4209102/2026-10-02/cccccccccccccccc.pdf", "date": "2026-10-02",
+         "territory_name": "Joinville", "state_code": "SC"},  # grande demais: pulado
+        {"url": f"{base}/3550308/2026-10-03/dddddddddddddddd.pdf", "date": "2026-10-03",
+         "territory_name": "São Paulo", "state_code": "SP"},
+    ]}
+
+    def baixar(url):
+        if "gazettes" in url:
+            return json.dumps(pagina if "offset=0" in url else {"gazettes": []}).encode()
+        return b"%PDF-1.7 conteudo"
+
+    monkeypatch.setattr(b, "_baixar", baixar)
+    monkeypatch.setattr(b, "_nome_anexo", lambda url: ("", 10**9 if "4209102" in url else 10))
+    b.querido_diario(5, "2026-10-01", "2026-10-03", tmp_path, pausa=0, avisar=lambda *_: None)
+    gravados = sorted(p.name for p in (tmp_path / "reais").iterdir())
+    assert gravados == ["qd-2700000-2026-10-01-aaaaaaaaaaaa.pdf", "qd-3550308-2026-10-03-dddddddddddd.pdf"]
+    assert "Arapiraca/AL; edição 2901" in (tmp_path / "origem.csv").read_text(encoding="utf-8")
+
+
 def test_baixar_safedocs_um_pdf_por_dominio(tmp_path, monkeypatch):
     from aida_documents import baixar_amostras as b
 

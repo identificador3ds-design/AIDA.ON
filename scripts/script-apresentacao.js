@@ -87,11 +87,7 @@ function obterAdminConfig() {
   }
 }
 
-function usuarioEhAdmin() {
-  const tipo = localStorage.getItem("usuarioTipo");
-  const email = (localStorage.getItem("usuarioEmail") || "").trim().toLowerCase();
-  return tipo === "admin" || email === ADMIN_EMAIL;
-}
+
 
 function contaAtualSemAcesso() {
   const email = (localStorage.getItem("usuarioEmail") || "").trim().toLowerCase();
@@ -691,11 +687,7 @@ function setupSiteScrollAnimations() {
   });
 }
 
-function setupTeamControls() {
-  document.querySelectorAll(".icon").forEach((icon, index) => {
-    icon.addEventListener("click", () => changeMember(index));
-  });
-}
+
 
 // O parallax de `.parallax-item` foi removido — e não só por gosto visual.
 //

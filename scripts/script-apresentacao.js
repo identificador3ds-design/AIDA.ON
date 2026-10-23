@@ -3,31 +3,31 @@ const members = [
     name: "Chefe de Documentação.",
     description:
       "Responsável pela documentação técnica do projeto, organizando metodologias, processos de desenvolvimento e relatórios para garantir clareza, replicação e evolução da pesquisa.",
-    image: "../assets/images/group 114.svg",
+    image: "../assets/images/Group 114.svg",
   },
   {
     name: "Líder de metodologia de detecção.",
     description:
       "Responsável pelo desenvolvimento e aplicação de metodologias de detecção de conteúdo gerado ou manipulado por IA, buscando precisão, confiabilidade e inovação nas técnicas utilizadas.",
-    image: "../assets/images/group 108.svg",
+    image: "../assets/images/Group 108.svg",
   },
   {
     name: "Líder de aquisição de dados.",
     description:
       "Responsável pela coleta, organização e preparação dos dados do projeto, garantindo qualidade, diversidade e consistência para testes e análises.",
-    image: "../assets/images/group 110.svg",
+    image: "../assets/images/Group 110.svg",
   },
   {
     name: "Líder do BackEnd.",
     description:
       "Responsável pela coordenação do projeto e pelo desenvolvimento do backend, garantindo organização, integração e funcionamento eficiente da plataforma.",
-    image: "../assets/images/group 112.svg",
+    image: "../assets/images/Group 112.svg",
   },
   {
     name: "Design UI/UX e Líder de FrontEnd.",
     description:
       "Responsável pela coleta, seleção e organização dos dados do projeto, garantindo qualidade, diversidade e consistência para testes e análises.",
-    image: "../assets/images/group 107.svg",
+    image: "../assets/images/Group 107.svg",
   },
 ];
 

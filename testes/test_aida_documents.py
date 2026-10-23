@@ -120,6 +120,37 @@ def test_cnpj_invalido_e_edicao_viram_manipulada():
     assert r["resultado"] == "IA/MANIPULADA"
 
 
+def cnpjs_validos(n):
+    saida = []
+    for base in range(10000000, 10000000 + n):
+        corpo = f"{base:08d}0001"
+        d1 = _dv_mod11(corpo, [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2])
+        d2 = _dv_mod11(corpo + str(d1), [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2])
+        s = corpo + f"{d1}{d2}"
+        saida.append(f"{s[:2]}.{s[2:5]}.{s[5:8]}/{s[8:12]}-{s[12:]}")
+    return saida
+
+
+def test_um_dv_errado_sozinho_fica_inconclusivo():
+    """Diario oficial real (Querido Diario) com um CNPJ digitado errado nao pode virar IA."""
+    r = analisar_bytes(pdf_texto(["EXTRATO DE CONTRATO", "Contratada CNPJ 11.222.333/0001-82"], produtor="Diario Oficial 3.1"))
+    assert [i["indicio"] for i in r["indicios"]] == ["dv_invalido"]
+    assert r["resultado"] == "INCONCLUSIVO"
+
+
+def test_dois_dv_errados_viram_manipulada():
+    r = analisar_bytes(pdf_texto(["CNPJ 11.222.333/0001-82", "CNPJ 11.222.333/0001-83"], produtor="Diario Oficial 3.1"))
+    assert r["resultado"] == "IA/MANIPULADA"
+
+
+def test_poucos_dv_errados_entre_muitos_identificadores_sao_digitacao():
+    linhas = [f"Contratada CNPJ {c}" for c in cnpjs_validos(19)] + ["Contratada CNPJ 11.222.333/0001-82"]
+    r = analisar_bytes(pdf_texto(linhas, produtor="Diario Oficial 3.1"))
+    nomes = [i["indicio"] for i in r["indicios"]]
+    assert nomes == ["dv_invalido_digitado"]
+    assert "1 de 20" in r["indicios"][0]["descricao"]
+
+
 def test_revisao_incremental_detectada():
     from pypdf import PdfWriter
 
@@ -242,6 +273,17 @@ def test_rota_documento_formatos(cliente):
     assert r.status_code == 400
 
 
+def test_assinatura_copiada_de_outro_pdf_nao_e_edicao_nem_prova():
+    """Diario oficial montado juntando atos assinados: o /ByteRange aponta para o PDF original."""
+    pdf = pdf_texto(["DIARIO OFICIAL", "Decreto 1/2026"], produtor="Diario Oficial 3.1")
+    pdf = pdf.replace(b"\n", b"\n%/Type/Sig/ByteRange [0 100 300 50]\n", 1)
+    r = analisar_bytes(pdf)
+    assert r["estrutura"]["assinatura_de_outro_arquivo"] and r["estrutura"]["bytes_apos_assinatura"] == 0
+    nomes = {i["indicio"] for i in r["indicios"]}
+    assert "assinatura_de_outro_arquivo" in nomes and "alterado_apos_assinatura" not in nomes
+    assert r["resultado"] != "REAL"
+
+
 # ---------------------------------------------------------------- PAdES-LTV depois da assinatura
 
 _DSS = (b"\n1059 0 obj\n<</Length 4/Filter/FlateDecode>>stream\nxxxx\nendstream\nendobj\n"
@@ -259,6 +301,9 @@ def test_dss_da_pades_ltv_nao_e_alteracao():
     from aida_documents.estrutura import _so_validacao_ltv
 
     assert _so_validacao_ltv(_DSS)
+    # BRy grava a tabela de referencias como stream /Type/XRef (diario oficial real, set/2026)
+    xref = b"1369 0 obj\n<</Length 37/Root 1 0 R/Type/XRef/Size 1370/W[1 3 0]/Filter/FlateDecode>>stream\nxxxx\nendstream\nendobj\n"
+    assert _so_validacao_ltv(_DSS.replace(b"xref", xref + b"xref"))
 
 
 @pytest.mark.parametrize("extra", [

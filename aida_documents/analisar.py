@@ -30,15 +30,22 @@ MAD_NAO_CONFORME = 0.015
 P_VALOR_BENFORD = 0.01
 DIAS_MODIFICACAO_ALERTA = 1.0
 EXTENSOES_IMAGEM = {".jpg", ".jpeg", ".png", ".webp", ".heic", ".bmp", ".tif", ".tiff"}
+# Muitos CNPJ/CPF e poucos errados: erro de digitacao de documento longo, nao numero inventado.
+MIN_IDS_DIGITACAO = 10
+FRACAO_DIGITACAO = 0.10
 RESSALVA = "Indício técnico, não prova. O AIDA Documents é uma triagem em validação; confirme na fonte (SEFAZ, banco, emissor)."
 
 PESOS = {
     # Manifesto C2PA que se declara IA (ex.: ChatGPT). Sozinho passa do limiar de 0,60.
     "credencial_c2pa_ia": 0.80,
-    "dv_invalido": 0.60,
+    # Um DV errado sozinho nao basta: 5 de 100 diarios oficiais reais (Querido Diario,
+    # out/2026) tinham um CNPJ/CPF digitado errado. Dois ou mais somam ate o limiar.
+    "dv_invalido": 0.45,
     # Em .docx/.txt/.doc o texto e digitado: DV errado pode ser erro de digitacao.
     "dv_invalido_digitado": 0.30,
     "alterado_apos_assinatura": 0.50,
+    # Assinatura copiada de outro PDF: nao assina este arquivo (fraco: juntar atos assinados e comum).
+    "assinatura_de_outro_arquivo": 0.15,
     "revisoes_incrementais": 0.30,
     "ferramenta_edicao": 0.30,
     "ferramenta_escritorio": 0.10,
@@ -128,11 +135,17 @@ def analisar_bytes(dados: bytes, nome="documento.pdf"):
     if c2pa["presente"] and c2pa["declara_ia"]:
         quem = " / ".join(x for x in (c2pa["gerador"], c2pa["modelo"]) if x) or "gerador não identificado"
         indicio("credencial_c2pa_ia", f"credencial de conteúdo (C2PA) declara: {c2pa['origem_declarada']} ({quem})")
+    erros_dv = [a for a in ids["alertas"] if "dígito verificador" in a]
+    total_ids = ids["cnpjs"] + ids["cpfs"]
+    erro_isolado = formato == "pdf" and total_ids >= MIN_IDS_DIGITACAO and len(erros_dv) <= total_ids * FRACAO_DIGITACAO
     for alerta in ids["alertas"]:
-        if formato == "pdf":
-            indicio("dv_invalido", alerta)
-        else:
+        if formato != "pdf":
             indicio("dv_invalido_digitado", f"{alerta} (num arquivo digitado pode ser erro de digitação)")
+        elif not (erro_isolado and alerta in erros_dv):
+            indicio("dv_invalido", alerta)
+    if erro_isolado and erros_dv:
+        indicio("dv_invalido_digitado", f"{len(erros_dv)} de {total_ids} CNPJ/CPF com dígito errado ({erros_dv[0]}): "
+                                        "proporção de erro de digitação num documento com muitos identificadores")
     for ferramenta in est.get("ferramentas_edicao", []):
         if ferramenta.startswith(_PROGRAMACAO):
             indicio("gerador_programatico", f"montado por {ferramenta}: comum em documento feito por script ou IA")
@@ -168,7 +181,8 @@ def analisar_bytes(dados: bytes, nome="documento.pdf"):
     # digital intacta e a chave de acesso valida, que pode ser conferida na SEFAZ. So no
     # PDF: um .docx ou .txt qualquer pessoa escreve, com a chave que quiser.
     if formato == "pdf":
-        assinatura_intacta = bool(est["assinaturas"]) and not est["bytes_apos_assinatura"]
+        assinatura_intacta = (bool(est["assinaturas"]) and not est["bytes_apos_assinatura"]
+                              and not est.get("assinatura_de_outro_arquivo"))
         chave_ok = ids["chaves_acesso"] > 0 and not any("chave" in a for a in ids["alertas"])
         origem_verificavel = assinatura_intacta or chave_ok
     else:
@@ -219,6 +233,9 @@ def _indicios_pdf(est, indicio):
         indicio("gerador_programatico", "montado por Chromium rodando em servidor (Puppeteer/Playwright): comum em sistema web ou IA")
     if est["bytes_apos_assinatura"] > 0:
         indicio("alterado_apos_assinatura", f"{est['bytes_apos_assinatura']} bytes acrescentados depois da assinatura digital")
+    if est.get("assinatura_de_outro_arquivo"):
+        indicio("assinatura_de_outro_arquivo", "assinatura(s) digital(is) copiada(s) de outro PDF: não assinam este arquivo "
+                                               "(comum em diário oficial que junta atos assinados)")
     # O manifesto C2PA entra no PDF como revisao incremental: essa nao e edicao.
     # O DSS da PAdES-LTV tambem entra como revisao depois da assinatura: nao e edicao.
     edicoes = (est["revisoes"] - 1 - est["assinaturas"] - int(est["c2pa"]["presente"])

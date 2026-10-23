@@ -22,8 +22,8 @@ Dependências: `pypdf` e `numpy` (já estão no projeto). `reportlab` só nos te
 |---|---|---|---|
 | Formatos | `office.py`, `texto_puro.py` | ver a tabela "Outros formatos" abaixo | — |
 | Credencial C2PA | `proveniencia.py` | manifesto C2PA embutido que declara origem por IA (`trainedAlgorithmicMedia`), com gerador e modelo; a assinatura não é verificada | 0,80 |
-| Identificadores | `numeros.py` | DV de CNPJ (inclusive o alfanumérico), CPF e chave de acesso NF-e/NFC-e; UF, mês e modelo da chave; CNPJ do emitente da chave presente no documento | 0,60 |
-| Assinatura | `estrutura.py` | bytes acrescentados depois do trecho coberto pelo `/ByteRange` | 0,50 |
+| Identificadores | `numeros.py` | DV de CNPJ (inclusive o alfanumérico), CPF e chave de acesso NF-e/NFC-e; UF, mês e modelo da chave; CNPJ do emitente da chave presente no documento. Um DV errado sozinho fica `INCONCLUSIVO`; dois ou mais somam até `IA/MANIPULADA`; poucos errados (até 10 %) entre 10 ou mais identificadores contam como digitação (0,30, uma vez) | 0,45 |
+| Assinatura | `estrutura.py` | bytes acrescentados depois do trecho coberto pelo `/ByteRange` (0,50); assinatura copiada de outro PDF, cujo `/ByteRange` não termina em nenhum `%%EOF` deste arquivo (0,15) | 0,50 / 0,15 |
 | Sem camada de texto | `estrutura.py` | páginas só com imagem (print, foto, montagem) | 0,35 / 0,20 |
 | Revisões incrementais | `estrutura.py` | seções `%%EOF` com objetos novos (ignora o trailer vazio do Word e a linearização) | 0,30 |
 | Ferramenta | `estrutura.py` | Producer/Creator de editor online ou de imagem (0,30), biblioteca de programação como ReportLab/FPDF/jsPDF (0,15), escritório ou impressora virtual (0,10) | 0,30 / 0,15 / 0,10 |
@@ -84,6 +84,31 @@ Segundo teste, com reais **brasileiros** que nunca tinham passado pelo AIDA: 40 
   e ela deixa de contar como alteração e como revisão. Os dois passaram a sair `REAL`
   (assinatura intacta). Edição de verdade depois da assinatura continua sendo pega (testes).
 - Os 2 % são o número honesto antes da correção; depois dela, 0 nesses mesmos 99.
+
+## Diários oficiais do Querido Diário (23/10)
+
+`... queridodiario --inicio AAAA-MM-DD --fim AAAA-MM-DD` baixa diários oficiais municipais
+pela API pública do Querido Diário (Open Knowledge Brasil), um por emissor (município ou
+associação de municípios). A API mudou para `api.queridodiario.org.br` e recusa o agente
+padrão do Python: o baixador se identifica como `AIDA-Documents/1.0`.
+
+100 diários de set–out/2026 (mPDF, XeTeX, Adobe, Word, BRy Signer, pyHanko...):
+
+- **6 falsos positivos em 100 (6 %)** na primeira passada, o pior número até agora. Diário
+  oficial é documento longo, digitado por gente e montado juntando atos.
+- 5 eram **DV errado de verdade**: CNPJ/CPF digitado errado num documento real (1 em 17,
+  4 em 89, ou o único CNPJ do diário). Com 0,60 um só DV errado já dava `IA/MANIPULADA`.
+  Agora pesa 0,45 (dois ou mais somam até o limiar) e, com 10 ou mais identificadores e
+  até 10 % errados, conta como digitação (0,30, uma vez). Os 2 PDFs do Gemini com CPF
+  inventado continuam `IA/MANIPULADA` (0,30 + 0,45 = 0,615).
+- 1 era **PAdES-LTV da BRy** não reconhecida: a tabela de referências vem em stream
+  `/Type/XRef`, que agora é aceito como estrutura.
+- 1 tinha **5 assinaturas copiadas de outros PDFs** (cada ato assinado e depois juntado):
+  nenhum `/ByteRange` termina num `%%EOF` do arquivo. Não é edição depois da assinatura;
+  vira o indício fraco `assinatura_de_outro_arquivo` (0,15) e não comprova origem.
+- Depois: **2 em 100** nesses mesmos diários (ajustado neles, então otimista). Os dois
+  somam indícios moderados de juntada (fonte duplicada, Benford, um DV errado). PNCP,
+  SAFEDOCS e NapierOne continuam com 0.
 
 ## Gemini (21/10)
 

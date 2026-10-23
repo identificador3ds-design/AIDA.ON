@@ -72,7 +72,7 @@ _OBJETO_COM_DICT = re.compile(rb"(\d+)\s+\d+\s+obj\s*<<(.*?)(?:>>\s*stream|>>\s*
 _REFERENCIA = re.compile(rb"(\d+)\s+0\s+R")
 _OBJETO_ARRAY = re.compile(rb"(\d+)\s+\d+\s+obj\s*\[(.*?)\]\s*endobj", re.S)
 # O que uma atualizacao de validacao (PAdES-LTV) pode trazer depois da assinatura.
-_TIPOS_LTV = {b"DSS", b"VRI", b"Catalog", b"Pages", b"Metadata", b"Sig", b"DocTimeStamp"}
+_TIPOS_LTV = {b"DSS", b"VRI", b"Catalog", b"Pages", b"Metadata", b"Sig", b"DocTimeStamp", b"XRef"}  # XRef: tabela de referencias em stream (BRy)
 # Pagina, anotacao, imagem, fonte ou formulario novos depois da assinatura = conteudo
 # mudou. "\b" separa /Page de /Pages (o /Pages regravado aponta para as mesmas paginas).
 _CONTEUDO = re.compile(rb"/Type\s*/(Page|Annot|Font)\b|/Subtype\s*/(Image|Form)\b|/Annots\b")
@@ -204,7 +204,13 @@ def inspecionar_pdf(dados: bytes, max_paginas=30):
     cobertura = max((c + d for _, _, c, d in assinaturas), default=None)
     bytes_apos_assinatura = max(0, fim_util - cobertura) if cobertura else 0
     validacao_ltv = bool(bytes_apos_assinatura) and _so_validacao_ltv(dados[cobertura:])
-    if validacao_ltv:
+    # Toda assinatura valida termina no fim de uma revisao (%%EOF). Se nenhuma termina, os
+    # dicionarios vieram de outros PDFs (diario oficial montado juntando atos assinados):
+    # nao assinam este arquivo, nem houve edicao depois deles.
+    fins_revisao = [m.end() for m in re.finditer(rb"%%EOF", dados)]
+    assinatura_de_outro_arquivo = bool(assinaturas) and not any(
+        0 <= c + d - fim <= 2 for _, _, c, d in assinaturas for fim in fins_revisao)
+    if validacao_ltv or assinatura_de_outro_arquivo:
         bytes_apos_assinatura = 0
 
     produtor = _meta(reader, "/Producer", "producer") or ""
@@ -239,6 +245,7 @@ def inspecionar_pdf(dados: bytes, max_paginas=30):
         "linearizado": linearizado,
         "assinaturas": len(assinaturas),
         "bytes_apos_assinatura": bytes_apos_assinatura,
+        "assinatura_de_outro_arquivo": assinatura_de_outro_arquivo,
         "validacao_ltv_apos_assinatura": validacao_ltv,
         "produtor": produtor,
         "criador": criador,

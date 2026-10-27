@@ -860,7 +860,7 @@ section {
 
 .team-big-name {
   margin-bottom: 18px;
-  font-size: clamp(1.5rem, 8vw, 7rem);
+  font-size: clamp(1rem, 8vw, 3rem);
   line-height: 0.9;
   color: #2DAFA1;
 }

@@ -36,6 +36,16 @@
       "permanent": false
     },
     {
+      "source": "/index-:pagina",
+      "destination": "/pages/index-:pagina",
+      "permanent": false
+    },
+    {
+      "source": "/solucao-:pagina",
+      "destination": "/pages/solucao-:pagina",
+      "permanent": false
+    },
+    {
       "source": "/forense",
       "destination": "/forensics",
       "permanent": false

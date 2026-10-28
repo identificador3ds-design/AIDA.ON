@@ -205,60 +205,24 @@ function arquivoParaDataUrl(arquivo) {
 const EXTENSOES_SEM_PREVIA_NO_NAVEGADOR = ["heic", "heif", "tif", "tiff"];
 const EXTENSOES_HEIC = ["heic", "heif"];
 
-// Decodificador HEIC em JS (libheif compilado), ~1,3 MB. Só é baixado quando o
-// usuário escolhe um .heic, por isso nao entra como <script> fixo no HTML. O
-// hash SRI segue o mesmo padrao dos outros CDNs da pagina.
-const HEIC2ANY_URL = "https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js";
-const HEIC2ANY_SRI = "sha384-OTofQ0MEeiSgh62havBcemCIK0gqj809wX6UA0uPISNMRnR6NZyCdGzX3SbLrgwL";
-let carregamentoHeic2any = null;
-
-function carregarHeic2any() {
-  if (window.heic2any) return Promise.resolve(window.heic2any);
-  if (carregamentoHeic2any) return carregamentoHeic2any;
-
-  carregamentoHeic2any = new Promise((resolve, reject) => {
-    const script = document.createElement("script");
-    script.src = HEIC2ANY_URL;
-    script.integrity = HEIC2ANY_SRI;
-    script.crossOrigin = "anonymous";
-    script.referrerPolicy = "no-referrer";
-    script.onload = () => {
-      if (window.heic2any) resolve(window.heic2any);
-      else reject(new Error("heic2any carregou mas nao expos a funcao global."));
-    };
-    script.onerror = () => {
-      // Sem cache da falha: se a rede oscilou, a proxima troca de imagem tenta de novo.
-      carregamentoHeic2any = null;
-      reject(new Error("Nao foi possivel baixar o decodificador HEIC."));
-    };
-    document.head.appendChild(script);
-  });
-  return carregamentoHeic2any;
-}
-
-// Converte o HEIC para um JPEG *só de exibição* e devolve uma object URL. O
-// `File` original nao e tocado: `imagemAtual` continua sendo o .heic e e ele
-// que vai para a API. Qualidade baixa de proposito — e uma miniatura.
+// Converte o HEIC para um JPEG *só de exibição* (data URL) com o modulo
+// compartilhado `AidaPreviaHeic` (libheif em WASM, num worker). O `File`
+// original nao e tocado: `imagemAtual` continua sendo o .heic e e ele que vai
+// para a API. Se a tela de selecao ja converteu, a previa vem do sessionStorage.
+//
+// O heic2any usado antes nunca funcionou em producao: ele faz `eval` dentro do
+// worker, que o CSP bloqueia, e a promise ficava pendurada para sempre. O WASM
+// so precisa de 'wasm-unsafe-eval', que nao libera eval de JavaScript.
 async function converterHeicParaPrevia(arquivo) {
-  const heic2any = await carregarHeic2any();
-  const resultado = await heic2any({ blob: arquivo, toType: "image/jpeg", quality: 0.7 });
-  // Um HEIC pode conter varias imagens (burst/live photo); a primeira e a principal.
-  const blob = Array.isArray(resultado) ? resultado[0] : resultado;
-  return URL.createObjectURL(blob);
-}
-
-// Object URL da ultima previa convertida, para liberar memoria na troca. Contador
-// de versao: se o usuario trocar de imagem no meio de uma conversao lenta, o
-// resultado atrasado e descartado em vez de sobrescrever a previa nova.
-let previaObjectUrl = null;
-let versaoPrevia = 0;
-
-function liberarPreviaConvertida() {
-  if (previaObjectUrl) {
-    URL.revokeObjectURL(previaObjectUrl);
-    previaObjectUrl = null;
+  if (!window.AidaPreviaHeic) {
+    throw new Error("Modulo de previa HEIC nao carregado.");
   }
+  return window.AidaPreviaHeic.gerar(arquivo);
 }
+
+// Contador de versao: se o usuario trocar de imagem no meio de uma conversao
+// lenta, o resultado atrasado e descartado em vez de sobrescrever a previa nova.
+let versaoPrevia = 0;
 
 function extensaoDe(nome) {
   return (nome || "").split(".").pop()?.toLowerCase() || "";
@@ -325,7 +289,6 @@ function mostrarImagem(dataUrl) {
   }
 
   const extensao = extensaoDe(nomeOriginal);
-  liberarPreviaConvertida();
   previaDataUrl = dataUrl;
   previaExtensao = extensao;
   aplicarPrevia(imagemPreview, dataUrl, extensao);
@@ -371,12 +334,8 @@ async function gerarPreviaHeic(arquivo, extensao) {
   }
 
   // O usuario trocou de imagem enquanto convertiamos: descarta o resultado.
-  if (versao !== versaoPrevia) {
-    URL.revokeObjectURL(url);
-    return;
-  }
+  if (versao !== versaoPrevia) return;
 
-  previaObjectUrl = url;
   previaDataUrl = url;
   // A previa agora e um JPEG comum: "jpg" faz `aplicarPrevia` e a miniatura do
   // loading seguirem o caminho normal de exibicao.

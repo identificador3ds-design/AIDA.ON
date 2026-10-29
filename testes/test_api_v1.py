@@ -170,6 +170,25 @@ def test_sem_autenticacao_configurada_responde_503_e_nao_libera(cliente, monkeyp
     assert resposta.get_json()["error"]["code"] == "auth_unavailable"
 
 
+def test_chave_dev_nao_vale_quando_o_supabase_esta_configurado(cliente, monkeypatch):
+    # AIDA_API_DEV_KEYS esquecida no deploy de producao nao pode abrir a API:
+    # a chave de exemplo do README seria um acesso publico.
+    monkeypatch.setattr(config, "SUPABASE_URL", "https://exemplo.supabase.co")
+    monkeypatch.setattr(config, "SUPABASE_SERVICE_ROLE_KEY", "service-role")
+
+    class RespostaVazia:
+        status_code = 200
+
+        @staticmethod
+        def json():
+            return []
+
+    monkeypatch.setattr(chaves_api.requests, "get", lambda *a, **k: RespostaVazia())
+    resposta = enviar(cliente)
+    assert resposta.status_code == 401
+    assert resposta.get_json()["error"]["code"] == "invalid_key"
+
+
 # --------------------------------------------------------------------------- #
 # Analise
 # --------------------------------------------------------------------------- #

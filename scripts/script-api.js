@@ -11,7 +11,8 @@
 (function () {
   "use strict";
 
-  var API_V1_PADRAO = "https://aidaon-aida-api.hf.space";
+  // A camada /v1 roda no Space aida-borda-api; o aida-api e o Core, sem /v1.
+  var API_V1_PADRAO = "https://aidaon-aida-borda-api.hf.space";
   var base = String(window.AIDA_API_V1_BASE || API_V1_PADRAO).replace(/\/+$/, "");
 
   var caixa = document.getElementById("apiStatus");
@@ -39,7 +40,9 @@
       var corpo = r.corpo || {};
       // /v1/health responde 200 com status "ok" e 503 com "degraded" (aida_api/app.py).
       if (r.ok && corpo.status === "ok") {
-        var latencia = corpo.core && (corpo.core.latency_ms || corpo.core.latencia_ms);
+        // /v1/health informa a latencia do Core em segundos (aida_api/core.py).
+        var segundos = corpo.core && corpo.core.latency_seconds;
+        var latencia = typeof segundos === "number" ? segundos * 1000 : null;
         estado("sucesso", "API no ar",
           "O serviço respondeu agora" + (latencia ? " (Core em " + Math.round(latencia) + " ms)" : "") +
           ". Com uma chave, você já pode integrar.");

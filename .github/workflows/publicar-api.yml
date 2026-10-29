@@ -1,0 +1,91 @@
+# Publica a AIDA API (/v1) no Space AIDAON/aida-borda-api.
+#
+# Roda sozinho quando aida_api/ muda na main, ou manualmente em Actions >
+# "Publicar AIDA API" > Run workflow. Precisa do segredo HF_TOKEN no
+# repositorio (token do Hugging Face com permissao de escrita no Space).
+#
+# Os segredos da API (SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY,
+# AIDA_CHAVE_INTERNA) ficam no proprio Space, em Settings > Variables and
+# secrets — nunca aqui.
+
+name: Publicar AIDA API
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "aida_api/**"
+      - ".github/workflows/publicar-api.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publicar-api
+  cancel-in-progress: false
+
+jobs:
+  testes:
+    name: Testes da API
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: |
+            aida_video/requirements.txt
+            aida_api/requirements.txt
+      - name: Dependências
+        # conftest.py importa aida_audio/aida_video, por isso o requirements do video.
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r aida_video/requirements.txt -r aida_api/requirements.txt
+      - name: pytest
+        run: python -m pytest -o addopts="" -q testes/test_api_v1.py
+
+  publicar:
+    name: Enviar para o Hugging Face
+    needs: testes
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Montar a raiz do Space
+        run: |
+          mkdir -p space
+          cp aida_api/deploy/Dockerfile aida_api/deploy/README.md space/
+          cp -r aida_api space/aida_api
+          rm -rf space/aida_api/deploy space/aida_api/.env*
+          find space -name "__pycache__" -prune -exec rm -rf {} +
+          find space -type f | sort
+      - name: Upload
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          test -n "$HF_TOKEN" || { echo "::error::Segredo HF_TOKEN ausente."; exit 1; }
+          pip install --quiet "huggingface_hub>=0.25"
+          python - <<'PY'
+          import os
+          from huggingface_hub import HfApi
+
+          HfApi(token=os.environ["HF_TOKEN"]).upload_folder(
+              repo_id="AIDAON/aida-borda-api",
+              repo_type="space",
+              folder_path="space",
+              # Remove os .py soltos da versao antiga do Space (copiados a mao).
+              # Os arquivos enviados neste commit nao sao apagados.
+              delete_patterns=["*.py", "*.txt", ".env.example"],
+              commit_message=f"Deploy {os.environ['GITHUB_SHA'][:7]} via GitHub Actions",
+          )
+          PY
+      - name: Conferir
+        run: |
+          echo "Space reconstruindo; confira em alguns minutos:"
+          echo "https://aidaon-aida-borda-api.hf.space/v1/health"

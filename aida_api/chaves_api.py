@@ -5,8 +5,9 @@ vez, no momento da emissao — perdeu, emite outra. Um vazamento da tabela
 `api_keys` nao entrega nenhuma chave utilizavel.
 
 Sem Supabase configurado, a borda aceita chaves de desenvolvimento vindas de
-AIDA_API_DEV_KEYS. Isso e para rodar local; em producao, o modo e supabase e a
-ausencia das variaveis derruba a rota com 503 em vez de abrir a porta.
+AIDA_API_DEV_KEYS. Isso e para rodar local; em producao, o modo e supabase, as
+chaves de desenvolvimento sao ignoradas e a ausencia das variaveis derruba a
+rota com 503 em vez de abrir a porta.
 """
 
 from __future__ import annotations
@@ -141,7 +142,11 @@ def validar_chave(chave):
     if not chave:
         return None
 
-    if config.CHAVES_DEV:
+    # Com Supabase configurado (producao), AIDA_API_DEV_KEYS e ignorada: a chave
+    # de exemplo do README esquecida no deploy viraria acesso publico sem cota
+    # de plano. Sem Supabase, a lista local e a unica fonte: chave fora dela e
+    # chave invalida (401), nao servidor mal configurado (503).
+    if config.CHAVES_DEV and not config.supabase_configurado():
         if chave in config.CHAVES_DEV:
             return {
                 "prefixo": prefixo_de(chave),
@@ -151,11 +156,7 @@ def validar_chave(chave):
                 "revogada": False,
                 "origem": "dev",
             }
-        # Com chaves de desenvolvimento e sem Supabase, a lista local e a
-        # unica fonte: chave fora dela e chave invalida (401), nao servidor
-        # mal configurado (503).
-        if not config.supabase_configurado():
-            return None
+        return None
 
     _exigir_supabase()
 

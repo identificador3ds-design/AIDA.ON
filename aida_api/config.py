@@ -34,7 +34,7 @@ def _bool(nome, padrao=False):
 # --- Camada 03: onde vive o Core ------------------------------------------- #
 # O Core e o Space no Hugging Face (porta 7860). O Flask antigo em
 # aida_modelo/site_api/app.py responde em dois estados e nao conhece
-# INCONCLUSIVO: apontar para ele quebraria o contrato de tres estados.
+# INCONCLUSIVO nem REAL_EDITADA: apontar para ele quebraria o contrato /v1.
 CORE_URL = os.environ.get("AIDA_CORE_URL", "https://aidaon-aida-api.hf.space").rstrip("/")
 CORE_TIMEOUT_S = _float("AIDA_CORE_TIMEOUT_S", 180.0)
 

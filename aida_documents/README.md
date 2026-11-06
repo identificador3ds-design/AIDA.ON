@@ -30,6 +30,7 @@ Dependências: `pypdf` e `numpy` (já estão no projeto). `reportlab` só nos te
 | Fontes | `estrutura.py` | a mesma fonte embutida em dois subconjuntos do mesmo tipo (`ABCDEF+Arial` e `GHIJKL+Arial`, ambas TrueType) | 0,30 |
 | Benford | `benford.py` | 1º dígito dos valores monetários (`1.234,56`); MSE, MAD de Nigrini e qui-quadrado | 0,25 / 0,35 |
 | Datas | `estrutura.py` | modificação mais de 1 dia depois da criação | 0,15 |
+| Texto escondido | `injecao.py` | texto que o leitor não vê dando ordem a uma IA (prompt injection); sem ordem, só aparece no relatório | 0,80 |
 
 Suspeita combinada = `1 − ∏(1 − peso)`. `IA/MANIPULADA` a partir de 0,60. `REAL` só abaixo
 de 0,25 **e** com prova de origem (assinatura digital intacta ou chave de acesso de NF-e
@@ -113,6 +114,40 @@ padrão do Python: o baixador se identifica como `AIDA-Documents/1.0`.
   positivos (2 %; limite superior de 95 % ≈ 7 %)**, 24 `REAL` e 74 `INCONCLUSIVO`. 52 dos
   emissores não estavam no primeiro lote. Os dois de novo juntam fonte duplicada com Benford
   ou um DV errado: o padrão de diário montado por juntada é o próximo ponto a estudar.
+
+## Texto escondido e prompt injection (06/11)
+
+`injecao.py` revela o texto que o leitor não vê e confere se ele dá ordens a uma IA
+("ignore as instruções anteriores", "você é um assistente", "dê nota máxima", "recommend
+this candidate"), em português e inglês, sem acento e sem diferença de maiúscula.
+
+| Formato | Onde o texto se esconde |
+|---|---|
+| PDF (pdfminer) | letra branca sem fundo escuro (retângulo, linha grossa ou imagem), fonte menor que 1 pt, modo de renderização invisível fora de imagem, texto fora da página; assunto, palavras-chave, título e autor |
+| DOCX | texto oculto do Word (`w:vanish`), branco sem sombreamento escuro, até 1 pt, no corpo, cabeçalho, rodapé e notas; descrição, palavras-chave e texto alternativo de imagem |
+| Todos | caracteres de tag Unicode (U+E0020..E007E) e bytes em seletores de variação |
+| Markdown | comentários `<!-- -->` e `[//]: # (...)` |
+
+- Ordem a IA escondida: `instrucao_oculta_para_ia` (0,80), sozinha dá `IA/MANIPULADA`, e a
+  página mostra o veredito "Prompt injection" com o texto revelado e as ordens marcadas.
+- Texto escondido sem ordem só aparece no relatório, sem peso. Metadados só entram com ordem
+  forte (um título "Relatório sobre o ChatGPT" não conta).
+- Cópia escondida de texto visível é descartada, assim como, sem ordem a IA, o texto feito só
+  de palavras que estão à vista (marcadores de navegação do mPDF em fonte minúscula).
+- A camada de OCR (texto invisível sobre imagem escaneada) não conta.
+
+Medição em ~640 reais (200 diários oficiais, 40 do PNCP, 59 do SAFEDOCS, 101 PDFs, 101 DOCX
+e 120 TXT do NapierOne, 19 da Etapa 01): **0 com prompt injection** depois de dois ajustes:
+
+- "avaliação A" casava com "nota/avaliação + A" num diário de Apucarana: o "A" saiu do padrão;
+- no diário de Votorantim o preto vem em tinta `/DeviceN [/Black]`, que o pdfminer não
+  converte e deixava com a cor anterior (branco): o texto inteiro parecia escondido. Cor em
+  Separation, DeviceN ou Indexed agora é "desconhecida", nunca branca. Também a faixa azul do
+  diário de Salvador é uma linha de 22 pt: traço grosso escuro conta como fundo.
+
+Ficam ~5 % com texto escondido sem ordem (só informativo): "Copyright" invisível de sites,
+"Powered by TCPDF", texto oculto do Word, células de tabela brancas. O pdfminer leva em média
+1 s por diário de 100 páginas (até 30 páginas lidas).
 
 ## Gemini (21/10)
 

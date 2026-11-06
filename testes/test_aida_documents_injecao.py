@@ -170,6 +170,35 @@ def test_ordem_nos_metadados_do_pdf():
     assert [t["local"] for t in o["trechos"]] == ["metadados (assunto)"] and o["injecao"]
 
 
+def pdf_manual(conteudo: bytes, recursos: bytes) -> bytes:
+    """PDF de uma pagina com o fluxo de conteudo dado (xref com os deslocamentos certos)."""
+    objetos = [
+        b"<< /Type /Catalog /Pages 2 0 R >>",
+        b"<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
+        b"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Contents 4 0 R /Resources " + recursos + b" >>",
+        b"<< /Length %d >>\nstream\n" % len(conteudo) + conteudo + b"\nendstream",
+        b"<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>",
+    ]
+    saida, posicoes = bytearray(b"%PDF-1.7\n"), []
+    for i, corpo in enumerate(objetos, 1):
+        posicoes.append(len(saida))
+        saida += b"%d 0 obj\n" % i + corpo + b"\nendobj\n"
+    inicio = len(saida)
+    saida += b"xref\n0 %d\n0000000000 65535 f \n" % (len(objetos) + 1)
+    saida += b"".join(b"%010d 00000 n \n" % p for p in posicoes)
+    saida += b"trailer\n<< /Size %d /Root 1 0 R >>\nstartxref\n%d\n%%%%EOF\n" % (len(objetos) + 1, inicio)
+    return bytes(saida)
+
+
+def test_preto_em_tinta_devicen_nao_vira_branco():
+    """Diario de Votorantim: branco em CMYK e depois preto em /DeviceN [/Black] com '1 scn'.
+    O pdfminer nao converte a tinta e mantinha o branco: o texto inteiro parecia escondido."""
+    recursos = (b"<< /Font << /F1 5 0 R >> /ColorSpace << /CS0 [/DeviceN [/Black] /DeviceCMYK "
+                b"<< /FunctionType 2 /Domain [0 1] /C0 [0 0 0 0] /C1 [0 0 0 1] /N 1 >>] >> >>")
+    conteudo = b"0 0 0 0 k /CS0 cs 1 scn BT /F1 12 Tf 50 700 Td (Portaria numero 23.418 de agosto) Tj ET"
+    assert analisar_bytes(pdf_manual(conteudo, recursos))["conteudo_oculto"]["trechos"] == []
+
+
 # ---------------------------------------------------------------- DOCX
 
 _DOC = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'

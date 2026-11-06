@@ -35,6 +35,7 @@ MAX_TRECHOS = 20
 MIN_LETRAS = 4  # trecho escondido com menos letras e ruido (espaco branco, marcador)
 FONTE_MINUSCULA = 1.0  # pt
 CLARO = 0.95  # componente de cor a partir do qual a letra e "branca"
+TINTAS = {"Separation", "DeviceN", "Indexed"}  # cor que o pdfminer nao converte: desconhecida
 TRACO_FUNDO = 2.0  # pt: linha mais grossa que isso e faixa de fundo (diario de Salvador: 22 pt)
 
 # ------------------------------------------------------------------ comandos a IA
@@ -57,7 +58,7 @@ _FORTES = [re.compile(p) for p in (
     r"\b(instrucoes|orientacoes|comandos) (anteriores|acima|previas|dadas)\b",
     r"\bvoce (e|agora e) (um|uma) (ia|inteligencia artificial|assistente|modelo|chatbot|robo)\b",
     r"\bcomo (uma )?(ia|inteligencia artificial|modelo de linguagem|assistente virtual)\b",
-    r"\b(nota|avaliacao|conceito) (maxima|maximo|10|dez|maxima possivel|excelente|a)\b",
+    r"\b(nota|avaliacao|conceito) (maxima|maximo|10|dez|maxima possivel)\b",
     r"\b(parecer|avaliacao) (favoravel|positiv[ao])\b",
     r"\b(aprove|aprovar|aprova|recomende|recomendar|recomenda|contrate|contratar|selecione|classifique)\b.{0,40}\b(candidat[oa]|trabalho|documento|alun[oa]|projeto|artigo|proposta|curriculo)\b",
     r"\bnao (mencione|revele|informe|cite|aponte|comente|destaque)\b",
@@ -188,6 +189,8 @@ def _paginas_pdfminer(dados, max_paginas):
     from pdfminer.converter import PDFLayoutAnalyzer
     from pdfminer.pdfinterp import PDFPageInterpreter, PDFResourceManager
     from pdfminer.pdfpage import PDFPage
+    from pdfminer.pdftypes import dict_value, resolve1
+    from pdfminer.psparser import PSLiteral, literal_name
 
     class Coletor(PDFLayoutAnalyzer):
         """Guarda cada letra com o modo de renderizacao (o LTChar do pdfminer nao guarda)."""
@@ -209,9 +212,50 @@ def _paginas_pdfminer(dados, max_paginas):
         def receive_layout(self, ltpage):
             self.paginas.append(ltpage)
 
+    class Interpretador(PDFPageInterpreter):
+        """Cor em espaco de tinta (Separation, DeviceN, Indexed) vira desconhecida (None).
+        O pdfminer nao converte essas tintas e guarda a cor anterior: no diario de
+        Votorantim o preto vem em /DeviceN [/Black] e todo o texto parecia branco."""
+
+        def init_resources(self, resources):
+            super().init_resources(resources)
+            self.familias = {}
+            for nome, spec in dict_value((resources or {}).get("ColorSpace", {})).items():
+                spec = resolve1(spec)
+                primeiro = resolve1(spec[0]) if isinstance(spec, list) and spec else spec
+                self.familias[nome] = literal_name(primeiro) if isinstance(primeiro, PSLiteral) else ""
+
+        def _incerta(self, nome):
+            return self.familias.get(literal_name(nome) if isinstance(nome, PSLiteral) else nome) in TINTAS
+
+        def do_cs(self, name):
+            super().do_cs(name)
+            if self._incerta(name):
+                self.graphicstate.ncolor = None
+
+        def do_CS(self, name):
+            super().do_CS(name)
+            if self._incerta(name):
+                self.graphicstate.scolor = None
+
+        def do_scn(self):
+            incerta = self.graphicstate.ncolor is None
+            super().do_scn()
+            if incerta:
+                self.graphicstate.ncolor = None
+
+        def do_SCN(self):
+            incerta = self.graphicstate.scolor is None
+            super().do_SCN()
+            if incerta:
+                self.graphicstate.scolor = None
+
+        do_sc = do_scn
+        do_SC = do_SCN
+
     gerenciador = PDFResourceManager()
     coletor = Coletor(gerenciador)
-    interpretador = PDFPageInterpreter(gerenciador, coletor)
+    interpretador = Interpretador(gerenciador, coletor)
     for numero, pagina in enumerate(PDFPage.get_pages(io.BytesIO(dados)), 1):
         if numero > max_paginas:
             break
@@ -431,10 +475,24 @@ def _so_letras(texto):
     return "".join(c for c in _simples(texto)[0] if c.isalnum())
 
 
+def _palavras(texto):
+    separado = re.sub(r"(?<=[a-zà-ÿ])(?=[A-ZÀ-Þ])", " ", texto)  # "ExecutivoLeis" -> "Executivo Leis"
+    return {_so_letras(p) for p in re.findall(r"[^\W\d_]{3,}", separado)}
+
+
 def _sem_copia_do_visivel(trechos, visivel):
-    """Descarta o texto escondido que tambem aparece visivel (marcador de navegacao, indice)."""
-    visivel = _so_letras(visivel)
-    return [t for t in trechos if _so_letras(t["texto"]) not in visivel]
+    """Descarta o texto escondido que tambem aparece visivel: copia exata, ou, sem comando a
+    IA, so palavras que estao a vista (marcador do mPDF que junta dois titulos da pagina)."""
+    letras, palavras = _so_letras(visivel), _palavras(visivel)
+    mantidos = []
+    for t in trechos:
+        if _so_letras(t["texto"]) in letras:
+            continue
+        proprias = _palavras(t["texto"])
+        if proprias and proprias <= palavras and not instrucoes_para_ia(t["texto"]):
+            continue
+        mantidos.append(t)
+    return mantidos
 
 
 def _fundir(trechos):

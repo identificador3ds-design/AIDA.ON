@@ -22,14 +22,15 @@ Dependências: `pypdf` e `numpy` (já estão no projeto). `reportlab` só nos te
 |---|---|---|---|
 | Formatos | `office.py`, `texto_puro.py` | ver a tabela "Outros formatos" abaixo | — |
 | Credencial C2PA | `proveniencia.py` | manifesto C2PA embutido que declara origem por IA (`trainedAlgorithmicMedia`), com gerador e modelo; a assinatura não é verificada | 0,80 |
-| Identificadores | `numeros.py` | DV de CNPJ (inclusive o alfanumérico), CPF e chave de acesso NF-e/NFC-e; UF, mês e modelo da chave; CNPJ do emitente da chave presente no documento | 0,60 |
-| Assinatura | `estrutura.py` | bytes acrescentados depois do trecho coberto pelo `/ByteRange` | 0,50 |
+| Identificadores | `numeros.py` | DV de CNPJ (inclusive o alfanumérico), CPF e chave de acesso NF-e/NFC-e; UF, mês e modelo da chave; CNPJ do emitente da chave presente no documento. Um DV errado sozinho fica `INCONCLUSIVO`; dois ou mais somam até `IA/MANIPULADA`; poucos errados (até 10 %) entre 10 ou mais identificadores contam como digitação (0,30, uma vez) | 0,45 |
+| Assinatura | `estrutura.py` | bytes acrescentados depois do trecho coberto pelo `/ByteRange` (0,50); assinatura copiada de outro PDF, cujo `/ByteRange` não termina em nenhum `%%EOF` deste arquivo (0,15) | 0,50 / 0,15 |
 | Sem camada de texto | `estrutura.py` | páginas só com imagem (print, foto, montagem) | 0,35 / 0,20 |
 | Revisões incrementais | `estrutura.py` | seções `%%EOF` com objetos novos (ignora o trailer vazio do Word e a linearização) | 0,30 |
 | Ferramenta | `estrutura.py` | Producer/Creator de editor online ou de imagem (0,30), biblioteca de programação como ReportLab/FPDF/jsPDF (0,15), escritório ou impressora virtual (0,10) | 0,30 / 0,15 / 0,10 |
 | Fontes | `estrutura.py` | a mesma fonte embutida em dois subconjuntos do mesmo tipo (`ABCDEF+Arial` e `GHIJKL+Arial`, ambas TrueType) | 0,30 |
 | Benford | `benford.py` | 1º dígito dos valores monetários (`1.234,56`); MSE, MAD de Nigrini e qui-quadrado | 0,25 / 0,35 |
 | Datas | `estrutura.py` | modificação mais de 1 dia depois da criação | 0,15 |
+| Texto escondido | `injecao.py` | texto que o leitor não vê dando ordem a uma IA (prompt injection); sem ordem, só aparece no relatório | 0,80 |
 
 Suspeita combinada = `1 − ∏(1 − peso)`. `IA/MANIPULADA` a partir de 0,60. `REAL` só abaixo
 de 0,25 **e** com prova de origem (assinatura digital intacta ou chave de acesso de NF-e
@@ -84,6 +85,69 @@ Segundo teste, com reais **brasileiros** que nunca tinham passado pelo AIDA: 40 
   e ela deixa de contar como alteração e como revisão. Os dois passaram a sair `REAL`
   (assinatura intacta). Edição de verdade depois da assinatura continua sendo pega (testes).
 - Os 2 % são o número honesto antes da correção; depois dela, 0 nesses mesmos 99.
+
+## Diários oficiais do Querido Diário (23/10)
+
+`... queridodiario --inicio AAAA-MM-DD --fim AAAA-MM-DD` baixa diários oficiais municipais
+pela API pública do Querido Diário (Open Knowledge Brasil), um por emissor (município ou
+associação de municípios). A API mudou para `api.queridodiario.org.br` e recusa o agente
+padrão do Python: o baixador se identifica como `AIDA-Documents/1.0`.
+
+100 diários de set–out/2026 (mPDF, XeTeX, Adobe, Word, BRy Signer, pyHanko...):
+
+- **6 falsos positivos em 100 (6 %)** na primeira passada, o pior número até agora. Diário
+  oficial é documento longo, digitado por gente e montado juntando atos.
+- 5 eram **DV errado de verdade**: CNPJ/CPF digitado errado num documento real (1 em 17,
+  4 em 89, ou o único CNPJ do diário). Com 0,60 um só DV errado já dava `IA/MANIPULADA`.
+  Agora pesa 0,45 (dois ou mais somam até o limiar) e, com 10 ou mais identificadores e
+  até 10 % errados, conta como digitação (0,30, uma vez). Os 2 PDFs do Gemini com CPF
+  inventado continuam `IA/MANIPULADA` (0,30 + 0,45 = 0,615).
+- 1 era **PAdES-LTV da BRy** não reconhecida: a tabela de referências vem em stream
+  `/Type/XRef`, que agora é aceito como estrutura.
+- 1 tinha **5 assinaturas copiadas de outros PDFs** (cada ato assinado e depois juntado):
+  nenhum `/ByteRange` termina num `%%EOF` do arquivo. Não é edição depois da assinatura;
+  vira o indício fraco `assinatura_de_outro_arquivo` (0,15) e não comprova origem.
+- Depois: **2 em 100** nesses mesmos diários (ajustado neles, então otimista). Os dois
+  somam indícios moderados de juntada (fonte duplicada, Benford, um DV errado). PNCP,
+  SAFEDOCS e NapierOne continuam com 0.
+- **Teste honesto**: 100 diários novos de jul–ago/2026, sem nenhum ajuste depois: **2 falsos
+  positivos (2 %; limite superior de 95 % ≈ 7 %)**, 24 `REAL` e 74 `INCONCLUSIVO`. 52 dos
+  emissores não estavam no primeiro lote. Os dois de novo juntam fonte duplicada com Benford
+  ou um DV errado: o padrão de diário montado por juntada é o próximo ponto a estudar.
+
+## Texto escondido e prompt injection (06/11)
+
+`injecao.py` revela o texto que o leitor não vê e confere se ele dá ordens a uma IA
+("ignore as instruções anteriores", "você é um assistente", "dê nota máxima", "recommend
+this candidate"), em português e inglês, sem acento e sem diferença de maiúscula.
+
+| Formato | Onde o texto se esconde |
+|---|---|
+| PDF (pdfminer) | letra branca sem fundo escuro (retângulo, linha grossa ou imagem), fonte menor que 1 pt, modo de renderização invisível fora de imagem, texto fora da página; assunto, palavras-chave, título e autor |
+| DOCX | texto oculto do Word (`w:vanish`), branco sem sombreamento escuro, até 1 pt, no corpo, cabeçalho, rodapé e notas; descrição, palavras-chave e texto alternativo de imagem |
+| Todos | caracteres de tag Unicode (U+E0020..E007E) e bytes em seletores de variação |
+| Markdown | comentários `<!-- -->` e `[//]: # (...)` |
+
+- Ordem a IA escondida: `instrucao_oculta_para_ia` (0,80), sozinha dá `IA/MANIPULADA`, e a
+  página mostra o veredito "Prompt injection" com o texto revelado e as ordens marcadas.
+- Texto escondido sem ordem só aparece no relatório, sem peso. Metadados só entram com ordem
+  forte (um título "Relatório sobre o ChatGPT" não conta).
+- Cópia escondida de texto visível é descartada, assim como, sem ordem a IA, o texto feito só
+  de palavras que estão à vista (marcadores de navegação do mPDF em fonte minúscula).
+- A camada de OCR (texto invisível sobre imagem escaneada) não conta.
+
+Medição em ~640 reais (200 diários oficiais, 40 do PNCP, 59 do SAFEDOCS, 101 PDFs, 101 DOCX
+e 120 TXT do NapierOne, 19 da Etapa 01): **0 com prompt injection** depois de dois ajustes:
+
+- "avaliação A" casava com "nota/avaliação + A" num diário de Apucarana: o "A" saiu do padrão;
+- no diário de Votorantim o preto vem em tinta `/DeviceN [/Black]`, que o pdfminer não
+  converte e deixava com a cor anterior (branco): o texto inteiro parecia escondido. Cor em
+  Separation, DeviceN ou Indexed agora é "desconhecida", nunca branca. Também a faixa azul do
+  diário de Salvador é uma linha de 22 pt: traço grosso escuro conta como fundo.
+
+Ficam ~5 % com texto escondido sem ordem (só informativo): "Copyright" invisível de sites,
+"Powered by TCPDF", texto oculto do Word, células de tabela brancas. O pdfminer leva em média
+1 s por diário de 100 páginas (até 30 páginas lidas).
 
 ## Gemini (21/10)
 

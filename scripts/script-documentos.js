@@ -41,6 +41,10 @@
     benfordAjuda: $("docBenfordAjuda"),
     limites: $("docLimites"),
     limitesBloco: $("docLimitesBloco"),
+    ocultoBloco: $("docOcultoBloco"),
+    ocultoTitulo: $("docOcultoTitulo"),
+    ocultoAjuda: $("docOcultoAjuda"),
+    oculto: $("docOculto"),
     ressalva: $("docRessalva"),
     baixar: $("docBaixar"),
     novo: $("docNovo"),
@@ -220,7 +224,8 @@
     el.vereditoTitulo.textContent = "Não foi possível analisar o documento";
     el.significado.textContent = "";
     el.motivos.replaceChildren(criar("li", null, mensagem));
-    [el.numeros, el.indicios, el.benford, el.limites].forEach((n) => n.replaceChildren());
+    [el.numeros, el.indicios, el.benford, el.limites, el.oculto].forEach((n) => n.replaceChildren());
+    el.ocultoBloco.hidden = true;
     el.benfordAjuda.textContent = "";
     el.ressalva.textContent = "";
     el.baixar.hidden = true;
@@ -228,8 +233,15 @@
 
   // ------------------------------------------------------------------ resultado
 
+  function temInjecao(r) {
+    return Boolean(r.conteudo_oculto && r.conteudo_oculto.injecao);
+  }
+
   function explicarResultado(r) {
     const n = (r.indicios || []).length;
+    if (temInjecao(r)) {
+      return "Este arquivo esconde texto que quem lê não vê, mas uma IA lê junto com o resto, e esse texto dá ordens a ela. É uma tentativa de manipular quem usa IA para avaliar o documento (triagem de currículo, correção, parecer). Veja abaixo o que estava escondido.";
+    }
     if (r.resultado === "IA/MANIPULADA") {
       return `O AIDA encontrou ${n} indício${n > 1 ? "s" : ""} de que este documento foi editado, montado ou gerado por IA ou fora de um sistema emissor. Confira o documento na fonte antes de aceitá-lo.`;
     }
@@ -252,8 +264,10 @@
     const rotulo = ROTULOS[r.resultado] || ROTULOS.INCONCLUSIVO;
     el.resultado.hidden = false;
     el.baixar.hidden = false;
-    definirEstado(el.veredito, rotulo.estado);
-    el.vereditoTitulo.textContent = `Resultado: ${rotulo.texto}`;
+    definirEstado(el.veredito, temInjecao(r) ? "erro" : rotulo.estado);
+    el.vereditoTitulo.textContent = temInjecao(r)
+      ? "Resultado: Prompt injection — instruções escondidas para IA"
+      : `Resultado: ${rotulo.texto}`;
     el.significado.textContent = explicarResultado(r);
     el.motivos.replaceChildren(...(r.motivos || []).map((m) => criar("li", null, m)));
 
@@ -283,6 +297,7 @@
         : [criar("li", "doc-indicio doc-indicio--nenhum", "Nenhum indício de edição encontrado.")])
     );
 
+    desenharOculto(r.conteudo_oculto || {});
     desenharBenford(r.benford || {});
     const limites = [...(r.limitacoes || []), ...(r.alertas_seguranca || [])];
     el.limites.replaceChildren(...limites.map((m) => criar("li", null, m)));
@@ -290,6 +305,59 @@
     el.ressalva.textContent = r.ressalva || "";
     el.painelEnvio.hidden = true;
     el.resultado.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  // Texto revelado com as ordens à IA marcadas. Tudo por textContent: o texto
+  // escondido vem de um arquivo desconhecido e nunca é interpretado como HTML.
+  function textoMarcado(texto, instrucoes) {
+    const bloco = criar("blockquote", "doc-oculto__texto");
+    let resto = texto;
+    while (resto) {
+      let melhor = -1;
+      let achado = "";
+      (instrucoes || []).forEach((instrucao) => {
+        const pos = instrucao ? resto.indexOf(instrucao) : -1;
+        if (pos >= 0 && (melhor < 0 || pos < melhor)) {
+          melhor = pos;
+          achado = instrucao;
+        }
+      });
+      if (melhor < 0) {
+        bloco.append(resto);
+        break;
+      }
+      if (melhor > 0) bloco.append(resto.slice(0, melhor));
+      bloco.append(criar("mark", null, achado));
+      resto = resto.slice(melhor + achado.length);
+    }
+    return bloco;
+  }
+
+  function desenharOculto(o) {
+    const trechos = o.trechos || [];
+    el.ocultoBloco.hidden = !trechos.length;
+    if (!trechos.length) {
+      el.oculto.replaceChildren();
+      return;
+    }
+    const comOrdem = trechos.filter((t) => (t.instrucoes || []).length).length;
+    el.ocultoTitulo.textContent = o.injecao ? "Instruções escondidas para IA" : "Texto escondido no arquivo";
+    el.ocultoAjuda.textContent = o.injecao
+      ? `O texto abaixo estava no arquivo, mas não aparece para quem lê. ${comOrdem === 1 ? "Um trecho dá" : `${comOrdem} trechos dão`} ordens a uma IA (marcadas). Se este documento passar por uma IA, retire esse texto antes ou avalie sem IA.`
+      : "O texto abaixo estava no arquivo, mas não aparece para quem lê. Ele não dá ordens a uma IA; pode ser sobra de modelo ou formulário, mas vale conferir.";
+    el.oculto.replaceChildren(
+      ...trechos.map((t) => {
+        const ordem = (t.instrucoes || []).length > 0;
+        const item = criar("li", `doc-oculto__trecho${ordem ? " doc-oculto__trecho--ordem" : ""}`);
+        const onde = criar("p", "doc-oculto__onde");
+        onde.append(
+          criar("span", "doc-oculto__selo", ordem ? "Instrução para IA" : "Texto escondido"),
+          criar("span", null, `${t.local} · ${t.tecnica}`)
+        );
+        item.append(onde, textoMarcado(t.texto || "", t.instrucoes));
+        return item;
+      })
+    );
   }
 
   function desenharBenford(b) {

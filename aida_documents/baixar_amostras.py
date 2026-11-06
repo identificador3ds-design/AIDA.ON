@@ -14,6 +14,10 @@ Fontes (testadas em 19/10/2026):
   dominio de cada um (146 mil de sites .br, de 12 mil dominios). Os ZIPs tem 1,3 GB com
   1.000 PDFs cada; aqui so o indice e os PDFs escolhidos sao baixados (leitura por faixas).
   Um PDF por dominio.
+- Querido Diario (Open Knowledge Brasil, dado publico): diarios oficiais de centenas
+  de municipios brasileiros, de 2010 ate hoje, em PDF. Cada prefeitura publica pelo
+  seu proprio sistema, muitos com assinatura ICP-Brasil. Um diario por emissor (o
+  diario de uma associacao de municipios conta como um emissor so).
 - Essay-BR estendido (UFPI, MIT): 6.577 redacoes ENEM de dez/2015 a ago/2021, em
   portugues, gravadas como .txt. ATENCAO: o texto traz as correcoes do avaliador
   misturadas ("ex presidente ex-presidente"); nao e o texto puro do aluno.
@@ -26,6 +30,7 @@ Uso (na pasta AIDA.ON):
     python -m aida_documents.baixar_amostras essaybr --quantidade 200 --saida ../reais_publicos
     python -m aida_documents.baixar_amostras safedocs --quantidade 100 --dominio br --saida ../reais_publicos
     python -m aida_documents.baixar_amostras pncp --quantidade 100 --inicio 20261001 --fim 20261010 --saida ../reais_publicos
+    python -m aida_documents.baixar_amostras queridodiario --quantidade 100 --inicio 2026-10-01 --fim 2026-10-10 --saida ../reais_publicos
 """
 
 from __future__ import annotations
@@ -55,13 +60,18 @@ PNCP_MAX_BYTES = 20 * 1024 * 1024  # mesmo limite da rota /documento/analisar
 LICENCA_PNCP = "Dado público (Lei 14.133/2021, art. 174)"
 SAFEDOCS = "https://digitalcorpora.s3.amazonaws.com/corpora/files/CC-MAIN-2021-31-PDF-UNTRUNCATED"
 LICENCA_SAFEDOCS = "Termos do Common Crawl e da Digital Corpora (pesquisa)"
+QUERIDO_DIARIO = "https://api.queridodiario.org.br/gazettes"
+LICENCA_QUERIDO_DIARIO = "Dado público (diário oficial); coleta Querido Diário / Open Knowledge Brasil"
 LICENCA_NAPIERONE = "Edinburgh Napier University License (livre, com atribuição)"
 LICENCA_ESSAYBR = "MIT (LPLN-UFPI)"
 _DADO_NAPIERONE = re.compile(r"^\d{4}-[a-z0-9]+\.[a-z0-9]+$")  # 0001-doc.doc; ignora a ficha DOC.pdf
 
 
+_AGENTE = {"User-Agent": "AIDA-Documents/1.0 (pesquisa academica)"}  # a API do Querido Diario barra o agente padrao do Python
+
+
 def _baixar(url):
-    with urllib.request.urlopen(url, timeout=600) as resposta:
+    with urllib.request.urlopen(urllib.request.Request(url, headers=_AGENTE), timeout=600) as resposta:
         return resposta.read()
 
 
@@ -71,7 +81,7 @@ def _json(url):
 
 def _nome_anexo(url):
     """Nome do arquivo (Content-Disposition) e tamanho, sem baixar o conteudo."""
-    req = urllib.request.Request(url, method="HEAD")
+    req = urllib.request.Request(url, method="HEAD", headers=_AGENTE)
     with urllib.request.urlopen(req, timeout=60) as resposta:
         disp = resposta.headers.get("Content-Disposition", "")
         tamanho = int(resposta.headers.get("Content-Length") or 0)
@@ -229,6 +239,50 @@ def pncp(quantidade, inicio, fim, saida, max_por_formato=None, pausa=0.2, avisar
     avisar(f"  {len(linhas)} documentos do PNCP em {destino} ({por_formato})")
 
 
+def _emissor_diario(url):
+    """Pasta do PDF no Querido Diario: o municipio, ou a associacao que publica por varios."""
+    return urllib.parse.urlparse(url).path.strip("/").split("/")[0]
+
+
+def querido_diario(quantidade, inicio, fim, saida, pausa=0.2, avisar=print):
+    """Um diario oficial por emissor, publicado entre `inicio` e `fim` (AAAA-MM-DD)."""
+    destino = Path(saida) / "reais"
+    destino.mkdir(parents=True, exist_ok=True)
+    emissores, linhas, deslocamento = set(), [], 0
+    while len(linhas) < quantidade:
+        consulta = QUERIDO_DIARIO + "?" + urllib.parse.urlencode({
+            "published_since": inicio, "published_until": fim, "size": 100, "offset": deslocamento})
+        diarios = _json(consulta).get("gazettes") or []
+        if not diarios:
+            break
+        deslocamento += len(diarios)
+        for diario in diarios:
+            if len(linhas) >= quantidade:
+                break
+            url = diario.get("url") or ""
+            emissor = _emissor_diario(url)
+            if not url.lower().endswith(".pdf") or emissor in emissores:
+                continue
+            try:
+                _, tamanho = _nome_anexo(url)
+                if tamanho > PNCP_MAX_BYTES:
+                    continue
+                final = f"qd-{emissor}-{diario['date']}-{Path(url).stem[:12]}.pdf"
+                (destino / final).write_bytes(_baixar(url))
+                linha = {"arquivo": final, "rotulo": "REAL", "formato": "pdf", "fonte": "Querido Diário",
+                         "licenca": LICENCA_QUERIDO_DIARIO,
+                         "detalhe": f"{diario.get('territory_name', '')}/{diario.get('state_code', '')}; "
+                                    f"edição {diario.get('edition') or '-'}; {diario['date']}"}
+                _registrar(saida, [linha])
+                linhas.append(linha)
+                emissores.add(emissor)
+                avisar(f"  [{len(linhas)}/{quantidade}] {final}")
+            except Exception as exc:  # diario fora do ar nao para o lote
+                avisar(f"  {url}: {exc}")
+            time.sleep(pausa)
+    avisar(f"  {len(linhas)} diários oficiais em {destino}")
+
+
 def _hosts_safedocs(dominio, cache, avisar):
     """(arquivo, host) dos PDFs de um dominio de topo; lido uma vez (248 MB) e guardado em cache."""
     if cache.exists():
@@ -304,11 +358,18 @@ def main(argv=None):
     pn.add_argument("--fim", required=True, help="AAAAMMDD")
     pn.add_argument("--max-por-formato", type=int, help="ex.: 50 para no máximo 50 PDFs e 50 DOCX")
     pn.add_argument("--saida", default="reais_publicos")
+    qd = sub.add_parser("queridodiario")
+    qd.add_argument("--quantidade", type=int, default=100)
+    qd.add_argument("--inicio", required=True, help="AAAA-MM-DD")
+    qd.add_argument("--fim", required=True, help="AAAA-MM-DD")
+    qd.add_argument("--saida", default="reais_publicos")
     args = parser.parse_args(argv)
     if args.fonte == "napierone":
         napierone(args.formatos, args.tamanho, args.saida)
     elif args.fonte == "safedocs":
         safedocs(args.quantidade, args.saida, args.dominio, args.semente, avisar=lambda m: print(m, flush=True))
+    elif args.fonte == "queridodiario":
+        querido_diario(args.quantidade, args.inicio, args.fim, args.saida, avisar=lambda m: print(m, flush=True))
     elif args.fonte == "pncp":
         pncp(args.quantidade, args.inicio, args.fim, args.saida, args.max_por_formato,
              avisar=lambda m: print(m, flush=True))  # progresso aparece mesmo com a saida redirecionada

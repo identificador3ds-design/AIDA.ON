@@ -930,3 +930,243 @@
   }
 }
 
+
+/* ==========================================================================
+   Área restrita: portão de acesso, abas, diálogos e barras de uso
+   ========================================================================== */
+
+.admin-gate {
+  width: min(480px, 100%);
+  margin: 6vh auto 0;
+  padding: 34px;
+  border-radius: 28px;
+}
+
+.admin-gate-title {
+  margin: 0 0 8px;
+  font-size: clamp(2rem, 4vw, 2.6rem);
+  line-height: 1;
+}
+
+.admin-gate-sub {
+  margin: 8px 0 0;
+  font-size: 1.3rem;
+}
+
+.admin-gate-form {
+  display: grid;
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.admin-gate-form form {
+  display: grid;
+  gap: 16px;
+}
+
+.admin-gate-msg {
+  min-height: 1.4em;
+  margin: 14px 0 0;
+  color: var(--admin-red);
+  font-weight: 600;
+}
+
+.admin-gate-msg[data-tipo="neutro"] {
+  color: var(--admin-soft);
+}
+
+.admin-otp {
+  font-size: 1.6rem;
+  letter-spacing: 0.4em;
+  text-align: center;
+}
+
+.admin-mfa-qr {
+  justify-self: center;
+  padding: 10px;
+  border-radius: 16px;
+  background: #fff;
+}
+
+.admin-mfa-secret,
+.admin-key-value {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  word-break: break-all;
+  user-select: all;
+}
+
+.admin-session-info {
+  color: var(--admin-soft);
+  font-size: 0.95rem;
+}
+
+.admin-page button.top-link {
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+}
+
+.admin-app {
+  display: grid;
+  gap: 24px;
+}
+
+.admin-app[hidden],
+.admin-tabpanel[hidden],
+.admin-gate[hidden],
+.admin-gate-form[hidden] {
+  display: none;
+}
+
+.admin-tabpanel {
+  display: grid;
+  gap: 24px;
+}
+
+.admin-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.admin-tab {
+  min-height: 46px;
+  padding: 0 20px;
+  border: 1px solid var(--admin-line-strong);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--admin-text);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.admin-tab[aria-selected="true"] {
+  border-color: var(--admin-cyan);
+  background: rgba(143, 216, 183, 0.16);
+}
+
+.admin-tab:focus-visible,
+.table-action:focus-visible {
+  outline: 2px solid var(--admin-cyan);
+  outline-offset: 2px;
+}
+
+.admin-status[data-tipo="sucesso"] {
+  color: rgba(145, 236, 208, 0.98);
+}
+
+.admin-status[data-tipo="erro"] {
+  color: #ffbcbc;
+}
+
+.admin-inline-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--admin-soft);
+}
+
+.admin-page select.field-input {
+  appearance: auto;
+}
+
+.uso-barra {
+  display: inline-block;
+  width: 90px;
+  height: 8px;
+  margin-right: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  vertical-align: middle;
+}
+
+.uso-barra > span {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--admin-cyan);
+}
+
+.uso-barra.is-alerta > span {
+  background: #f2c46d;
+}
+
+.uso-barra.is-critico > span {
+  background: var(--admin-red);
+}
+
+.audit-detalhes {
+  max-width: 340px;
+  overflow: hidden;
+  color: var(--admin-soft);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.82rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-dialog {
+  width: min(640px, calc(100% - 32px));
+  padding: 28px;
+  border: 1px solid var(--admin-line-strong);
+  border-radius: 24px;
+  background: var(--admin-surface-strong);
+  color: var(--admin-text);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.45);
+}
+
+.admin-dialog::backdrop {
+  background: rgba(4, 12, 11, 0.72);
+  backdrop-filter: blur(4px);
+}
+
+.admin-dialog h2 {
+  margin-top: 0;
+}
+
+.admin-key-value {
+  display: block;
+  margin: 16px 0;
+  padding: 16px;
+  border: 1px dashed var(--admin-cyan);
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.25);
+  font-size: 1rem;
+}
+
+@media (max-width: 640px) {
+  .admin-gate {
+    padding: 24px 18px;
+  }
+
+  .admin-header-actions .admin-session-info {
+    display: none;
+  }
+}
+
+/* Botão primário legível sobre o fundo escuro do painel. */
+.admin-page .aida-button:not(.secondary) {
+  color: #0c312e;
+  background: linear-gradient(180deg, #a6e6c9, #8fd8b7);
+}
+
+.admin-page .aida-button:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+#chavesTabela .table-actions {
+  display: grid;
+  grid-template-columns: max-content;
+  gap: 6px;
+  min-width: 0;
+}
+
+#chavesTabela .table-action {
+  padding: 6px 10px;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}

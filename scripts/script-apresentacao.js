@@ -1,33 +1,33 @@
 const members = [
   {
-    name: "Alexandre",
+    name: "Chefe de Documentação.",
     description:
       "Responsável pela documentação técnica do projeto, organizando metodologias, processos de desenvolvimento e relatórios para garantir clareza, replicação e evolução da pesquisa.",
-    image: "../assets/images/team-111.svg",
+    image: "../assets/images/Group 114.svg",
   },
   {
-    name: "Arthur",
+    name: "Líder de metodologia de detecção.",
     description:
       "Responsável pelo desenvolvimento e aplicação de metodologias de detecção de conteúdo gerado ou manipulado por IA, buscando precisão, confiabilidade e inovação nas técnicas utilizadas.",
-    image: "../assets/images/team-108.svg",
+    image: "../assets/images/Group 108.svg",
   },
   {
-    name: "Eduardo",
+    name: "Líder de aquisição de dados.",
     description:
       "Responsável pela coleta, organização e preparação dos dados do projeto, garantindo qualidade, diversidade e consistência para testes e análises.",
-    image: "../assets/images/team-110.svg",
+    image: "../assets/images/Group 110.svg",
   },
   {
-    name: "Iago",
+    name: "Líder do BackEnd.",
     description:
       "Responsável pela coordenação do projeto e pelo desenvolvimento do backend, garantindo organização, integração e funcionamento eficiente da plataforma.",
-    image: "../assets/images/team-112.svg",
+    image: "../assets/images/Group 112.svg",
   },
   {
-    name: "Pedro",
+    name: "Design UI/UX e Líder de FrontEnd.",
     description:
       "Responsável pela coleta, seleção e organização dos dados do projeto, garantindo qualidade, diversidade e consistência para testes e análises.",
-    image: "../assets/images/team-107.svg",
+    image: "../assets/images/Group 107.svg",
   },
 ];
 
@@ -59,6 +59,10 @@ const teamMobileCarousel = document.getElementById("teamMobileCarousel");
 
 let currentIndex = -1;
 let teamTrigger = null;
+// Integrante escolhido pelo clique enquanto a rolagem suave ainda está a
+// caminho da posição dele; o `onUpdate` não troca o integrante nesse meio-tempo.
+let pendingMemberIndex = null;
+let pendingMemberTimer = null;
 
 function obterAdminConfig() {
   try {
@@ -400,6 +404,14 @@ function setupTeamRotation() {
       if (index >= members.length) {
         index = members.length - 1;
       }
+
+      if (pendingMemberIndex !== null) {
+        if (index !== pendingMemberIndex) {
+          return;
+        }
+        clearPendingMember();
+      }
+
       changeMember(index);
     },
     onLeaveBack: () => changeMember(0),
@@ -691,9 +703,40 @@ function setupSiteScrollAnimations() {
   });
 }
 
+function clearPendingMember() {
+  pendingMemberIndex = null;
+  window.clearTimeout(pendingMemberTimer);
+}
+
+// No desktop o integrante exibido é derivado da posição de rolagem
+// (`setupTeamRotation`). Trocar só o conteúdo no clique deixava a rolagem
+// para trás: o próximo giro do mouse recalculava o integrante a partir da
+// posição antiga e "pulava" para outro. Por isso o clique leva a rolagem até
+// o trecho daquele integrante.
 function setupTeamControls() {
   document.querySelectorAll(".icon").forEach((icon, index) => {
-    icon.addEventListener("click", () => changeMember(index));
+    icon.addEventListener("click", () => {
+      if (!teamTrigger) {
+        changeMember(index);
+        return;
+      }
+
+      const span = teamTrigger.end - teamTrigger.start;
+      const target = teamTrigger.start + span * (index / (members.length - 1));
+
+      pendingMemberIndex = index;
+      window.clearTimeout(pendingMemberTimer);
+      pendingMemberTimer = window.setTimeout(clearPendingMember, 1500);
+
+      changeMember(index);
+      window.scrollTo({ top: target, behavior: "smooth" });
+    });
+  });
+
+  // Se a pessoa rolar por conta própria durante a rolagem suave, a posição
+  // real volta a mandar imediatamente.
+  ["wheel", "touchstart", "keydown"].forEach((type) => {
+    window.addEventListener(type, clearPendingMember, { passive: true });
   });
 }
 

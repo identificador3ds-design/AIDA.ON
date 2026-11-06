@@ -1,5 +1,5 @@
-const STATIC_CACHE = "aida-static-v24";
-const RUNTIME_CACHE = "aida-runtime-v24";
+const STATIC_CACHE = "aida-static-v27";
+const RUNTIME_CACHE = "aida-runtime-v27";
 
 const APP_SHELL = [
   "./",
@@ -24,9 +24,6 @@ const APP_SHELL = [
   "pages/index-analise.html",
   "./styles/style-analise.css",
   "./scripts/script-analise.js",
-  "pages/index-admin.html",
-  "./styles/style-administrador.css",
-  "./scripts/script-administrador.js",
   "pages/index-apresentacao.html",
   "./styles/style-apresentacao.css",
   "./scripts/script-apresentacao.js",
@@ -74,6 +71,12 @@ self.addEventListener("fetch", (event) => {
   }
 
   const requestUrl = new URL(event.request.url);
+
+  // Área administrativa nunca passa pelo cache: dado sensível não fica no
+  // disco do aparelho e uma versão antiga do painel nunca é servida offline.
+  if (/\/(admin|pages\/index-admin)|script-administrador|aida-admin-auth/.test(requestUrl.pathname)) {
+    return;
+  }
   const usarRedePrimeiro =
     event.request.mode === "navigate" ||
     ["script", "style", "font"].includes(event.request.destination) ||
@@ -87,10 +90,12 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(
       fetch(event.request)
         .then((response) => {
-          const responseClone = response.clone();
-          caches.open(RUNTIME_CACHE).then((cache) => {
-            cache.put(event.request, responseClone);
-          });
+          if (response.ok) {
+            const responseClone = response.clone();
+            caches.open(RUNTIME_CACHE).then((cache) => {
+              cache.put(event.request, responseClone);
+            });
+          }
           return response;
         })
         .catch(async () => {
@@ -118,10 +123,14 @@ self.addEventListener("fetch", (event) => {
 
       return fetch(event.request)
         .then((networkResponse) => {
-          const responseClone = networkResponse.clone();
-          caches.open(RUNTIME_CACHE).then((cache) => {
-            cache.put(event.request, responseClone);
-          });
+          // Só guarda respostas válidas: um 404 cacheado aqui ficava servido
+          // para sempre (cache-first), mesmo depois de o arquivo ser corrigido.
+          if (networkResponse.ok) {
+            const responseClone = networkResponse.clone();
+            caches.open(RUNTIME_CACHE).then((cache) => {
+              cache.put(event.request, responseClone);
+            });
+          }
           return networkResponse;
         })
         .catch(() => {

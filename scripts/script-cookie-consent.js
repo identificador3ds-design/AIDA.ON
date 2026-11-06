@@ -148,7 +148,7 @@
       <div>
         <strong>AVISO DE COOKIES</strong>
         <p>
-          Utilizamos armazenamento local para manter sua sessão e funcionamento do AIDA.ON. 
+          Utilizamos armazenamento local para manter sua sessão e funcionamento do AIDA-ON. 
           Detalhes no <a href="${location.pathname.includes("/pages/") ? "./index-privacidade.html" : "pages/index-privacidade.html"}">Aviso de Privacidade</a>.
         </p>
       </div>

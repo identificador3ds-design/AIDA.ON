@@ -471,7 +471,18 @@
         // IMPORTANTE: Em produção, essa chamada é feita pelo BACKEND (Node/Python).
         // Aqui estamos expondo para fins de demonstração B2B do front-end.
         const AIDA_API_URL = "https://aidaon-aida-borda-api.hf.space/v1/analyze/image";
-        const AIDA_API_KEY = "aida_5LIhJ6NoWEC8ppGXpgcJ49Hdc8z3_okdAE3b3i8BlRI"; 
+        // A chave NAO fica no codigo: este arquivo e publico. Ela e pedida na
+        // primeira analise e guardada so nesta aba. Num site real, a chamada sai
+        // do backend do cliente, e a chave nunca chega ao navegador.
+        function obterChaveAida() {
+            let chave = "";
+            try { chave = sessionStorage.getItem("aida_demo_chave") || ""; } catch (e) {}
+            if (!chave) {
+                chave = (window.prompt("Cole a sua chave da AIDA API (aida_...):") || "").trim();
+                try { if (chave) sessionStorage.setItem("aida_demo_chave", chave); } catch (e) {}
+            }
+            return chave;
+        }
 
         // Elementos UI
         const uploadZone = document.getElementById('uploadZone');
@@ -553,7 +564,7 @@
                 const response = await fetch(AIDA_API_URL, {
                     method: 'POST',
                     headers: {
-                        "Authorization": `Bearer ${AIDA_API_KEY}`
+                        "Authorization": `Bearer ${obterChaveAida()}`
                     },
                     body: formData
                 });

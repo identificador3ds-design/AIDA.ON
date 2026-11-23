@@ -41,18 +41,48 @@ function usuarioEhAdmin() {
   return tipo === "admin" || email === ADMIN_EMAIL;
 }
 
+/* Catalogo das ferramentas: scripts/aida-manutencao-ferramenta.js. */
+function catalogo() {
+  return window.AidaFerramentas || null;
+}
+
+function destinosLiberados() {
+  const lista = catalogo()?.lista || {};
+  const destinos = new Set(["./index-seleciona.html", "./index-analise.html"]);
+  Object.values(lista).forEach((ferramenta) => ferramenta.paginas.forEach((p) => destinos.add(p)));
+  return destinos;
+}
+
 function obterDestinoSeguro() {
   const params = new URLSearchParams(window.location.search);
   const destino = String(params.get("redirect") || "./index-seleciona.html").trim();
-  return DESTINOS_LIBERADOS.has(destino) ? destino : "./index-seleciona.html";
+  return destinosLiberados().has(destino) ? destino : "./index-seleciona.html";
 }
 
-function descreverDestino(destino) {
+/* Ferramenta em manutencao: a do parametro, se for conhecida, senao a dona do destino. */
+function obterFerramenta(destino) {
+  const lista = catalogo()?.lista || {};
+  const pedida = new URLSearchParams(window.location.search).get("ferramenta");
+  if (pedida && lista[pedida]) {
+    return pedida;
+  }
+  return catalogo()?.ferramentaDoDestino(destino) || "image";
+}
+
+function descreverDestino(destino, ferramenta) {
+  const nome = catalogo()?.lista?.[ferramenta]?.nome;
   if (destino === "./index-analise.html") {
-    return "Etapa de analise";
+    return nome ? `${nome} — etapa de análise` : "Etapa de analise";
   }
 
-  return "Selecao de imagem";
+  return nome || "Selecao de imagem";
+}
+
+/* Manutencao vale para a ferramenta (painel: geral ou so ela). Sem o catalogo
+   carregado, cai na regra antiga: so o modo geral. */
+function ferramentaEmManutencao(ferramenta, configuracao) {
+  const api = catalogo();
+  return api ? api.emManutencao(ferramenta, configuracao) : Boolean(configuracao.maintenanceMode);
 }
 
 function redirecionarParaDestino(destino) {
@@ -62,6 +92,8 @@ function redirecionarParaDestino(destino) {
 document.addEventListener("DOMContentLoaded", () => {
   const configuracao = obterAdminConfig();
   const destino = obterDestinoSeguro();
+  const ferramenta = obterFerramenta(destino);
+  const nomeFerramenta = catalogo()?.lista?.[ferramenta]?.nome || "A ferramenta";
   const supportEmail = document.getElementById("maintenanceSupportEmail");
   const targetLabel = document.getElementById("maintenanceTargetLabel");
   const message = document.getElementById("maintenanceMessage");
@@ -72,22 +104,33 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   if (targetLabel) {
-    targetLabel.textContent = descreverDestino(destino);
+    targetLabel.textContent = descreverDestino(destino, ferramenta);
   }
 
   if (message) {
     message.textContent = configuracao.announcementMessage
       ? configuracao.announcementMessage
-      : "Esta etapa da ferramenta permanece em fase de desenvolvimento e voltara a ficar disponivel em breve.";
+      : `${nomeFerramenta} está em manutenção e voltará a ficar disponível em breve.`;
   }
 
   if (status) {
     status.textContent =
-      "A ferramenta esta temporariamente bloqueada para usuarios comuns enquanto esta funcionalidade evolui.";
+      `${nomeFerramenta} está temporariamente bloqueada para usuários comuns. As outras ferramentas do AIDA continuam disponíveis.`;
   }
 
-  if (usuarioEhAdmin() || !configuracao.maintenanceMode) {
-    redirecionarParaDestino(destino);
+  const liberarSeAcabou = () => {
+    if (usuarioEhAdmin() || !ferramentaEmManutencao(ferramenta, obterAdminConfig())) {
+      redirecionarParaDestino(destino);
+      return true;
+    }
+    return false;
+  };
+
+  if (liberarSeAcabou()) {
     return;
   }
+
+  // A manutencao pode ter sido desligada no painel: aida-config-remota.js
+  // avisa quando trouxer a configuracao nova do Supabase.
+  window.addEventListener("aida:config-atualizada", liberarSeAcabou);
 });

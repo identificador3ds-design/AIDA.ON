@@ -69,29 +69,52 @@ def registrar(evento):
 
     _logger.info(json.dumps({"aida_api": evento}, ensure_ascii=False, default=str))
 
-    if config.LOG_CHAMADAS and config.supabase_configurado():
-        threading.Thread(target=_gravar_supabase, args=(evento,), daemon=True).start()
+    if not config.supabase_configurado():
+        return
+    if config.LOG_CHAMADAS:
+        linha = _linha_completa(evento)
+    elif _cobravel(evento):
+        linha = _linha_de_cobranca(evento)
+    else:
+        return
+    threading.Thread(target=_gravar_supabase, args=(linha,), daemon=True).start()
 
 
-def _gravar_supabase(evento):
+def _cobravel(evento):
+    """Analise atendida: e o que o trigger api_calls_debita_token desconta."""
+    return evento.get("status") == 200 and str(evento.get("route") or "").startswith("/v1/analyze/")
+
+
+def _linha_de_cobranca(evento):
+    """So o necessario para descontar o token: sem hash, tamanho nem resultado."""
+    return {
+        "criada_em": evento.get("at"),
+        "prefixo_chave": evento.get("key_prefix"),
+        "rota": evento.get("route"),
+        "status": evento.get("status"),
+    }
+
+
+def _linha_completa(evento):
+    return {
+        **_linha_de_cobranca(evento),
+        "codigo_erro": evento.get("error_code"),
+        "duracao_s": evento.get("duration_seconds"),
+        "duracao_core_s": evento.get("core_seconds"),
+        "hash_arquivo": evento.get("file_sha256"),
+        "tamanho_bytes": evento.get("file_bytes"),
+        "resultado": evento.get("result"),
+        "cache": evento.get("cache"),
+        "id_analise": evento.get("analysis_id"),
+    }
+
+
+def _gravar_supabase(linha):
     """Best-effort: o log e importante, mas nao a ponto de derrubar a analise."""
     try:
         requests.post(
             f"{config.SUPABASE_URL}/rest/v1/{config.TABELA_CHAMADAS}",
-            json={
-                "criada_em": evento.get("at"),
-                "prefixo_chave": evento.get("key_prefix"),
-                "rota": evento.get("route"),
-                "status": evento.get("status"),
-                "codigo_erro": evento.get("error_code"),
-                "duracao_s": evento.get("duration_seconds"),
-                "duracao_core_s": evento.get("core_seconds"),
-                "hash_arquivo": evento.get("file_sha256"),
-                "tamanho_bytes": evento.get("file_bytes"),
-                "resultado": evento.get("result"),
-                "cache": evento.get("cache"),
-                "id_analise": evento.get("analysis_id"),
-            },
+            json=linha,
             headers={
                 "apikey": config.SUPABASE_SERVICE_ROLE_KEY,
                 "Authorization": f"Bearer {config.SUPABASE_SERVICE_ROLE_KEY}",

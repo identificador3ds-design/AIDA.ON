@@ -23,8 +23,10 @@ if str(RAIZ) not in sys.path:
 
 from aida_api import app as modulo_app  # noqa: E402
 from aida_api import cache as cache_mod  # noqa: E402
-from aida_api import chaves_api, config, core, limites  # noqa: E402
+from aida_api import chaves_api, config, core, limites, registro  # noqa: E402
 from aida_api.contrato import mapear_analise  # noqa: E402
+
+ANALISAR_REAL = core.analisar  # o fixture `cliente` troca pelo duble
 
 CHAVE = "aida_chave_de_teste"
 PNG = b"\x89PNG\r\n\x1a\n" + b"0" * 128
@@ -170,6 +172,25 @@ def test_sem_autenticacao_configurada_responde_503_e_nao_libera(cliente, monkeyp
     assert resposta.get_json()["error"]["code"] == "auth_unavailable"
 
 
+def test_chave_dev_nao_vale_quando_o_supabase_esta_configurado(cliente, monkeypatch):
+    # AIDA_API_DEV_KEYS esquecida no deploy de producao nao pode abrir a API:
+    # a chave de exemplo do README seria um acesso publico.
+    monkeypatch.setattr(config, "SUPABASE_URL", "https://exemplo.supabase.co")
+    monkeypatch.setattr(config, "SUPABASE_SERVICE_ROLE_KEY", "service-role")
+
+    class RespostaVazia:
+        status_code = 200
+
+        @staticmethod
+        def json():
+            return []
+
+    monkeypatch.setattr(chaves_api.requests, "get", lambda *a, **k: RespostaVazia())
+    resposta = enviar(cliente)
+    assert resposta.status_code == 401
+    assert resposta.get_json()["error"]["code"] == "invalid_key"
+
+
 # --------------------------------------------------------------------------- #
 # Analise
 # --------------------------------------------------------------------------- #
@@ -308,6 +329,23 @@ def test_cota_e_por_chave():
     assert limitador.consumir("chave-b").permitido
 
 
+def test_limite_zero_suspende_a_chave():
+    # O painel admin suspende uma chave gravando limite_por_janela = 0.
+    limitador = limites.LimitadorEmMemoria(limite_padrao=60, janela_s=60)
+    assert not limitador.consumir("chave-suspensa", 0).permitido
+    assert limitador.consumir("chave-sem-limite-proprio", None).permitido
+
+
+def test_chave_suspensa_no_painel_e_recusada_na_rota(cliente, monkeypatch):
+    monkeypatch.setattr(
+        chaves_api, "validar_chave",
+        lambda chave: {"prefixo": "aida_suspen", "limite_por_janela": 0, "tokens_total": 0},
+    )
+    resposta = enviar(cliente)
+    assert resposta.status_code == 429
+    assert resposta.get_json()["error"]["code"] == "rate_limited"
+
+
 # --------------------------------------------------------------------------- #
 # Falhas do Core
 # --------------------------------------------------------------------------- #
@@ -411,3 +449,150 @@ def test_emitir_sem_supabase_falha_de_forma_clara(monkeypatch):
     monkeypatch.setattr(config, "SUPABASE_SERVICE_ROLE_KEY", "")
     with pytest.raises(chaves_api.AutenticacaoIndisponivel):
         chaves_api.gerar_chave("teste")
+
+
+# --------------------------------------------------------------------------- #
+# Registro de chamadas e cobranca
+# --------------------------------------------------------------------------- #
+@pytest.fixture
+def linhas_gravadas(monkeypatch):
+    monkeypatch.setattr(config, "SUPABASE_URL", "https://exemplo.supabase.co")
+    monkeypatch.setattr(config, "SUPABASE_SERVICE_ROLE_KEY", "service-role")
+    gravadas = []
+
+    class ThreadImediata:
+        def __init__(self, target, args, daemon=None):
+            self._alvo, self._args = target, args
+
+        def start(self):
+            self._alvo(*self._args)
+
+    monkeypatch.setattr(registro.threading, "Thread", ThreadImediata)
+    monkeypatch.setattr(registro, "_gravar_supabase", gravadas.append)
+    return gravadas
+
+
+ANALISE_ATENDIDA = {
+    "route": "/v1/analyze/image", "key_prefix": "aida_abc123", "status": 200,
+    "file_sha256": "f" * 64, "file_bytes": 1234, "result": "REAL",
+}
+
+
+def test_log_desligado_ainda_grava_a_linha_que_desconta_o_token(linhas_gravadas, monkeypatch):
+    monkeypatch.setattr(config, "LOG_CHAMADAS", False)
+    registro.registrar(ANALISE_ATENDIDA)
+    assert len(linhas_gravadas) == 1
+    linha = linhas_gravadas[0]
+    assert (linha["prefixo_chave"], linha["rota"], linha["status"]) == ("aida_abc123", "/v1/analyze/image", 200)
+    # So o necessario para cobrar: nada sobre o arquivo.
+    assert "hash_arquivo" not in linha and "tamanho_bytes" not in linha and "resultado" not in linha
+
+
+def test_log_desligado_nao_grava_chamada_que_nao_e_cobrada(linhas_gravadas, monkeypatch):
+    monkeypatch.setattr(config, "LOG_CHAMADAS", False)
+    registro.registrar({**ANALISE_ATENDIDA, "status": 429, "error_code": "rate_limited"})
+    assert linhas_gravadas == []
+
+
+def test_log_ligado_grava_o_metadado_completo(linhas_gravadas, monkeypatch):
+    monkeypatch.setattr(config, "LOG_CHAMADAS", True)
+    registro.registrar(ANALISE_ATENDIDA)
+    assert linhas_gravadas[0]["hash_arquivo"] == "f" * 64
+
+
+def test_revogacao_vale_depois_do_cache_da_chave(monkeypatch):
+    monkeypatch.setattr(config, "CHAVES_DEV", [])
+    monkeypatch.setattr(config, "SUPABASE_URL", "https://exemplo.supabase.co")
+    monkeypatch.setattr(config, "SUPABASE_SERVICE_ROLE_KEY", "service-role")
+    monkeypatch.setattr(config, "CACHE_CHAVE_S", 10)
+    monkeypatch.setattr(chaves_api, "_marcar_uso", lambda *_a, **_k: None)
+    chaves_api.limpar_cache()
+    linha = {"prefixo": "aida_abc123", "revogada": False}
+
+    class Resposta:
+        status_code = 200
+
+        @staticmethod
+        def json():
+            return [dict(linha)]
+
+    monkeypatch.setattr(chaves_api.requests, "get", lambda *a, **k: Resposta())
+    agora = [1000.0]
+    monkeypatch.setattr(chaves_api.time, "time", lambda: agora[0])
+
+    assert chaves_api.validar_chave("aida_qualquer")
+    linha["revogada"] = True
+    agora[0] += 5
+    assert chaves_api.validar_chave("aida_qualquer")  # ainda no cache
+    agora[0] += 6
+    assert chaves_api.validar_chave("aida_qualquer") is None
+
+
+# --------------------------------------------------------------------------- #
+# Core acordando (Space gratuito em repouso)
+# --------------------------------------------------------------------------- #
+class _RespostaCore:
+    def __init__(self, status, corpo=None):
+        self.status_code = status
+        self._corpo = corpo
+
+    def json(self):
+        if self._corpo is None:
+            raise ValueError("sem json")
+        return self._corpo
+
+
+@pytest.fixture
+def core_sequencia(monkeypatch):
+    """Faz requests.post do Core devolver, em ordem, os itens da lista."""
+    esperas = []
+    monkeypatch.setattr(config, "CORE_ESPERAS_S", (5, 10))
+    monkeypatch.setattr(core.time, "sleep", esperas.append)
+
+    def montar(*itens):
+        fila = list(itens)
+
+        def post(*_a, **_k):
+            item = fila.pop(0)
+            if isinstance(item, Exception):
+                raise item
+            return item
+
+        monkeypatch.setattr(core.requests, "post", post)
+        return esperas
+
+    return montar
+
+
+def test_core_acordando_e_repetido_ate_responder(core_sequencia):
+    esperas = core_sequencia(
+        _RespostaCore(503),
+        core.requests.ConnectionError("recusada"),
+        _RespostaCore(200, dict(RESPOSTA_CORE)),
+    )
+    dados, _ = ANALISAR_REAL(PNG, "x.png")
+    assert dados["resultado"] == RESPOSTA_CORE["resultado"]
+    assert esperas == [5, 10]
+
+
+def test_core_que_nao_acorda_vira_503_com_retry_after(cliente, core_sequencia, monkeypatch):
+    monkeypatch.setattr(modulo_app.core, "analisar", ANALISAR_REAL)
+    core_sequencia(_RespostaCore(503), _RespostaCore(503), _RespostaCore(503))
+    resposta = enviar(cliente)
+    assert resposta.status_code == 503
+    assert resposta.get_json()["error"]["code"] == "core_unavailable"
+    assert resposta.headers["Retry-After"] == "30"
+
+
+def test_timeout_do_core_nao_e_repetido(core_sequencia):
+    esperas = core_sequencia(core.requests.Timeout("lento"))
+    with pytest.raises(core.CoreIndisponivel):
+        ANALISAR_REAL(PNG, "x.png")
+    assert esperas == []
+
+
+def test_erro_400_do_core_nao_e_repetido(core_sequencia):
+    esperas = core_sequencia(_RespostaCore(400, {"erro": "imagem invalida"}))
+    with pytest.raises(core.CoreErro):
+        ANALISAR_REAL(PNG, "x.png")
+    assert esperas == []

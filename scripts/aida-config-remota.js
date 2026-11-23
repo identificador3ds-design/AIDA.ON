@@ -77,6 +77,13 @@
       }
       localStorage.setItem(CHAVE_CONFIG, JSON.stringify(remoto));
       recalcularTrava(remoto);
+      // A trava de manutenção por ferramenta (aida-manutencao-ferramenta.js)
+      // reavalia com o valor novo, sem esperar a próxima navegação.
+      try {
+        window.dispatchEvent(new Event("aida:config-atualizada"));
+      } catch (erro) {
+        /* navegador sem construtor Event: vale na próxima navegação */
+      }
       return aplicarStatusDaPropriaConta();
     })
     .catch(function () {

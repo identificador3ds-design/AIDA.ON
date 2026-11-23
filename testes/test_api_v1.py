@@ -327,6 +327,23 @@ def test_cota_e_por_chave():
     assert limitador.consumir("chave-b").permitido
 
 
+def test_limite_zero_suspende_a_chave():
+    # O painel admin suspende uma chave gravando limite_por_janela = 0.
+    limitador = limites.LimitadorEmMemoria(limite_padrao=60, janela_s=60)
+    assert not limitador.consumir("chave-suspensa", 0).permitido
+    assert limitador.consumir("chave-sem-limite-proprio", None).permitido
+
+
+def test_chave_suspensa_no_painel_e_recusada_na_rota(cliente, monkeypatch):
+    monkeypatch.setattr(
+        chaves_api, "validar_chave",
+        lambda chave: {"prefixo": "aida_suspen", "limite_por_janela": 0, "tokens_total": 0},
+    )
+    resposta = enviar(cliente)
+    assert resposta.status_code == 429
+    assert resposta.get_json()["error"]["code"] == "rate_limited"
+
+
 # --------------------------------------------------------------------------- #
 # Falhas do Core
 # --------------------------------------------------------------------------- #

@@ -351,14 +351,18 @@ def criar_app():
                 400: ("invalid_image", "O Core recusou a imagem enviada.", 400),
                 413: ("payload_too_large", "Arquivo acima do limite aceito pelo Core.", 413),
                 415: ("unsupported_format", "Formato nao aceito pelo Core.", 400),
-                503: ("core_unavailable", "Nenhum modelo carregado no Core.", 503),
+                # 502/503/504 aqui ja passaram pelas novas tentativas de core.py.
+                502: ("core_unavailable", "O motor de analise esta iniciando ou indisponivel. Tente novamente em instantes.", 503),
+                503: ("core_unavailable", "O motor de analise esta iniciando ou indisponivel. Tente novamente em instantes.", 503),
+                504: ("core_unavailable", "O motor de analise esta iniciando ou indisponivel. Tente novamente em instantes.", 503),
             }
             codigo, mensagem, status = mapa.get(
                 exc.status, ("core_error", "O motor de analise respondeu com erro.", 502)
             )
             app.logger.error("Core respondeu %s: %s", exc.status, exc.corpo)
             registro.registrar({**evento, "status": status, "error_code": codigo})
-            return responder_erro(codigo, mensagem, status)
+            cabecalhos = {"Retry-After": "30"} if status == 503 else None
+            return responder_erro(codigo, mensagem, status, cabecalhos=cabecalhos)
 
         id_analise = resposta_core.get("id_analise") or digest[:32]
         analises.guardar(chave_cache, id_analise, resposta_core)

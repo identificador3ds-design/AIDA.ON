@@ -197,6 +197,7 @@ Ver `.env.example`. As que mais importam:
 | Variável | Padrão | Papel |
 | -------- | ------ | ----- |
 | `AIDA_CORE_URL` | Space no HF | Onde vive o Core |
+| `AIDA_CORE_ESPERAS_S` | 5,10,20 | Novas tentativas enquanto o Core (Space gratuito) acorda |
 | `SUPABASE_URL` / `SUPABASE_SERVICE_ROLE_KEY` | — | Chaves e logs |
 | `AIDA_API_DEV_KEYS` | — | Chaves locais, só desenvolvimento (ignorada com Supabase) |
 | `AIDA_API_LIMITE` / `AIDA_API_JANELA_S` | 60 / 3600 | Cota por chave |

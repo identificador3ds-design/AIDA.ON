@@ -44,26 +44,54 @@ def _json_ou_vazio(resposta):
 
 
 def analisar(conteudo, nome_arquivo, evidencias=True, timeout=None):
-    """POST /analisar no Core. Devolve (resposta_bruta, duracao_s)."""
+    """POST /analisar no Core. Devolve (resposta_bruta, duracao_s).
+
+    O Core e um Space gratuito que dorme sem uso: acordando, ele responde 502/
+    503/504 ou recusa a conexao por alguns segundos. Essas falhas rapidas sao
+    repetidas com espera (AIDA_CORE_ESPERAS_S) antes de virar 503 para quem
+    chamou. Timeout NAO se repete: o Core estava processando, e repetir so
+    dobraria a espera.
+    """
+    esperas = list(config.CORE_ESPERAS_S)
+    while True:
+        try:
+            return _analisar_uma_vez(conteudo, nome_arquivo, evidencias, timeout)
+        except requests.Timeout as exc:
+            raise CoreIndisponivel(str(exc)) from exc
+        except (requests.RequestException, CoreErro) as exc:
+            acordando = (
+                not isinstance(exc, CoreErro) or exc.status in _STATUS_ACORDANDO
+            )
+            if not acordando:
+                raise
+            if not esperas:
+                if isinstance(exc, CoreErro):
+                    raise
+                raise CoreIndisponivel(str(exc)) from exc
+            time.sleep(esperas.pop(0))
+
+
+# Respostas do Space enquanto o container sobe (ou a fila do proxy do HF).
+_STATUS_ACORDANDO = {502, 503, 504}
+
+
+def _analisar_uma_vez(conteudo, nome_arquivo, evidencias, timeout):
     inicio = time.perf_counter()
-    try:
-        resposta = requests.post(
-            _url("/analisar"),
-            files={"imagem": (nome_arquivo, conteudo)},
-            data={
-                "evidencias": "true" if evidencias else "false",
-                # A borda nunca pede gravacao no historico do Core: quem integra
-                # e dono do proprio armazenamento, e guardar do lado de ca criaria
-                # uma copia de dado do usuario que ninguem pediu.
-                "historico_habilitado": "false",
-            },
-            # Isenta a borda do limite por cliente do Core (site_api/limite.py).
-            headers=({"X-AIDA-Chave-Interna": os.environ["AIDA_CHAVE_INTERNA"]}
-                     if os.environ.get("AIDA_CHAVE_INTERNA") else {}),
-            timeout=timeout or config.CORE_TIMEOUT_S,
-        )
-    except requests.RequestException as exc:
-        raise CoreIndisponivel(str(exc)) from exc
+    resposta = requests.post(
+        _url("/analisar"),
+        files={"imagem": (nome_arquivo, conteudo)},
+        data={
+            "evidencias": "true" if evidencias else "false",
+            # A borda nunca pede gravacao no historico do Core: quem integra
+            # e dono do proprio armazenamento, e guardar do lado de ca criaria
+            # uma copia de dado do usuario que ninguem pediu.
+            "historico_habilitado": "false",
+        },
+        # Isenta a borda do limite por cliente do Core (site_api/limite.py).
+        headers=({"X-AIDA-Chave-Interna": os.environ["AIDA_CHAVE_INTERNA"]}
+                 if os.environ.get("AIDA_CHAVE_INTERNA") else {}),
+        timeout=timeout or config.CORE_TIMEOUT_S,
+    )
 
     duracao = time.perf_counter() - inicio
 

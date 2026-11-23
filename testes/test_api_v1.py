@@ -26,6 +26,8 @@ from aida_api import cache as cache_mod  # noqa: E402
 from aida_api import chaves_api, config, core, limites, registro  # noqa: E402
 from aida_api.contrato import mapear_analise  # noqa: E402
 
+ANALISAR_REAL = core.analisar  # o fixture `cliente` troca pelo duble
+
 CHAVE = "aida_chave_de_teste"
 PNG = b"\x89PNG\r\n\x1a\n" + b"0" * 128
 
@@ -524,3 +526,73 @@ def test_revogacao_vale_depois_do_cache_da_chave(monkeypatch):
     assert chaves_api.validar_chave("aida_qualquer")  # ainda no cache
     agora[0] += 6
     assert chaves_api.validar_chave("aida_qualquer") is None
+
+
+# --------------------------------------------------------------------------- #
+# Core acordando (Space gratuito em repouso)
+# --------------------------------------------------------------------------- #
+class _RespostaCore:
+    def __init__(self, status, corpo=None):
+        self.status_code = status
+        self._corpo = corpo
+
+    def json(self):
+        if self._corpo is None:
+            raise ValueError("sem json")
+        return self._corpo
+
+
+@pytest.fixture
+def core_sequencia(monkeypatch):
+    """Faz requests.post do Core devolver, em ordem, os itens da lista."""
+    esperas = []
+    monkeypatch.setattr(config, "CORE_ESPERAS_S", (5, 10))
+    monkeypatch.setattr(core.time, "sleep", esperas.append)
+
+    def montar(*itens):
+        fila = list(itens)
+
+        def post(*_a, **_k):
+            item = fila.pop(0)
+            if isinstance(item, Exception):
+                raise item
+            return item
+
+        monkeypatch.setattr(core.requests, "post", post)
+        return esperas
+
+    return montar
+
+
+def test_core_acordando_e_repetido_ate_responder(core_sequencia):
+    esperas = core_sequencia(
+        _RespostaCore(503),
+        core.requests.ConnectionError("recusada"),
+        _RespostaCore(200, dict(RESPOSTA_CORE)),
+    )
+    dados, _ = ANALISAR_REAL(PNG, "x.png")
+    assert dados["resultado"] == RESPOSTA_CORE["resultado"]
+    assert esperas == [5, 10]
+
+
+def test_core_que_nao_acorda_vira_503_com_retry_after(cliente, core_sequencia, monkeypatch):
+    monkeypatch.setattr(modulo_app.core, "analisar", ANALISAR_REAL)
+    core_sequencia(_RespostaCore(503), _RespostaCore(503), _RespostaCore(503))
+    resposta = enviar(cliente)
+    assert resposta.status_code == 503
+    assert resposta.get_json()["error"]["code"] == "core_unavailable"
+    assert resposta.headers["Retry-After"] == "30"
+
+
+def test_timeout_do_core_nao_e_repetido(core_sequencia):
+    esperas = core_sequencia(core.requests.Timeout("lento"))
+    with pytest.raises(core.CoreIndisponivel):
+        ANALISAR_REAL(PNG, "x.png")
+    assert esperas == []
+
+
+def test_erro_400_do_core_nao_e_repetido(core_sequencia):
+    esperas = core_sequencia(_RespostaCore(400, {"erro": "imagem invalida"}))
+    with pytest.raises(core.CoreErro):
+        ANALISAR_REAL(PNG, "x.png")
+    assert esperas == []

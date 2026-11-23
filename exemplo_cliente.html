@@ -223,6 +223,23 @@
             line-height: 1.5;
         }
 
+        .api-key-field {
+            display: grid;
+            gap: 6px;
+            margin-bottom: 16px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .api-key-field input {
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            background: #0f172a;
+            color: inherit;
+            font-family: monospace;
+        }
+
         .error-message {
             display: none;
             color: var(--danger);
@@ -243,6 +260,11 @@
             <h1>Verificador de Autenticidade</h1>
             <p>Integração B2B simulando o site de um cliente</p>
         </div>
+
+        <label class="api-key-field" for="apiKeyInput">
+            <span>Chave de API</span>
+            <input type="password" id="apiKeyInput" placeholder="aida_..." autocomplete="off" spellcheck="false">
+        </label>
 
         <div class="upload-area" id="drop-area">
             <div class="upload-icon">📷</div>
@@ -280,7 +302,15 @@
     <script>
         // Configurações da API
         const API_URL = "https://aidaon-aida-borda-api.hf.space/v1/analyze/image";
-        const API_KEY = "aida_WGzt7D00yExZ4mI-UZxyF0JsAQ2Az7RoCXqzony6OzM"; // Em um site real, essa requisição seria feita pelo Backend do cliente, para não expor a chave no JS.
+        // A chave NAO fica no codigo: este arquivo e publico. Cole a sua no campo
+        // da pagina (fica so na aba atual). Num site real, a chamada sai do
+        // backend do cliente, e a chave nunca chega ao navegador.
+        const CHAVE_SESSAO = 'aida_exemplo_chave';
+        const apiKeyInput = document.getElementById('apiKeyInput');
+        try { apiKeyInput.value = sessionStorage.getItem(CHAVE_SESSAO) || ''; } catch (e) {}
+        apiKeyInput.addEventListener('input', () => {
+            try { sessionStorage.setItem(CHAVE_SESSAO, apiKeyInput.value.trim()); } catch (e) {}
+        });
 
         // Elementos da UI
         const fileInput = document.getElementById('fileInput');
@@ -324,25 +354,53 @@
             formData.append('image', selectedFile);
             formData.append('evidence', 'false'); // Não precisamos do mapa visual aqui
 
-            try {
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${API_KEY}`
-                    },
-                    body: formData
-                });
+            const apiKey = apiKeyInput.value.trim();
 
-                const data = await response.json();
+            try {
+                if (!apiKey) {
+                    throw new Error('Cole a sua chave de API no campo acima.');
+                }
+
+                let response;
+                try {
+                    response = await fetch(API_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${apiKey}`
+                        },
+                        body: formData
+                    });
+                } catch (falhaDeRede) {
+                    throw new Error('Erro de conexão: a API não respondeu. Verifique a internet e tente de novo.');
+                }
+
+                // Erros da API vêm como {"error": {"code", "message"}}. Uma página
+                // que não é JSON (Space do Hugging Face iniciando) também é tratada.
+                const data = await response.json().catch(() => null);
 
                 if (!response.ok) {
-                    throw new Error(data.message || 'Erro ao processar imagem.');
+                    const erro = data && data.error ? data.error : null;
+                    const espera = response.headers.get('Retry-After');
+                    let texto = erro && erro.message
+                        ? erro.message
+                        : `A API respondeu ${response.status} e está iniciando ou indisponível.`;
+                    if (erro && erro.code) {
+                        texto += ` (${erro.code})`;
+                    }
+                    if (espera) {
+                        texto += ` Tente de novo em ~${espera} s.`;
+                    }
+                    throw new Error(texto);
+                }
+
+                if (!data) {
+                    throw new Error('A API respondeu, mas o conteúdo não é JSON.');
                 }
 
                 mostrarResultados(data);
 
             } catch (error) {
-                errorMessage.textContent = "Erro de conexão: " + error.message;
+                errorMessage.textContent = error.message;
                 errorMessage.style.display = 'block';
             } finally {
                 // Voltar botão ao normal
@@ -357,7 +415,8 @@
             resultBadge.textContent = data.result;
             resultBadge.className = 'result-badge'; // reset
 
-            if (data.result === 'REAL') {
+            // REAL_EDITADA = foto real com registro de edicao nos metadados.
+            if (data.result === 'REAL' || data.result === 'REAL_EDITADA') {
                 resultBadge.classList.add('badge-real');
             } else if (data.result === 'IA/MANIPULADA') {
                 resultBadge.classList.add('badge-ia');

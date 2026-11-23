@@ -37,6 +37,11 @@ def _bool(nome, padrao=False):
 # INCONCLUSIVO nem REAL_EDITADA: apontar para ele quebraria o contrato /v1.
 CORE_URL = os.environ.get("AIDA_CORE_URL", "https://aidaon-aida-api.hf.space").rstrip("/")
 CORE_TIMEOUT_S = _float("AIDA_CORE_TIMEOUT_S", 180.0)
+# Esperas (s) entre novas tentativas quando o Core esta acordando (502/503/504
+# ou conexao recusada). "5,10,20" = ate 3 repeticoes, ~35 s no pior caso.
+CORE_ESPERAS_S = tuple(
+    float(v) for v in os.environ.get("AIDA_CORE_ESPERAS_S", "5,10,20").split(",") if v.strip()
+)
 
 # --- Camada 01: borda HTTP -------------------------------------------------- #
 TAMANHO_MAX_MB = _int("AIDA_API_MAX_MB", 15)

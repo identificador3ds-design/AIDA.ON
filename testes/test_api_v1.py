@@ -23,7 +23,7 @@ if str(RAIZ) not in sys.path:
 
 from aida_api import app as modulo_app  # noqa: E402
 from aida_api import cache as cache_mod  # noqa: E402
-from aida_api import chaves_api, config, core, limites  # noqa: E402
+from aida_api import chaves_api, config, core, limites, registro  # noqa: E402
 from aida_api.contrato import mapear_analise  # noqa: E402
 
 CHAVE = "aida_chave_de_teste"
@@ -447,3 +447,80 @@ def test_emitir_sem_supabase_falha_de_forma_clara(monkeypatch):
     monkeypatch.setattr(config, "SUPABASE_SERVICE_ROLE_KEY", "")
     with pytest.raises(chaves_api.AutenticacaoIndisponivel):
         chaves_api.gerar_chave("teste")
+
+
+# --------------------------------------------------------------------------- #
+# Registro de chamadas e cobranca
+# --------------------------------------------------------------------------- #
+@pytest.fixture
+def linhas_gravadas(monkeypatch):
+    monkeypatch.setattr(config, "SUPABASE_URL", "https://exemplo.supabase.co")
+    monkeypatch.setattr(config, "SUPABASE_SERVICE_ROLE_KEY", "service-role")
+    gravadas = []
+
+    class ThreadImediata:
+        def __init__(self, target, args, daemon=None):
+            self._alvo, self._args = target, args
+
+        def start(self):
+            self._alvo(*self._args)
+
+    monkeypatch.setattr(registro.threading, "Thread", ThreadImediata)
+    monkeypatch.setattr(registro, "_gravar_supabase", gravadas.append)
+    return gravadas
+
+
+ANALISE_ATENDIDA = {
+    "route": "/v1/analyze/image", "key_prefix": "aida_abc123", "status": 200,
+    "file_sha256": "f" * 64, "file_bytes": 1234, "result": "REAL",
+}
+
+
+def test_log_desligado_ainda_grava_a_linha_que_desconta_o_token(linhas_gravadas, monkeypatch):
+    monkeypatch.setattr(config, "LOG_CHAMADAS", False)
+    registro.registrar(ANALISE_ATENDIDA)
+    assert len(linhas_gravadas) == 1
+    linha = linhas_gravadas[0]
+    assert (linha["prefixo_chave"], linha["rota"], linha["status"]) == ("aida_abc123", "/v1/analyze/image", 200)
+    # So o necessario para cobrar: nada sobre o arquivo.
+    assert "hash_arquivo" not in linha and "tamanho_bytes" not in linha and "resultado" not in linha
+
+
+def test_log_desligado_nao_grava_chamada_que_nao_e_cobrada(linhas_gravadas, monkeypatch):
+    monkeypatch.setattr(config, "LOG_CHAMADAS", False)
+    registro.registrar({**ANALISE_ATENDIDA, "status": 429, "error_code": "rate_limited"})
+    assert linhas_gravadas == []
+
+
+def test_log_ligado_grava_o_metadado_completo(linhas_gravadas, monkeypatch):
+    monkeypatch.setattr(config, "LOG_CHAMADAS", True)
+    registro.registrar(ANALISE_ATENDIDA)
+    assert linhas_gravadas[0]["hash_arquivo"] == "f" * 64
+
+
+def test_revogacao_vale_depois_do_cache_da_chave(monkeypatch):
+    monkeypatch.setattr(config, "CHAVES_DEV", [])
+    monkeypatch.setattr(config, "SUPABASE_URL", "https://exemplo.supabase.co")
+    monkeypatch.setattr(config, "SUPABASE_SERVICE_ROLE_KEY", "service-role")
+    monkeypatch.setattr(config, "CACHE_CHAVE_S", 10)
+    monkeypatch.setattr(chaves_api, "_marcar_uso", lambda *_a, **_k: None)
+    chaves_api.limpar_cache()
+    linha = {"prefixo": "aida_abc123", "revogada": False}
+
+    class Resposta:
+        status_code = 200
+
+        @staticmethod
+        def json():
+            return [dict(linha)]
+
+    monkeypatch.setattr(chaves_api.requests, "get", lambda *a, **k: Resposta())
+    agora = [1000.0]
+    monkeypatch.setattr(chaves_api.time, "time", lambda: agora[0])
+
+    assert chaves_api.validar_chave("aida_qualquer")
+    linha["revogada"] = True
+    agora[0] += 5
+    assert chaves_api.validar_chave("aida_qualquer")  # ainda no cache
+    agora[0] += 6
+    assert chaves_api.validar_chave("aida_qualquer") is None

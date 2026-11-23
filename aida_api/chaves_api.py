@@ -67,7 +67,6 @@ def _exigir_supabase():
 # revogacao passa a valer depois desse intervalo, e esse atraso e o preco
 # declarado. Para revogar na hora, reinicie o processo.
 # --------------------------------------------------------------------------- #
-_TTL_CACHE_VALIDACAO = 60
 _cache_validacao = {}
 _lock_cache = threading.Lock()
 
@@ -92,7 +91,7 @@ def _do_cache(hash_):
 
 def _guardar_cache(hash_, registro):
     with _lock_cache:
-        _cache_validacao[hash_] = (time.time() + _TTL_CACHE_VALIDACAO, registro)
+        _cache_validacao[hash_] = (time.time() + config.CACHE_CHAVE_S, registro)
 
 
 # --------------------------------------------------------------------------- #

@@ -63,6 +63,10 @@ CACHE_MAX_ITENS = _int("AIDA_API_CACHE_MAX", 128)
 CONCORRENCIA_MAX = _int("AIDA_API_CONCORRENCIA", 2)
 ESPERA_FILA_S = _float("AIDA_API_ESPERA_FILA_S", 30.0)
 
+# Validacao de chave em cache: revogar, suspender ou esgotar a cota no painel
+# passa a valer em ate este tempo. Menor = mais consultas ao Supabase.
+CACHE_CHAVE_S = _int("AIDA_API_CACHE_CHAVE_S", 10)
+
 # --- Limites de uso --------------------------------------------------------- #
 LIMITE_PADRAO = _int("AIDA_API_LIMITE", 60)
 JANELA_LIMITE_S = _int("AIDA_API_JANELA_S", 3600)
@@ -70,6 +74,9 @@ JANELA_LIMITE_S = _int("AIDA_API_JANELA_S", 3600)
 # --- Logs ------------------------------------------------------------------- #
 # Retencao declarada no aviso de privacidade: o log guarda metadado da chamada
 # (chave, rota, status, duracao, hash do arquivo), nunca a imagem enviada.
+# Desligado, o log completo para de ser gravado, mas a analise atendida ainda
+# grava uma linha minima (chave, rota, status): e ela que desconta o token da
+# cota do plano (trigger api_calls_debita_token).
 LOG_CHAMADAS = _bool("AIDA_API_LOG_CHAMADAS", True)
 LOG_RETENCAO_DIAS = _int("AIDA_API_LOG_RETENCAO_DIAS", 90)
 

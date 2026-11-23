@@ -182,8 +182,13 @@ cache não é compartilhado — o custo é reprocessamento, nunca resposta errad
 Cota global exige um contador compartilhado (Redis/Postgres) no lugar de
 `limites.LimitadorEmMemoria`; a interface `consumir` continua a mesma.
 
-A validação de chave é cacheada por 60 s, então uma revogação passa a valer
-depois desse intervalo. Para revogar na hora, reinicie o processo.
+A validação de chave é cacheada por `AIDA_API_CACHE_CHAVE_S` (padrão 10 s):
+revogar, suspender ou esgotar a cota no painel passa a valer depois desse
+intervalo. Para valer na hora, reinicie o processo.
+
+Com `AIDA_API_LOG_CHAMADAS=false`, o log completo deixa de ser gravado, mas cada
+análise atendida ainda grava uma linha mínima em `api_calls` (prefixo da chave,
+rota, status). É essa linha que desconta o token da cota do plano.
 
 ## Variáveis de ambiente
 
@@ -199,3 +204,4 @@ Ver `.env.example`. As que mais importam:
 | `AIDA_API_CACHE_TTL_S` | 900 | Reaproveitamento por conteúdo |
 | `AIDA_API_MAX_MB` | 15 | Limite de tamanho, igual ao do Core |
 | `AIDA_API_LOG_RETENCAO_DIAS` | 90 | Precisa bater com o aviso de privacidade |
+| `AIDA_API_CACHE_CHAVE_S` | 10 | Tempo até revogação/suspensão valer |

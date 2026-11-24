@@ -281,16 +281,16 @@
         <div class="error-message" id="errorMessage"></div>
 
         <div class="results" id="resultsArea">
-            <div style="text-align: center;">
+            <div style="text-align: center;" id="resultBadgeRow">
                 <div class="result-badge" id="resultBadge">REAL</div>
             </div>
 
             <div class="metric">
-                <span class="metric-label">Probabilidade de ser IA</span>
+                <span class="metric-label">Chance de ser IA</span>
                 <span class="metric-value" id="probIA">0%</span>
             </div>
 
-            <div class="metric">
+            <div class="metric" id="confidenceRow">
                 <span class="metric-label">Confiança da Análise</span>
                 <span class="metric-value" id="confidence" style="text-transform: capitalize;">Alta</span>
             </div>
@@ -410,26 +410,37 @@
             }
         });
 
+        // Mesma leitura da tela de analise do site (scripts/script-analise.js):
+        // INCONCLUSIVO nao ganha selo nem confianca, so a chance de ser IA;
+        // os demais estados usam os mesmos rotulos do site.
+        const ROTULOS = {
+            'IA/MANIPULADA': { texto: 'Gerada por IA', classe: 'badge-ia' },
+            'REAL': { texto: 'Real', classe: 'badge-real' },
+            'REAL_EDITADA': { texto: 'Real editada', classe: 'badge-real' },
+        };
+
         function mostrarResultados(data) {
-            // Configurar Badge Principal
-            resultBadge.textContent = data.result;
+            const badgeRow = document.getElementById('resultBadgeRow');
+            const confidenceRow = document.getElementById('confidenceRow');
+            const rotulo = data.out_of_domain
+                ? { texto: 'Fora do escopo', classe: 'badge-inconclusivo' }
+                : ROTULOS[data.result];
+
             resultBadge.className = 'result-badge'; // reset
-
-            // REAL_EDITADA = foto real com registro de edicao nos metadados.
-            if (data.result === 'REAL' || data.result === 'REAL_EDITADA') {
-                resultBadge.classList.add('badge-real');
-            } else if (data.result === 'IA/MANIPULADA') {
-                resultBadge.classList.add('badge-ia');
-            } else {
-                resultBadge.classList.add('badge-inconclusivo');
+            if (rotulo) {
+                resultBadge.textContent = rotulo.texto;
+                resultBadge.classList.add(rotulo.classe);
             }
+            badgeRow.style.display = rotulo ? '' : 'none';
 
-            // Converter probabilidade de float (0.075) para % (7.5%)
-            const porcentagemIA = (data.ai_probability * 100).toFixed(1) + '%';
-            probIA.textContent = porcentagemIA;
+            // ai_probability ja vem na escala de exibicao (corte em 50%).
+            // Fora do escopo (imagem nao fotografica), o numero nao tem significado.
+            probIA.textContent = data.out_of_domain
+                ? 'não se aplica'
+                : (data.ai_probability * 100).toFixed(1) + '%';
 
-            // Confiança
             confidenceDisplay.textContent = data.confidence;
+            confidenceRow.style.display = rotulo && !data.out_of_domain ? '' : 'none';
 
             // Aviso Legal
             disclaimerText.textContent = data.disclaimer;

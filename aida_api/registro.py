@@ -110,9 +110,38 @@ def _linha_completa(evento):
 
 
 def _gravar_supabase(linha):
-    """Best-effort: o log e importante, mas nao a ponto de derrubar a analise."""
+    """Best-effort: o log e importante, mas nao a ponto de derrubar a analise.
+
+    A linha de uma analise atendida e o que desconta o token da cota (trigger
+    api_calls_debita_token). Se o Supabase recusar a linha completa — tabela
+    api_calls criada por uma versao antiga da migracao, sem alguma coluna —,
+    grava so a linha de cobranca, cujas colunas o trigger exige de qualquer
+    forma. Toda recusa vai para o log: antes, um 4xx passava em silencio e a
+    cota simplesmente parava de diminuir.
+    """
+    status, corpo = _post_supabase(linha)
+    if status is None or status < 400:
+        return
+    _logger.warning(json.dumps(
+        {"aida_api_log_recusado": {"status": status, "detalhe": corpo}}, ensure_ascii=False
+    ))
+    minima = {k: linha.get(k) for k in _COLUNAS_COBRANCA}
+    if minima != linha and _cobravel({"status": linha.get("status"), "route": linha.get("rota")}):
+        status, corpo = _post_supabase(minima)
+        if status is not None and status >= 400:
+            _logger.warning(json.dumps(
+                {"aida_api_cobranca_recusada": {"status": status, "detalhe": corpo}},
+                ensure_ascii=False,
+            ))
+
+
+_COLUNAS_COBRANCA = ("criada_em", "prefixo_chave", "rota", "status")
+
+
+def _post_supabase(linha):
+    """Devolve (status_http, corpo) ou (None, None) se a rede falhou."""
     try:
-        requests.post(
+        resposta = requests.post(
             f"{config.SUPABASE_URL}/rest/v1/{config.TABELA_CHAMADAS}",
             json=linha,
             headers={
@@ -125,3 +154,5 @@ def _gravar_supabase(linha):
         )
     except requests.RequestException as exc:
         _logger.warning(json.dumps({"aida_api_log_falhou": str(exc)}))
+        return None, None
+    return resposta.status_code, (resposta.text or "")[:300]

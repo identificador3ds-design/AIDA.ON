@@ -596,3 +596,48 @@ def test_erro_400_do_core_nao_e_repetido(core_sequencia):
     with pytest.raises(core.CoreErro):
         ANALISAR_REAL(PNG, "x.png")
     assert esperas == []
+
+
+class _RespostaSupabase:
+    def __init__(self, status, texto=""):
+        self.status_code = status
+        self.text = texto
+
+
+def test_linha_recusada_cai_para_a_linha_de_cobranca(monkeypatch, caplog):
+    # Tabela api_calls de uma migracao antiga, sem alguma coluna do log completo:
+    # o Supabase recusa a linha inteira, e a cota parava de diminuir em silencio.
+    enviadas = []
+    respostas = [_RespostaSupabase(400, '{"code":"PGRST204","message":"coluna cache inexistente"}'),
+                 _RespostaSupabase(201)]
+
+    def post(_url, json, **_k):
+        enviadas.append(json)
+        return respostas.pop(0)
+
+    monkeypatch.setattr(registro.requests, "post", post)
+    linha = registro._linha_completa({**ANALISE_ATENDIDA, "at": "2026-11-24T12:00:00+00:00"})
+    with caplog.at_level("WARNING", logger="aida.api"):
+        registro._gravar_supabase(linha)
+
+    assert len(enviadas) == 2
+    assert set(enviadas[1]) == {"criada_em", "prefixo_chave", "rota", "status"}
+    assert enviadas[1]["prefixo_chave"] == "aida_abc123"
+    assert "PGRST204" in caplog.text
+
+
+def test_linha_aceita_nao_e_reenviada(monkeypatch):
+    enviadas = []
+    monkeypatch.setattr(registro.requests, "post",
+                        lambda _u, json, **_k: enviadas.append(json) or _RespostaSupabase(201))
+    registro._gravar_supabase(registro._linha_completa(ANALISE_ATENDIDA))
+    assert len(enviadas) == 1
+
+
+def test_erro_recusado_nao_vira_linha_de_cobranca(monkeypatch):
+    # So analise atendida (200) desconta token; um 429 recusado nao e reenviado.
+    enviadas = []
+    monkeypatch.setattr(registro.requests, "post",
+                        lambda _u, json, **_k: enviadas.append(json) or _RespostaSupabase(400))
+    registro._gravar_supabase(registro._linha_completa({**ANALISE_ATENDIDA, "status": 429}))
+    assert len(enviadas) == 1

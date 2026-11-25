@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#10403b">
+
+    <link rel="manifest" href="../manifest.webmanifest">
+    <link rel="apple-touch-icon" href="../assets/images/pwa-icon-180.png">
+    <link id="favicon" rel="icon" type="image/x-icon" href="../assets/images/AIDABranco.ico">
+
+    <!-- gerado:meta (docs/gerar_pagina_precos.py — não editar à mão) -->
+    <title>Planos e preços — AIDA.ON</title>
+    <meta name="description" content="Gratuito para o cidadão. Planos da plataforma web e da API do AIDA para profissionais, redações e empresas, cobrados em créditos: 1 imagem = 1 crédito, 1 minuto de vídeo = 10 créditos.">
+    <link rel="canonical" href="https://aida-on.com.br/precos">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="AIDA.ON">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:locale:alternate" content="en_US">
+    <meta property="og:title" content="Planos e preços do AIDA">
+    <meta property="og:description" content="Verificar uma imagem é grátis para o cidadão. Redações e empresas contratam a plataforma web ou a API por créditos.">
+    <meta property="og:url" content="https://aida-on.com.br/precos">
+    <meta property="og:image" content="https://aida-on.com.br/assets/images/pwa-icon-512.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Planos e preços do AIDA">
+    <meta name="twitter:description" content="Verificar uma imagem é grátis para o cidadão. Redações e empresas contratam a plataforma web ou a API por créditos.">
+    <meta name="twitter:image" content="https://aida-on.com.br/assets/images/pwa-icon-512.png">
+    <!-- /gerado:meta -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Afacad:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../styles/style-shared-theme.css?v=20261011-nav">
+    <link rel="stylesheet" href="../styles/aida-design-system.css">
+    <link rel="stylesheet" href="../styles/aida-produto.css?v=20260929-v1">
+    <link rel="stylesheet" href="../styles/style-precos.css?v=20261124-v1">
+
+    <!-- gerado:jsonld -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "AIDA",
+      "applicationCategory": "SecurityApplication",
+      "operatingSystem": "Web",
+      "url": "https://aida-on.com.br/precos",
+      "description": "Gratuito para o cidadão. Planos da plataforma web e da API do AIDA para profissionais, redações e empresas, cobrados em créditos: 1 imagem = 1 crédito, 1 minuto de vídeo = 10 créditos.",
+      "offers": [
+        {
+          "@type": "Offer",
+          "name": "Cidadão",
+          "category": "Web platform",
+          "price": "0.00",
+          "priceCurrency": "BRL",
+          "url": "https://aida-on.com.br/precos",
+          "availability": "https://schema.org/InStock",
+          "priceSpecification": {
+            "@type": "UnitPriceSpecification",
+            "price": "0.00",
+            "priceCurrency": "BRL",
+            "referenceQuantity": {
+              "@type": "QuantitativeValue",
+              "value": 1,
+              "unitCode": "MON"
+            }
+          },
+          "eligibleRegion": {
+            "@type": "Country",
+            "name": "BR"
+          }
+        },
+        {
+          "@type": "Offer",
+          "name": "Criador",
+          "category": "Web platform",
+          "price": "24.90",
+          "priceCurrency": "BRL",
+          "url": "https://aida-on.com.br/precos",
+          "availability": "https://schema.org/InStock",
+          "priceSpecification": {
+            "@type": "UnitPriceSpecification",
+            "price": "24.90",
+            "priceCurrency": "BRL",
+            "referenceQuantity": {
+              "@type": "QuantitativeValue",
+              "value": 1,
+              "unitCode": "MON"
+            }
+          },
+          "eligibleRegion": {
+            "@type": "Country",
+            "name": "BR"
+          },
+          "description": "1000 credits/month"
+        },
+        {
+          "@type": "Offer",
+          "name": "Profissional",
+          "category": "Web platform",
+          "price": "69.90",
+          "priceCurrency": "BRL",
+          "url": "https://aida-on.com.br/precos",
+          "availability": "https://schema.org/InStock",
+          "priceSpecification": {
+            "@type": "UnitPriceSpecification",
+            "price": "69.90",
+            "priceCurrency": "BRL",
+            "referenceQuantity": {
+              "@type": "QuantitativeValue",
+              "value": 1,
+              "unitCode": "MON"
+            }
+          },
+          "eligibleRegion": {
+            "@type": "Country",
+            "name": "BR"
+          },
+          "description": "4000 credits/month"
+        },
+        {
+          "@type": "Offer",
+          "name": "Redação",
+          "category": "Web platform",
+          "price": "199.90",
+          "priceCurrency": "BRL",
+          "url": "https://aida-on.com.br/precos",
+          "availability": "https://schema.org/InStock",
+          "priceSpecification": {
+            "@type": "UnitPriceSpecification",
+            "price": "199.90",
+            "priceCurrency": "BRL",
+            "referenceQuantity": {
+              "@type": "QuantitativeValue",
+              "value": 1,
+              "unitCode": "MON"
+            }
+          },
+          "eligibleRegion": {
+            "@type": "Country",
+            "name": "BR"
+          },
+          "description": "15000 credits/month"
+        },
+        {
+          "@type": "Offer",
+          "name": "API Free",
+          "category": "API",
+          "price": "0.00",
+          "priceCurrency": "BRL",
+          "url": "https://aida-on.com.br/precos",
+          "availability": "https://schema.org/InStock",
+          "priceSpecification": {
+            "@type": "UnitPriceSpecification",
+            "price": "0.00",
+            "priceCurrency": "BRL",
+            "referenceQuantity": {
+              "@type": "QuantitativeValue",
+              "value": 1,
+              "unitCode": "MON"
+            }
+          },
+          "eligibleRegion": {
+            "@type": "Country",
+            "name": "BR"
+          },
+          "description": "100 credits/month"
+        },
+        {
+          "@type": "Offer",
+          "name": "API Starter",
+          "category": "API",
+          "price": "49.90",
+          "priceCurrency": "BRL",
+          "url": "https://aida-on.com.br/precos",
+          "availability": "https://schema.org/InStock",
+          "priceSpecification": {
+            "@type": "UnitPriceSpecification",
+            "price": "49.90",
+            "priceCurrency": "BRL",
+            "referenceQuantity": {
+              "@type": "QuantitativeValue",
+              "value": 1,
+              "unitCode": "MON"
+            }
+          },
+          "eligibleRegion": {
+            "@type": "Country",
+            "name": "BR"
+          },
+          "description": "2000 credits/month"
+        },
+        {
+          "@type": "Offer",
+          "name": "API Pro",
+          "category": "API",
+          "price": "149.90",
+          "priceCurrency": "BRL",
+          "url": "https://aida-on.com.br/precos",
+          "availability": "https://schema.org/InStock",
+          "priceSpecification": {
+            "@type": "UnitPriceSpecification",
+            "price": "149.90",
+            "priceCurrency": "BRL",
+            "referenceQuantity": {
+              "@type": "QuantitativeValue",
+              "value": 1,
+              "unitCode": "MON"
+            }
+          },
+          "eligibleRegion": {
+            "@type": "Country",
+            "name": "BR"
+          },
+          "description": "8000 credits/month"
+        },
+        {
+          "@type": "Offer",
+          "name": "API Business",
+          "category": "API",
+          "price": "499.00",
+          "priceCurrency": "BRL",
+          "url": "https://aida-on.com.br/precos",
+          "availability": "https://schema.org/InStock",
+          "priceSpecification": {
+            "@type": "UnitPriceSpecification",
+            "price": "499.00",
+            "priceCurrency": "BRL",
+            "referenceQuantity": {
+              "@type": "QuantitativeValue",
+              "value": 1,
+              "unitCode": "MON"
+            }
+          },
+          "eligibleRegion": {
+            "@type": "Country",
+            "name": "BR"
+          },
+          "description": "30000 credits/month"
+        },
+        {
+          "@type": "Offer",
+          "name": "API Scale",
+          "category": "API",
+          "price": "1490.00",
+          "priceCurrency": "BRL",
+          "url": "https://aida-on.com.br/precos",
+          "availability": "https://schema.org/InStock",
+          "priceSpecification": {
+            "@type": "UnitPriceSpecification",
+            "price": "1490.00",
+            "priceCurrency": "BRL",
+            "referenceQuantity": {
+              "@type": "QuantitativeValue",
+              "value": 1,
+              "unitCode": "MON"
+            }
+          },
+          "eligibleRegion": {
+            "@type": "Country",
+            "name": "BR"
+          },
+          "description": "120000 credits/month"
+        },
+        {
+          "@type": "Offer",
+          "name": "Free",
+          "category": "Web platform",
+          "price": "0.00",
+          "priceCurrency": "USD",
+          "url": "https://aida-on.com.br/precos",
+          "availability": "https://schema.org/InStock",
+          "priceSpecification": {
+            "@type": "UnitPriceSpecification",
+            "price": "0.00",
+            "priceCurrency": "USD",
+            "referenceQuantity": {
+              "@type": "QuantitativeValue",
+              "value": 1,
+              "unitCode": "MON"
+            }
+          }
+        },
+        {
+          "@type": "Offer",
+          "name": "Pro",
+          "category": "Web platform",
+          "price": "9.00",
+          "priceCurrency": "USD",
+          "url": "https://aida-on.com.br/precos",
+          "availability": "https://schema.org/InStock",
+          "priceSpecification": {
+            "@type": "UnitPriceSpecification",
+            "price": "9.00",
+            "priceCurrency": "USD",
+            "referenceQuantity": {
+              "@type": "QuantitativeValue",
+              "value": 1,
+              "unitCode": "MON"
+            }
+          }
+        },
+        {
+          "@type": "Offer",
+          "name": "Team",
+          "category": "Web platform",
+          "price": "39.00",
+          "priceCurrency": "USD",
+          "url": "https://aida-on.com.br/precos",
+          "availability": "https://schema.org/InStock",
+          "priceSpecification": {
+            "@type": "UnitPriceSpecification",
+            "price": "39.00",
+            "priceCurrency": "USD",
+            "referenceQuantity": {
+              "@type": "QuantitativeValue",
+              "value": 1,
+              "unitCode": "MON"
+            }
+          }
+        },
+        {
+          "@type": "Offer",
+          "name": "API Free",
+          "category": "API",
+          "price": "0.00",
+          "priceCurrency": "USD",
+          "url": "https://aida-on.com.br/precos",
+          "availability": "https://schema.org/InStock",
+          "priceSpecification": {
+            "@type": "UnitPriceSpecification",
+            "price": "0.00",
+            "priceCurrency": "USD",
+            "referenceQuantity": {
+              "@type": "QuantitativeValue",
+              "value": 1,
+              "unitCode": "MON"
+            }
+          },
+          "description": "100 credits/month"
+        },
+        {
+          "@type": "Offer",
+          "name": "API Starter",
+          "category": "API",
+          "price": "19.00",
+          "priceCurrency": "USD",
+          "url": "https://aida-on.com.br/precos",
+          "availability": "https://schema.org/InStock",
+          "priceSpecification": {
+            "@type": "UnitPriceSpecification",
+            "price": "19.00",
+            "priceCurrency": "USD",
+            "referenceQuantity": {
+              "@type": "QuantitativeValue",
+              "value": 1,
+              "unitCode": "MON"
+            }
+          },
+          "description": "3000 credits/month"
+        },
+        {
+          "@type": "Offer",
+          "name": "API Pro",
+          "category": "API",
+          "price": "59.00",
+          "priceCurrency": "USD",
+          "url": "https://aida-on.com.br/precos",
+          "availability": "https://schema.org/InStock",
+          "priceSpecification": {
+            "@type": "UnitPriceSpecification",
+            "price": "59.00",
+            "priceCurrency": "USD",
+            "referenceQuantity": {
+              "@type": "QuantitativeValue",
+              "value": 1,
+              "unitCode": "MON"
+            }
+          },
+          "description": "12000 credits/month"
+        },
+        {
+          "@type": "Offer",
+          "name": "API Business",
+          "category": "API",
+          "price": "199.00",
+          "priceCurrency": "USD",
+          "url": "https://aida-on.com.br/precos",
+          "availability": "https://schema.org/InStock",
+          "priceSpecification": {
+            "@type": "UnitPriceSpecification",
+            "price": "199.00",
+            "priceCurrency": "USD",
+            "referenceQuantity": {
+              "@type": "QuantitativeValue",
+              "value": 1,
+              "unitCode": "MON"
+            }
+          },
+          "description": "50000 credits/month"
+        },
+        {
+          "@type": "Offer",
+          "name": "API Scale",
+          "category": "API",
+          "price": "599.00",
+          "priceCurrency": "USD",
+          "url": "https://aida-on.com.br/precos",
+          "availability": "https://schema.org/InStock",
+          "priceSpecification": {
+            "@type": "UnitPriceSpecification",
+            "price": "599.00",
+            "priceCurrency": "USD",
+            "referenceQuantity": {
+              "@type": "QuantitativeValue",
+              "value": 1,
+              "unitCode": "MON"
+            }
+          },
+          "description": "200000 credits/month"
+        }
+      ]
+    }
+    </script>
+    <!-- /gerado:jsonld -->
+</head>
+
+<body class="aida-shell" style="--produto-accent: var(--aida-api);">
+    <a class="aida-skip-link" href="#conteudo" data-i18n="skip">Pular para o conteúdo</a>
+    <header class="page-header">
+        <a href="./index-apresentacao.html" aria-label="Página inicial do AIDA" data-i18n-attr="aria-label:nav.home_aria">
+            <img src="../assets/images/LogoBranca.png" alt="Logo AIDA.ON" data-i18n-attr="alt:nav.logo_alt" class="brand-logo">
+        </a>
+        <nav class="aida-topnav" aria-label="Navegação principal" data-i18n-attr="aria-label:nav.aria">
+            <a href="./index-apresentacao.html" class="top-link" data-nav="inicio" data-i18n="nav.inicio">Início</a>
+            <a href="./index-solucoes.html" class="top-link" data-nav="solucoes" data-i18n="nav.solucoes">Soluções</a>
+            <a href="./index-enviar.html" class="top-link top-link--destaque" data-nav="enviar" data-i18n="nav.enviar">Analisar arquivo</a>
+        </nav>
+    </header>
+
+    <main id="conteudo" class="page-frame produto-main precos-main" data-precos data-base="..">
+
+        <!-- ================= Topo ================= -->
+        <section class="precos-hero">
+            <span class="aida-eyebrow" data-i18n="hero.eyebrow">Planos e preços</span>
+            <h1 class="precos-hero__titulo" data-i18n="hero.title">Grátis para o cidadão. Sob medida para quem verifica em volume.</h1>
+            <p class="aida-text precos-hero__texto" data-i18n="hero.lead">Qualquer pessoa pode verificar imagens e vídeos no AIDA sem pagar nada. Profissionais, redações e empresas que analisam em volume contratam a plataforma web ou a API, cobradas em créditos.</p>
+        </section>
+
+        <!-- ================= Controles ================= -->
+        <div class="precos-controles" role="group" aria-label="Opções de exibição dos preços" data-i18n-attr="aria-label:controls.aria">
+            <fieldset class="precos-seg">
+                <legend class="precos-seg__rotulo" data-i18n="controls.market">Mercado</legend>
+                <div class="precos-seg__opcoes">
+                    <input class="precos-seg__radio" type="radio" name="mercado" id="mercado-BR" value="BR">
+                    <label class="precos-seg__opcao" for="mercado-BR" data-i18n="market.BR">Brasil (R$)</label>
+                    <input class="precos-seg__radio" type="radio" name="mercado" id="mercado-INTL" value="INTL">
+                    <label class="precos-seg__opcao" for="mercado-INTL" data-i18n="market.INTL">Internacional (US$)</label>
+                </div>
+            </fieldset>
+
+            <fieldset class="precos-seg">
+                <legend class="precos-seg__rotulo" data-i18n="controls.billing">Cobrança</legend>
+                <div class="precos-seg__opcoes">
+                    <input class="precos-seg__radio" type="radio" name="ciclo" id="ciclo-monthly" value="monthly" checked>
+                    <label class="precos-seg__opcao" for="ciclo-monthly" data-i18n="billing.monthly">Mensal</label>
+                    <input class="precos-seg__radio" type="radio" name="ciclo" id="ciclo-annual" value="annual"
+                        aria-describedby="precosEconomia">
+                    <label class="precos-seg__opcao" for="ciclo-annual" data-i18n="billing.annual">Anual</label>
+                </div>
+                <span class="precos-economia" id="precosEconomia"></span>
+            </fieldset>
+
+            <fieldset class="precos-seg">
+                <legend class="precos-seg__rotulo" data-i18n="controls.language">Idioma</legend>
+                <div class="precos-seg__opcoes">
+                    <input class="precos-seg__radio" type="radio" name="idioma" id="idioma-pt-BR" value="pt-BR">
+                    <label class="precos-seg__opcao" for="idioma-pt-BR" lang="pt-BR" data-i18n="lang.pt-BR">Português</label>
+                    <input class="precos-seg__radio" type="radio" name="idioma" id="idioma-en-US" value="en-US">
+                    <label class="precos-seg__opcao" for="idioma-en-US" lang="en-US" data-i18n="lang.en-US">English</label>
+                </div>
+            </fieldset>
+        </div>
+        <p class="aida-text--sm precos-nota" data-i18n="market.note">A moeda do checkout é confirmada no pagamento: reais exigem CPF ou CNPJ e endereço de cobrança no Brasil.</p>
+
+        <noscript>
+            <p class="aida-state aida-state--indisponivel precos-noscript" data-i18n="noscript">Ative o JavaScript para trocar a moeda, ver a calculadora e falar com a equipe.</p>
+        </noscript>
+
+        <div class="aida-state aida-state--carregando precos-status" id="precosStatus" role="status">
+            <span class="aida-state__icon" aria-hidden="true"></span>
+            <p class="aida-state__title" id="precosStatusTexto" data-i18n="status.loading">Carregando planos…</p>
+            <p class="aida-state__title" id="precosStatusErro" data-i18n="status.error" hidden>Não foi possível carregar os planos. Recarregue a página.</p>
+        </div>
+
+        <!-- ================= Planos ================= -->
+        <section class="precos-planos">
+            <div class="precos-abas" role="tablist" aria-label="Tipo de produto" data-i18n-attr="aria-label:tabs.aria">
+                <button type="button" class="precos-aba" role="tab" id="aba-platform" aria-controls="painel-platform"
+                    aria-selected="true" data-segmento="platform" data-i18n="segment.platform">Plataforma web</button>
+                <button type="button" class="precos-aba" role="tab" id="aba-api" aria-controls="painel-api"
+                    aria-selected="false" tabindex="-1" data-segmento="api" data-i18n="segment.api">API</button>
+            </div>
+
+            <div class="precos-painel" role="tabpanel" id="painel-platform" aria-labelledby="aba-platform" tabindex="0">
+                <div class="precos-cards" data-cards="platform"></div>
+            </div>
+            <div class="precos-painel" role="tabpanel" id="painel-api" aria-labelledby="aba-api" tabindex="0" hidden>
+                <div class="precos-cards" data-cards="api"></div>
+            </div>
+
+            <p class="aida-text--sm precos-nota" id="precosCheckoutAviso" data-i18n="cta.checkout_soon">O pagamento online ainda não está disponível. Ao contratar, a equipe entra em contato.</p>
+        </section>
+
+        <!-- ================= Créditos ================= -->
+        <section class="produto-bloco precos-creditos">
+            <span class="aida-eyebrow" data-i18n="credits.eyebrow">Como funcionam os créditos</span>
+            <h2 class="aida-title-2" data-i18n="credits.title">Uma régua só para imagem e vídeo.</h2>
+            <div class="precos-creditos__grade">
+                <div class="precos-creditos__item">
+                    <strong class="precos-creditos__valor" data-i18n="credits.image_value">1 crédito</strong>
+                    <span data-i18n="credits.image_label">por análise de imagem</span>
+                </div>
+                <div class="precos-creditos__item">
+                    <strong class="precos-creditos__valor" data-i18n="credits.video_value">10 créditos</strong>
+                    <span data-i18n="credits.video_label">por minuto de vídeo, arredondado para cima a cada minuto iniciado</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= Calculadora ================= -->
+        <section class="produto-bloco precos-calc" id="calculadora" aria-labelledby="calcTitulo">
+            <span class="aida-eyebrow" data-i18n="calc.eyebrow">Calculadora</span>
+            <h2 class="aida-title-2" id="calcTitulo" data-i18n="calc.title">Qual plano cabe no seu volume?</h2>
+            <p class="aida-text precos-calc__lead" data-i18n="calc.lead">Informe quanto você analisa por mês. A conta considera a mensalidade e o excedente de cada plano da aba escolhida.</p>
+
+            <div class="aida-card aida-card--panel precos-calc__painel">
+                <form class="precos-calc__form" id="calcForm" novalidate>
+                    <p class="aida-text--sm precos-calc__segmento" id="calcSegmento"></p>
+                    <div class="aida-field">
+                        <label class="aida-field__label" for="calcImagens" data-i18n="calc.images">Imagens por mês</label>
+                        <input class="aida-input" type="number" id="calcImagens" name="imagens" min="0" step="1"
+                            inputmode="numeric" value="500">
+                    </div>
+                    <div class="aida-field">
+                        <label class="aida-field__label" for="calcMinutos" data-i18n="calc.video_minutes">Minutos de vídeo por mês</label>
+                        <input class="aida-input" type="number" id="calcMinutos" name="minutos" min="0" step="1"
+                            inputmode="numeric" value="30" aria-describedby="calcMinutosDica">
+                        <p class="aida-field__hint" id="calcMinutosDica" data-i18n="calc.video_hint">Cada vídeo conta por minuto iniciado: um vídeo de 1 min 10 s conta 2 minutos.</p>
+                    </div>
+                </form>
+                <div class="precos-calc__resultado" id="calcResultado" aria-live="polite"></div>
+            </div>
+        </section>
+
+        <!-- ================= Comparativo ================= -->
+        <section class="produto-bloco" id="comparativo">
+            <span class="aida-eyebrow" data-i18n="compare.eyebrow">Comparativo</span>
+            <h2 class="aida-title-2" data-i18n="compare.title">Todos os recursos, lado a lado.</h2>
+            <div class="api-tabela precos-tabela" id="precosTabela" role="region" tabindex="0"></div>
+        </section>
+
+        <!-- ================= FAQ ================= -->
+        <section class="produto-bloco precos-faq" id="faq">
+            <span class="aida-eyebrow" data-i18n="faq.eyebrow">Perguntas frequentes</span>
+            <h2 class="aida-title-2" data-i18n="faq.title">Antes de contratar.</h2>
+            <details class="precos-faq__item">
+                <summary data-i18n="faq.q1">O que é um crédito?</summary>
+                <p data-i18n="faq.a1">É a unidade de cobrança do AIDA. Cada análise de imagem usa 1 crédito. Vídeo usa 10 créditos por minuto, contando cada minuto iniciado: um vídeo de 2 min 30 s usa 30 créditos.</p>
+            </details>
+            <details class="precos-faq__item">
+                <summary data-i18n="faq.q2">O que acontece quando meus créditos acabam?</summary>
+                <p data-i18n="faq.a2">No API Free, as chamadas são recusadas com HTTP 429 até o próximo ciclo. Nos planos pagos da API, o uso continua e cada crédito além do incluído é cobrado pelo preço de excedente do plano. Nos planos da plataforma web, novas análises ficam bloqueadas até o próximo ciclo ou até a troca de plano.</p>
+            </details>
+            <details class="precos-faq__item">
+                <summary data-i18n="faq.q3">Os créditos que sobram passam para o mês seguinte?</summary>
+                <p data-i18n="faq.a3">Não. Os créditos incluídos valem para o ciclo de cobrança em que foram concedidos e não acumulam.</p>
+            </details>
+            <details class="precos-faq__item">
+                <summary data-i18n="faq.q4">Como cancelo?</summary>
+                <p data-i18n="faq.a4">Peça o cancelamento à equipe pelo formulário de contato. O plano não renova e segue ativo até o fim do período já pago.</p>
+            </details>
+            <details class="precos-faq__item">
+                <summary data-i18n="faq.q5">Por que o uso é gratuito para o cidadão?</summary>
+                <p data-i18n="faq.a5">Porque checar se uma imagem ou um vídeo foi manipulado não deve depender de quanto alguém pode pagar. Quem sustenta o AIDA são os profissionais e as empresas que analisam em volume.</p>
+            </details>
+            <details class="precos-faq__item">
+                <summary data-i18n="faq.q6">Quais formas de pagamento são aceitas?</summary>
+                <p data-i18n="faq.a6">O pagamento online está sendo integrado. Por enquanto, a contratação é feita com a equipe, que informa as formas disponíveis. Cobrança em reais exige CPF ou CNPJ e endereço de cobrança no Brasil.</p>
+            </details>
+        </section>
+
+        <div class="produto-rodape">
+            <p class="aida-text--sm" style="margin: 0;" data-i18n="footer.disclaimer">O resultado do AIDA é um indício técnico, nunca uma prova sobre a origem de um conteúdo.</p>
+            <a href="./index-solucoes.html" class="aida-btn aida-btn--ghost aida-btn--sm" data-i18n="footer.back">Ver as soluções</a>
+        </div>
+    </main>
+
+    <!-- ================= Formulário comercial ================= -->
+    <dialog class="precos-dialogo" id="contatoDialogo" aria-labelledby="contatoTitulo">
+        <form class="precos-dialogo__form" id="contatoForm" novalidate>
+            <div class="precos-dialogo__topo">
+                <h2 class="aida-title-3" id="contatoTitulo"></h2>
+                <button type="button" class="aida-btn aida-btn--quiet precos-dialogo__fechar" data-fechar
+                    aria-label="Fechar" data-i18n-attr="aria-label:contact.close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <p class="aida-text--sm" data-i18n="contact.lead">Responderemos pelo e-mail informado. Os campos marcados com * são obrigatórios.</p>
+            <p class="precos-form__resumo" id="contatoResumo" role="alert" hidden></p>
+
+            <input type="hidden" name="tipo" id="contatoTipo">
+            <input type="hidden" name="plano_id" id="contatoPlano">
+
+            <div class="aida-field">
+                <label class="aida-field__label" for="contatoNome" data-i18n="contact.name">Nome *</label>
+                <input class="aida-input" id="contatoNome" name="nome" autocomplete="name" maxlength="120" required
+                    aria-describedby="erro-contatoNome">
+                <p class="precos-form__erro" id="erro-contatoNome" hidden></p>
+            </div>
+            <div class="aida-field">
+                <label class="aida-field__label" for="contatoEmpresa" data-i18n="contact.company">Empresa ou organização *</label>
+                <input class="aida-input" id="contatoEmpresa" name="empresa" autocomplete="organization" maxlength="160"
+                    required aria-describedby="erro-contatoEmpresa">
+                <p class="precos-form__erro" id="erro-contatoEmpresa" hidden></p>
+            </div>
+            <div class="aida-field">
+                <label class="aida-field__label" for="contatoEmail" data-i18n="contact.email">E-mail *</label>
+                <input class="aida-input" id="contatoEmail" name="email" type="email" autocomplete="email"
+                    maxlength="254" required aria-describedby="erro-contatoEmail">
+                <p class="precos-form__erro" id="erro-contatoEmail" hidden></p>
+            </div>
+            <div class="aida-field">
+                <label class="aida-field__label" for="contatoVolume" data-i18n="contact.volume">Volume estimado por mês *</label>
+                <input class="aida-input" id="contatoVolume" name="volume" type="number" min="1" step="1"
+                    inputmode="numeric" required aria-describedby="contatoVolumeDica erro-contatoVolume">
+                <p class="aida-field__hint" id="contatoVolumeDica" data-i18n="contact.volume_hint">Em créditos: imagens + 10 × minutos de vídeo.</p>
+                <p class="precos-form__erro" id="erro-contatoVolume" hidden></p>
+            </div>
+            <div class="aida-field">
+                <label class="aida-field__label" for="contatoMensagem" data-i18n="contact.message">Mensagem</label>
+                <textarea class="aida-textarea" id="contatoMensagem" name="mensagem" rows="4" maxlength="2000"
+                    aria-describedby="erro-contatoMensagem"></textarea>
+                <p class="precos-form__erro" id="erro-contatoMensagem" hidden></p>
+            </div>
+
+            <!-- Armadilha para robôs: fora da tela e fora da ordem de tabulação. -->
+            <div class="precos-armadilha" aria-hidden="true">
+                <label for="contatoSite" data-i18n="contact.honeypot">Deixe este campo em branco</label>
+                <input id="contatoSite" name="site" tabindex="-1" autocomplete="off">
+            </div>
+
+            <div class="precos-form__consentimento">
+                <input type="checkbox" id="contatoConsentimento" name="consentimento" required
+                    aria-describedby="erro-contatoConsentimento">
+                <label for="contatoConsentimento" data-i18n="contact.consent">Li o aviso de privacidade e autorizo a equipe do AIDA a usar estes dados para responder ao contato. *</label>
+            </div>
+            <a class="aida-text--sm precos-form__link" href="./index-privacidade.html" target="_blank"
+                rel="noopener" data-i18n="contact.privacy_link">Ler o aviso de privacidade</a>
+            <p class="precos-form__erro" id="erro-contatoConsentimento" hidden></p>
+
+            <div class="precos-form__estado" id="contatoEstado" role="status" aria-live="polite"></div>
+
+            <div class="precos-dialogo__acoes">
+                <button type="submit" class="aida-btn" id="contatoEnviar" data-i18n="contact.submit">Enviar</button>
+            </div>
+        </form>
+    </dialog>
+
+    <script src="../scripts/script-cookie-consent.js"></script>
+    <script src="../scripts/aida-precos-core.js?v=20261124-v1"></script>
+    <script src="../scripts/aida-i18n.js?v=20261124-v1"></script>
+    <script src="../scripts/script-precos.js?v=20261124-v1"></script>
+    <script src="../scripts/aida-topnav.js?v=20261011-v1"></script>
+</body>
+
+</html>

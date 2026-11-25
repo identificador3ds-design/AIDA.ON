@@ -13,6 +13,9 @@ Este documento e um ponto de partida tecnico para adequacao do projeto. Ele nao 
 | Analise de imagem | Arquivo em base64, metadados do arquivo, resultado tecnico | Backend Flask no Render durante processamento | A imagem pode conter dado pessoal ou sensivel se houver pessoas identificaveis. |
 | Historico | URL da imagem original, resultado, metodo, probabilidade, data e `user_id` | Supabase tabela `historico_analises` e bucket `evidencias` | Agora o salvamento depende de escolha explicita na tela de analise. |
 | Preferencias locais | Tutorial visto, decisao de instalacao PWA, opcao de salvar historico | Navegador do usuario | Manter apenas preferencias necessarias para UX. |
+| Contato comercial (pagina /precos) | Nome, empresa, e-mail, volume estimado, mensagem livre, consentimento | Supabase tabela `contatos_comerciais` (docs/migracao-cobranca.sql) | Publico so insere; leitura so do admin. Retencao sugerida de 12 meses, PENDENTE de validacao juridica; o aviso de privacidade ainda nao cita esta finalidade. |
+| Checkout (API, futuro) | CPF/CNPJ e endereco de cobranca | So em memoria na borda (`POST /v1/billing/checkout`); nao e gravado | Usado para a regra anti-arbitragem. Ao integrar o gateway, os dados vao para o provedor de pagamento: inventariar o operador. |
+| Preferencias da pagina de precos | Mercado e idioma escolhidos | `localStorage` (AIDA_PrecosMercado, AIDA_PrecosIdioma) | Conveniencia; nao identifica a pessoa. |
 
 ## Controles implementados nesta etapa
 

@@ -127,6 +127,14 @@
       "destination": "/pages/index-perfil"
     },
     {
+      "source": "/precos",
+      "destination": "/pages/index-precos"
+    },
+    {
+      "source": "/pricing",
+      "destination": "/pages/index-precos"
+    },
+    {
       "source": "/privacidade",
       "destination": "/pages/index-privacidade"
     },

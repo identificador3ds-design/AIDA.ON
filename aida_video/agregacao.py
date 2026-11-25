@@ -172,6 +172,11 @@ def combinar_visual(visual, trajetoria, regras=None):
     base = "movimento entre frames" + (" + probabilidade do Core" if trajetoria.get("usa_core") else "")
     motivo = f"{base}: {prob:.0%} de probabilidade de IA"
     saida = {**visual, "resultado_frames": visual["resultado"], "motivos": list(visual["motivos"])}
+    if "frames_validos" in visual and visual["frames_validos"] < regras["min_frames_validos"]:
+        # Sem frames suficientes (ex.: Core fora do ar ou devolvendo 429) o movimento
+        # nao decide sozinho: ele foi calibrado junto com o voto dos frames.
+        saida["motivos"].append(motivo + " (não decide sozinho sem frames analisados)")
+        return saida
     if visual["resultado"] == IA:
         saida["motivos"].append(motivo)
         return saida
@@ -219,7 +224,12 @@ def combinar(visual, audio, regras=None):
 
     if visual["resultado"] == IA:
         resultado = IA
-        motivos.append("indício de IA na imagem")
+        if visual.get("resultado_frames", IA) == IA:
+            motivos.append("indício de IA na imagem")
+        else:
+            # Quem marcou IA foi o movimento: dizer "na imagem" contradiz os frames.
+            motivos.append(f"indício de IA no movimento entre frames (os frames isolados deram "
+                           f"{visual['resultado_frames']})")
         motivos.extend(movimento)
         if resultado_audio == IA:
             motivos.append("indício de IA no áudio")
@@ -239,7 +249,13 @@ def combinar(visual, audio, regras=None):
             else:
                 motivos.append("imagem e áudio sem indício de IA")
     else:
-        if resultado_audio in (IA, REAL):
+        sem_frames = "frames_validos" in visual and visual["frames_validos"] < regras["min_frames_validos"]
+        if sem_frames and resultado_audio == REAL:
+            # Áudio limpo não diz nada sobre a imagem: sem frames analisados, o
+            # vídeo não pode sair REAL só por ele (só IA no áudio ainda conta).
+            resultado = INCONCLUSIVO
+            motivos.append("imagem não analisada (poucos frames válidos); o áudio sozinho não confirma vídeo real")
+        elif resultado_audio in (IA, REAL):
             resultado = resultado_audio
             motivos.append(
                 "imagem inconclusiva; decidido pelo áudio ("

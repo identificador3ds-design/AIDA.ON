@@ -326,6 +326,25 @@ def test_core_4xx_nao_repete(png):
     assert len(sessao.enviados) == 1
 
 
+def test_core_429_espera_e_repete(png, monkeypatch):
+    """429 (limite do Core ou do proxy do Hugging Face) é passageiro: repete, não perde o frame."""
+    esperas = []
+    monkeypatch.setattr("aida_video.analisadores.time.sleep", esperas.append)
+    pagina_hf = _Resposta(429, None, "<!doctype html><html>Too Many Requests</html>")
+    sessao = _SessaoFalsa([pagina_hf, _Resposta(200, FRAME_REAL)])
+    r = AnalisadorCore("http://core", sessao=sessao, tentativas=3, espera_s=1).analisar(png)
+    assert r["resultado"] == REAL
+    assert len(sessao.enviados) == 2
+    assert esperas and max(esperas) <= 30
+
+
+def test_core_429_persistente_vira_indisponivel(png, monkeypatch):
+    monkeypatch.setattr("aida_video.analisadores.time.sleep", lambda s: None)
+    sessao = _SessaoFalsa([_Resposta(429, None, "<html>")] * 3)
+    with pytest.raises(CoreIndisponivel, match="429"):
+        AnalisadorCore("http://core", sessao=sessao, tentativas=3, espera_s=0).analisar(png)
+
+
 def test_core_resposta_fora_do_contrato(png):
     sessao = _SessaoFalsa([_Resposta(200, None, "<html>"), _Resposta(200, {"x": 1})])
     with pytest.raises(CoreIndisponivel, match="contrato"):

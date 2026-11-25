@@ -27,7 +27,7 @@ from flask_cors import CORS
 from werkzeug.exceptions import HTTPException
 
 from . import cache as cache_mod
-from . import chaves_api, config, core, docs, limites, registro
+from . import chaves_api, cobranca, config, core, docs, limites, medicao, registro, usuarios
 from .contrato import CONTRATO, VERSAO_CONTRATO, erro, mapear_analise
 
 INICIADO_EM = time.time()
@@ -35,6 +35,7 @@ INICIADO_EM = time.time()
 analises = cache_mod.CacheAnalises()
 fila = cache_mod.Fila()
 limitador = limites.LimitadorEmMemoria()
+medidor = medicao.criar_medidor()
 
 # Assinaturas de arquivo dos formatos aceitos. A checagem e barata e derruba na
 # borda o que nem deveria ocupar uma vaga da fila; a validacao completa continua
@@ -245,6 +246,102 @@ def criar_app():
         return jsonify(corpo), (200 if corpo["status"] == "ok" else 503)
 
     # ----------------------------------------------------------------- #
+    # Creditos (medicao por ciclo) — ver medicao.py
+    # ----------------------------------------------------------------- #
+    def _debitar_creditos(creditos, tipo, referencia, evento):
+        """(resposta_de_recusa | None, debito)."""
+        try:
+            debito = medidor.debitar(g.chave_id, creditos, tipo, referencia)
+        except medicao.MedicaoIndisponivel as exc:
+            app.logger.error("Medicao indisponivel: %s", exc)
+            registro.registrar({**evento, "status": 503, "error_code": "billing_unavailable"})
+            return responder_erro(
+                "billing_unavailable",
+                "Nao foi possivel consultar os creditos agora. Tente de novo em instantes.",
+                503,
+                cabecalhos={"Retry-After": "30"},
+            ), None
+
+        if debito.permitido:
+            return None, debito
+
+        registro.registrar({**evento, "status": 429, "error_code": "credits_exhausted"})
+        cabecalhos = {**debito.cabecalhos(), "Retry-After": str(debito.segundos_para_renovar())}
+        return responder_erro(
+            "credits_exhausted",
+            (
+                f"Os {debito.incluidos} creditos do plano {debito.plano_id} acabaram neste ciclo. "
+                f"Eles renovam em {debito.ciclo_fim.date().isoformat()}. "
+                "Para continuar agora, contrate um plano pago em https://aida-on.com.br/precos."
+            ),
+            429,
+            {
+                "plan_id": debito.plano_id,
+                "credits_included": debito.incluidos,
+                "credits_used": debito.usados,
+                "credits_requested": creditos,
+                "cycle_reset": debito.ciclo_fim.isoformat(),
+            },
+            cabecalhos=cabecalhos,
+        ), debito
+
+    def _estornar_creditos(debito, referencia):
+        try:
+            medidor.estornar(g.chave_id, debito, referencia)
+        except medicao.MedicaoIndisponivel as exc:
+            # A analise ja falhou para o cliente; o estorno perdido fica no log
+            # para conciliacao manual em vez de mascarar o erro original.
+            app.logger.error("Estorno de creditos falhou (%s): %s", referencia, exc)
+
+    @app.get("/v1/usage")
+    @exigir_chave
+    def uso_da_chave():
+        try:
+            debito = medidor.uso(g.chave_id)
+        except medicao.MedicaoIndisponivel as exc:
+            app.logger.error("Medicao indisponivel: %s", exc)
+            return responder_erro(
+                "billing_unavailable", "Nao foi possivel consultar os creditos agora.", 503
+            )
+        return jsonify({"api_version": VERSAO_CONTRATO, **debito.resumo()})
+
+    # ----------------------------------------------------------------- #
+    # Checkout — o preco sai do servidor, nunca do corpo da requisicao
+    # ----------------------------------------------------------------- #
+    @app.post("/v1/billing/checkout")
+    def checkout():
+        token = _chave_do_cabecalho()
+        try:
+            usuario = usuarios.usuario_do_token(token)
+        except usuarios.AutenticacaoIndisponivel as exc:
+            app.logger.error("Autenticacao de usuario indisponivel: %s", exc)
+            return responder_erro("auth_unavailable", "Nao foi possivel validar a sessao agora.", 503)
+        if not usuario:
+            return responder_erro(
+                "missing_credentials", "Entre na sua conta para contratar um plano.", 401
+            )
+
+        try:
+            cotacao = cobranca.cotar_checkout(request.get_json(silent=True))
+        except cobranca.ErroCheckout as exc:
+            registro.registrar({"route": request.path, "status": exc.status, "error_code": exc.codigo})
+            return responder_erro(exc.codigo, exc.mensagem, exc.status, exc.detalhes)
+
+        registro.registrar(
+            {"route": request.path, "status": 501, "plan_id": cotacao["plan_id"],
+             "market": cotacao["market"], "billing_cycle": cotacao["billing_cycle"]}
+        )
+        # Ponto de integracao do gateway: com checkout.enabled e o price id
+        # mapeado no config, aqui entra a criacao da sessao de pagamento com o
+        # valor de `cotacao` — nunca com valor vindo do cliente.
+        return responder_erro(
+            "gateway_not_configured",
+            "O pagamento online ainda nao esta disponivel. A equipe conclui a contratacao.",
+            501,
+            {"quote": cotacao},
+        )
+
+    # ----------------------------------------------------------------- #
     # Analise
     # ----------------------------------------------------------------- #
     @app.post("/v1/analyze/image")
@@ -301,6 +398,15 @@ def criar_app():
             "evidence": com_evidencias,
         }
 
+        # Creditos: debita ANTES do Core (duas chamadas simultaneas nao passam
+        # juntas do limite do plano gratis) e estorna se a analise falhar.
+        recusa, debito = _debitar_creditos(cobranca.creditos_imagem(), "image", digest, evento)
+        if recusa is not None:
+            return recusa
+
+        def estornar():
+            _estornar_creditos(debito, digest)
+
         em_cache = analises.obter(chave_cache)
         if em_cache:
             id_analise, resposta_core = em_cache
@@ -316,6 +422,7 @@ def criar_app():
             )
             resposta = jsonify(corpo)
             resposta.headers["X-AIDA-Cache"] = "hit"
+            resposta.headers.update(debito.cabecalhos())
             return resposta
 
         # O nome original nao vai para o Core: ele nao muda a analise e costuma
@@ -328,6 +435,7 @@ def criar_app():
                     conteudo, nome_neutro, evidencias=com_evidencias
                 )
         except cache_mod.FilaCheia:
+            estornar()
             registro.registrar({**evento, "status": 503, "error_code": "busy"})
             return responder_erro(
                 "busy",
@@ -337,6 +445,7 @@ def criar_app():
             )
         except core.CoreIndisponivel as exc:
             app.logger.error("Core indisponivel: %s", exc)
+            estornar()
             registro.registrar({**evento, "status": 503, "error_code": "core_unavailable"})
             return responder_erro(
                 "core_unavailable",
@@ -357,6 +466,7 @@ def criar_app():
                 exc.status, ("core_error", "O motor de analise respondeu com erro.", 502)
             )
             app.logger.error("Core respondeu %s: %s", exc.status, exc.corpo)
+            estornar()
             registro.registrar({**evento, "status": status, "error_code": codigo})
             return responder_erro(codigo, mensagem, status)
 
@@ -381,6 +491,7 @@ def criar_app():
         )
         resposta = jsonify(corpo)
         resposta.headers["X-AIDA-Cache"] = "miss"
+        resposta.headers.update(debito.cabecalhos())
         return resposta
 
     @app.get("/v1/analysis/<analysis_id>")

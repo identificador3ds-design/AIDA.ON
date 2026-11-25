@@ -155,8 +155,10 @@ def carregar_modelo(caminho=None):
 
 def combinar_ponderado(frames, trajetoria, audio, pacote):
     """Conclusao pela combinacao ponderada, ou None se faltar entrada (usa as regras)."""
-    if not pacote or not trajetoria or not trajetoria.get("disponivel") or not _frames_validos(frames):
+    if not pacote or not trajetoria or not trajetoria.get("disponivel"):
         return None
+    if len(_frames_validos(frames)) < REGRAS_PADRAO["min_frames_validos"]:
+        return None  # poucos frames: segue pelas regras, que deixam INCONCLUSIVO
     audio = audio or {}
     bruto = audio.get("probabilidade_ia")
     p_audio = audio_utilizavel(bruto, audio.get("limiar", pacote.get("limiar_audio")),

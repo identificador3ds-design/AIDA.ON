@@ -1,0 +1,661 @@
+{
+  "$comment": "Fonte única dos planos do AIDA. O site (scripts/aida-precos-core.js) e a borda da API (aida_api/cobranca.py) leem ESTE arquivo; nenhum preço é escrito em componente ou rota. Valores monetários em unidade da moeda (R$ 24,90 = 24.9). null = ainda não definido ou não se aplica. `pending` lista o que depende de decisão humana; a página mostra 'a definir' nesses campos.",
+  "version": "2026-11-24",
+  "annual_months_charged": 10,
+  "credit_rules": {
+    "image": 1,
+    "video_per_started_minute": 10,
+    "audio": 0,
+    "document": 0,
+    "$comment": "Áudio e documento ficam fora da cobrança até a equipe definir o custo (pendência)."
+  },
+  "enterprise_threshold_credits": 500000,
+  "checkout": {
+    "enabled": false,
+    "$comment": "Sem gateway escolhido: o CTA de plano pago abre o formulário comercial e POST /v1/billing/checkout valida e responde 501 gateway_not_configured. Ao integrar, preencher gateway_price_ids e ligar aqui."
+  },
+  "calculator": {
+    "days_per_month": 30,
+    "$comment": "Planos com limite diário (Cidadão/Free) entram na calculadora como daily_limit x days_per_month análises; cada imagem e cada minuto de vídeo contam como uma análise (estimativa, ver pending video_counts_as_analysis)."
+  },
+  "currencies": {
+    "BRL": {
+      "locale": "pt-BR"
+    },
+    "USD": {
+      "locale": "en-US"
+    }
+  },
+  "markets": {
+    "BR": {
+      "currency": "BRL",
+      "default_language": "pt-BR",
+      "platform": [
+        {
+          "id": "cidadao",
+          "name_key": "plan.cidadao.name",
+          "audience_key": "plan.cidadao.audience",
+          "price_type": "free",
+          "price_monthly": {
+            "BRL": 0
+          },
+          "credits_included": null,
+          "daily_limit": 10,
+          "overage": "none",
+          "overage_price": null,
+          "users": 1,
+          "features": [
+            "all_media"
+          ],
+          "cta": {
+            "type": "signup",
+            "label_key": "cta.start_free"
+          },
+          "highlighted": false,
+          "gateway_price_ids": {
+            "monthly": null,
+            "annual": null
+          },
+          "pending": [
+            "video_counts_as_analysis"
+          ]
+        },
+        {
+          "id": "criador",
+          "name_key": "plan.criador.name",
+          "audience_key": "plan.criador.audience",
+          "price_type": "paid",
+          "price_monthly": {
+            "BRL": 24.9
+          },
+          "credits_included": 1000,
+          "daily_limit": null,
+          "overage": "block",
+          "overage_price": null,
+          "users": 1,
+          "features": [
+            "all_media",
+            "history",
+            "pdf_report"
+          ],
+          "cta": {
+            "type": "subscribe",
+            "label_key": "cta.subscribe"
+          },
+          "highlighted": false,
+          "gateway_price_ids": {
+            "monthly": null,
+            "annual": null
+          },
+          "pending": [
+            "overage_policy"
+          ]
+        },
+        {
+          "id": "profissional",
+          "name_key": "plan.profissional.name",
+          "audience_key": "plan.profissional.audience",
+          "price_type": "paid",
+          "price_monthly": {
+            "BRL": 69.9
+          },
+          "credits_included": 4000,
+          "daily_limit": null,
+          "overage": "block",
+          "overage_price": null,
+          "users": 3,
+          "features": [
+            "all_media",
+            "history",
+            "pdf_report",
+            "multi_user"
+          ],
+          "cta": {
+            "type": "subscribe",
+            "label_key": "cta.subscribe"
+          },
+          "highlighted": true,
+          "gateway_price_ids": {
+            "monthly": null,
+            "annual": null
+          },
+          "pending": [
+            "overage_policy"
+          ]
+        },
+        {
+          "id": "redacao",
+          "name_key": "plan.redacao.name",
+          "audience_key": "plan.redacao.audience",
+          "price_type": "paid",
+          "price_monthly": {
+            "BRL": 199.9
+          },
+          "credits_included": 15000,
+          "daily_limit": null,
+          "overage": "block",
+          "overage_price": null,
+          "users": 10,
+          "features": [
+            "all_media",
+            "history",
+            "pdf_report",
+            "multi_user",
+            "team_panel"
+          ],
+          "cta": {
+            "type": "subscribe",
+            "label_key": "cta.subscribe"
+          },
+          "highlighted": false,
+          "gateway_price_ids": {
+            "monthly": null,
+            "annual": null
+          },
+          "pending": [
+            "overage_policy"
+          ]
+        },
+        {
+          "id": "checagem_ong",
+          "name_key": "plan.checagem_ong.name",
+          "audience_key": "plan.checagem_ong.audience",
+          "price_type": "validation",
+          "price_monthly": {
+            "BRL": null
+          },
+          "discount_percent": 50,
+          "credits_included": null,
+          "daily_limit": null,
+          "overage": "negotiated",
+          "overage_price": null,
+          "users": null,
+          "features": [
+            "all_media",
+            "history",
+            "pdf_report",
+            "multi_user",
+            "team_panel"
+          ],
+          "cta": {
+            "type": "contact",
+            "label_key": "cta.apply"
+          },
+          "highlighted": false,
+          "gateway_price_ids": {
+            "monthly": null,
+            "annual": null
+          }
+        }
+      ],
+      "api": [
+        {
+          "id": "api_free",
+          "name_key": "plan.api_free.name",
+          "audience_key": "plan.api_free.audience",
+          "price_type": "free",
+          "price_monthly": {
+            "BRL": 0
+          },
+          "credits_included": 100,
+          "daily_limit": null,
+          "overage": "block",
+          "overage_price": null,
+          "users": null,
+          "features": [
+            "api_key",
+            "contract_v1",
+            "block_at_limit"
+          ],
+          "cta": {
+            "type": "contact",
+            "label_key": "cta.request_key"
+          },
+          "highlighted": false,
+          "gateway_price_ids": {
+            "monthly": null,
+            "annual": null
+          }
+        },
+        {
+          "id": "api_starter",
+          "name_key": "plan.api_starter.name",
+          "audience_key": "plan.api_starter.audience",
+          "price_type": "paid",
+          "price_monthly": {
+            "BRL": 49.9
+          },
+          "credits_included": 2000,
+          "daily_limit": null,
+          "overage": "charge",
+          "overage_price": 0.03,
+          "users": null,
+          "features": [
+            "api_key",
+            "contract_v1",
+            "overage_billing"
+          ],
+          "cta": {
+            "type": "subscribe",
+            "label_key": "cta.subscribe"
+          },
+          "highlighted": false,
+          "gateway_price_ids": {
+            "monthly": null,
+            "annual": null
+          }
+        },
+        {
+          "id": "api_pro",
+          "name_key": "plan.api_pro.name",
+          "audience_key": "plan.api_pro.audience",
+          "price_type": "paid",
+          "price_monthly": {
+            "BRL": 149.9
+          },
+          "credits_included": 8000,
+          "daily_limit": null,
+          "overage": "charge",
+          "overage_price": 0.022,
+          "users": null,
+          "features": [
+            "api_key",
+            "contract_v1",
+            "overage_billing"
+          ],
+          "cta": {
+            "type": "subscribe",
+            "label_key": "cta.subscribe"
+          },
+          "highlighted": true,
+          "gateway_price_ids": {
+            "monthly": null,
+            "annual": null
+          }
+        },
+        {
+          "id": "api_business",
+          "name_key": "plan.api_business.name",
+          "audience_key": "plan.api_business.audience",
+          "price_type": "paid",
+          "price_monthly": {
+            "BRL": 499.0
+          },
+          "credits_included": 30000,
+          "daily_limit": null,
+          "overage": "charge",
+          "overage_price": 0.019,
+          "users": null,
+          "features": [
+            "api_key",
+            "contract_v1",
+            "overage_billing"
+          ],
+          "cta": {
+            "type": "subscribe",
+            "label_key": "cta.subscribe"
+          },
+          "highlighted": false,
+          "gateway_price_ids": {
+            "monthly": null,
+            "annual": null
+          }
+        },
+        {
+          "id": "api_scale",
+          "name_key": "plan.api_scale.name",
+          "audience_key": "plan.api_scale.audience",
+          "price_type": "paid",
+          "price_monthly": {
+            "BRL": 1490.0
+          },
+          "credits_included": 120000,
+          "daily_limit": null,
+          "overage": "charge",
+          "overage_price": 0.014,
+          "users": null,
+          "features": [
+            "api_key",
+            "contract_v1",
+            "overage_billing"
+          ],
+          "cta": {
+            "type": "subscribe",
+            "label_key": "cta.subscribe"
+          },
+          "highlighted": false,
+          "gateway_price_ids": {
+            "monthly": null,
+            "annual": null
+          }
+        },
+        {
+          "id": "enterprise",
+          "name_key": "plan.enterprise.name",
+          "audience_key": "plan.enterprise.audience",
+          "price_type": "contact",
+          "price_monthly": {
+            "BRL": null
+          },
+          "credits_included": null,
+          "min_credits": 500000,
+          "daily_limit": null,
+          "overage": "negotiated",
+          "overage_price": null,
+          "users": null,
+          "features": [
+            "api_key",
+            "contract_v1",
+            "overage_billing",
+            "negotiated_terms"
+          ],
+          "cta": {
+            "type": "contact",
+            "label_key": "cta.talk_to_us"
+          },
+          "highlighted": false,
+          "gateway_price_ids": {
+            "monthly": null,
+            "annual": null
+          }
+        }
+      ]
+    },
+    "INTL": {
+      "currency": "USD",
+      "default_language": "en-US",
+      "platform": [
+        {
+          "id": "free",
+          "name_key": "plan.free.name",
+          "audience_key": "plan.free.audience",
+          "price_type": "free",
+          "price_monthly": {
+            "USD": 0
+          },
+          "credits_included": null,
+          "daily_limit": 10,
+          "overage": "none",
+          "overage_price": null,
+          "users": 1,
+          "features": [
+            "all_media"
+          ],
+          "cta": {
+            "type": "signup",
+            "label_key": "cta.start_free"
+          },
+          "highlighted": false,
+          "gateway_price_ids": {
+            "monthly": null,
+            "annual": null
+          },
+          "pending": [
+            "video_counts_as_analysis"
+          ]
+        },
+        {
+          "id": "pro",
+          "name_key": "plan.pro.name",
+          "audience_key": "plan.pro.audience",
+          "price_type": "paid",
+          "price_monthly": {
+            "USD": 9
+          },
+          "credits_included": null,
+          "daily_limit": null,
+          "overage": "block",
+          "overage_price": null,
+          "users": null,
+          "features": [
+            "all_media",
+            "history"
+          ],
+          "cta": {
+            "type": "subscribe",
+            "label_key": "cta.subscribe"
+          },
+          "highlighted": true,
+          "gateway_price_ids": {
+            "monthly": null,
+            "annual": null
+          },
+          "pending": [
+            "overage_policy",
+            "credits_included",
+            "users"
+          ]
+        },
+        {
+          "id": "team",
+          "name_key": "plan.team.name",
+          "audience_key": "plan.team.audience",
+          "price_type": "paid",
+          "price_monthly": {
+            "USD": 39
+          },
+          "credits_included": null,
+          "daily_limit": null,
+          "overage": "block",
+          "overage_price": null,
+          "users": null,
+          "features": [
+            "all_media",
+            "history",
+            "multi_user",
+            "team_panel"
+          ],
+          "cta": {
+            "type": "subscribe",
+            "label_key": "cta.subscribe"
+          },
+          "highlighted": false,
+          "gateway_price_ids": {
+            "monthly": null,
+            "annual": null
+          },
+          "pending": [
+            "overage_policy",
+            "credits_included",
+            "users"
+          ]
+        }
+      ],
+      "api": [
+        {
+          "id": "api_free",
+          "name_key": "plan.api_free.name",
+          "audience_key": "plan.api_free.audience",
+          "price_type": "free",
+          "price_monthly": {
+            "USD": 0
+          },
+          "credits_included": 100,
+          "daily_limit": null,
+          "overage": "block",
+          "overage_price": null,
+          "users": null,
+          "features": [
+            "api_key",
+            "contract_v1",
+            "block_at_limit"
+          ],
+          "cta": {
+            "type": "contact",
+            "label_key": "cta.request_key"
+          },
+          "highlighted": false,
+          "gateway_price_ids": {
+            "monthly": null,
+            "annual": null
+          }
+        },
+        {
+          "id": "api_starter",
+          "name_key": "plan.api_starter.name",
+          "audience_key": "plan.api_starter.audience",
+          "price_type": "paid",
+          "price_monthly": {
+            "USD": 19
+          },
+          "credits_included": 3000,
+          "daily_limit": null,
+          "overage": "charge",
+          "overage_price": 0.008,
+          "users": null,
+          "features": [
+            "api_key",
+            "contract_v1",
+            "overage_billing"
+          ],
+          "cta": {
+            "type": "subscribe",
+            "label_key": "cta.subscribe"
+          },
+          "highlighted": false,
+          "gateway_price_ids": {
+            "monthly": null,
+            "annual": null
+          }
+        },
+        {
+          "id": "api_pro",
+          "name_key": "plan.api_pro.name",
+          "audience_key": "plan.api_pro.audience",
+          "price_type": "paid",
+          "price_monthly": {
+            "USD": 59
+          },
+          "credits_included": 12000,
+          "daily_limit": null,
+          "overage": "charge",
+          "overage_price": 0.006,
+          "users": null,
+          "features": [
+            "api_key",
+            "contract_v1",
+            "overage_billing"
+          ],
+          "cta": {
+            "type": "subscribe",
+            "label_key": "cta.subscribe"
+          },
+          "highlighted": true,
+          "gateway_price_ids": {
+            "monthly": null,
+            "annual": null
+          }
+        },
+        {
+          "id": "api_business",
+          "name_key": "plan.api_business.name",
+          "audience_key": "plan.api_business.audience",
+          "price_type": "paid",
+          "price_monthly": {
+            "USD": 199
+          },
+          "credits_included": 50000,
+          "daily_limit": null,
+          "overage": "charge",
+          "overage_price": 0.005,
+          "users": null,
+          "features": [
+            "api_key",
+            "contract_v1",
+            "overage_billing"
+          ],
+          "cta": {
+            "type": "subscribe",
+            "label_key": "cta.subscribe"
+          },
+          "highlighted": false,
+          "gateway_price_ids": {
+            "monthly": null,
+            "annual": null
+          }
+        },
+        {
+          "id": "api_scale",
+          "name_key": "plan.api_scale.name",
+          "audience_key": "plan.api_scale.audience",
+          "price_type": "paid",
+          "price_monthly": {
+            "USD": 599
+          },
+          "credits_included": 200000,
+          "daily_limit": null,
+          "overage": "charge",
+          "overage_price": 0.0035,
+          "users": null,
+          "features": [
+            "api_key",
+            "contract_v1",
+            "overage_billing"
+          ],
+          "cta": {
+            "type": "subscribe",
+            "label_key": "cta.subscribe"
+          },
+          "highlighted": false,
+          "gateway_price_ids": {
+            "monthly": null,
+            "annual": null
+          }
+        },
+        {
+          "id": "enterprise",
+          "name_key": "plan.enterprise.name",
+          "audience_key": "plan.enterprise.audience",
+          "price_type": "contact",
+          "price_monthly": {
+            "USD": null
+          },
+          "credits_included": null,
+          "min_credits": null,
+          "daily_limit": null,
+          "overage": "negotiated",
+          "overage_price": null,
+          "users": null,
+          "features": [
+            "api_key",
+            "contract_v1",
+            "overage_billing",
+            "negotiated_terms"
+          ],
+          "cta": {
+            "type": "contact",
+            "label_key": "cta.talk_to_us"
+          },
+          "highlighted": false,
+          "gateway_price_ids": {
+            "monthly": null,
+            "annual": null
+          }
+        }
+      ]
+    }
+  },
+  "comparison_rows": {
+    "platform": [
+      "price",
+      "credits",
+      "daily_limit",
+      "users",
+      "all_media",
+      "history",
+      "pdf_report",
+      "multi_user",
+      "team_panel"
+    ],
+    "api": [
+      "price",
+      "credits",
+      "overage_price",
+      "api_key",
+      "contract_v1",
+      "block_at_limit",
+      "overage_billing",
+      "negotiated_terms"
+    ]
+  }
+}

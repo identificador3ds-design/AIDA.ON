@@ -84,6 +84,34 @@ def test_movimento_pouco_acima_do_limite_nao_derruba_frames_reais(prob, esperado
     assert r["resultado"] == IA
 
 
+@pytest.mark.parametrize("prob", [0.05, 0.5, 0.95])
+def test_sem_frames_validos_o_movimento_nao_decide_sozinho(prob):
+    """Caso real (27/10): Core devolveu 429 em todos os frames e o vídeo saiu REAL só pelo movimento."""
+    frames = [{"tempo_s": float(i), "erro": "CoreRecusou: 429"} for i in range(10)]
+    r = combinar_visual(agregar(frames), {"disponivel": True, "probabilidade_ia": prob, "usa_core": False})
+    assert r["resultado"] == INCONCLUSIVO
+    assert any("não decide sozinho" in m for m in r["motivos"])
+
+
+def test_sem_frames_validos_audio_real_nao_confirma_video_real():
+    from aida_video.agregacao import combinar
+
+    frames = [{"tempo_s": float(i), "erro": "CoreRecusou: 429"} for i in range(10)]
+    visual = combinar_visual(agregar(frames), {"disponivel": True, "probabilidade_ia": 0.05})
+    assert combinar(visual, {"resultado": REAL, "probabilidade_ia": 0.0})["resultado"] == INCONCLUSIVO
+    assert combinar(visual, {"resultado": IA, "probabilidade_ia": 0.95})["resultado"] == IA
+
+
+def test_ia_pelo_movimento_nao_e_atribuida_a_imagem():
+    from aida_video.agregacao import combinar
+
+    visual = combinar_visual(_visual(REAL), {"disponivel": True, "probabilidade_ia": 0.97, "usa_core": True})
+    motivos = combinar(visual, None)["motivos"]
+    assert "indício de IA na imagem" not in motivos
+    assert any("movimento entre frames" in m and "REAL" in m for m in motivos)
+    assert combinar(combinar_visual(_visual(IA), None), None)["motivos"][0] == "indício de IA na imagem"
+
+
 def test_ia_pelos_frames_nao_e_desfeita_pela_trajetoria():
     r = combinar_visual(_visual(IA), {"disponivel": True, "probabilidade_ia": 0.05})
     assert r["resultado"] == IA

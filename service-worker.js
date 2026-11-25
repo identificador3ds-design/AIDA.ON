@@ -1,5 +1,5 @@
-const STATIC_CACHE = "aida-static-v27";
-const RUNTIME_CACHE = "aida-runtime-v27";
+const STATIC_CACHE = "aida-static-v28";
+const RUNTIME_CACHE = "aida-runtime-v28";
 
 const APP_SHELL = [
   "./",
@@ -80,7 +80,9 @@ self.addEventListener("fetch", (event) => {
   const usarRedePrimeiro =
     event.request.mode === "navigate" ||
     ["script", "style", "font"].includes(event.request.destination) ||
-    requestUrl.pathname.endsWith(".webmanifest");
+    requestUrl.pathname.endsWith(".webmanifest") ||
+    // Preços e traduções: um JSON antigo servido do cache mostraria preço velho.
+    requestUrl.pathname.endsWith(".json");
 
   if (requestUrl.origin !== self.location.origin) {
     return;

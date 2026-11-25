@@ -28,6 +28,8 @@ CORE_URL_PADRAO = "https://aidaon-aida-api.hf.space"
 # usava 2048 com INTER_AREA) mudava a probabilidade, porque somava duas reducoes.
 # Se o Core mudar lado_maximo_canonico, mude AIDA_CORE_LADO junto.
 LADO_CORE = int(os.environ.get("AIDA_CORE_LADO", "1024"))
+# Teto da espera por frame quando o Core devolve 429 (Retry-After pode ser grande).
+ESPERA_MAXIMA_429_S = 30.0
 
 
 
@@ -40,7 +42,7 @@ class CoreIndisponivel(RuntimeError):
 
 
 class CoreRecusou(RuntimeError):
-    """O Core respondeu 4xx: tentar de novo nao adianta."""
+    """O Core respondeu 4xx (menos 429): tentar de novo nao adianta."""
 
 
 def _bytes_para_envio(caminho, lado=None):
@@ -81,6 +83,16 @@ class AnalisadorCore:
             self._local.sessao = self._requests.Session()
         return self._local.sessao
 
+    def _esperar_limite(self, resposta, tentativa):
+        """Espera antes de repetir apos um 429: Retry-After se vier, senao recuo exponencial."""
+        if tentativa + 1 >= self.tentativas:
+            return
+        try:
+            espera = float((getattr(resposta, "headers", None) or {}).get("Retry-After", ""))
+        except (TypeError, ValueError):
+            espera = self.espera_s * 2 ** (tentativa + 1)
+        time.sleep(min(max(espera, 0.0), ESPERA_MAXIMA_429_S))
+
     def analisar(self, caminho_png):
         conteudo = _bytes_para_envio(caminho_png)
         ultimo_erro = None
@@ -105,6 +117,13 @@ class AnalisadorCore:
 
             if resposta.status_code >= 500:
                 ultimo_erro = CoreIndisponivel(f"Core respondeu {resposta.status_code}")
+                continue
+            if resposta.status_code == 429:
+                # Limite de requisicoes (do Core ou do proxy do Hugging Face, que
+                # responde com HTML antes de chegar ao Core). E passageiro: espera
+                # e tenta de novo, em vez de perder o frame como se fosse recusa.
+                ultimo_erro = CoreIndisponivel("Core respondeu 429 (limite de requisições)")
+                self._esperar_limite(resposta, tentativa)
                 continue
             try:
                 corpo = resposta.json()

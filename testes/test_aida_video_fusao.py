@@ -109,6 +109,8 @@ def test_combinar_ponderado_sem_entradas_devolve_none():
     assert fusao.combinar_ponderado(_frames(4, 0), traj, None, None) is None
     assert fusao.combinar_ponderado(_frames(4, 0), {"disponivel": False}, None, pacote) is None
     assert fusao.combinar_ponderado([{"erro": "x"}], traj, None, pacote) is None
+    # menos frames válidos que o mínimo das regras: não decide pela fusão
+    assert fusao.combinar_ponderado(_frames(0, 2) + [{"erro": "429"}] * 8, traj, None, pacote) is None
 
 
 def test_combinar_ponderado_decide_e_explica():

@@ -1,0 +1,11 @@
+{
+  "name": "aida-on-site",
+  "private": true,
+  "description": "Só ferramentas de teste. O site é estático e não tem build; o .vercelignore não publica este arquivo nem node_modules.",
+  "scripts": {
+    "test:componente": "node testes/js/componente_precos.cjs"
+  },
+  "devDependencies": {
+    "jsdom": "26.1.0"
+  }
+}

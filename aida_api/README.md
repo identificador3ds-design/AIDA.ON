@@ -37,6 +37,8 @@ cliente → [ borda HTTP ] → [ orquestração ] → [ AIDA Core ] → [ contra
 | `GET`    | `/v1/contract`                      | não   |
 | `GET`    | `/v1/docs`                          | não   |
 | `GET`    | `/v1/health`                        | não   |
+| `GET`    | `/v1/usage`                         | sim   |
+| `POST`   | `/v1/billing/checkout`              | sessão do site |
 
 ```bash
 curl -X POST https://<host>/v1/analyze/image \
@@ -150,6 +152,39 @@ Cota global exige um contador compartilhado (Redis/Postgres) no lugar de
 
 A validação de chave é cacheada por 60 s, então uma revogação passa a valer
 depois desse intervalo. Para revogar na hora, reinicie o processo.
+
+## Cobrança por créditos
+
+Preços e regras vêm de `config/pricing.json` — o mesmo arquivo que a página
+`/precos` lê. `cobranca.py` calcula preço e valida checkout; `medicao.py`
+debita créditos por análise.
+
+* **Créditos:** imagem = 1; vídeo = 10 por minuto iniciado
+  (`cobranca.creditos_video`). Ciclo mensal ancorado na data da assinatura;
+  créditos não acumulam.
+* **Débito antes do Core, estorno se falhar.** Assim duas chamadas simultâneas
+  não passam juntas do limite do plano grátis.
+* **API Free** (`overage: block`): no limite, `429 credits_exhausted`, com a data
+  de renovação na mensagem e `Retry-After`. **Planos pagos** (`overage:
+  charge`): a chamada passa e o excedente fica em `uso_ciclos`.
+* Cabeçalhos em toda análise medida: `X-AIDA-Credits-Included`, `-Used`,
+  `-Remaining`, `X-AIDA-Overage-Credits`, `X-AIDA-Cycle-Reset`.
+* Chave **sem assinatura** não é medida (inclusive a cota legada `tokens_total`
+  do painel, que segue igual). Para medir, crie a linha em `assinaturas_api`
+  e deixe `tokens_total = 0`.
+* **Checkout:** `POST /v1/billing/checkout` exige o token da sessão do site.
+  Em BRL, só passa com CPF/CNPJ válido (inclusive CNPJ alfanumérico) e endereço
+  de cobrança no Brasil. O valor sai do config; campos de valor no corpo são
+  ignorados. Sem gateway, responde `501 gateway_not_configured` com
+  `details.quote`.
+
+Produção: rode `docs/migracao-cobranca.sql` (tabelas, RLS e as RPCs
+`cobranca_debitar`, `cobranca_estornar` e `cobranca_uso`, que só a service role executa).
+Testar o 429 local sem banco:
+
+```bash
+AIDA_API_DEV_KEYS=aida_teste AIDA_API_DEV_PLANO=api_free python -m aida_api.app
+```
 
 ## Variáveis de ambiente
 

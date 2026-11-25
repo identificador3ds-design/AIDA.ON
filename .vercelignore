@@ -21,3 +21,6 @@
 !/scripts
 !/styles
 !/assets
+# Preços e textos da página de preços: lidos pelo navegador em tempo de execução.
+!/config
+!/i18n

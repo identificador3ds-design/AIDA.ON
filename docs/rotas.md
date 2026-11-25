@@ -27,6 +27,18 @@ para os quais as animações dela foram ajustadas.
 análise depende de uma imagem já escolhida e, aberta direto, mostraria um
 estado vazio.
 
+### Preços
+
+| Rota       | Arquivo                    | Observação                                   |
+| ---------- | -------------------------- | -------------------------------------------- |
+| `/precos`  | `pages/index-precos.html`  | Planos da plataforma e da API, BRL e USD     |
+| `/pricing` | `pages/index-precos.html`  | Mesma página; o idioma é escolhido na tela   |
+
+Os preços vêm de `config/pricing.json` e os textos de `i18n/precos.*.json`,
+lidos pelo navegador. O HTML sai pré-preenchido em pt-BR (SEO e primeira
+pintura) por `python docs/gerar_pagina_precos.py`; rode-o depois de editar
+qualquer um desses JSON — `test_pagina_precos_em_sincronia` acusa o esquecimento.
+
 ### Compatibilidade (rotas anteriores, todas mantidas)
 
 `/admin`, `/analise`, `/apresentacao`, `/apoiadores`, `/historico`, `/login`,

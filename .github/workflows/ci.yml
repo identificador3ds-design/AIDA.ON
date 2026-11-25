@@ -36,6 +36,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
+          cache: npm
+
+      # jsdom para o teste de componente da página de preços. Só teste: o
+      # .vercelignore não publica package.json nem node_modules.
+      - name: Dependências JS de teste
+        run: npm ci --no-audit --no-fund
 
       - name: Dependências
         run: |

@@ -4,3 +4,6 @@ __pycache__/
 
 # modelos treinados ficam no Space aidaon/aida-video, nao no site
 aida_audio/modelos/*.joblib
+
+# dependências de teste (package.json); o site não usa
+node_modules/

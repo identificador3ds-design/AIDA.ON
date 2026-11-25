@@ -372,7 +372,7 @@
 
               <div class="toggle-stack">
                 <label class="toggle-row"><input id="configAllowRegistrations" type="checkbox"><div><strong>Permitir novos cadastros</strong><span>Mantém o cadastro público aberto.</span></div></label>
-                <label class="toggle-row"><input id="configMaintenanceMode" type="checkbox"><div><strong>Modo manutenção</strong><span>Envia os usuários da ferramenta para a tela de manutenção.</span></div></label>
+                <label class="toggle-row"><input id="configMaintenanceMode" type="checkbox"><div><strong>Modo manutenção geral</strong><span>Envia os usuários de todas as ferramentas para a tela de manutenção.</span></div></label>
                 <label class="toggle-row"><input id="configLockAnalysisPage" type="checkbox"><div><strong>Travar análise</strong><span>Desliga o processamento na tela de análise.</span></div></label>
                 <label class="toggle-row"><input id="configAllowUploadPage" type="checkbox"><div><strong>Liberar página de upload</strong><span>Abre ou fecha a etapa de seleção da imagem.</span></div></label>
                 <label class="toggle-row"><input id="configAllowHistoryPage" type="checkbox"><div><strong>Liberar histórico</strong><span>Cada usuário vê o próprio histórico.</span></div></label>
@@ -385,10 +385,11 @@
 
             <section class="admin-subsection">
               <div class="subsection-head">
-                <span class="subsection-kicker">Métodos</span>
-                <h3>Métodos da ferramenta de análise</h3>
+                <span class="subsection-kicker">Ferramentas</span>
+                <h3>Manutenção por ferramenta</h3>
+                <p class="table-note">Ligue a tela de manutenção só na ferramenta que estiver em ajuste; as outras seguem no ar. O "Modo manutenção" acima para todas de uma vez.</p>
               </div>
-              <div id="methodsConfigGrid" class="methods-stack"></div>
+              <div id="toolsMaintenanceGrid" class="methods-stack"></div>
             </section>
 
             <div class="admin-form-actions">
@@ -479,6 +480,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.3/dist/umd/supabase.js" integrity="sha384-qafw21c/iciq0VXsi9FzkfoQv5I/V0iqE4lSNcKXPnW9/UTJLnv5CcN4FHxVLnKg" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="../scripts/aida-admin-auth.js?v=20261023-seguro"></script>
-  <script src="../scripts/script-administrador.js?v=20261023-seguro"></script>
+  <script src="../scripts/aida-manutencao-ferramenta.js?v=20261123-ferramentas"></script>
+  <script src="../scripts/script-administrador.js?v=20261123-ferramentas"></script>
 </body>
 </html>

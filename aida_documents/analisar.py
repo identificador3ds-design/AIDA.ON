@@ -12,13 +12,16 @@ Uso:
 from __future__ import annotations
 
 import argparse
+import io
 import json
+import zipfile
 from pathlib import Path
 
 from .benford import N_RECOMENDADO, analisar_benford
 from .estrutura import inspecionar_pdf
+from .injecao import metadados_docx, metadados_pdf, ocultos_docx, ocultos_markdown, ocultos_pdf, ocultos_unicode, resumir
 from .numeros import extrair_numeros, verificar_identificadores
-from .office import inspecionar_doc, inspecionar_docx
+from .office import _campos, _xml, inspecionar_doc, inspecionar_docx
 from .texto_puro import MIN_INVISIVEIS, inspecionar_txt
 
 LIMIAR_MANIPULADO = 0.60
@@ -30,15 +33,24 @@ MAD_NAO_CONFORME = 0.015
 P_VALOR_BENFORD = 0.01
 DIAS_MODIFICACAO_ALERTA = 1.0
 EXTENSOES_IMAGEM = {".jpg", ".jpeg", ".png", ".webp", ".heic", ".bmp", ".tif", ".tiff"}
+# Muitos CNPJ/CPF e poucos errados: erro de digitacao de documento longo, nao numero inventado.
+MIN_IDS_DIGITACAO = 10
+FRACAO_DIGITACAO = 0.10
 RESSALVA = "Indício técnico, não prova. O AIDA Documents é uma triagem em validação; confirme na fonte (SEFAZ, banco, emissor)."
 
 PESOS = {
+    # Texto que o leitor nao ve dando ordem a uma IA (prompt injection): sozinho passa do limiar.
+    "instrucao_oculta_para_ia": 0.80,
     # Manifesto C2PA que se declara IA (ex.: ChatGPT). Sozinho passa do limiar de 0,60.
     "credencial_c2pa_ia": 0.80,
-    "dv_invalido": 0.60,
+    # Um DV errado sozinho nao basta: 5 de 100 diarios oficiais reais (Querido Diario,
+    # out/2026) tinham um CNPJ/CPF digitado errado. Dois ou mais somam ate o limiar.
+    "dv_invalido": 0.45,
     # Em .docx/.txt/.doc o texto e digitado: DV errado pode ser erro de digitacao.
     "dv_invalido_digitado": 0.30,
     "alterado_apos_assinatura": 0.50,
+    # Assinatura copiada de outro PDF: nao assina este arquivo (fraco: juntar atos assinados e comum).
+    "assinatura_de_outro_arquivo": 0.15,
     "revisoes_incrementais": 0.30,
     "ferramenta_edicao": 0.30,
     "ferramenta_escritorio": 0.10,
@@ -116,6 +128,7 @@ def analisar_bytes(dados: bytes, nome="documento.pdf"):
     est = _inspecionar(formato, dados)
     est.setdefault("formato", formato)
     texto = est.pop("texto")
+    oculto = _conteudo_oculto(formato, dados, texto, nome)
     ids = verificar_identificadores(texto)
     benford = analisar_benford(extrair_numeros(texto, apenas_monetarios=True))
 
@@ -128,18 +141,26 @@ def analisar_bytes(dados: bytes, nome="documento.pdf"):
     if c2pa["presente"] and c2pa["declara_ia"]:
         quem = " / ".join(x for x in (c2pa["gerador"], c2pa["modelo"]) if x) or "gerador não identificado"
         indicio("credencial_c2pa_ia", f"credencial de conteúdo (C2PA) declara: {c2pa['origem_declarada']} ({quem})")
+    erros_dv = [a for a in ids["alertas"] if "dígito verificador" in a]
+    total_ids = ids["cnpjs"] + ids["cpfs"]
+    erro_isolado = formato == "pdf" and total_ids >= MIN_IDS_DIGITACAO and len(erros_dv) <= total_ids * FRACAO_DIGITACAO
     for alerta in ids["alertas"]:
-        if formato == "pdf":
-            indicio("dv_invalido", alerta)
-        else:
+        if formato != "pdf":
             indicio("dv_invalido_digitado", f"{alerta} (num arquivo digitado pode ser erro de digitação)")
+        elif not (erro_isolado and alerta in erros_dv):
+            indicio("dv_invalido", alerta)
+    if erro_isolado and erros_dv:
+        indicio("dv_invalido_digitado", f"{len(erros_dv)} de {total_ids} CNPJ/CPF com dígito errado ({erros_dv[0]}): "
+                                        "proporção de erro de digitação num documento com muitos identificadores")
     for ferramenta in est.get("ferramentas_edicao", []):
         if ferramenta.startswith(_PROGRAMACAO):
             indicio("gerador_programatico", f"montado por {ferramenta}: comum em documento feito por script ou IA")
         else:
             chave = "ferramenta_escritorio" if ferramenta.startswith(_ESCRITORIO) else "ferramenta_edicao"
             indicio(chave, f"gerado ou salvo por {ferramenta}")
-    if est.get("caracteres_invisiveis", 0) >= MIN_INVISIVEIS:
+    _indicios_ocultos(oculto, indicio)
+    unicode_revelado = any("Unicode" in t["tecnica"] or "seletores" in t["tecnica"] for t in oculto["trechos"])
+    if est.get("caracteres_invisiveis", 0) >= MIN_INVISIVEIS and not unicode_revelado:
         indicio("caracteres_invisiveis", f"{est['caracteres_invisiveis']} caracteres invisíveis no texto (marca d'água ou texto oculto)")
 
     if formato == "pdf":
@@ -159,6 +180,8 @@ def analisar_bytes(dados: bytes, nome="documento.pdf"):
     if c2pa["presente"]:
         limitacoes.append("a assinatura da credencial C2PA não é verificada (confira em contentcredentials.org/verify)")
     limitacoes += LIMITES_FORMATO.get(formato, [])
+    if not oculto["lido"]:
+        limitacoes.append(oculto["erro"])
     if formato == "doc" and not est.get("metadados_lidos"):
         limitacoes.append("os metadados do .doc não foram lidos (pacote olefile ausente no servidor)")
 
@@ -168,7 +191,8 @@ def analisar_bytes(dados: bytes, nome="documento.pdf"):
     # digital intacta e a chave de acesso valida, que pode ser conferida na SEFAZ. So no
     # PDF: um .docx ou .txt qualquer pessoa escreve, com a chave que quiser.
     if formato == "pdf":
-        assinatura_intacta = bool(est["assinaturas"]) and not est["bytes_apos_assinatura"]
+        assinatura_intacta = (bool(est["assinaturas"]) and not est["bytes_apos_assinatura"]
+                              and not est.get("assinatura_de_outro_arquivo"))
         chave_ok = ids["chaves_acesso"] > 0 and not any("chave" in a for a in ids["alertas"])
         origem_verificavel = assinatura_intacta or chave_ok
     else:
@@ -203,12 +227,45 @@ def analisar_bytes(dados: bytes, nome="documento.pdf"):
         "indicios": indicios,
         "limitacoes": limitacoes,
         "alertas_seguranca": alertas_seguranca,
+        "conteudo_oculto": oculto,
         "estrutura": est,
         "identificadores": ids,
         "benford": benford,
         "caracteres_de_texto": len(texto),
         "ressalva": RESSALVA,
     }
+
+
+def _conteudo_oculto(formato, dados, texto, nome):
+    """Texto que o leitor nao ve (e se ele da ordem a uma IA). Falha aqui nao para a analise."""
+    trechos, metadados, erro = [], [], None
+    try:
+        if formato == "pdf":
+            trechos, metadados = ocultos_pdf(dados), metadados_pdf(dados)
+        elif formato == "docx":
+            z = zipfile.ZipFile(io.BytesIO(dados))
+            trechos = ocultos_docx(z)
+            metadados = metadados_docx(z, _campos(_xml(z, "docProps/core.xml")))
+    except Exception as exc:  # PDF que o pdfminer nao le: o resto da analise continua
+        erro = f"o texto escondido não pôde ser lido ({type(exc).__name__})"
+    trechos += ocultos_unicode(texto)
+    if formato == "txt" and Path(nome).suffix.lower() == ".md":
+        trechos += ocultos_markdown(texto)
+    resumo = resumir(trechos, metadados)
+    if erro:
+        resumo.update(lido=False, erro=erro)
+    return resumo
+
+
+def _indicios_ocultos(oculto, indicio):
+    """So o texto escondido que da ordem a IA pesa. O resto aparece no relatorio sem peso:
+    diarios oficiais reais tem marcadores em fonte minuscula e titulos brancos sobre faixa."""
+    com_ordem = [t for t in oculto["trechos"] if t["instrucoes"]]
+    if com_ordem:
+        t = com_ordem[0]
+        mais = f" e mais {len(com_ordem) - 1} trecho(s)" if len(com_ordem) > 1 else ""
+        indicio("instrucao_oculta_para_ia", f"instruções escondidas para IA ({t['tecnica']}, {t['local']}): "
+                                            f"“{t['instrucoes'][0]}”{mais}")
 
 
 def _indicios_pdf(est, indicio):
@@ -219,6 +276,9 @@ def _indicios_pdf(est, indicio):
         indicio("gerador_programatico", "montado por Chromium rodando em servidor (Puppeteer/Playwright): comum em sistema web ou IA")
     if est["bytes_apos_assinatura"] > 0:
         indicio("alterado_apos_assinatura", f"{est['bytes_apos_assinatura']} bytes acrescentados depois da assinatura digital")
+    if est.get("assinatura_de_outro_arquivo"):
+        indicio("assinatura_de_outro_arquivo", "assinatura(s) digital(is) copiada(s) de outro PDF: não assinam este arquivo "
+                                               "(comum em diário oficial que junta atos assinados)")
     # O manifesto C2PA entra no PDF como revisao incremental: essa nao e edicao.
     # O DSS da PAdES-LTV tambem entra como revisao depois da assinatura: nao e edicao.
     edicoes = (est["revisoes"] - 1 - est["assinaturas"] - int(est["c2pa"]["presente"])

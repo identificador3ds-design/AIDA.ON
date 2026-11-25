@@ -57,7 +57,9 @@ class LimitadorEmMemoria:
             fila.popleft()
 
     def consumir(self, identificador, limite=None):
-        limite = int(limite or self._limite_padrao)
+        # `limite or padrao` trocaria o 0 do botao "Suspender" do painel pelo
+        # limite padrao: so a ausencia de limite (None) cai no padrao.
+        limite = self._limite_padrao if limite is None else int(limite)
         if limite <= 0:
             # Limite zero e uma decisao explicita: chave suspensa sem revogar.
             return Veredito(False, 0, limite, self._janela, self._janela)

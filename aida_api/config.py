@@ -34,9 +34,14 @@ def _bool(nome, padrao=False):
 # --- Camada 03: onde vive o Core ------------------------------------------- #
 # O Core e o Space no Hugging Face (porta 7860). O Flask antigo em
 # aida_modelo/site_api/app.py responde em dois estados e nao conhece
-# INCONCLUSIVO: apontar para ele quebraria o contrato de tres estados.
+# INCONCLUSIVO nem REAL_EDITADA: apontar para ele quebraria o contrato /v1.
 CORE_URL = os.environ.get("AIDA_CORE_URL", "https://aidaon-aida-api.hf.space").rstrip("/")
 CORE_TIMEOUT_S = _float("AIDA_CORE_TIMEOUT_S", 180.0)
+# Esperas (s) entre novas tentativas quando o Core esta acordando (502/503/504
+# ou conexao recusada). "5,10,20" = ate 3 repeticoes, ~35 s no pior caso.
+CORE_ESPERAS_S = tuple(
+    float(v) for v in os.environ.get("AIDA_CORE_ESPERAS_S", "5,10,20").split(",") if v.strip()
+)
 
 # --- Camada 01: borda HTTP -------------------------------------------------- #
 TAMANHO_MAX_MB = _int("AIDA_API_MAX_MB", 15)
@@ -63,6 +68,10 @@ CACHE_MAX_ITENS = _int("AIDA_API_CACHE_MAX", 128)
 CONCORRENCIA_MAX = _int("AIDA_API_CONCORRENCIA", 2)
 ESPERA_FILA_S = _float("AIDA_API_ESPERA_FILA_S", 30.0)
 
+# Validacao de chave em cache: revogar, suspender ou esgotar a cota no painel
+# passa a valer em ate este tempo. Menor = mais consultas ao Supabase.
+CACHE_CHAVE_S = _int("AIDA_API_CACHE_CHAVE_S", 10)
+
 # --- Limites de uso --------------------------------------------------------- #
 LIMITE_PADRAO = _int("AIDA_API_LIMITE", 60)
 JANELA_LIMITE_S = _int("AIDA_API_JANELA_S", 3600)
@@ -70,6 +79,9 @@ JANELA_LIMITE_S = _int("AIDA_API_JANELA_S", 3600)
 # --- Logs ------------------------------------------------------------------- #
 # Retencao declarada no aviso de privacidade: o log guarda metadado da chamada
 # (chave, rota, status, duracao, hash do arquivo), nunca a imagem enviada.
+# Desligado, o log completo para de ser gravado, mas a analise atendida ainda
+# grava uma linha minima (chave, rota, status): e ela que desconta o token da
+# cota do plano (trigger api_calls_debita_token).
 LOG_CHAMADAS = _bool("AIDA_API_LOG_CHAMADAS", True)
 LOG_RETENCAO_DIAS = _int("AIDA_API_LOG_RETENCAO_DIAS", 90)
 

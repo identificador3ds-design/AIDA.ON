@@ -68,12 +68,18 @@ curl -X POST https://<host>/v1/analyze/image \
 
 ## Decisões que valem conhecer antes de integrar
 
-**`result` tem três valores.** `REAL`, `IA/MANIPULADA` e `INCONCLUSIVO` vêm do
-Core exatamente como ele decidiu — a borda não recalcula, não arredonda e não
+**`result` tem quatro valores.** `REAL`, `REAL_EDITADA`, `IA/MANIPULADA` e
+`INCONCLUSIVO` vêm do Core exatamente como ele decidiu — a borda não recalcula, não arredonda e não
 desempata. Um `if/else` binário do lado do cliente rotula como IA justamente o
 que o sistema declarou indeterminado. Se o Core devolver um valor fora desse
 vocabulário (contrato mudou do outro lado), a borda responde `INCONCLUSIVO`:
 escolher um dos lados seria a borda decidindo.
+
+`REAL_EDITADA` é uma foto que a análise de conteúdo considera real e cujo
+arquivo registra edição em um editor de imagem (`edited` e `editors` dizem o
+que foi encontrado). A informação vem dos metadados, não do modelo: uma foto
+editada que perdeu os metadados (reenviada por app de mensagem, por exemplo)
+sai como `REAL`. Trate `REAL_EDITADA` como real, não como manipulada.
 
 **Exiba `ai_probability`, não `calibration.ai_probability_calibrated`.** O
 limiar operacional vem do índice de Youden e não cai em 0,50. A escala de
@@ -134,8 +140,36 @@ python -m pytest testes/test_api_v1.py -q
 3. Emita a primeira chave:
    `python -m aida_api.gerenciar_chaves emitir "app de teste"`.
    O valor aparece uma única vez — o banco guarda só o `sha256`.
-4. Suba com gunicorn: `gunicorn -w 2 -b 0.0.0.0:8000 aida_api.app:app`.
-   `AIDA_API_CONCORRENCIA` limita quantas análises correm por processo.
+4. Publique (abaixo). Rodando por conta própria, use **um** worker:
+   `gunicorn -w 1 --threads 8 --timeout 200 -b 0.0.0.0:8000 aida_api.app:app`.
+   Cache, fila e cota vivem na memória do processo; com dois workers,
+   `GET /v1/analysis/{id}` erra metade das vezes e a cota dobra. O `--timeout`
+   precisa ser maior que `AIDA_CORE_TIMEOUT_S` (180 s).
+
+### Onde a API roda: Space `AIDAON/aida-borda-api`
+
+URL pública: `https://aidaon-aida-borda-api.hf.space` (é para onde a página
+`/api` aponta, em `scripts/script-api.js`). O Space é gratuito (CPU basic) e
+fica na mesma infraestrutura do Core, então a chamada borda → Core é rápida.
+
+O deploy é feito pelo workflow `.github/workflows/publicar-api.yml`: a cada
+push na `main` que mexe em `aida_api/` (ou manualmente, em Actions), ele roda
+os testes e envia `deploy/Dockerfile`, `deploy/README.md` e o pacote
+`aida_api/` para o Space. Não edite arquivos direto no Space: o próximo deploy
+sobrescreve.
+
+Configuração única:
+
+- No GitHub (Settings > Secrets and variables > Actions): segredo `HF_TOKEN`,
+  um token do Hugging Face com permissão de escrita no Space.
+- No Space (Settings > Variables and secrets): `SUPABASE_URL`,
+  `SUPABASE_SERVICE_ROLE_KEY` e `AIDA_CHAVE_INTERNA` (o mesmo valor configurado
+  no Core, que isenta a borda do limite por cliente dele).
+- **Não** defina `AIDA_API_DEV_KEYS` no Space. Com Supabase configurado ela é
+  ignorada, mas não há motivo para deixá-la lá.
+
+Um Space gratuito hiberna após cerca de 48 h sem acesso; a primeira chamada
+depois disso espera o container subir.
 
 Enquanto a API não estiver publicada, `vercel.json` continua redirecionando
 `/api/v1/*` para a página `/api` — o comportamento que `docs/rotas.md` descreve.
@@ -150,8 +184,13 @@ cache não é compartilhado — o custo é reprocessamento, nunca resposta errad
 Cota global exige um contador compartilhado (Redis/Postgres) no lugar de
 `limites.LimitadorEmMemoria`; a interface `consumir` continua a mesma.
 
-A validação de chave é cacheada por 60 s, então uma revogação passa a valer
-depois desse intervalo. Para revogar na hora, reinicie o processo.
+A validação de chave é cacheada por `AIDA_API_CACHE_CHAVE_S` (padrão 10 s):
+revogar, suspender ou esgotar a cota no painel passa a valer depois desse
+intervalo. Para valer na hora, reinicie o processo.
+
+Com `AIDA_API_LOG_CHAMADAS=false`, o log completo deixa de ser gravado, mas cada
+análise atendida ainda grava uma linha mínima em `api_calls` (prefixo da chave,
+rota, status). É essa linha que desconta o token da cota do plano.
 
 ## Cobrança por créditos
 
@@ -193,10 +232,12 @@ Ver `.env.example`. As que mais importam:
 | Variável | Padrão | Papel |
 | -------- | ------ | ----- |
 | `AIDA_CORE_URL` | Space no HF | Onde vive o Core |
+| `AIDA_CORE_ESPERAS_S` | 5,10,20 | Novas tentativas enquanto o Core (Space gratuito) acorda |
 | `SUPABASE_URL` / `SUPABASE_SERVICE_ROLE_KEY` | — | Chaves e logs |
-| `AIDA_API_DEV_KEYS` | — | Chaves locais, só desenvolvimento |
+| `AIDA_API_DEV_KEYS` | — | Chaves locais, só desenvolvimento (ignorada com Supabase) |
 | `AIDA_API_LIMITE` / `AIDA_API_JANELA_S` | 60 / 3600 | Cota por chave |
 | `AIDA_API_CONCORRENCIA` | 2 | Análises simultâneas por processo |
 | `AIDA_API_CACHE_TTL_S` | 900 | Reaproveitamento por conteúdo |
 | `AIDA_API_MAX_MB` | 15 | Limite de tamanho, igual ao do Core |
 | `AIDA_API_LOG_RETENCAO_DIAS` | 90 | Precisa bater com o aviso de privacidade |
+| `AIDA_API_CACHE_CHAVE_S` | 10 | Tempo até revogação/suspensão valer |

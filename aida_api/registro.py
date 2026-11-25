@@ -69,29 +69,81 @@ def registrar(evento):
 
     _logger.info(json.dumps({"aida_api": evento}, ensure_ascii=False, default=str))
 
-    if config.LOG_CHAMADAS and config.supabase_configurado():
-        threading.Thread(target=_gravar_supabase, args=(evento,), daemon=True).start()
+    if not config.supabase_configurado():
+        return
+    if config.LOG_CHAMADAS:
+        linha = _linha_completa(evento)
+    elif _cobravel(evento):
+        linha = _linha_de_cobranca(evento)
+    else:
+        return
+    threading.Thread(target=_gravar_supabase, args=(linha,), daemon=True).start()
 
 
-def _gravar_supabase(evento):
-    """Best-effort: o log e importante, mas nao a ponto de derrubar a analise."""
+def _cobravel(evento):
+    """Analise atendida: e o que o trigger api_calls_debita_token desconta."""
+    return evento.get("status") == 200 and str(evento.get("route") or "").startswith("/v1/analyze/")
+
+
+def _linha_de_cobranca(evento):
+    """So o necessario para descontar o token: sem hash, tamanho nem resultado."""
+    return {
+        "criada_em": evento.get("at"),
+        "prefixo_chave": evento.get("key_prefix"),
+        "rota": evento.get("route"),
+        "status": evento.get("status"),
+    }
+
+
+def _linha_completa(evento):
+    return {
+        **_linha_de_cobranca(evento),
+        "codigo_erro": evento.get("error_code"),
+        "duracao_s": evento.get("duration_seconds"),
+        "duracao_core_s": evento.get("core_seconds"),
+        "hash_arquivo": evento.get("file_sha256"),
+        "tamanho_bytes": evento.get("file_bytes"),
+        "resultado": evento.get("result"),
+        "cache": evento.get("cache"),
+        "id_analise": evento.get("analysis_id"),
+    }
+
+
+def _gravar_supabase(linha):
+    """Best-effort: o log e importante, mas nao a ponto de derrubar a analise.
+
+    A linha de uma analise atendida e o que desconta o token da cota (trigger
+    api_calls_debita_token). Se o Supabase recusar a linha completa — tabela
+    api_calls criada por uma versao antiga da migracao, sem alguma coluna —,
+    grava so a linha de cobranca, cujas colunas o trigger exige de qualquer
+    forma. Toda recusa vai para o log: antes, um 4xx passava em silencio e a
+    cota simplesmente parava de diminuir.
+    """
+    status, corpo = _post_supabase(linha)
+    if status is None or status < 400:
+        return
+    _logger.warning(json.dumps(
+        {"aida_api_log_recusado": {"status": status, "detalhe": corpo}}, ensure_ascii=False
+    ))
+    minima = {k: linha.get(k) for k in _COLUNAS_COBRANCA}
+    if minima != linha and _cobravel({"status": linha.get("status"), "route": linha.get("rota")}):
+        status, corpo = _post_supabase(minima)
+        if status is not None and status >= 400:
+            _logger.warning(json.dumps(
+                {"aida_api_cobranca_recusada": {"status": status, "detalhe": corpo}},
+                ensure_ascii=False,
+            ))
+
+
+_COLUNAS_COBRANCA = ("criada_em", "prefixo_chave", "rota", "status")
+
+
+def _post_supabase(linha):
+    """Devolve (status_http, corpo) ou (None, None) se a rede falhou."""
     try:
-        requests.post(
+        resposta = requests.post(
             f"{config.SUPABASE_URL}/rest/v1/{config.TABELA_CHAMADAS}",
-            json={
-                "criada_em": evento.get("at"),
-                "prefixo_chave": evento.get("key_prefix"),
-                "rota": evento.get("route"),
-                "status": evento.get("status"),
-                "codigo_erro": evento.get("error_code"),
-                "duracao_s": evento.get("duration_seconds"),
-                "duracao_core_s": evento.get("core_seconds"),
-                "hash_arquivo": evento.get("file_sha256"),
-                "tamanho_bytes": evento.get("file_bytes"),
-                "resultado": evento.get("result"),
-                "cache": evento.get("cache"),
-                "id_analise": evento.get("analysis_id"),
-            },
+            json=linha,
             headers={
                 "apikey": config.SUPABASE_SERVICE_ROLE_KEY,
                 "Authorization": f"Bearer {config.SUPABASE_SERVICE_ROLE_KEY}",
@@ -102,3 +154,5 @@ def _gravar_supabase(evento):
         )
     except requests.RequestException as exc:
         _logger.warning(json.dumps({"aida_api_log_falhou": str(exc)}))
+        return None, None
+    return resposta.status_code, (resposta.text or "")[:300]

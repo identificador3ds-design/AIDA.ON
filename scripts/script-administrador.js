@@ -68,32 +68,9 @@ const PLANOS = {
   custom: "Personalizado",
 };
 
-const METODOS_PADRAO = {
-  FFT: {
-    label: "FFT",
-    enabled: true,
-    backendReady: true,
-    descricao: "Analise espectral para observar frequencias e padroes menos naturais.",
-  },
-  PSEM: {
-    label: "PSEM",
-    enabled: false,
-    backendReady: false,
-    descricao: "Espaco reservado para metodo experimental ainda nao conectado no backend.",
-  },
-  M4: {
-    label: "LSB",
-    enabled: true,
-    backendReady: true,
-    descricao: "Leitura do plano de bits menos significativos para sinais artificiais.",
-  },
-  GRAD: {
-    label: "Gradiente Laplaciano (Neon)",
-    enabled: true,
-    backendReady: true,
-    descricao: "Realce de bordas e texturas para encontrar artefatos de geracao.",
-  },
-};
+/* Ferramentas com tela de manutencao propria. Catalogo unico em
+   scripts/aida-manutencao-ferramenta.js (o mesmo que as paginas usam). */
+const FERRAMENTAS = window.AidaFerramentas?.lista || {};
 
 const CONFIG_ADMIN_PADRAO = {
   allowRegistrations: true,
@@ -109,7 +86,7 @@ const CONFIG_ADMIN_PADRAO = {
   announcementMessage: "",
   analysisButtonLabel: "Analisar imagem",
   unloggedAnalysisLimit: 1,
-  methods: METODOS_PADRAO,
+  toolsMaintenance: {},
 };
 
 const CHECKBOXES_CONFIG = {
@@ -488,7 +465,7 @@ async function abrirPainel() {
 }
 
 function limparDadosDaTela() {
-  ["chavesTabela", "empresasTabela", "usersTableBody", "auditoriaTabela", "methodsConfigGrid"].forEach(
+  ["chavesTabela", "empresasTabela", "usersTableBody", "auditoriaTabela", "toolsMaintenanceGrid"].forEach(
     (id) => {
       if ($(id)) {
         $(id).innerHTML = "";
@@ -1107,24 +1084,21 @@ async function acaoDoUsuario(event) {
 /* Configuracao do site                                                       */
 /* -------------------------------------------------------------------------- */
 
-function normalizarMetodos(salvos = {}) {
-  const metodos = {};
+function normalizarManutencaoFerramentas(salvos = {}) {
+  const manutencao = {};
 
-  Object.keys(METODOS_PADRAO).forEach((chave) => {
-    const base = { ...METODOS_PADRAO[chave], ...(salvos?.[chave] || {}) };
-    metodos[chave] = {
-      label: String(base.label || METODOS_PADRAO[chave].label).trim().slice(0, 60) || METODOS_PADRAO[chave].label,
-      descricao: String(base.descricao || METODOS_PADRAO[chave].descricao).trim().slice(0, 300) || METODOS_PADRAO[chave].descricao,
-      enabled: Boolean(base.enabled),
-      backendReady: Boolean(base.backendReady),
-    };
+  Object.keys(FERRAMENTAS).forEach((chave) => {
+    manutencao[chave] = Boolean(salvos?.[chave]);
   });
 
-  return metodos;
+  return manutencao;
 }
 
 function normalizarAdminConfig(salvo = {}) {
-  const config = { ...CONFIG_ADMIN_PADRAO, ...(salvo && typeof salvo === "object" ? salvo : {}) };
+  // `methods` (controle por metodo) saiu do painel: todas as analises usam todos
+  // os metodos. Descartado aqui para nao ser republicado em admin_config.
+  const { methods: _metodosAntigos, ...base } = salvo && typeof salvo === "object" ? salvo : {};
+  const config = { ...CONFIG_ADMIN_PADRAO, ...base };
   const limite = inteiroEntre(config.unloggedAnalysisLimit, 0, 50);
   const suporte = String(config.supportEmail || "").trim();
 
@@ -1139,45 +1113,44 @@ function normalizarAdminConfig(salvo = {}) {
     analysisButtonLabel:
       String(config.analysisButtonLabel || "").trim().slice(0, 60) || CONFIG_ADMIN_PADRAO.analysisButtonLabel,
     unloggedAnalysisLimit: limite === null ? CONFIG_ADMIN_PADRAO.unloggedAnalysisLimit : limite,
-    methods: normalizarMetodos(config.methods),
+    toolsMaintenance: normalizarManutencaoFerramentas(config.toolsMaintenance),
   };
 }
 
-function renderizarMetodosConfiguraveis(configuracao) {
-  $("methodsConfigGrid").innerHTML = Object.entries(configuracao.methods)
-    .map(([chave, metodo]) => `
-      <article class="${metodo.enabled ? "method-config-panel" : "method-config-panel is-disabled"}">
+function renderizarManutencaoFerramentas(configuracao) {
+  const geral = Boolean(configuracao.maintenanceMode);
+  const chaves = Object.keys(FERRAMENTAS);
+
+  if (!chaves.length) {
+    $("toolsMaintenanceGrid").innerHTML =
+      '<p class="table-note">Catálogo de ferramentas não carregou. Recarregue a página.</p>';
+    return;
+  }
+
+  $("toolsMaintenanceGrid").innerHTML = chaves
+    .map((chave) => {
+      const ferramenta = FERRAMENTAS[chave];
+      const propria = Boolean(configuracao.toolsMaintenance?.[chave]);
+      const parada = geral || propria;
+      const situacao = parada
+        ? `<span class="micro-pill warning">${geral && !propria ? "Manutenção geral" : "Em manutenção"}</span>`
+        : '<span class="micro-pill">Disponível</span>';
+      const id = `toolMaintenance-${escaparHtml(chave)}`;
+      return `
+      <article class="${parada ? "method-config-panel is-disabled" : "method-config-panel"}">
         <div class="method-config-head">
           <div>
-            <h3>${escaparHtml(chave)}</h3>
-            <p>${escaparHtml(metodo.descricao)}</p>
+            <h3>${escaparHtml(ferramenta.nome)}</h3>
+            <p>${escaparHtml(ferramenta.descricao)}</p>
           </div>
-          <div class="method-config-meta">
-            ${metodo.backendReady ? '<span class="micro-pill">Backend pronto</span>' : '<span class="micro-pill warning">Backend pendente</span>'}
-            <span class="micro-pill">${metodo.enabled ? "Ativo" : "Oculto"}</span>
-          </div>
+          <div class="method-config-meta">${situacao}</div>
         </div>
-        <div class="method-config-body">
-          <div class="admin-field">
-            <label for="methodLabel-${chave}">Nome exibido ao usuário</label>
-            <input id="methodLabel-${chave}" data-method-label="${chave}" type="text" class="field-input" maxlength="60" value="${escaparHtml(metodo.label)}">
-          </div>
-          <div class="admin-field">
-            <label for="methodDescription-${chave}">Descrição interna</label>
-            <textarea id="methodDescription-${chave}" data-method-description="${chave}" class="field-textarea" rows="3" maxlength="300">${escaparHtml(metodo.descricao)}</textarea>
-          </div>
-        </div>
-        <div class="method-config-switches">
-          <label class="method-config-switch" for="methodEnabled-${chave}">
-            <div><strong>Visível na análise</strong><span>Aparece no seletor público.</span></div>
-            <input id="methodEnabled-${chave}" data-method-enabled="${chave}" type="checkbox" ${metodo.enabled ? "checked" : ""}>
-          </label>
-          <label class="method-config-switch" for="methodBackend-${chave}">
-            <div><strong>Backend liberado</strong><span>Permite uso operacional real.</span></div>
-            <input id="methodBackend-${chave}" data-method-backend="${chave}" type="checkbox" ${metodo.backendReady ? "checked" : ""}>
-          </label>
-        </div>
-      </article>`)
+        <label class="method-config-switch" for="${id}">
+          <div><strong>Tela de manutenção</strong><span>Usuários comuns desta ferramenta veem a tela de manutenção. Admin continua entrando.</span></div>
+          <input id="${id}" data-tool-maintenance="${escaparHtml(chave)}" type="checkbox" ${propria ? "checked" : ""}>
+        </label>
+      </article>`;
+    })
     .join("");
 }
 
@@ -1191,7 +1164,7 @@ function preencherFormulario(configuracao) {
     $(id).checked = Boolean(configuracao[campo]);
   });
 
-  renderizarMetodosConfiguraveis(configuracao);
+  renderizarManutencaoFerramentas(configuracao);
 }
 
 function lerFormularioConfiguracao() {
@@ -1215,15 +1188,12 @@ function lerFormularioConfiguracao() {
   configuracao.supportEmail = suporte || EMAIL_SUPORTE_PADRAO;
   configuracao.announcementMessage = texto("configAnnouncement");
   configuracao.analysisButtonLabel = texto("configAnalysisButtonLabel");
-  configuracao.methods = {};
+  configuracao.toolsMaintenance = {};
 
-  Object.keys(METODOS_PADRAO).forEach((chave) => {
-    configuracao.methods[chave] = {
-      label: String(document.querySelector(`[data-method-label="${chave}"]`)?.value || "").trim(),
-      descricao: String(document.querySelector(`[data-method-description="${chave}"]`)?.value || "").trim(),
-      enabled: Boolean(document.querySelector(`[data-method-enabled="${chave}"]`)?.checked),
-      backendReady: Boolean(document.querySelector(`[data-method-backend="${chave}"]`)?.checked),
-    };
+  Object.keys(FERRAMENTAS).forEach((chave) => {
+    configuracao.toolsMaintenance[chave] = Boolean(
+      document.querySelector(`[data-tool-maintenance="${chave}"]`)?.checked
+    );
   });
 
   return normalizarAdminConfig(configuracao);

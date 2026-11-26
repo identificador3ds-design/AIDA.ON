@@ -282,16 +282,6 @@
   padding-top: var(--aida-space-3);
 }
 
-/* O `.aida-btn` base do design system pinta texto escuro sobre fundo
-   translúcido: sobre o fundo verde, o contraste fica abaixo de 4.5:1.
-   Aqui o botão principal ganha fundo claro (WCAG AA). */
-.precos-main .aida-btn:not(.aida-btn--ghost):not(.aida-btn--quiet),
-.precos-dialogo .aida-btn:not(.aida-btn--ghost):not(.aida-btn--quiet) {
-  --_btn-bg: var(--aida-text);
-  --_btn-color: var(--aida-text-invert);
-  --_btn-border: transparent;
-}
-
 /* --------------------------------------------------------------------------
    Créditos
    -------------------------------------------------------------------------- */

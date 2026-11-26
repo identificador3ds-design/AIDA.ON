@@ -1,6 +1,6 @@
 # Inventario LGPD inicial - AIDA.ON
 
-Atualizado em 29/05/2026.
+Atualizado em 25/11/2026.
 
 Este documento e um ponto de partida tecnico para adequacao do projeto. Ele nao substitui revisao juridica, mas registra onde o sistema trata dados pessoais e quais controles ja foram iniciados.
 
@@ -13,7 +13,7 @@ Este documento e um ponto de partida tecnico para adequacao do projeto. Ele nao 
 | Analise de imagem | Arquivo em base64, metadados do arquivo, resultado tecnico | Backend Flask no Render durante processamento | A imagem pode conter dado pessoal ou sensivel se houver pessoas identificaveis. |
 | Historico | URL da imagem original, resultado, metodo, probabilidade, data e `user_id` | Supabase tabela `historico_analises` e bucket `evidencias` | Agora o salvamento depende de escolha explicita na tela de analise. |
 | Preferencias locais | Tutorial visto, decisao de instalacao PWA, opcao de salvar historico | Navegador do usuario | Manter apenas preferencias necessarias para UX. |
-| Contato comercial (pagina /precos) | Nome, empresa, e-mail, volume estimado, mensagem livre, consentimento | Supabase tabela `contatos_comerciais` (docs/migracao-cobranca.sql) | Publico so insere; leitura so do admin. Retencao sugerida de 12 meses, PENDENTE de validacao juridica; o aviso de privacidade ainda nao cita esta finalidade. |
+| Contato comercial (pagina /precos) | Nome, empresa, e-mail, volume estimado, mensagem livre, consentimento | Supabase tabela `contatos_comerciais` (docs/migracao-cobranca.sql) | Publico so insere; leitura so do admin. Base legal: consentimento. Retencao de 12 meses: decidida, aguardando revisao juridica. Anti-spam no banco: 3 envios por e-mail e 20 no total por hora (trigger). Citado no aviso de privacidade, secao 8 (marcada como PENDENTE DE REVISAO JURIDICA). |
 | Checkout (API, futuro) | CPF/CNPJ e endereco de cobranca | So em memoria na borda (`POST /v1/billing/checkout`); nao e gravado | Usado para a regra anti-arbitragem. Ao integrar o gateway, os dados vao para o provedor de pagamento: inventariar o operador. |
 | Preferencias da pagina de precos | Mercado e idioma escolhidos | `localStorage` (AIDA_PrecosMercado, AIDA_PrecosIdioma) | Conveniencia; nao identifica a pessoa. |
 
@@ -41,6 +41,7 @@ Este documento e um ponto de partida tecnico para adequacao do projeto. Ele nao 
 | Media | Falta canal formal do encarregado/controlador | Definir responsavel, e-mail oficial e procedimento de resposta a titulares. |
 | Media | Backend aceita origem ampla se `ALLOWED_ORIGINS` nao for configurado | Definir dominios finais de producao no ambiente. |
 | Baixa | Textos de privacidade ainda genericos | Validar bases legais e prestadores com responsavel juridico. |
+| Media | Secao do formulario comercial e FAQ de precos sem revisao juridica | Revisar `pages/index-privacidade.html#formulario-comercial` e o FAQ de `/precos`; agendar o descarte de `contatos_comerciais` apos 12 meses (comando no fim de `docs/migracao-cobranca.sql`). |
 
 ## Fontes oficiais consultadas
 

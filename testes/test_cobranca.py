@@ -6,7 +6,8 @@ de rede. O que se verifica:
 * checkout em BRL só com CPF/CNPJ válido e endereço de cobrança no Brasil;
 * o valor cotado sai do config, nunca de um campo enviado pelo cliente;
 * API Free bloqueia com 429 no limite; plano pago segue e registra excedente;
-* análise que falha devolve o crédito.
+* análise que falha devolve o crédito;
+* resposta servida do cache não consome crédito.
 """
 
 from __future__ import annotations
@@ -59,8 +60,9 @@ def api(monkeypatch):
     monkeypatch.setenv("AIDA_API_DEV_USUARIOS", TOKEN_USUARIO)
     chaves_api.limpar_cache()
     modulo_app.analises.limpar()
-    modulo_app.limitador = limites.LimitadorEmMemoria(limite_padrao=10_000, janela_s=60)
-    modulo_app.medidor = medicao.MedidorEmMemoria()
+    # monkeypatch devolve o original no fim, mesmo se o teste trocar o medidor.
+    monkeypatch.setattr(modulo_app, "limitador", limites.LimitadorEmMemoria(limite_padrao=10_000, janela_s=60))
+    monkeypatch.setattr(modulo_app, "medidor", medicao.MedidorEmMemoria())
 
     estado = {"falhar": False, "chamadas": 0}
 
@@ -308,6 +310,50 @@ def test_falha_do_core_devolve_o_credito(api):
     assert tipos == ["image", "estorno"]
 
 
+def test_resposta_do_cache_nao_consome_credito(api):
+    assinar("api_free")
+    primeira = analisar(api)
+    assert primeira.status_code == 200 and primeira.headers["X-AIDA-Cache"] == "miss"
+    assert primeira.headers["X-AIDA-Credits-Used"] == "1"
+
+    segunda = analisar(api)  # mesmo arquivo, dentro do TTL
+    assert segunda.status_code == 200 and segunda.headers["X-AIDA-Cache"] == "hit"
+    assert segunda.headers["X-AIDA-Credits-Used"] == "1", "cache hit informa o saldo sem debitar"
+
+    uso = api.get("/v1/usage", headers={"Authorization": f"Bearer {CHAVE}"}).get_json()
+    assert uso["credits_used"] == 1
+    assert [l[2] for l in modulo_app.medidor.lancamentos()] == ["image"]
+    assert api.estado["chamadas"] == 1
+
+
+def test_cache_hit_e_servido_mesmo_com_creditos_esgotados(api):
+    assinatura = assinar("api_free")
+    assert analisar(api).status_code == 200  # guarda no cache (1 crédito)
+    chave_id = chaves_api.hash_chave(CHAVE)
+    for _ in range(assinatura.creditos_incluidos - 1):
+        modulo_app.medidor.debitar(chave_id, 1, "image")
+
+    assert analisar(api).status_code == 200  # repetido: sem crédito em jogo
+    assert analisar(api, PNG + b"novo").status_code == 429  # arquivo novo: bloqueia
+
+
+def test_cache_hit_nao_depende_da_medicao(api):
+    assinar("api_free")
+    assert analisar(api).status_code == 200
+
+    class Quebrado(medicao.MedidorEmMemoria):
+        def debitar(self, *a, **k):
+            raise medicao.MedicaoIndisponivel("banco fora")
+
+        def uso(self, *a, **k):
+            raise medicao.MedicaoIndisponivel("banco fora")
+
+    modulo_app.medidor = Quebrado()
+    r = analisar(api)
+    assert r.status_code == 200 and r.headers["X-AIDA-Cache"] == "hit"
+    assert "X-AIDA-Credits-Used" not in r.headers
+
+
 def test_medicao_fora_do_ar_responde_503_sem_chamar_o_core(api):
     class Quebrado(medicao.MedidorEmMemoria):
         def debitar(self, *a, **k):
@@ -376,3 +422,27 @@ def test_contrato_documenta_os_codigos_novos():
                    "billing_country_mismatch", "gateway_not_configured"):
         assert codigo in CODIGOS_DE_ERRO
     assert "GET /v1/usage" in CONTRATO["endpoints"] and "POST /v1/billing/checkout" in CONTRATO["endpoints"]
+
+
+# --------------------------------------------------------------------------- #
+# Migração: anti-spam do formulário comercial
+# --------------------------------------------------------------------------- #
+def test_migracao_limita_envios_do_formulario():
+    import re
+
+    sql = (RAIZ / "docs" / "migracao-cobranca.sql").read_text(encoding="utf-8").lower()
+    sql = re.sub(r"\s+", " ", sql)
+    assert "before insert on public.contatos_comerciais" in sql
+    # idempotente: recria a função e o trigger sem erro na segunda execução
+    assert "create or replace function public.contatos_comerciais_limita_envios()" in sql
+    assert "drop trigger if exists contatos_comerciais_limita_envios on public.contatos_comerciais" in sql
+    assert "create index if not exists contatos_comerciais_email_hora_idx" in sql
+    # 3 por e-mail (sem diferenciar maiúsculas) e 20 no total, por hora
+    assert "lower(email) = lower(new.email)" in sql
+    assert "v_por_email >= 3" in sql and "v_total >= 20" in sql
+    assert sql.count("interval '1 hour'") >= 2
+    assert sql.count("errcode = 'p0001'") >= 2
+    # anon não lê a tabela: a contagem precisa rodar como dono da função
+    trecho = sql.split("function public.contatos_comerciais_limita_envios()", 1)[1]
+    assert "security definer" in trecho.split("$$", 1)[0]
+

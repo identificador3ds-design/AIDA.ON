@@ -1,7 +1,8 @@
 {
-  "$comment": "Fonte única dos planos do AIDA. O site (scripts/aida-precos-core.js) e a borda da API (aida_api/cobranca.py) leem ESTE arquivo; nenhum preço é escrito em componente ou rota. Valores monetários em unidade da moeda (R$ 24,90 = 24.9). null = ainda não definido ou não se aplica. `pending` lista o que depende de decisão humana; a página mostra 'a definir' nesses campos.",
-  "version": "2026-11-24",
+  "$comment": "Fonte única dos planos do AIDA. O site (scripts/aida-precos-core.js) e a borda da API (aida_api/cobranca.py) leem ESTE arquivo; nenhum preço é escrito em componente ou rota. Valores monetários em unidade da moeda (R$ 24,90 = 24.9). null = ainda não definido ou não se aplica. `pending` (opcional) lista o que ainda depende de decisão humana; a página mostra 'a definir' nesses campos.",
+  "version": "2026-11-25",
   "annual_months_charged": 10,
+  "$comment_annual": "Desconto anual (annual_months_charged) vale para todos os planos pagos, da plataforma e da API. O excedente da API é sempre cobrado mês a mês, pelo uso real do ciclo. Créditos esgotados nos planos pagos da plataforma: sem excedente, bloqueia até o próximo ciclo ou o upgrade (overage: block).",
   "credit_rules": {
     "image": 1,
     "video_per_started_minute": 10,
@@ -16,7 +17,7 @@
   },
   "calculator": {
     "days_per_month": 30,
-    "$comment": "Planos com limite diário (Cidadão/Free) entram na calculadora como daily_limit x days_per_month análises; cada imagem e cada minuto de vídeo contam como uma análise (estimativa, ver pending video_counts_as_analysis)."
+    "$comment": "Planos com limite diário (Cidadão/Free) entram na calculadora como daily_limit x days_per_month análises. Regra: cada arquivo enviado (imagem ou vídeo) conta como 1 análise. Como a calculadora pede minutos de vídeo, e não número de vídeos, ela estima 1 análise por imagem e por minuto de vídeo (estimativa conservadora)."
   },
   "currencies": {
     "BRL": {
@@ -55,10 +56,7 @@
           "gateway_price_ids": {
             "monthly": null,
             "annual": null
-          },
-          "pending": [
-            "video_counts_as_analysis"
-          ]
+          }
         },
         {
           "id": "criador",
@@ -86,10 +84,7 @@
           "gateway_price_ids": {
             "monthly": null,
             "annual": null
-          },
-          "pending": [
-            "overage_policy"
-          ]
+          }
         },
         {
           "id": "profissional",
@@ -118,10 +113,7 @@
           "gateway_price_ids": {
             "monthly": null,
             "annual": null
-          },
-          "pending": [
-            "overage_policy"
-          ]
+          }
         },
         {
           "id": "redacao",
@@ -151,10 +143,7 @@
           "gateway_price_ids": {
             "monthly": null,
             "annual": null
-          },
-          "pending": [
-            "overage_policy"
-          ]
+          }
         },
         {
           "id": "checagem_ong",
@@ -389,10 +378,7 @@
           "gateway_price_ids": {
             "monthly": null,
             "annual": null
-          },
-          "pending": [
-            "video_counts_as_analysis"
-          ]
+          }
         },
         {
           "id": "pro",
@@ -402,14 +388,15 @@
           "price_monthly": {
             "USD": 9
           },
-          "credits_included": null,
+          "credits_included": 1500,
           "daily_limit": null,
           "overage": "block",
           "overage_price": null,
-          "users": null,
+          "users": 1,
           "features": [
             "all_media",
-            "history"
+            "history",
+            "pdf_report"
           ],
           "cta": {
             "type": "subscribe",
@@ -419,12 +406,7 @@
           "gateway_price_ids": {
             "monthly": null,
             "annual": null
-          },
-          "pending": [
-            "overage_policy",
-            "credits_included",
-            "users"
-          ]
+          }
         },
         {
           "id": "team",
@@ -434,14 +416,15 @@
           "price_monthly": {
             "USD": 39
           },
-          "credits_included": null,
+          "credits_included": 6000,
           "daily_limit": null,
           "overage": "block",
           "overage_price": null,
-          "users": null,
+          "users": 5,
           "features": [
             "all_media",
             "history",
+            "pdf_report",
             "multi_user",
             "team_panel"
           ],
@@ -453,12 +436,7 @@
           "gateway_price_ids": {
             "monthly": null,
             "annual": null
-          },
-          "pending": [
-            "overage_policy",
-            "credits_included",
-            "users"
-          ]
+          }
         }
       ],
       "api": [
@@ -611,7 +589,7 @@
             "USD": null
           },
           "credits_included": null,
-          "min_credits": null,
+          "min_credits": 500000,
           "daily_limit": null,
           "overage": "negotiated",
           "overage_price": null,

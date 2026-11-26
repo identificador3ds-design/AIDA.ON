@@ -125,7 +125,8 @@
     if (base === null) return fora("sem_preco");
 
     // Limite diário (Cidadão/Free): estimativa de uma análise por imagem e por
-    // minuto de vídeo. Pendência registrada no config (video_counts_as_analysis).
+    // minuto de vídeo (regra: cada arquivo enviado conta 1 análise; a calculadora
+    // recebe minutos, não arquivos, e por isso estima de forma conservadora).
     if (plano.daily_limit) {
       var analises = inteiroNaoNegativo(uso.imagens || 0) + inteiroNaoNegativo(uso.minutosVideo || 0);
       var teto = plano.daily_limit * config.calculator.days_per_month;

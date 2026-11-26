@@ -284,7 +284,7 @@ grant execute on function public.cobranca_uso(text)                             
 -- 5. Formulário comercial (Enterprise, Checagem/ONG, contratação, chave grátis)
 -- ------------------------------------------------------------------------- --
 -- Dado pessoal: nome, empresa e e-mail de quem pede contato. Inventariado em
--- docs/lgpd-inventario.md. Retenção sugerida: 12 meses (PENDENTE de validação).
+-- docs/lgpd-inventario.md. Retenção: 12 meses (decidida, aguardando revisão jurídica).
 create table if not exists public.contatos_comerciais (
   id               uuid primary key default gen_random_uuid(),
   criado_em        timestamptz not null default now(),
@@ -325,5 +325,58 @@ create policy "contatos_comerciais: admin atualiza"
 
 grant select, update on public.contatos_comerciais to authenticated;
 
--- Descarte após a retenção (rode periodicamente quando o prazo for validado):
+-- ------------------------------------------------------------------------- --
+-- 6. Anti-spam do formulário comercial
+--    No máximo 3 envios por e-mail (sem diferenciar maiúsculas) e 20 envios
+--    no total por hora. Recusa com errcode P0001: o PostgREST devolve HTTP 400
+--    com "code": "P0001" e o site mostra uma mensagem de "tente mais tarde".
+--    SECURITY DEFINER porque quem insere (anon) não pode ler a tabela.
+-- ------------------------------------------------------------------------- --
+create index if not exists contatos_comerciais_email_hora_idx
+  on public.contatos_comerciais (lower(email), criado_em);
+create index if not exists contatos_comerciais_criado_em_idx
+  on public.contatos_comerciais (criado_em);
+
+create or replace function public.contatos_comerciais_limita_envios()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_por_email integer;
+  v_total     integer;
+begin
+  -- Serializa a contagem: dois envios simultâneos não passam juntos do limite.
+  perform pg_advisory_xact_lock(hashtext('contatos_comerciais_limita_envios'));
+
+  select count(*) into v_por_email
+    from public.contatos_comerciais
+   where lower(email) = lower(new.email)
+     and criado_em > now() - interval '1 hour';
+  if v_por_email >= 3 then
+    raise exception 'limite de envios por e-mail atingido; tente mais tarde'
+      using errcode = 'P0001';
+  end if;
+
+  select count(*) into v_total
+    from public.contatos_comerciais
+   where criado_em > now() - interval '1 hour';
+  if v_total >= 20 then
+    raise exception 'limite de envios do formulário atingido; tente mais tarde'
+      using errcode = 'P0001';
+  end if;
+
+  return new;
+end;
+$$;
+
+revoke all on function public.contatos_comerciais_limita_envios() from public, anon, authenticated;
+
+drop trigger if exists contatos_comerciais_limita_envios on public.contatos_comerciais;
+create trigger contatos_comerciais_limita_envios
+  before insert on public.contatos_comerciais
+  for each row execute function public.contatos_comerciais_limita_envios();
+
+-- Descarte após a retenção de 12 meses (rode periodicamente):
 --   delete from public.contatos_comerciais where criado_em < now() - interval '12 months';

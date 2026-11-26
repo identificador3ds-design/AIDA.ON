@@ -647,3 +647,24 @@ def test_service_worker_so_precarrega_o_que_e_publicado():
     fora = {c for c in caminhos if c.lstrip("./").split("/")[0] not in publicados}
 
     assert not fora, f"service worker referencia arquivos não publicados: {sorted(fora)}"
+
+
+def test_menu_do_topo_tem_precos_antes_de_analisar_arquivo():
+    """Toda página com o menu do topo (menos o painel admin) aponta para /precos."""
+    import re
+
+    paginas = [
+        p for p in sorted((RAIZ / "pages").glob("*.html"))
+        if 'class="aida-topnav"' in p.read_text(encoding="utf-8") and p.name != "index-admin.html"
+    ]
+    assert len(paginas) >= 10
+    for pagina in paginas:
+        nav = pagina.read_text(encoding="utf-8").split('class="aida-topnav"', 1)[1].split("</nav>", 1)[0]
+        links = re.findall(r'<a [^>]*data-nav="([^"]+)"[^>]*>', nav)
+        assert links.count("precos") == 1, pagina.name
+        assert re.search(r'<a href="\./index-precos\.html"[^>]*data-nav="precos"', nav), pagina.name
+        if "enviar" in links:
+            assert links.index("precos") == links.index("enviar") - 1, pagina.name
+    admin = (RAIZ / "pages" / "index-admin.html").read_text(encoding="utf-8")
+    assert 'data-nav="precos"' not in admin
+

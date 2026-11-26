@@ -557,11 +557,17 @@
         },
         body: JSON.stringify(corpo),
       });
-      if (!resposta.ok) throw new Error(`HTTP ${resposta.status}`);
+      if (!resposta.ok) {
+        // P0001 = limite anti-spam da migração (3 por e-mail / 20 no total por hora).
+        const erro = await resposta.json().catch(() => null);
+        const falha = new Error(`HTTP ${resposta.status}`);
+        falha.limite = Boolean(erro && erro.code === "P0001");
+        throw falha;
+      }
       situacao.textContent = t("contact.success");
       formulario.reset();
-    } catch (_) {
-      situacao.textContent = t("contact.error");
+    } catch (falha) {
+      situacao.textContent = t(falha && falha.limite ? "contact.error_rate_limit" : "contact.error");
       botao.disabled = false;
     } finally {
       botao.classList.remove("is-busy");

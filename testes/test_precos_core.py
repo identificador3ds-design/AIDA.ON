@@ -155,10 +155,38 @@ def test_plataforma_usa_limite_diario_e_bloqueio():
     assert r["id"] is None and r["enterprise"] is False
 
 
+def test_plataforma_em_dolar_pro_e_team_definidos():
+    # Decisão 2026-11-25: Pro 1.500 créditos/1 usuário; Team 6.000/5 usuários.
+    assert recomendar("INTL", "platform", 200)["id"] == "free"
+    assert recomendar("INTL", "platform", 1000)["id"] == "pro"
+    assert recomendar("INTL", "platform", 5000)["id"] == "team"
+    r = recomendar("INTL", "platform", 7000)  # Team bloqueia no limite, sem excedente
+    assert r["id"] is None and r["indefinidos"] == []
+    assert plano("INTL", "pro")["users"] == 1 and plano("INTL", "team")["users"] == 5
+
+
+def test_nenhuma_pendencia_restante_no_config():
+    for mercado in CONFIG["markets"].values():
+        for segmento in ("platform", "api"):
+            for p in mercado[segmento]:
+                assert not p.get("pending"), p["id"]
+
+
+def test_enterprise_tem_o_mesmo_minimo_nos_dois_mercados():
+    assert plano("BR", "enterprise")["min_credits"] == 500000
+    assert plano("INTL", "enterprise")["min_credits"] == 500000
+
+
 def test_planos_sem_creditos_definidos_ficam_fora_e_sao_avisados():
-    r = recomendar("INTL", "platform", 1000)
-    assert r["id"] is None
-    assert r["indefinidos"] == ["pro", "team"]
+    planos = [
+        {"id": "x", "price_type": "paid", "price_monthly": {"USD": 9}, "credits_included": None,
+         "overage": "block", "features": [], "pending": ["credits_included"]},
+        {"id": "y", "price_type": "paid", "price_monthly": {"USD": 19}, "credits_included": 5000,
+         "overage": "block", "features": []},
+    ]
+    r = js(f"P.recomendarPlano({json.dumps(planos)},'USD',{{imagens:1000}},'monthly',C)")
+    assert r["recomendado"]["id"] == "y"
+    assert r["indefinidos"] == ["x"]
 
 
 def test_empate_fica_com_o_primeiro_do_config():

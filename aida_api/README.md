@@ -201,21 +201,52 @@ debita créditos por análise.
 * **Créditos:** imagem = 1; vídeo = 10 por minuto iniciado
   (`cobranca.creditos_video`). Ciclo mensal ancorado na data da assinatura;
   créditos não acumulam.
-* **Débito antes do Core, estorno se falhar.** Assim duas chamadas simultâneas
-  não passam juntas do limite do plano grátis.
+* **Cache não consome crédito.** O mesmo arquivo (mesmo conteúdo e mesma opção
+  `evidence`) reenviado dentro de `AIDA_API_CACHE_TTL_S` volta do cache
+  (`X-AIDA-Cache: hit`) sem débito. O cache é consultado **antes** do débito, então
+  um hit é servido mesmo com os créditos do ciclo esgotados; os cabeçalhos
+  `X-AIDA-Credits-*` mostram o saldo atual, sem alterar.
+* **Débito antes do Core, estorno se falhar** (só no cache miss). Assim duas
+  chamadas simultâneas não passam juntas do limite do plano grátis.
 * **API Free** (`overage: block`): no limite, `429 credits_exhausted`, com a data
   de renovação na mensagem e `Retry-After`. **Planos pagos** (`overage:
   charge`): a chamada passa e o excedente fica em `uso_ciclos`.
 * Cabeçalhos em toda análise medida: `X-AIDA-Credits-Included`, `-Used`,
   `-Remaining`, `X-AIDA-Overage-Credits`, `X-AIDA-Cycle-Reset`.
 * Chave **sem assinatura** não é medida (inclusive a cota legada `tokens_total`
-  do painel, que segue igual). Para medir, crie a linha em `assinaturas_api`
-  e deixe `tokens_total = 0`.
+  do painel, que segue igual). Para medir, use a CLI abaixo.
 * **Checkout:** `POST /v1/billing/checkout` exige o token da sessão do site.
   Em BRL, só passa com CPF/CNPJ válido (inclusive CNPJ alfanumérico) e endereço
   de cobrança no Brasil. O valor sai do config; campos de valor no corpo são
   ignorados. Sem gateway, responde `501 gateway_not_configured` com
   `details.quote`.
+
+### Assinar uma chave a um plano
+
+Com `SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY` no ambiente (a service role,
+não a `anon`):
+
+```bash
+python -m aida_api.gerenciar_chaves assinar aida_ab12cd api_starter BR          # mensal, em reais
+python -m aida_api.gerenciar_chaves assinar aida_ab12cd api_pro INTL --anual    # anual, em dólar
+python -m aida_api.gerenciar_chaves cancelar-assinatura aida_ab12cd
+```
+
+`assinar <prefixo> <plano_id> <BR|INTL> [--anual]`:
+
+1. confere que o prefixo aponta para **uma** chave, não revogada;
+2. aceita só planos da aba API do mercado (`api_free`, `api_starter`, `api_pro`,
+   `api_business`, `api_scale`). Enterprise tem termos negociados e não sai do
+   config: crie a linha à mão;
+3. desativa a assinatura ativa anterior da chave (`ativa = false`,
+   `cancelada_em`), cria a nova com os termos copiados de `config/pricing.json`
+   via `medicao.Assinatura.do_plano` (créditos, política e preço do excedente,
+   moeda; âncora do ciclo = agora) e zera `tokens_total` da chave.
+
+Se a criação falhar depois da desativação, a chave fica sem medição até o
+comando rodar de novo; a mensagem de erro avisa. `cancelar-assinatura` só
+desativa: a chave continua válida, sem medição. Para bloquear o acesso, use
+`revogar`.
 
 Produção: rode `docs/migracao-cobranca.sql` (tabelas, RLS e as RPCs
 `cobranca_debitar`, `cobranca_estornar` e `cobranca_uso`, que só a service role executa).

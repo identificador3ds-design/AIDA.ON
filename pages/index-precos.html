@@ -35,7 +35,7 @@
     <link rel="stylesheet" href="../styles/style-shared-theme.css?v=20261011-nav">
     <link rel="stylesheet" href="../styles/aida-design-system.css">
     <link rel="stylesheet" href="../styles/aida-produto.css?v=20260929-v1">
-    <link rel="stylesheet" href="../styles/style-precos.css?v=20261124-v1">
+    <link rel="stylesheet" href="../styles/style-precos.css?v=20261125-v1">
 
     <!-- gerado:jsonld -->
     <script type="application/ld+json">
@@ -299,7 +299,8 @@
               "value": 1,
               "unitCode": "MON"
             }
-          }
+          },
+          "description": "1500 credits/month"
         },
         {
           "@type": "Offer",
@@ -318,7 +319,8 @@
               "value": 1,
               "unitCode": "MON"
             }
-          }
+          },
+          "description": "6000 credits/month"
         },
         {
           "@type": "Offer",
@@ -435,6 +437,7 @@
         <nav class="aida-topnav" aria-label="Navegação principal" data-i18n-attr="aria-label:nav.aria">
             <a href="./index-apresentacao.html" class="top-link" data-nav="inicio" data-i18n="nav.inicio">Início</a>
             <a href="./index-solucoes.html" class="top-link" data-nav="solucoes" data-i18n="nav.solucoes">Soluções</a>
+            <a href="./index-precos.html" class="top-link" data-nav="precos" aria-current="page" data-i18n="nav.precos">Preços</a>
             <a href="./index-enviar.html" class="top-link top-link--destaque" data-nav="enviar" data-i18n="nav.enviar">Analisar arquivo</a>
         </nav>
     </header>
@@ -547,7 +550,7 @@
                         <label class="aida-field__label" for="calcMinutos" data-i18n="calc.video_minutes">Minutos de vídeo por mês</label>
                         <input class="aida-input" type="number" id="calcMinutos" name="minutos" min="0" step="1"
                             inputmode="numeric" value="30" aria-describedby="calcMinutosDica">
-                        <p class="aida-field__hint" id="calcMinutosDica" data-i18n="calc.video_hint">Cada vídeo conta por minuto iniciado: um vídeo de 1 min 10 s conta 2 minutos.</p>
+                        <p class="aida-field__hint" id="calcMinutosDica" data-i18n="calc.video_hint">Cada vídeo conta por minuto iniciado: um vídeo de 1 min 10 s conta 2 minutos. No plano gratuito, o limite é de 10 arquivos por dia (cada imagem ou vídeo enviado é 1 análise); como aqui você informa minutos, a calculadora estima 1 análise por imagem e por minuto de vídeo.</p>
                     </div>
                 </form>
                 <div class="precos-calc__resultado" id="calcResultado" aria-live="polite"></div>
@@ -571,7 +574,7 @@
             </details>
             <details class="precos-faq__item">
                 <summary data-i18n="faq.q2">O que acontece quando meus créditos acabam?</summary>
-                <p data-i18n="faq.a2">No API Free, as chamadas são recusadas com HTTP 429 até o próximo ciclo. Nos planos pagos da API, o uso continua e cada crédito além do incluído é cobrado pelo preço de excedente do plano. Nos planos da plataforma web, novas análises ficam bloqueadas até o próximo ciclo ou até a troca de plano.</p>
+                <p data-i18n="faq.a2">Nos planos pagos da plataforma web não há excedente: quando os créditos do mês acabam, novas análises ficam bloqueadas até o próximo ciclo ou até a troca para um plano maior. No plano gratuito, o limite é de 10 análises por dia, e cada arquivo enviado (imagem ou vídeo) conta como uma análise. No API Free, as chamadas são recusadas com HTTP 429 até o próximo ciclo. Nos planos pagos da API, o uso continua e cada crédito além do incluído é cobrado pelo preço de excedente do plano.</p>
             </details>
             <details class="precos-faq__item">
                 <summary data-i18n="faq.q3">Os créditos que sobram passam para o mês seguinte?</summary>
@@ -579,7 +582,7 @@
             </details>
             <details class="precos-faq__item">
                 <summary data-i18n="faq.q4">Como cancelo?</summary>
-                <p data-i18n="faq.a4">Peça o cancelamento à equipe pelo formulário de contato. O plano não renova e segue ativo até o fim do período já pago.</p>
+                <p data-i18n="faq.a4">Peça o cancelamento à equipe pelo formulário de contato. Não há multa: o plano deixa de renovar e continua valendo até o fim do período já pago.</p>
             </details>
             <details class="precos-faq__item">
                 <summary data-i18n="faq.q5">Por que o uso é gratuito para o cidadão?</summary>
@@ -587,7 +590,11 @@
             </details>
             <details class="precos-faq__item">
                 <summary data-i18n="faq.q6">Quais formas de pagamento são aceitas?</summary>
-                <p data-i18n="faq.a6">O pagamento online está sendo integrado. Por enquanto, a contratação é feita com a equipe, que informa as formas disponíveis. Cobrança em reais exige CPF ou CNPJ e endereço de cobrança no Brasil.</p>
+                <p data-i18n="faq.a6">Enquanto o pagamento online não estiver disponível, as formas de pagamento são definidas na contratação, com a equipe. Cobrança em reais exige CPF ou CNPJ e endereço de cobrança no Brasil.</p>
+            </details>
+            <details class="precos-faq__item">
+                <summary data-i18n="faq.q7">O desconto anual vale para quais planos?</summary>
+                <p data-i18n="faq.a7">Para todos os planos pagos, da plataforma web e da API: na cobrança anual você paga 10 mensalidades por 12 meses. O excedente da API não entra no desconto: ele é sempre cobrado mês a mês, conforme o uso real de cada ciclo.</p>
             </details>
         </section>
 
@@ -654,7 +661,7 @@
                     aria-describedby="erro-contatoConsentimento">
                 <label for="contatoConsentimento" data-i18n="contact.consent">Li o aviso de privacidade e autorizo a equipe do AIDA a usar estes dados para responder ao contato. *</label>
             </div>
-            <a class="aida-text--sm precos-form__link" href="./index-privacidade.html" target="_blank"
+            <a class="aida-text--sm precos-form__link" href="./index-privacidade.html#formulario-comercial" target="_blank"
                 rel="noopener" data-i18n="contact.privacy_link">Ler o aviso de privacidade</a>
             <p class="precos-form__erro" id="erro-contatoConsentimento" hidden></p>
 
@@ -667,9 +674,9 @@
     </dialog>
 
     <script src="../scripts/script-cookie-consent.js"></script>
-    <script src="../scripts/aida-precos-core.js?v=20261124-v1"></script>
+    <script src="../scripts/aida-precos-core.js?v=20261125-v1"></script>
     <script src="../scripts/aida-i18n.js?v=20261124-v1"></script>
-    <script src="../scripts/script-precos.js?v=20261124-v1"></script>
+    <script src="../scripts/script-precos.js?v=20261125-v1"></script>
     <script src="../scripts/aida-topnav.js?v=20261011-v1"></script>
 </body>
 

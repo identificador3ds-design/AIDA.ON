@@ -29,11 +29,12 @@ async function main() {
   window.localStorage.setItem("AIDA_PrecosMercado", "BR");
 
   const enviados = [];
+  let respostaSupabase = { ok: true, status: 201, json: async () => ({}) };
   window.fetch = async (url, opcoes) => {
     const u = new URL(url, window.location.href);
     if (u.hostname.endsWith("supabase.co")) {
       enviados.push({ url: u.href, metodo: opcoes.method, corpo: JSON.parse(opcoes.body), cabecalhos: opcoes.headers });
-      return { ok: true, status: 201, json: async () => ({}) };
+      return respostaSupabase;
     }
     const arquivo = path.join(RAIZ, decodeURIComponent(u.pathname));
     if (!fs.existsSync(arquivo)) return { ok: false, status: 404, json: async () => ({}) };
@@ -76,6 +77,9 @@ async function main() {
     team: preco("platform", "team"),
     apiScale: preco("api", "api_scale"),
     excedenteScale: limpo(card("api", "api_scale").querySelector(".precos-card__fatos").textContent),
+    fatosPro: limpo(card("platform", "pro").querySelector(".precos-card__fatos").textContent),
+    fatosTeam: limpo(card("platform", "team").querySelector(".precos-card__fatos").textContent),
+    fatosEnterprise: limpo(card("api", "enterprise").querySelector(".precos-card__fatos").textContent),
     planosPlataforma: Array.from(document.querySelectorAll('[data-cards="platform"] article[data-plano]')).map((c) => c.getAttribute("data-plano")),
     preferencia: window.localStorage.getItem("AIDA_PrecosMercado"),
   };
@@ -173,9 +177,23 @@ async function main() {
   form.dispatchEvent(new window.Event("submit", { bubbles: true, cancelable: true }));
   for (let i = 0; i < 5; i += 1) await esperar();
   passos.formValido = {
-    enviados,
+    enviados: enviados.slice(),
     estado: limpo(document.getElementById("contatoEstado").textContent),
     invalidos: Array.from(form.querySelectorAll('[aria-invalid="true"]')).map((c) => c.id),
+  };
+
+  // Limite anti-spam da migração: PostgREST responde 400 com code P0001.
+  respostaSupabase = { ok: false, status: 400, json: async () => ({ code: "P0001", message: "limite" }) };
+  document.getElementById("contatoNome").value = "Ana Souza";
+  document.getElementById("contatoEmpresa").value = "Redação Exemplo";
+  document.getElementById("contatoEmail").value = "ana@exemplo.com.br";
+  document.getElementById("contatoVolume").value = "600000";
+  document.getElementById("contatoConsentimento").checked = true;
+  form.dispatchEvent(new window.Event("submit", { bubbles: true, cancelable: true }));
+  for (let i = 0; i < 5; i += 1) await esperar();
+  passos.formLimite = {
+    estado: limpo(document.getElementById("contatoEstado").textContent),
+    enviados: enviados.length,
   };
 
   process.stdout.write(JSON.stringify(passos));

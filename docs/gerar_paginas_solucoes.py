@@ -249,6 +249,7 @@ MODELO = """<!DOCTYPE html>
         <nav class="aida-topnav" aria-label="Navegação principal">
             <a href="./index-apresentacao.html" class="top-link" data-nav="inicio">Início</a>
             <a href="./index-solucoes.html" class="top-link" data-nav="solucoes">Soluções</a>
+            <a href="./index-precos.html" class="top-link" data-nav="precos">Preços</a>
             <a href="./index-enviar.html" class="top-link top-link--destaque" data-nav="enviar">Analisar arquivo</a>
         </nav>
     </header>

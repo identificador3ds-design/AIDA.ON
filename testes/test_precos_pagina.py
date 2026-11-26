@@ -64,6 +64,12 @@ def test_troca_de_moeda_mostra_os_planos_em_dolar(tela):
     assert usd["apiScale"] == "$599.00/mês"
     assert "$0.0035 por crédito" in usd["excedenteScale"]
     assert usd["planosPlataforma"] == ["free", "pro", "team"]
+    # Decisões 2026-11-25: créditos, usuários e "sem excedente" sem "a definir".
+    assert "1.500 créditos por mês" in usd["fatosPro"] and "1 usuário" in usd["fatosPro"]
+    assert "6.000 créditos por mês" in usd["fatosTeam"] and "5 usuários" in usd["fatosTeam"]
+    for fatos in (usd["fatosPro"], usd["fatosTeam"]):
+        assert "Sem excedente: bloqueia no limite" in fatos and "a definir" not in fatos
+    assert "A partir de 500.000 créditos por mês" in usd["fatosEnterprise"]
     assert usd["preferencia"] == "INTL"
 
 
@@ -122,6 +128,11 @@ def test_formulario_envia_so_os_campos_do_contato(tela):
         "volume_estimado", "mensagem", "consentimento",
     }
     assert envio["corpo"]["volume_estimado"] == 600000
+
+
+def test_formulario_avisa_quando_o_limite_anti_spam_recusa(tela):
+    assert tela["formLimite"]["enviados"] == 2
+    assert tela["formLimite"]["estado"] == PT["contact.error_rate_limit"]
 
 
 # --------------------------------------------------------------------------- #

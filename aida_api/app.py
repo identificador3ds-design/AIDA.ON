@@ -398,15 +398,9 @@ def criar_app():
             "evidence": com_evidencias,
         }
 
-        # Creditos: debita ANTES do Core (duas chamadas simultaneas nao passam
-        # juntas do limite do plano gratis) e estorna se a analise falhar.
-        recusa, debito = _debitar_creditos(cobranca.creditos_imagem(), "image", digest, evento)
-        if recusa is not None:
-            return recusa
-
-        def estornar():
-            _estornar_creditos(debito, digest)
-
+        # Cache primeiro: a mesma imagem (mesmo conteudo e mesma opcao de
+        # evidencias) dentro do TTL e servida sem chamar o Core e NAO consome
+        # credito. Por isso a consulta vem antes do debito.
         em_cache = analises.obter(chave_cache)
         if em_cache:
             id_analise, resposta_core = em_cache
@@ -416,14 +410,29 @@ def criar_app():
                 duracao_borda_s=time.perf_counter() - inicio,
             )
             registro.registrar(
-                {**evento, "status": 200, "cache": "hit", "result": corpo["result"],
-                 "analysis_id": id_analise,
+                {**evento, "status": 200, "cache": "hit", "credits_charged": 0,
+                 "result": corpo["result"], "analysis_id": id_analise,
                  "duration_seconds": round(time.perf_counter() - inicio, 4)}
             )
             resposta = jsonify(corpo)
             resposta.headers["X-AIDA-Cache"] = "hit"
-            resposta.headers.update(debito.cabecalhos())
+            try:
+                # So informa o saldo; sem debito. Se a medicao cair, o cache
+                # continua servindo (nao ha credito em jogo).
+                resposta.headers.update(medidor.uso(g.chave_id).cabecalhos())
+            except medicao.MedicaoIndisponivel as exc:
+                app.logger.warning("Uso indisponivel no cache hit: %s", exc)
             return resposta
+
+        # Cache miss. Creditos: debita ANTES do Core (duas chamadas simultaneas
+        # nao passam juntas do limite do plano gratis) e estorna se a analise
+        # falhar.
+        recusa, debito = _debitar_creditos(cobranca.creditos_imagem(), "image", digest, evento)
+        if recusa is not None:
+            return recusa
+
+        def estornar():
+            _estornar_creditos(debito, digest)
 
         # O nome original nao vai para o Core: ele nao muda a analise e costuma
         # carregar dado pessoal. So a extensao viaja, porque decide o decoder.
